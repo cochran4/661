@@ -1,0 +1,241 @@
+# Syllabus
+## Causal Inference, Surveys, and Missing Data for Population Health (BMI/POP HLTH 661)
+
+Fall 2026
+
+---
+
+## Course logistics
+
+### Classroom and meeting times
+
+Days/Time: Tue/Thu 4:00–5:15 PM  
+Location: 726 WARF 
+
+### Instructor
+
+Amy Cochran  
+Email: cochran4@math.wisc.edu  
+Office hours: TBD, 685 WARF
+
+### Credit hours
+
+3 credits
+
+**UW–Madison credit hour policy.** The credit standard for this course is met by an expectation of a total of **135 hours** (at least 45 hours per credit) of student engagement with course learning activities. This includes regularly scheduled instructor–student meeting times (75-minute blocks on Tuesday and Thursday), reading, problem sets, and other work described in this syllabus.
+
+### Requisites
+
+POP HLTH/B M I 552, F&W ECOL/STAT 572 (or HORT 572 prior to Spring 2025), SOC/C&E SOC 361, or ED PSYCH 761
+
+### Course attributes
+
+Graduate level
+
+### Instructional mode
+
+Face to face
+
+---
+
+## Course description
+
+### Official course description
+
+Overview of modern statistical methods for dealing with "incomplete" data, including the design and analysis of complex surveys, the analysis of missing data, and causal inference.
+
+### Longer course description
+
+This course builds a foundation for making causal claims from observational data. We want to move past associations — *this thing is related to that thing* — and actually say that one thing **causes** another. Does vaping give you cancer? Is intermittent fasting bad for your heart? Can I eat eggs every morning? People are acting on these questions regardless (vaping, skipping breakfast, eating eggs), and the science they rely on should meet them with honest answers rather than a shrug about causation. 
+
+Making those claims is hard. Without randomization, there are always at least two explanations for any pattern we see, and ruling them out requires both the right tools and honest accounting of their limits. We build those tools from the ground up: causal models and graphs, potential outcomes and causal effects, measured and unmeasured confounding, and sensitivity analysis. We also extend them to practical complications like missing data and complex survey designs.
+
+Those tools are learned by using them. We write code in R, analyze real data in class, and the final project involves emulating a target trial from observational data.
+
+---
+
+## Grading
+
+Your course work is weighted out of **100 points**:
+
+| Component | Points |
+|---|---:|
+| Homework | 20 |
+| Quizzes | 30 | 
+| Participation | 20 |
+| Project | 30 |
+
+### Guaranteed grade lines
+
+A percentage score in the indicated range guarantees at least the letter grade next to it:
+
+- **A:** [100, 93)
+- **AB:** [93, 88)
+- **B:** [88, 83)
+- **BC:** [83, 78)
+- **C:** [78, 63)
+- **D:** [63, 50)
+- **F:** [50, 0]
+
+Grade lines may be lowered at the end.
+
+---
+
+## Class components
+
+### Devices
+
+This is a device-free classroom, except during designated coding sessions when laptops are expected. The evidence suggests that devices hurt learning, and a recent Yale faculty report recommended device-free classrooms as the default university-wide. This course asks you to think carefully about hard problems, and that kind of thinking requires your full attention.
+
+### Participation and attendance
+
+Attendance is expected and participation is graded. Your participation grade is based on attendance: full credit for 3 or fewer unexcused absences, with proportional reduction beyond that.
+
+Some absences can be anticipated and should be arranged with the instructor beforehand: conferences, academic travel, religious observances, or other scheduled commitments. Others arise unexpectedly: illness, family emergencies, or other extenuating circumstances. For these, let the instructor know as soon as you are able. All other absences are unexcused.
+
+### Class meetings
+
+Class meets in person starting promptly at 4:00 PM on Tuesdays and Thursdays. Each class follows the same structure: a short lecture, followed by pen-and-paper problems worked through in small groups, followed by a coding session in R. The instructor will move between groups during problem-solving and coding to ask and answer questions.
+
+This structure only works if you show up ready to engage. That means trying problems before asking for help, supporting peers, and bringing your laptop for the coding portion.
+
+### Homework
+
+Homework assignments are due by 4:00 PM on the Thursdays indicated in the course schedule, submitted on Canvas as a single PDF before class. There are 8 assignments total.
+
+Homework is graded for completeness, not correctness. Mastery is assessed through quizzes and the project.
+
+- No late assignments will be accepted.
+- Collaboration on ideas is encouraged, but writing solutions together or copying another person's work is not allowed.
+- AI tools may be used to brainstorm, explore ideas, or improve writing clarity. You are fully responsible for the accuracy and integrity of what you submit.
+- Neatness and clarity matter. Write one problem per page except for very short problems. Computations without explanation will not receive credit even if the answer is correct.
+
+### Quizzes
+
+There are 8 short in-class quizzes, given on the same Thursdays as homework. Quizzes assess comprehension of recent material and will look similar to homework problems. The lowest quiz score will be dropped.
+
+### Project
+
+The project is the central assessment of the course. Working individually, you will develop a complete protocol for a target trial emulation. 
+The final submission has two parts: a written protocol and an analysis script that executes on a sandbox dataset. 
+The protocol can be written in any format (e.g., Quarto, Word, or LaTeX). The project unfolds across six milestones:
+
+| Milestone | Due |
+|---|---|
+| Scientific gap | Thu, Sep 17 |
+| Target trial table | Thu, Oct 1 |
+| Construction | Thu, Oct 15 |
+| Identification | Thu, Nov 12 |
+| Estimation | Thu, Dec 3 |
+| Final document | Mon, Dec 14 |
+
+More detail on each milestone will be provided on Canvas. You are welcome to use your own dataset or work with the dataset the instructor uses throughout the course.
+
+### Textbooks
+
+The course draws on several resources texts:  
+- [https://miguelhernan.org/whatifbook](Causal Inference: What If) by Hernán and Robins  
+- [https://stefvanbuuren.name/fimd/](Flexible Imputation of Missing Data) by van Buuren
+- [https://tidy-survey-r.github.io/tidy-survey-book/](Exploring Complex Survey Data Analysis Using R) by Zimmer, Powell, and Velásquez
+Additional notes and materials will be provided throughout the semester that build on and extend these texts.
+
+
+---
+
+## Schedule (tentative)
+ 
+| Week | Date | Day | Section | Topics |
+|---:|---|---|---|---|
+| 1 | Sep 3 | Th | Motivation | Why probability/regression is not enough |
+| 2 | Sep 8 | Tu |  | Clinical trials |
+| 2 | Sep 10 | Th | Review | Probability and statistics review  |
+| 3 | Sep 15 | Tu | Construction | Structural equation models (SEM) |
+| 3 | Sep 17 | Th |  | Nonparametric SEM (NPSEM) |
+| 4 | Sep 22 | Tu |  | Causal graphs |
+| 4 | Sep 24 | Th |  | d-separation |
+| 5 | Sep 29 | Tu |  | Potential outcomes |
+| 5 | Oct 1 | Th |  | SWIGs |
+| 6 | Oct 6 | Tu |  | Causal effects |
+| 6 | Oct 8 | Th | Measured confounding | Outcome regression  |
+| 7 | Oct 13 | Tu |  | Matching  |
+| 7 | Oct 15 | Th |  | Propensity score |
+| 8 | Oct 20 | Tu |  | Inverse probability weighting |
+| 8 | Oct 22 | Th |  | Doubly robust methods (AIPW) |
+| 9 | Oct 27 | Tu |  | Flexible modeling methods |
+| 9 | Oct 29 | Th | Unmeasured confounding | Instrumental variables |
+| 10 | Nov 3 | Tu |  | Regression discontinuity  |
+| 10 | Nov 5 | Th |  |  Other strategies |
+| 11 | Nov 10 | Tu | Sensitivity | E-values |
+| 11 | Nov 12 | Th |  | Gamma / Rosenbaum sensitivity |
+| 12 | Nov 17 | Tu | Missing data | Missing data mechanisms |
+| 12 | Nov 19 | Th | | Multiple imputation |
+| 13 | Nov 24 | Tu | | Chained equations |
+| 13 | Nov 26 | Th | | **Thanksgiving (no class)** |
+| 14 | Dec 1 | Tu | | Missing not at random |
+| 14 | Dec 3 | Th | Surveys | Complex survey design |
+| 15 | Dec 8 | Tu |  | Weighting |
+| 15 | Dec 10 | Th |  | Variance estimation |
+| 16 | Dec 15 | Tu |  | Wrap-up |
+: {tbl-colwidths="[9, 10, 6, 30, 45]"}
+
+<!-- Useful resource https://bookdown.org/glorya_hu/MNAR-Guide/ -->
+
+<!--
+May need to skip below or update it
+---
+
+## Learning outcomes by level
+
+| Level | Goals |
+|---|---|
+| **Knowledge** | Recall and state formal definitions of mathematical objects and their properties used in elementary linear algebra (e.g., dimension of a vector space; linear dependence of a set of vectors). |
+|  | Recall and state standard theorems used in elementary linear algebra (e.g., symmetric matrices are diagonalizable; linear operators with non-trivial kernel are not invertible). |
+| **Comprehension** | Use standard methods and tools of mathematical argument in the context of linear algebra (e.g., direct/indirect methods; examples/counterexamples; induction; first-order logic; set theory; quantifiers). |
+|  | Verify whether a mathematical construct has a particular property (e.g., a matrix is invertible; a set is a vector subspace; a vector is an eigenvector). |
+|  | Verify premises of standard theorems in elementary linear algebra in order to apply conclusions in longer arguments (e.g., a matrix has zero determinant ⇒ nullity larger than one). |
+|  | Prove or disprove statements related to definitions, properties, and theorems using techniques of mathematical argument. |
+|  | Convey formal mathematical arguments in English using appropriate mathematical terminology and notation. |
+| **Application** | Perform standard computations in linear algebra (e.g., rank of a matrix; determinant of a square matrix). |
+--> 
+
+---
+
+## UW–Madison required statements
+
+### Teaching & learning data transparency statement
+
+The privacy and security of faculty, staff, and students’ personal information is a top priority for UW–Madison. The university carefully evaluates and vets all campus-supported digital tools used to support teaching and learning, to help support success through learning analytics, and to enable proctoring capabilities.
+
+Full statement: [https://teachlearn.provost.wisc.edu/teaching-and-learning-data-transparency-statement/](https://teachlearn.provost.wisc.edu/teaching-and-learning-data-transparency-statement/)
+
+### Course evaluations
+
+UW–Madison uses a digital course evaluation survey tool called AEFIS. For this course, you will receive an official email two weeks prior to the end of the semester, notifying you that your course evaluation is available. In the email you will receive a link to log into the course evaluation with your NetID. Evaluations are anonymous.
+
+Your participation is an integral component of this course, and your feedback is important to us. We strongly encourage you to participate in the course evaluation.
+
+### Students’ rules, rights & responsibilities
+
+University privacy rights (FERPA): [https://guide.wisc.edu/undergraduate/#rulesrightsandresponsibilitiestext](https://guide.wisc.edu/undergraduate/#rulesrightsandresponsibilitiestext)
+
+### Diversity & Inclusion statement
+
+Diversity is a source of strength, creativity, and innovation for UW–Madison. We value the contributions of each person and respect the profound ways their identity, culture, background, experience, status, abilities, and opinion enrich the university community. We commit ourselves to the pursuit of excellence in teaching, research, outreach, and diversity as inextricably linked goals.
+
+### Academic integrity statement
+
+By virtue of enrollment, you agree to uphold the high academic standards of the University of Wisconsin–Madison; academic misconduct is behavior that negatively impacts the integrity of the institution. Cheating, fabrication, plagiarism, unauthorized collaboration, and helping others commit these acts are examples of misconduct which may result in disciplinary action.
+
+Official statement: [https://conduct.students.wisc.edu/faculty-staff-resources/syllabus-statement/](https://conduct.students.wisc.edu/faculty-staff-resources/syllabus-statement/)
+
+### Accommodations for students with disabilities
+
+The University of Wisconsin–Madison supports the right of all enrolled students to a full and equal educational opportunity. The Americans with Disabilities Act (ADA), Wisconsin State Statute (36.12), and UW–Madison policy (UW-855) require the university to provide reasonable accommodations to students with disabilities to access and participate in academic programs and educational services.
+
+Students are expected to inform faculty of their need for instructional accommodations at the beginning of the semester, or as soon as possible after being approved for accommodations. Faculty will work either directly with the student or in coordination with the McBurney Center.
+
+McBurney Disability Resource Center: [https://mcburney.wisc.edu/](https://mcburney.wisc.edu/)
+
+### Academic calendar & religious observance
+
+Academic calendars and religious observance policy: [https://secfac.wisc.edu/academic-calendar/](https://secfac.wisc.edu/academic-calendar/)

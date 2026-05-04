@@ -1,0 +1,38 @@
+project:
+  type: book
+
+
+book:
+  title: "Causal inference (and other things)"
+  author: "Amy Cochran"
+  chapters:
+    - index.qmd
+    - 00-syllabus.qmd
+    - part: "Why causal inference?"
+      chapters:
+        - 01-lung-cancer.qmd
+  navbar:
+    pinned: true
+    search: true
+    left:
+      - text: "Home"
+        file: index.qmd
+      - text: "Syllabus"
+        file: 00-syllabus.qmd
+      - text: "Unit 1"
+        menu:
+          - text: "Lung cancer example"
+            file: 01-lung-cancer.qmd
+  search:
+    location: navbar
+    type: overlay
+  sidebar: false
+
+format:
+  html:
+    theme:
+      - cosmo
+      - styles.scss
+    toc: false
+    number-sections: false
+    toc-depth: 2

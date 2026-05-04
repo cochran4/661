@@ -1,0 +1,102 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Causal inference (and other things)",
+    "section": "",
+    "text": "Background\nThis site contains course materials for Causal inference, surveys, and missing data (PHS/BMI 661).\nThis course builds a foundation for making causal claims from observational data. We want to move past associations — this thing is related to that thing — and actually say that one thing causes another. Does vaping give you cancer? Is intermittent fasting bad for your heart? Can I eat eggs every morning? People are acting on these questions regardless (vaping, skipping breakfast, eating eggs) and the science they rely on should meet them with honest answers rather than a shrug about causation.\nMaking those claims is hard. Without randomization, there are always at least two explanations for any pattern we see, and ruling them out requires both the right tools and honest accounting of their limits.\nWe build those tools from the ground up. Causal models and graphs give us a rigorous shared language for representing cause and effect. From those models, we define potential outcomes and the causal effects they imply. Those quantities in hand, we turn to confounding.\nMeasured confounding is the easier case, when our data contains everything needed to rule out alternative explanations. Unmeasured confounding is harder, and demands more creativity. And when that creativity is not enough, we are not out of options. Sensitivity analysis flips the burden of proof onto those who would dismiss a finding as mere association, asking how strong an unmeasured confounder would have to be to explain it away. That is exactly the question Cornfield put to the skeptics who challenged the link between smoking and lung cancer.\nThese topics cover the most common problems in everyday public health and epidemiology, but confounding is not all there is to causal inference. We extend the same tools to practical complications like missing data and complex survey designs, and we point toward richer questions — sequential decision-making, mediation, and interference — even if we cannot cover them fully.\nThose tools are learned by using them. We write code in R, analyze real data in class, and the final project involves emulating a target trial from observational data.",
+    "crumbs": [
+      "Home",
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Background</span>"
+    ]
+  },
+  {
+    "objectID": "00-syllabus.html",
+    "href": "00-syllabus.html",
+    "title": "Syllabus",
+    "section": "",
+    "text": "Causal Inference, Surveys, and Missing Data for Population Health (BMI/POP HLTH 661)\nFall 2026",
+    "crumbs": [
+      "Home",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Syllabus</span>"
+    ]
+  },
+  {
+    "objectID": "00-syllabus.html#course-logistics",
+    "href": "00-syllabus.html#course-logistics",
+    "title": "Syllabus",
+    "section": "Course logistics",
+    "text": "Course logistics\n\nClassroom and meeting times\nDays/Time: Tue/Thu 4:00–5:15 PM\nLocation: 726 WARF\n\n\nInstructor\nAmy Cochran\nEmail: cochran4@math.wisc.edu\nOffice hours: TBD, 685 WARF\n\n\nCredit hours\n3 credits\nUW–Madison credit hour policy. The credit standard for this course is met by an expectation of a total of 135 hours (at least 45 hours per credit) of student engagement with course learning activities. This includes regularly scheduled instructor–student meeting times (75-minute blocks on Tuesday and Thursday), reading, problem sets, and other work described in this syllabus.\n\n\nRequisites\nPOP HLTH/B M I 552, F&W ECOL/STAT 572 (or HORT 572 prior to Spring 2025), SOC/C&E SOC 361, or ED PSYCH 761\n\n\nCourse attributes\nGraduate level\n\n\nInstructional mode\nFace to face",
+    "crumbs": [
+      "Home",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Syllabus</span>"
+    ]
+  },
+  {
+    "objectID": "00-syllabus.html#course-description",
+    "href": "00-syllabus.html#course-description",
+    "title": "Syllabus",
+    "section": "Course description",
+    "text": "Course description\n\nOfficial course description\nOverview of modern statistical methods for dealing with “incomplete” data, including the design and analysis of complex surveys, the analysis of missing data, and causal inference.\n\n\nLonger course description\nThis course builds a foundation for making causal claims from observational data. We want to move past associations — this thing is related to that thing — and actually say that one thing causes another. Does vaping give you cancer? Is intermittent fasting bad for your heart? Can I eat eggs every morning? People are acting on these questions regardless (vaping, skipping breakfast, eating eggs), and the science they rely on should meet them with honest answers rather than a shrug about causation.\nMaking those claims is hard. Without randomization, there are always at least two explanations for any pattern we see, and ruling them out requires both the right tools and honest accounting of their limits. We build those tools from the ground up: causal models and graphs, potential outcomes and causal effects, measured and unmeasured confounding, and sensitivity analysis. We also extend them to practical complications like missing data and complex survey designs.\nThose tools are learned by using them. We write code in R, analyze real data in class, and the final project involves emulating a target trial from observational data.",
+    "crumbs": [
+      "Home",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Syllabus</span>"
+    ]
+  },
+  {
+    "objectID": "00-syllabus.html#grading",
+    "href": "00-syllabus.html#grading",
+    "title": "Syllabus",
+    "section": "Grading",
+    "text": "Grading\nYour course work is weighted out of 100 points:\n\n\n\nComponent\nPoints\n\n\n\n\nHomework\n20\n\n\nQuizzes\n30\n\n\nParticipation\n20\n\n\nProject\n30\n\n\n\n\nGuaranteed grade lines\nA percentage score in the indicated range guarantees at least the letter grade next to it:\n\nA: [100, 93)\nAB: [93, 88)\nB: [88, 83)\nBC: [83, 78)\nC: [78, 63)\nD: [63, 50)\nF: [50, 0]\n\nGrade lines may be lowered at the end.",
+    "crumbs": [
+      "Home",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Syllabus</span>"
+    ]
+  },
+  {
+    "objectID": "00-syllabus.html#class-components",
+    "href": "00-syllabus.html#class-components",
+    "title": "Syllabus",
+    "section": "Class components",
+    "text": "Class components\n\nDevices\nThis is a device-free classroom, except during designated coding sessions when laptops are expected. The evidence suggests that devices hurt learning, and a recent Yale faculty report recommended device-free classrooms as the default university-wide. This course asks you to think carefully about hard problems, and that kind of thinking requires your full attention.\n\n\nParticipation and attendance\nAttendance is expected and participation is graded. Your participation grade is based on attendance: full credit for 3 or fewer unexcused absences, with proportional reduction beyond that.\nSome absences can be anticipated and should be arranged with the instructor beforehand: conferences, academic travel, religious observances, or other scheduled commitments. Others arise unexpectedly: illness, family emergencies, or other extenuating circumstances. For these, let the instructor know as soon as you are able. All other absences are unexcused.\n\n\nClass meetings\nClass meets in person starting promptly at 4:00 PM on Tuesdays and Thursdays. Each class follows the same structure: a short lecture, followed by pen-and-paper problems worked through in small groups, followed by a coding session in R. The instructor will move between groups during problem-solving and coding to ask and answer questions.\nThis structure only works if you show up ready to engage. That means trying problems before asking for help, supporting peers, and bringing your laptop for the coding portion.\n\n\nHomework\nHomework assignments are due by 4:00 PM on the Thursdays indicated in the course schedule, submitted on Canvas as a single PDF before class. There are 8 assignments total.\nHomework is graded for completeness, not correctness. Mastery is assessed through quizzes and the project.\n\nNo late assignments will be accepted.\nCollaboration on ideas is encouraged, but writing solutions together or copying another person’s work is not allowed.\nAI tools may be used to brainstorm, explore ideas, or improve writing clarity. You are fully responsible for the accuracy and integrity of what you submit.\nNeatness and clarity matter. Write one problem per page except for very short problems. Computations without explanation will not receive credit even if the answer is correct.\n\n\n\nQuizzes\nThere are 8 short in-class quizzes, given on the same Thursdays as homework. Quizzes assess comprehension of recent material and will look similar to homework problems. The lowest quiz score will be dropped.\n\n\nProject\nThe project is the central assessment of the course. Working individually, you will develop a complete protocol for a target trial emulation. The final submission has two parts: a written protocol and an analysis script that executes on a sandbox dataset. The protocol can be written in any format (e.g., Quarto, Word, or LaTeX). The project unfolds across six milestones:\n\n\n\nMilestone\nDue\n\n\n\n\nScientific gap\nThu, Sep 17\n\n\nTarget trial table\nThu, Oct 1\n\n\nConstruction\nThu, Oct 15\n\n\nIdentification\nThu, Nov 12\n\n\nEstimation\nThu, Dec 3\n\n\nFinal document\nMon, Dec 14\n\n\n\nMore detail on each milestone will be provided on Canvas. You are welcome to use your own dataset or work with the dataset the instructor uses throughout the course.\n\n\nTextbooks\nThe course draws on several resources texts:\n- https://miguelhernan.org/whatifbook by Hernán and Robins\n- https://stefvanbuuren.name/fimd/ by van Buuren - https://tidy-survey-r.github.io/tidy-survey-book/ by Zimmer, Powell, and Velásquez Additional notes and materials will be provided throughout the semester that build on and extend these texts.",
+    "crumbs": [
+      "Home",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Syllabus</span>"
+    ]
+  },
+  {
+    "objectID": "00-syllabus.html#schedule-tentative",
+    "href": "00-syllabus.html#schedule-tentative",
+    "title": "Syllabus",
+    "section": "Schedule (tentative)",
+    "text": "Schedule (tentative)\n\n\n\n\n\n\n\n\n\n\nWeek\nDate\nDay\nSection\nTopics\n\n\n\n\n1\nSep 3\nTh\nMotivation\nWhy probability/regression is not enough\n\n\n2\nSep 8\nTu\n\nClinical trials\n\n\n2\nSep 10\nTh\nReview\nProbability and statistics review\n\n\n3\nSep 15\nTu\nConstruction\nStructural equation models (SEM)\n\n\n3\nSep 17\nTh\n\nNonparametric SEM (NPSEM)\n\n\n4\nSep 22\nTu\n\nCausal graphs\n\n\n4\nSep 24\nTh\n\nd-separation\n\n\n5\nSep 29\nTu\n\nPotential outcomes\n\n\n5\nOct 1\nTh\n\nSWIGs\n\n\n6\nOct 6\nTu\n\nCausal effects\n\n\n6\nOct 8\nTh\nMeasured confounding\nOutcome regression\n\n\n7\nOct 13\nTu\n\nMatching\n\n\n7\nOct 15\nTh\n\nPropensity score\n\n\n8\nOct 20\nTu\n\nInverse probability weighting\n\n\n8\nOct 22\nTh\n\nDoubly robust methods (AIPW)\n\n\n9\nOct 27\nTu\n\nFlexible modeling methods\n\n\n9\nOct 29\nTh\nUnmeasured confounding\nInstrumental variables\n\n\n10\nNov 3\nTu\n\nRegression discontinuity\n\n\n10\nNov 5\nTh\n\nOther strategies\n\n\n11\nNov 10\nTu\nSensitivity\nE-values\n\n\n11\nNov 12\nTh\n\nGamma / Rosenbaum sensitivity\n\n\n12\nNov 17\nTu\nMissing data\nMissing data mechanisms\n\n\n12\nNov 19\nTh\n\nMultiple imputation\n\n\n13\nNov 24\nTu\n\nChained equations\n\n\n13\nNov 26\nTh\n\nThanksgiving (no class)\n\n\n14\nDec 1\nTu\n\nMissing not at random\n\n\n14\nDec 3\nTh\nSurveys\nComplex survey design\n\n\n15\nDec 8\nTu\n\nWeighting\n\n\n15\nDec 10\nTh\n\nVariance estimation\n\n\n16\nDec 15\nTu\n\nWrap-up",
+    "crumbs": [
+      "Home",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Syllabus</span>"
+    ]
+  },
+  {
+    "objectID": "00-syllabus.html#uwmadison-required-statements",
+    "href": "00-syllabus.html#uwmadison-required-statements",
+    "title": "Syllabus",
+    "section": "UW–Madison required statements",
+    "text": "UW–Madison required statements\n\nTeaching & learning data transparency statement\nThe privacy and security of faculty, staff, and students’ personal information is a top priority for UW–Madison. The university carefully evaluates and vets all campus-supported digital tools used to support teaching and learning, to help support success through learning analytics, and to enable proctoring capabilities.\nFull statement: https://teachlearn.provost.wisc.edu/teaching-and-learning-data-transparency-statement/\n\n\nCourse evaluations\nUW–Madison uses a digital course evaluation survey tool called AEFIS. For this course, you will receive an official email two weeks prior to the end of the semester, notifying you that your course evaluation is available. In the email you will receive a link to log into the course evaluation with your NetID. Evaluations are anonymous.\nYour participation is an integral component of this course, and your feedback is important to us. We strongly encourage you to participate in the course evaluation.\n\n\nStudents’ rules, rights & responsibilities\nUniversity privacy rights (FERPA): https://guide.wisc.edu/undergraduate/#rulesrightsandresponsibilitiestext\n\n\nDiversity & Inclusion statement\nDiversity is a source of strength, creativity, and innovation for UW–Madison. We value the contributions of each person and respect the profound ways their identity, culture, background, experience, status, abilities, and opinion enrich the university community. We commit ourselves to the pursuit of excellence in teaching, research, outreach, and diversity as inextricably linked goals.\n\n\nAcademic integrity statement\nBy virtue of enrollment, you agree to uphold the high academic standards of the University of Wisconsin–Madison; academic misconduct is behavior that negatively impacts the integrity of the institution. Cheating, fabrication, plagiarism, unauthorized collaboration, and helping others commit these acts are examples of misconduct which may result in disciplinary action.\nOfficial statement: https://conduct.students.wisc.edu/faculty-staff-resources/syllabus-statement/\n\n\nAccommodations for students with disabilities\nThe University of Wisconsin–Madison supports the right of all enrolled students to a full and equal educational opportunity. The Americans with Disabilities Act (ADA), Wisconsin State Statute (36.12), and UW–Madison policy (UW-855) require the university to provide reasonable accommodations to students with disabilities to access and participate in academic programs and educational services.\nStudents are expected to inform faculty of their need for instructional accommodations at the beginning of the semester, or as soon as possible after being approved for accommodations. Faculty will work either directly with the student or in coordination with the McBurney Center.\nMcBurney Disability Resource Center: https://mcburney.wisc.edu/\n\n\nAcademic calendar & religious observance\nAcademic calendars and religious observance policy: https://secfac.wisc.edu/academic-calendar/",
+    "crumbs": [
+      "Home",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Syllabus</span>"
+    ]
+  },
+  {
+    "objectID": "01-lung-cancer.html",
+    "href": "01-lung-cancer.html",
+    "title": "Does smoking cause lung cancer?",
+    "section": "",
+    "text": "TBD",
+    "crumbs": [
+      "Home",
+      "Why causal inference?",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Does smoking cause lung cancer?</span>"
+    ]
+  }
+]

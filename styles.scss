@@ -1,0 +1,332 @@
+/*-- scss:rules --*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  font-size: 18px;
+
+  /* Reading layout defaults */
+  --page-max: 1200px;
+  --page-left: 3rem;
+  --page-pad: 2rem;
+
+  /* Wide-screen layout */
+  --wide-page-max: 1100px;
+  --wide-page-pad: 5rem;
+  --xwide-page-pad: 6rem;
+
+  /* Line length for text + bottom navigation on wide screens */
+  --text-max: 820px;
+
+  /* Color theme: forest green with warm neutral accents */
+  --c-primary:      #2F6F4E;   /* forest green */
+  --c-primary-dark: #1F4D36;   /* darker forest green */
+  --c-accent:       #B7791F;   /* muted gold */
+  --c-ink:          #111827;   /* near-black */
+  --c-muted:        #6B7280;   /* gray */
+  --c-line:         #C9D8CE;   /* green-gray rule */
+  --c-wash:         #F3F7F4;   /* subtle green wash */
+  --c-row:          #FAFCFA;   /* very subtle table stripe */
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+  color: var(--c-ink);
+}
+
+/* Links */
+a {
+  color: var(--c-primary);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.15em;
+}
+
+a:hover {
+  color: var(--c-primary);
+  text-decoration-thickness: 0.12em;
+}
+
+/* Subtle visual hierarchy for headings */
+
+h3 {
+  color: var(--c-ink);
+}
+
+/* Optional: a quieter section marker for h2 headings */
+h2 {
+  color: var(--c-primary);
+  border-bottom: 2px solid rgba(47, 111, 78, 0.24);
+  padding-bottom: 0.25rem;
+}
+
+/* Headings: slightly smaller and tighter so they don't overpower body text */
+h1, h2, h3, h4, h5, h6 { font-weight: 600; line-height: 1.2; }
+
+h1 {
+  font-size: 1.8rem;
+  padding-top: 1rem;
+  margin-top: 0.8rem;
+  margin-bottom: 0.6rem;
+  color: var(--c-primary-dark);
+}
+h2 { font-size: 1.35rem; margin-top: 1.6rem; margin-bottom: 0.5rem; }
+h3 { font-size: 1.12rem; margin-top: 1.2rem; margin-bottom: 0.4rem; }
+h4 { font-size: 1.0rem;  margin-top: 1.0rem; margin-bottom: 0.35rem; }
+
+/* Make sure the page title (first h1) doesn't look huge */
+main.content > h1:first-child { margin-top: 0.4rem; }
+
+/* Paragraph rhythm */
+p { margin: 0.85rem 0; }
+
+/* Slightly calmer list spacing */
+ul, ol { margin-top: 0.5rem; margin-bottom: 0.9rem; }
+li { margin: 0.25rem 0; }
+
+code { font-size: 0.95em; }
+
+pre code { line-height: 1.45; }
+
+/* Tables: clean, readable, and webbook-friendly */
+.table,
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 1rem 0 1.25rem 0;
+  font-size: 0.98em;
+}
+
+table thead th {
+  text-align: left;
+  font-weight: 600;
+  color: var(--c-primary-dark);
+  background: var(--c-wash);
+  border-top: 2px solid var(--c-primary);
+  border-bottom: 1.5px solid var(--c-primary);
+  padding: 0.65rem 0.75rem;
+}
+
+table tbody td {
+  border-bottom: 1px solid var(--c-line);
+  padding: 0.6rem 0.75rem;
+  vertical-align: top;
+}
+
+table tbody tr:last-child td {
+  border-bottom: 2px solid var(--c-primary);
+}
+
+table tbody tr:nth-child(even) {
+  background: var(--c-row);
+}
+
+table tbody tr:hover {
+  background: #EEF5F0;
+}
+
+/* Keep long entries from blowing up the layout */
+table td, table th {
+  overflow-wrap: anywhere;
+}
+
+/* Remove Quarto's multi-column grid and control width ourselves */
+#quarto-content { display: block; }
+
+/* Treat the page wrapper as a single-column container */
+#quarto-content .page-columns {
+  display: block !important;
+  grid-template-columns: 1fr !important;
+  column-gap: 0 !important;
+
+  max-width: var(--page-max);
+  margin-left: var(--page-left);
+  margin-right: auto;
+  padding-left: var(--page-pad);
+  padding-right: var(--page-pad);
+}
+
+/* Main content fills the container; keep padding on medium screens */
+#quarto-content main.content,
+#quarto-content .content {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding-left: var(--page-pad) !important;
+  padding-right: var(--page-pad) !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Hide right margin TOC and (backup) left sidebar */
+#quarto-margin-sidebar,
+#TOC,
+#quarto-sidebar,
+#quarto-sidebar-toggle,
+.sidebar-navigation {
+  display: none !important;
+}
+
+.navbar,
+.navbar.navbar-expand-lg {
+  background: var(--c-wash) !important;
+  border-bottom: 2px solid var(--c-primary);
+  box-shadow: none;
+  padding-top: 0.5rem;
+}
+
+/* Navbar: keep the compact/mobile-style header at all screen widths */
+.navbar {
+  position: relative;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.navbar .navbar-brand {
+  width: auto;
+  display: block;
+  padding-top: 0.6rem;
+  padding-bottom: 0.6rem;
+  font-weight: 600;
+  font-size: 1.25rem;
+  margin-right: 0.75rem;
+  color: var(--c-primary-dark) !important;
+}
+
+/* Always show the hamburger button */
+.navbar .navbar-toggler {
+  display: block !important;
+  margin-left: 0;
+  border-color: var(--c-line);
+}
+
+.navbar .navbar-collapse:not(.show) {
+  display: none !important;
+}
+
+.navbar .navbar-collapse.show {
+  display: block !important;
+  flex-basis: 100%;
+  width: 100%;
+}
+
+.navbar .navbar-nav {
+  width: 100%;
+  padding-right: 0;
+  padding-top: 0.35rem;
+  padding-bottom: 0.35rem;
+  border-top: 1px solid var(--c-line);
+}
+
+.quarto-search,
+.quarto-search-container,
+#quarto-search {
+  display: none !important;
+}
+
+/* Keep Quarto's page navigation/title strip visible while scrolling */
+.quarto-secondary-nav,
+#quarto-header .quarto-secondary-nav {
+  position: sticky;
+  top: 0;
+  z-index: 900;
+  background: #F6F7F8;
+  border-bottom: 1px solid var(--c-line);
+}
+
+.quarto-secondary-nav .quarto-page-breadcrumbs,
+.quarto-secondary-nav .quarto-page-title {
+  color: var(--c-ink);
+}
+
+/* Bottom prev/next navigation (match page + text widths) */
+.page-navigation,
+nav.page-navigation,
+.quarto-page-navigation,
+nav.quarto-page-navigation {
+  position: static !important;
+  inset: auto !important;
+  float: none !important;
+  clear: both;
+
+  width: 100% !important;
+  max-width: var(--page-max);
+  margin: 2.5rem 0 1.5rem var(--page-left);
+  padding-left: var(--page-pad);
+  padding-right: var(--page-pad);
+}
+
+.page-navigation,
+.quarto-page-navigation {
+  display: flex !important;
+  justify-content: space-between !important;
+  gap: 1rem;
+}
+
+.page-navigation .nav-page-previous,
+.page-navigation .nav-page-next,
+.quarto-page-navigation .nav-page-previous,
+.quarto-page-navigation .nav-page-next {
+  float: none !important;
+  position: static !important;
+  display: flex;
+  align-items: center;
+}
+
+.quarto-page-navigation .nav-page-next,
+.page-navigation .nav-page-next {
+  margin-left: auto;
+}
+
+/* Narrow screens */
+@media (max-width: 992px) {
+  :root {
+    --page-left: 0;
+    --page-pad: 1.25rem;
+  }
+
+  #quarto-content .page-columns {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .page-navigation,
+  nav.page-navigation,
+  .quarto-page-navigation,
+  nav.quarto-page-navigation {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+}
+
+/* Wide screens: increase outer padding; cap line length for text + nav */
+@media (min-width: 1200px) {
+  #quarto-content .page-columns {
+    max-width: var(--wide-page-max);
+    padding-left: var(--wide-page-pad);
+    padding-right: var(--wide-page-pad);
+  }
+
+  #quarto-content main.content,
+  #quarto-content .content,
+  .page-navigation,
+  nav.page-navigation,
+  .quarto-page-navigation,
+  nav.quarto-page-navigation {
+    max-width: var(--text-max) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+}
+
+/* Extra-wide screens */
+@media (min-width: 1600px) {
+  #quarto-content .page-columns {
+    padding-left: var(--xwide-page-pad);
+    padding-right: var(--xwide-page-pad);
+  }
+}
