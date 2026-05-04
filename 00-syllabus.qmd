@@ -85,9 +85,9 @@ Grade lines may be lowered at the end.
 
 ### Devices
 
-This is a device-free classroom, except during designated coding sessions when laptops are expected. The evidence suggests that devices hurt learning, and a recent Yale faculty report recommended device-free classrooms as the default university-wide. This course asks you to think carefully about hard problems, and that kind of thinking requires your full attention.
+This is a device-free classroom, except during designated coding sessions when laptops are expected. The evidence suggests that devices hurt learning, and a [recent Yale faculty report](https://president.yale.edu/sites/default/files/2026-04/Report-of-the-Committee-on-Trust-in-Higher-Education.pdf) recommended device-free classrooms as the default university-wide. This course asks you to think carefully about hard problems, and that kind of thinking requires your full attention.
 
-### Participation and attendance
+### Participation
 
 Attendance is expected and participation is graded. Your participation grade is based on attendance: full credit for 3 or fewer unexcused absences, with proportional reduction beyond that.
 
