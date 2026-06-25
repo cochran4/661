@@ -10,7 +10,7 @@ book:
     - 00-syllabus.qmd
     - part: "Why causal inference?"
       chapters:
-        - 01-lung-cancer.qmd
+        - 01-data-dectective.qmd
   navbar:
     pinned: true
     search: true
@@ -21,8 +21,8 @@ book:
         file: 00-syllabus.qmd
       - text: "Unit 1"
         menu:
-          - text: "Lung cancer example"
-            file: 01-lung-cancer.qmd
+          - text: "A dectective among data"
+            file: 01-data-detective.qmd
   search:
     location: navbar
     type: overlay
