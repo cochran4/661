@@ -10,7 +10,7 @@ book:
     - 00-syllabus.qmd
     - part: "Why causal inference?"
       chapters:
-        - 01-data-dectective.qmd
+        - 01-data-detective.qmd
   navbar:
     pinned: true
     search: true
