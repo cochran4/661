@@ -20,7 +20,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -68,6 +88,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -188,47 +237,148 @@ ul.task-list li input[type="checkbox"] {
 <p>“When you have eliminated the impossible, whatever remains, however improbable, must be the truth.”</p>
 <p>— Sherlock Holmes in <em>The Sign of Four</em>, by Arthur Conan Doyle</p>
 </blockquote>
-<p>Open up any major newspaper, flip to the health section, and you will find the latest medical study showing something is linked to something else. <em>Wine to cancer. Coffee to anxiety. Smartphones to poor sleep.</em> Pick a habit, pick a condition, and somewhere out there a scientist has found a link between them and written a paper about it.</p>
-<p>Sometimes the headlines are even phrased as a question. <em>Are eggs bad for your heart?</em></p>
-<p>I want to know the answer. I love eggs. Scrambled eggs are one of life’s simple pleasures, and I am not giving them up without good reason.</p>
-<p>So I click on the article, nervously scanning for the conclusion. Instead, I find another study showing that people who eat more eggs have a higher rate of heart disease. Or a lower rate. It seems to depend on the week.</p>
-<p>I should know better.</p>
-<p>Someone once joked that whenever a headline is phrased as a question, the answer is almost always “no.” <em>Are eggs bad for your heart?</em> No.&nbsp;<em>Does your morning coffee cause anxiety?</em> No.&nbsp;It is a surprisingly effective rule of thumb.</p>
-<p>Scientists develop a similar reflex. We see the words ``linked to,” roll our eyes ever so slightly, mumble something about headlines getting ahead of the evidence, and get on with our day. Another association. Another headline. It’ll probably be forgotten by next week.</p>
-<p>Somewhere around the time we learn how to calculate a mean, another lesson gets drilled into us: <em>association is not causation.</em> It is one of the first things every statistics student learns, and rightly so.</p>
-<p>But what does that actually mean?</p>
-<p>Every morning I sit in my office looking out at the large green elm outside my window. There is almost always a squirrel in it. Over the years I have watched that squirrel happily munch away on whatever seeds or fruits a green elm produces. (I should probably know what they are called.) I have never once seen it eat a walnut. Based on my observations alone, I might conclude that squirrels prefer green elms to walnut trees.</p>
-<p>That seems like a reasonable conclusion. Until I tell you there isn’t a walnut tree anywhere outside my office.</p>
-<p>The squirrel was never given the choice.</p>
-<p>That, in a nutshell, is what we call an <em>observational</em> - or <em>naturalistic</em> study. The squirrel is simply living its life. I am not telling it where to climb or what to eat. I am just sitting back, watching, and taking notes. Nature decides what the squirrel does; I merely observe.</p>
-<p>Much of science works exactly this way.</p>
-<p>A few years ago, a study reported that people who regularly skipped meals were more likely to develop heart problems later in life. Colleagues became genuinely concerned for me because I happened to be experimenting with intermittent fasting at the time.</p>
-<p>But stop and think for a moment about the people who skip meals. Busy people. Stressed people. People who are sleeping too little, exercising too little, grabbing fast food when they do find time to eat. Is it the fasting that leads to heart disease, or everything else that tends to come along for the ride?</p>
-<p>Just like the squirrel, we never saw what would have happened had those same people lived different lives. That is what makes observational studies both fascinating and frustrating.</p>
-<p>When nature writes the story, things can appear related for all sorts of reasons. Sometimes the relationship is genuine. Sometimes it is little more than coincidence. Sometimes two variables are related because they share a common cause. From the data alone, it can be surprisingly difficult to tell these possibilities apart.</p>
-<p>Statisticians have a word for associations that are misleading: <em>spurious.</em> I always have to look that one up. The Cambridge Dictionary defines it as “false and not what it appears to be.” I like that definition. It makes the data sound almost mischievous, as though they are trying to trick us.</p>
-<p>And sometimes they do.</p>
-<p>There is even an entire website devoted to these deceptive relationships: Tyler Vigen’s Spurious Correlations. One of my favorite examples comes from my home state of New Hampshire. There is a remarkably strong association between the annual number of burglaries and the number of babies named Johnny. I even had a friend named Johnny growing up. I can assure you he was not secretly masterminding statewide burglary rings.</p>
-<p>The association is real. The explanation is nonsense. The phrase <em>association is not causation</em> exists for a reason.</p>
-<p><br></p>
-<p>But I sometimes wonder whether we have learned that lesson a little too well.</p>
-<p>After enough contradictory nutrition studies and enough absurd examples like Johnny and burglaries, it becomes tempting to dismiss observational studies altogether. Another association? <em>Next.</em></p>
-<p>That reaction is understandable. But it can make us timid. We become so careful not to overclaim that we sometimes stop short of the harder, more useful question: What would it take for this association to be causal?</p>
-<p>Some associations really are meaningless. The world is noisy, and data are full of coincidences. But some associations are our very first clue that we have stumbled onto something profoundly important. If we dismiss them all with a wave of the hand and the phrase association is not causation, we risk throwing away the very clues that could lead us to the truth.</p>
-<p>The challenge is not deciding whether an alternative explanation exists. Almost every association has one. The challenge is deciding whether that alternative explanation survives careful scrutiny.</p>
-<p>This is where I think Sherlock Holmes has something to teach us.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_sherlock.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%" alt="A squirrel dressed as Sherlock Holmes wearing a deerstalker cap and cape while holding a magnifying glass."></p>
+</figure>
+</div>
+<hr>
+<p>Open up any major newspaper, flip to the health section, and you will find the latest medical study showing something is linked to something else. <em>Wine to cancer. Coffee to anxiety. Smartphones to poor sleep.</em> Pick a habit, pick a condition, and somewhere out there a scientist has found a link between them and written a paper about it. Sometimes the headlines are even phrased as a question. <em>Are eggs bad for your heart?</em></p>
+<p>I want to know the answer. I love eggs. Scrambled eggs are one of life’s simple pleasures, and I am not giving them up without good reason. So I click on the article, nervously scanning for the conclusion. Instead, I find another study showing that people who eat more eggs have a higher rate of heart disease. Or a lower rate. It seems to depend on the week. I should know better.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_news.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%" alt="A fictional newspaper called The Morning Nut from Keene, New Hampshire, with the headline 'Does Eating Too Many Acorns Cause High Cholesterol?' and a photograph of a squirrel eating acorns."></p>
+</figure>
+</div>
+<p>Someone once joked that whenever a headline is phrased as a question, the answer is almost always “no.” Are eggs bad for your heart? <em>No.</em> Does your morning coffee cause anxiety? <em>No.</em> It is a surprisingly effective rule of thumb.</p>
+<p>Scientists develop a similar reflex. We see the words “linked to,” roll our eyes ever so slightly, mumble something about confounding, and get on with our day. Another association. Another headline. It’ll probably be forgotten by next week. Somewhere around the time we learn how to calculate a mean, another lesson gets drilled into us: <em>association is not causation.</em> It is one of the first things every statistics student learns, and rightly so. But what does that actually mean?</p>
+<p>Every morning I sit in my office looking out at the large green elm outside my window. There is almost always a squirrel in it. Over the years I have watched that squirrel happily munch away on whatever seeds or fruits a green elm produces. (I should probably know what they are called.) I have never once seen it eat a walnut. Based on my observations alone, I might conclude that squirrels prefer green elms to walnut trees. That seems like a reasonable conclusion. Until I tell you there isn’t a walnut tree anywhere outside my office. The squirrel was never given the choice.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_elm_v_walnut.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%" data-fig-align="center" alt="A squirrel dressed as Sherlock Holmes thoughtfully comparing a green elm tree and a walnut tree."></p>
+</figure>
+</div>
+<p>In a nutshell, that is what we call in science an <em>observational</em> - or <em>naturalistic</em> study. The squirrel is simply living its life. I am not telling it where to climb or what to eat. I am just sitting back, watching, and taking notes. Nature decides what the squirrel does; I merely observe.</p>
+<p>Much of science works exactly this way. A few years back, a study reported that people who regularly skipped meals were more likely to develop heart problems later in life <span class="citation" data-cites="chen_abstract_2024">(<a href="#ref-chen_abstract_2024" role="doc-biblioref">Chen and Zhong 2024</a>)</span>. Some friends were so concerned for me because I happened to be experimenting with intermittent fasting at the time. But stop and think for a moment about the people who skip meals. Busy people. Stressed people. People who are sleeping too little, exercising too little, grabbing fast food when they do find time to eat. Is it the fasting that leads to heart disease, or everything else that tends to come along for the ride? Just like the squirrel, we never saw what would have happened had those same people lived different lives.</p>
+<p>That is what makes observational studies both fascinating and frustrating. When nature writes the story, things can appear related for all sorts of reasons. Sometimes the relationship is genuine. Sometimes it is little more than coincidence. From the data alone, it can be surprisingly difficult to tell these possibilities apart.</p>
+<p>Statisticians have a word for associations that are misleading: <em>spurious.</em> I always have to look that one up. The Cambridge Dictionary defines it as “false and not what it appears to be.” I like that definition. It makes the data sound almost mischievous, as though they are trying to trick us. And sometimes they do. There is even an entire website devoted to these deceptive relationships: <a href="https://www.tylervigen.com/spurious-correlations">Tyler Vigen’s Spurious Correlations</a>.</p>
+<p>One of my favorite examples comes from my home state of New Hampshire. There is a remarkably strong association between the annual number of burglaries and the number of babies named Johnny. I even had a friend named Johnny growing up. I can assure you he was not secretly masterminding statewide burglary rings. The association is real. The explanation is nonsense. The phrase <em>association is not causation</em> exists for a reason.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_nh_johnny.png" class="img-fluid figure-img" style="width:80.0%" alt="A fake line graph showing that annual burglaries in New Hampshire track closely with the number of babies named Johnny over the same period."></p>
+<figcaption>Fake line graph showing correlation between burglaries and popularity of the name Johnny. An example of a spurious association.</figcaption>
+</figure>
+</div>
+<center>
+—
+</center>
+<p><em>But I wonder if we learned that lesson a little too well?</em></p>
+<p>After enough contradictory nutrition studies and enough absurd examples like Johnny and burglaries, it becomes tempting to dismiss observational studies altogether. Another association? <em>Next.</em> That reaction is understandable. But it can make us timid. We become so careful not to overclaim that we sometimes stop short of the harder, more useful question: What would it take for this association to be causal?</p>
 <p>Imagine Holmes arriving at the scene of a crime. He notices fingerprints on the murder weapon.</p>
-<p>``Fingerprints don’t prove murder.”</p>
-<p>That’s true. They don’t. The butler may be the murderer. Or perhaps he handled the weapon earlier that day. Or perhaps someone planted the evidence.</p>
-<p>But imagine if Holmes shrugged, closed his notebook, and went home. That would make for a very short detective novel.</p>
-<p>Fingerprints are not proof. They are evidence. Holmes’ job is not to dismiss the evidence because another explanation is possible. His job is to investigate those explanations until only the most convincing one remains.</p>
-<p>Science is much the same.</p>
-<p>The hard part is not dreaming up an alternative explanation. That is easy. Whenever we observe an association, there is almost always another story we could tell. Perhaps one variable causes the other. Or perhaps some third factor causes them both.</p>
-<p>The hard part is deciding whether that alternative explanation can withstand careful scrutiny.</p>
-<p>Like any good detective, we are not trying to find an explanation. We are trying to find the explanation that best accounts for the evidence after reasonable alternatives have been investigated.</p>
-<p>Few stories illustrate this better than the debate over smoking and lung cancer. Today the conclusion seems almost self-evident: smoking causes lung cancer. But when the evidence first emerged, that conclusion was anything but obvious. The association was undeniable. What remained was the detective work.</p>
+<p>“Fingerprints don’t prove murder.”</p>
+<p>That’s true. They don’t. The butler may be the murderer. Or perhaps he handled the weapon earlier that day. Or perhaps someone planted the evidence. But imagine if Holmes shrugged, closed his notebook, and went home. That would make for a very short detective novel. Sure, fingerprints are not proof. But they are evidence. Holmes’ job is not to dismiss the evidence because another explanation is possible. His job is to investigate those explanations until only the most convincing one remains.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_shrug.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%" alt="A squirrel dressed as Sherlock Holmes shrugging while examining fingerprints on a knife beside a magnifying glass."></p>
+</figure>
+</div>
+<p>Science is much the same. The hard part is not dreaming up theories. That is easy. Whenever we observe an association, there is almost always multiple stories we could tell. Perhaps one variable causes the other. Or perhaps some third factor causes them both. The hard part is deciding whether that alternative explanation can withstand careful scrutiny. Like any good detective, we are not trying to find an explanation. We are trying to find the explanation that best accounts for the evidence after reasonable alternatives have been investigated.</p>
+<center>
+—
+</center>
+<p>Few stories illustrate this better than the debate over smoking and lung cancer. Today, it is difficult to imagine the question ever being controversial. Cigarette packages carry warning labels. Physicians routinely advise patients to quit. But in the early 1950s, none of that was settled. Scientists debated whether smoking truly caused lung cancer. One pathologist observed the nicotine stains on the fingers of many cigarette smokers, remarking that cancers of the fingers were essentially unheard of <span class="citation" data-cites="hueper_quest_1956">(<a href="#ref-hueper_quest_1956" role="doc-biblioref">Hueper 1956</a>)</span>. If tobacco tar really caused cancer, why did it seem so devastating to the lungs but not to the skin on the hands?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_pipe.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%" alt="A squirrel dressed as Sherlock Holmes while thoughtfully smoking a curved pipe."></p>
+</figure>
+</div>
+<p>To help settle the debate, the American Cancer Society turned to two statistically minded epidemiologists: E. Cuyler Hammond, its director of statistical research and assistant director Daniel Horn. With the help of nearly 20,000 volunteers across the United States, they enrolled 187,783 men between the ages of 50 and 69. At enrollment, each man completed a questionnaire about his smoking habits. Then the researchers did something wonderfully simple: they waited. For nearly four years, volunteers tracked who died and, whenever possible, what they died from. By the end of the study, 11,870 men had died. Hammond and Horn compared those deaths across smoking groups.</p>
+<p>Differences in mortality were striking. Overall, cigarette smokers experienced 397 lung cancer deaths, compared with only 37 that would have been expected had they experienced the same lung cancer rate as men who never smoked. This corresponds to a relative risk of 10.7. Even more striking was what happened as cigarette consumption increased. The more people smoked, the greater their risk became. Men who had never smoked experienced about 3.4 lung cancer deaths per 100,000 person-years. Among men smoking two or more packs of cigarettes each day, the rate climbed to 217.3—roughly 64 times higher. This was a remarkably strong association. And it became stronger with increasing exposure. If I told you today that a new medication increased your risk of cancer ninefold—let alone sixtyfold—I suspect you would stop taking it before you finished reading this chapter.</p>
+<p>But this was still an observational study. One prominent skeptic of was the statistician Ronald Fisher, so influential and important to statistics and science that he was eventually knighted. He did not dispute the data. Instead, he questioned was whether the observations alone were enough to conclude that smoking caused lung cancer <span class="citation" data-cites="fisher_dangers_1957">R. Fisher (<a href="#ref-fisher_cigarettes_1958" role="doc-biblioref">1958</a>)</span>. He reasoned:</p>
+<blockquote class="blockquote">
+<p>” any statistical association, observed without the precautions of a definite experiment, always allows-namely, (1) that the supposed effect is really the cause, or in this case that incipient cancer, or a pre-cancerous condition with chronic inflammation, is a factor in inducing the smoking of cigarettes, or (2) that cigarette-smoking and lung cancer, though not mutually causative, are both influenced by a common cause, in this case the individual genotype.” <span class="citation" data-cites="fisher_dangers_1957">(<a href="#ref-fisher_dangers_1957" role="doc-biblioref">R. A. Fisher 1957</a>)</span></p>
+</blockquote>
+<p>Let’s unpack this. We’ll use a graph. Later we’ll make these graphs precise; for now, think of them as simply sketches of two competing explanations. Fisher argued that more than one explanation was consistent with the data. One is the one we now accept: smoking causes lung cancer. This is shown on the left. The arrow runs from Smoking to Cancer. If smoking causes cancer, then people who smoke more should develop lung cancer more often, exactly as Hammond and Horn observed.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_two_theories.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%" data-fig-align="center" alt="Two side-by-side causal diagrams. In both diagrams, Smoking is at the top, Genotype at the lower left, and Cancer at the lower right. In Explanation 1, there is a single arrow from Smoking to Cancer. In Explanation 2, there are arrows from Genotype to Smoking and from Genotype to Cancer."></p>
+</figure>
+</div>
+<p>The second explanation is is that both smoking and lung cancer might be consequences of some third factor. Because of his interest in genetics, he suggested genotype as a candidate. Some people might inherit a genotype that makes them more enjoyable, more addictive, or easier to tolerate. If those same genes also increase the risk of lung cancer, then smokers would still develop lung cancer more often than non-smokers, even if smoking itself played no causal role. This alternative is shown on the right, where Genotype points to both Smoking and Cancer.</p>
+<p>In the second explanation, genotype is a confounder: a common cause of both the exposure (smoking) and the outcome (lung cancer). (Confounders are the villains of this textbook, forever threatening our ability to draw causal conclusions from the associations we observe.) The mere possibility of confounding was enough to cast doubt on the claim that smoking causes lung cancer. Perhaps smokers were older. Perhaps they worked in occupations with hazardous exposures. Perhaps they lived in more polluted cities. Fortunately, possibilities like these could be investigated. Researchers could control for these confounders by comparing smokers and non-smokers within the same age group, occupation, or region. Throughout the 1950s and 1960s, they repeatedly performed analyses like these, and the association between smoking and lung cancer persisted <span class="citation" data-cites="doll_lung_1956">Doll and Hill (<a href="#ref-doll_mortality_1964" role="doc-biblioref">1964</a>)</span>. One by one, the measured confounders were ruled out.</p>
+<p>Genotype, however, was an entirely different beast. It was unmeasured. Measured confounders can be controlled by comparing people with the same value of the confounder. An unmeasured confounder cannot. We cannot compare people with the same genotype if we do not know what their genotype is. An unmeasured confounder is an invisible alternative explanation, forever capable of casting doubt on an observed association. Fisher understood this perfectly. For him, the mere possibility of an unmeasured confounder was enough to remain skeptical. Because genotype could not be measured, he argued that the observational evidence alone could never distinguish between the two competing explanations.</p>
+<center>
+—
+</center>
+<p>If both explanations predict exactly the same association, how can we ever decide between them? This question is not merely historical. Open almost any modern observational study and, somewhere near the end, you will find an acknowledgment that unmeasured confounding cannot be ruled out, followed by a call for better data or future studies. It is practically a ritual.</p>
+<p>In 1959, Jerome Cornfield and several of his colleagues had a clever idea <span class="citation" data-cites="cornfield_smoking_2009">(<a href="#ref-cornfield_smoking_2009" role="doc-biblioref">Cornfield et al. 2009</a>)</span>. Rather than arguing that Fisher’s explanation was impossible, he asked what the world would have to look like if Fisher were right. Suppose the entire association between smoking and lung cancer were explained by an unmeasured genotype. What would necessarily have to be true?</p>
+<p>The argument that follows is one of my favorites because, once you draw the right picture, the answer is almost impossible to miss. Let <span class="math inline">\(R_S\)</span> and <span class="math inline">\(R_N\)</span> be the risk of lung cancer among smokers and non-smokers. We begin by plotting the point <span class="math inline">\((R_N,R_S)\)</span>. The horizontal coordinate is the risk among non-smokers; the vertical coordinate is the risk among smokers.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_cornfield_a.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p>The rectangle simply helps us locate the point. Because smokers have a higher risk of lung cancer than non-smokers, the rectangle is taller than it is wide. Now connect the origin to the point we just plotted.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_cornfield_b.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p>The slope of this line is <span class="math inline">\(R_S/R_N,\)</span> which is exactly the relative risk. Steeper lines correspond to larger relative risks. Thus, instead of thinking of the relative risk as a number, we can think of it as the steepness of a line.</p>
+<p>Now suppose Fisher’s explanation is correct. Smoking itself has no effect on lung cancer. Instead, everyone faces the same background risk of lung cancer, which we denote by <span class="math inline">\(B\)</span>. Carrying the genotype adds an additional risk, which we denote by <span class="math inline">\(\Delta\)</span>. Among smokers, suppose a fraction <span class="math inline">\(w_S\)</span> carry the genotype. Then the lung cancer risk among smokers is simply the common background risk plus the additional risk contributed by the genotype: <span class="math display">\[R_S = B + w_S\Delta.\]</span> Likewise, if a fraction <span class="math inline">\(w_N\)</span> of non-smokers carry the genotype, <span class="math display">\[R_N = B + w_N\Delta.\]</span></p>
+<p>Imagine removing the common background risk <span class="math inline">\(B\)</span> from everyone. Graphically, this shifts our point left by <span class="math inline">\(B\)</span> units and downward by <span class="math inline">\(B\)</span> units, leaving the point <span class="math display">\[(w_N\Delta,\;w_S\Delta).\]</span></p>
+<p>We add this new point to the graph.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_cornfield_c.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p>Notice what happened. The two points differ only by the background risk. Moving from one point to the other means subtracting exactly the same quantity, <span class="math inline">\(B\)</span>, from both coordinates. Consequently, the two points lie at opposite corners of a square of side length <span class="math inline">\(B\)</span>.</p>
+<p>Connect the origin to this second point.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_cornfield_d.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p>The slope of the original line is <span class="math display">\[\frac{R_S}{R_N}
+=
+\frac{B+w_S\Delta}{B+w_N\Delta},\]</span> while the slope of the new line is <span class="math display">\[\frac{w_S\Delta}{w_N\Delta}
+=
+\frac{w_S}{w_N}.\]</span> The picture now tells the rest of the story. Removing the common background risk moves the point left and downward by the same amount. This makes the line from the origin steeper. Therefore, <span class="math display">\[ \frac{w_S}{w_N} &gt; \frac{R_S}{R_N}.\]</span> This is Cornfield’s inequality.</p>
+<p>Its interpretation is striking. If smokers have 11 times the lung cancer risk of non-smokers, then Fisher’s hypothetical genotype must be more than 11 times as common among smokers. If heavy smokers have 64 times the risk of never smokers, then the genotype must be more than 64 times as common among heavy smokers. Cornfield summarized the result this way:</p>
+<blockquote class="blockquote">
+<p>“the excess lung-cancer risk among cigarette smokers is so great that the results can not be interpreted as arising from an indirect association … since this hypothetical agent would have to be at least as strongly associated with lung cancer as cigarette use; no such agent has been found or suggested.”</p>
+</blockquote>
+<p>Cornfield’s argument did not prove that smoking causes lung cancer. It did something subtler. Rather than dismissing Fisher’s explanation, Cornfield accepted it (at least temporarily) and followed it to its logical conclusion. Fisher’s explanation was certainly possible, but only if one accepted an extraordinarily implausible hidden genotype. The burden had shifted. It was no longer enough to say that another explanation could exist. That explanation now had to bear the weight of its own consequences.</p>
+<p>That is the broader lesson. Faced with competing explanations, we need not shrug our shoulders and conclude that “association is not causation.” Instead, we write down each explanation as clearly as we can and follow it wherever logic leads. Once we do, our assumptions no longer serve merely as beliefs. They become tools for reasoning - mathematical objects that can be manipulated, questioned, combined, and followed to their logical conclusions. A good detective does not wait for a confession. He keeps asking questions until one story holds together and the others fall apart.</p>
+<hr>
+<p>Q. Some current unresolved.</p>
+<p>Q. Fisher gave two alternative explanations for an association between two variables. Are there only two? If not, what other alternatives are there?</p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-chen_abstract_2024" class="csl-entry" role="listitem">
+Chen, Meng, and Victor W Zhong. 2024. <span>“Abstract P192: Association Between Time-Restricted Eating and All-Cause and Cause-Specific Mortality.”</span> <em>Circulation</em> 149 (March): AP192–92. <a href="https://doi.org/10.1161/circ.149.suppl_1.P192">https://doi.org/10.1161/circ.149.suppl_1.P192</a>.
+</div>
+<div id="ref-cornfield_smoking_2009" class="csl-entry" role="listitem">
+Cornfield, Jerome, William Haenszel, E. Cuyler Hammond, Abraham M. Lilienfeld, Michael B. Shimkin, and Ernst L. Wynder. 2009. <span>“Smoking and Lung Cancer: Recent Evidence and a Discussion of Some Questions*.”</span> <em>International Journal of Epidemiology</em> 38 (5): 1175–91. <a href="https://doi.org/10.1093/ije/dyp289">https://doi.org/10.1093/ije/dyp289</a>.
+</div>
+<div id="ref-doll_lung_1956" class="csl-entry" role="listitem">
+Doll, Richard, and A. Bradford Hill. 1956. <span>“Lung Cancer and Other Causes of Death in Relation to Smoking.”</span> <em>British Medical Journal</em> 2 (5001): 1071–81. <a href="https://doi.org/10.1136/bmj.2.5001.1071">https://doi.org/10.1136/bmj.2.5001.1071</a>.
+</div>
+<div id="ref-doll_mortality_1964" class="csl-entry" role="listitem">
+Doll, Richard, and Austin Bradford Hill. 1964. <span>“Mortality in Relation to Smoking: Ten Years’ Observations of British Doctors.”</span> <em>British Medical Journal</em> 1 (5395): 1399–1410. <a href="https://doi.org/10.1136/bmj.1.5395.1399">https://doi.org/10.1136/bmj.1.5395.1399</a>.
+</div>
+<div id="ref-fisher_cigarettes_1958" class="csl-entry" role="listitem">
+Fisher, Ronald. 1958. <span>“Cigarettes, Cancer, and Statistics.”</span> <em>The Centennial Review of Arts &amp; Science</em> 2: 151–66. <a href="https://www.jstor.org/stable/23737529">https://www.jstor.org/stable/23737529</a>.
+</div>
+<div id="ref-fisher_dangers_1957" class="csl-entry" role="listitem">
+Fisher, Ronald A. 1957. <span>“Dangers of Cigarette-Smoking.”</span> <em>British Medical Journal</em> 2 (5039): 297–98. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1961712/">https://pmc.ncbi.nlm.nih.gov/articles/PMC1961712/</a>.
+</div>
+<div id="ref-hueper_quest_1956" class="csl-entry" role="listitem">
+Hueper, Wilhelm C. 1956. <span>“A Quest into the Environmental Causes of Cancer of the Lung.”</span> Public Health Monograph No. 36. Washington, <span>DC</span>: Department of Health, Education,; Welfare.
+</div>
+</div>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

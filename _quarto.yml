@@ -28,6 +28,9 @@ book:
     type: overlay
   sidebar: false
 
+bibliography: references.bib
+link-citations: true
+
 format:
   html:
     theme:
