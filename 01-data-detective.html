@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>A Detective Among Data – Causal inference (and other things)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./00-syllabus.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-9771026946e548937be22542c9a71824.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Causal inference (and other things)</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./00-syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-unit-1" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Unit 1</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-unit-1">    
+        <li>
+    <a class="dropdown-item" href="./01-data-detective.html">
+ <span class="dropdown-text">A detective among data</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-data-detective.html">Why causal inference?</a></li><li class="breadcrumb-item"><a href="./01-data-detective.html"><span class="chapter-title">A Detective Among Data</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Background</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-syllabus.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Syllabus</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Why causal inference?</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-data-detective.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">A Detective Among Data</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-data-detective.html">Why causal inference?</a></li><li class="breadcrumb-item"><a href="./01-data-detective.html"><span class="chapter-title">A Detective Among Data</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">A Detective Among Data</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<blockquote class="blockquote">
+<p>“When you have eliminated the impossible, whatever remains, however improbable, must be the truth.”</p>
+<p>— Sherlock Holmes in <em>The Sign of Four</em>, by Arthur Conan Doyle</p>
+</blockquote>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_sherlock.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%" alt="A squirrel dressed as Sherlock Holmes wearing a deerstalker cap and cape while holding a magnifying glass."></p>
+</figure>
+</div>
+<hr>
+<p>Open up any major newspaper, flip to the health section, and you will find the latest medical study showing something is linked to something else. Wine and cancer. Coffee and anxiety. Smartphones and poor sleep. Pick a habit, pick a condition, and somewhere out there a scientist has found a link between them. Sometimes the headlines are even phrased as a question. <em>Are eggs bad for your heart?</em></p>
+<p>I want to know the answer. I love eggs. Scrambled eggs are one of life’s simple pleasures, and I am not giving them up without good reason. So I click on the article, nervously scanning for the conclusion. Instead, I find another study showing that people who eat more eggs have a higher rate of heart disease. Or a lower rate. It seems to depend on the week.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_news.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%" alt="A fictional newspaper called The Morning Nut from Keene, New Hampshire, with the headline 'Does Eating Too Many Acorns Cause High Cholesterol?' and a photograph of a squirrel eating acorns."></p>
+</figure>
+</div>
+<p>Someone once joked that whenever a headline is phrased as a question, the answer is almost always “no.” Are eggs bad for your heart? <em>No.</em> Does your morning coffee cause anxiety? <em>No.</em> It is a surprisingly effective rule of thumb.</p>
+<p>Scientists develop a similar reflex. We see the words “linked to,” roll our eyes, mumble something about confounding, and get on with our day. Another association. Another headline. Somewhere around the time we learn how to calculate a mean, another lesson gets drilled into us: <em>association is not causation.</em> It is one of the first things every statistics student learns, and rightly so.</p>
+<p>Every morning, I sit in my office looking out at the large green elm outside my window. There is always a squirrel in it. Over the years, I have watched that squirrel happily munch away on whatever seeds or fruits a green elm produces. (I should probably know what they are called.) I have never once seen it eat a walnut. Based on my observations alone, you might conclude that squirrels prefer green elms to walnut trees. Until I tell you there isn’t a walnut tree anywhere outside my office. The squirrel was never given the choice.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_elm_v_walnut.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%" data-fig-align="center" alt="A squirrel dressed as Sherlock Holmes thoughtfully comparing a green elm tree and a walnut tree."></p>
+</figure>
+</div>
+<p>In a nutshell, that is what we call in science an <em>observational</em> - or <em>naturalistic</em> study. The squirrel is simply living its life. I am not telling it where to climb or what to eat. I am just sitting back, watching, and taking notes. Nature decides what the squirrel does; I simply observe.</p>
+<p>Much of science works exactly this way. A few years back, a study reported that people who regularly skipped meals were more likely to develop heart problems later in life <span class="citation" data-cites="chen_abstract_2024">(<a href="#ref-chen_abstract_2024" role="doc-biblioref">Chen and Zhong 2024</a>)</span>. Some friends were so concerned for me because I happened to be experimenting with intermittent fasting at the time. But stop and think for a moment about the people who skip meals. Busy people. Stressed people. People sleeping too little, exercising too little, grabbing fast food when they do find time to eat. Is it the fasting that leads to heart disease, or everything else that tends to come along for the ride? Just like the squirrel, we never saw what would have happened had those same people lived different lives.</p>
+<p>That is what makes observational studies both fascinating and frustrating. When nature writes the story, things can appear related for all sorts of reasons. Sometimes the relationship is genuine. Sometimes it is little more than coincidence. From the data alone, it is surprisingly difficult to tell these possibilities apart.</p>
+<p>Statisticians have a word for associations that are misleading: <em>spurious.</em> I always have to look that one up. The Cambridge Dictionary defines it as “false and not what it appears to be.” It makes the data sound almost mischievous, as though they are trying to trick us. And sometimes they do. There is even an entire website devoted to these deceptive relationships: <a href="https://www.tylervigen.com/spurious-correlations">Tyler Vigen’s Spurious Correlations</a>.</p>
+<p>One of my favorite examples comes from my home state of New Hampshire. There is a strong association between the annual number of burglaries and the number of babies named Johnny. I even had a friend named Johnny growing up. I can assure you he was not secretly masterminding statewide burglary rings. The association is real. The explanation is nonsense. The phrase <em>association is not causation</em> exists for a reason.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_nh_johnny.png" class="img-fluid figure-img" style="width:80.0%" alt="A fake line graph showing that annual burglaries in New Hampshire track closely with the number of babies named Johnny over the same period."></p>
+<figcaption>Fake line graph showing correlation between burglaries and popularity of the name Johnny. An example of a spurious association.</figcaption>
+</figure>
+</div>
+<center>
+—
+</center>
+<p><em>But I wonder if we learned that lesson a little too well?</em></p>
+<p>After enough contradictory nutrition studies and enough absurd examples like Johnny and burglaries, it becomes tempting to dismiss observational studies altogether. Another association? <em>Next.</em> That reaction is understandable. But it can make us timid. We become so careful not to overclaim that we sometimes stop short of the harder, more useful question: What would it take for this association to be causal?</p>
+<p>Imagine Holmes arriving at the scene of a crime. He notices fingerprints on the murder weapon.</p>
+<p>“Fingerprints don’t prove murder.”</p>
+<p>That’s true. They don’t. The butler may be the murderer. Or perhaps he handled the weapon earlier that day. Or perhaps someone planted the evidence. But imagine if Holmes shrugged, closed his notebook, and went home. That would make for a very short detective novel. Sure, fingerprints are not proof. But they are evidence. Holmes’ job is not to dismiss the evidence because another explanation is possible. His job is to investigate them until only the most convincing explanation remains.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_shrug.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%" alt="A squirrel dressed as Sherlock Holmes shrugging while examining fingerprints on a knife beside a magnifying glass."></p>
+</figure>
+</div>
+<p>Science is much the same. The hard part is not dreaming up theories. That is easy. Whenever we observe an association, there is almost always multiple stories we could tell. Perhaps one variable causes the other. Or perhaps some third factor causes them both. The hard part is deciding whether that alternative explanation can withstand careful scrutiny. Like any good detective, we are not trying to find an explanation. We are trying to find the explanation that best accounts for the evidence after reasonable alternatives have been investigated.</p>
+<center>
+—
+</center>
+<p>Few stories illustrate this better than the debate over smoking and lung cancer. Today, it is difficult to imagine the question ever being controversial. Cigarette packages carry warning labels. Physicians routinely advise patients to quit. Yet in the early 1950s, none of that was settled. Scientists debated whether smoking truly caused lung cancer. One pathologist observed the nicotine stains on the fingers of many cigarette smokers, remarking that cancers of the fingers were essentially unheard of <span class="citation" data-cites="hueper_quest_1956">(<a href="#ref-hueper_quest_1956" role="doc-biblioref">Hueper 1956</a>)</span>. If tobacco tar really caused cancer, why did it seem so devastating to the lungs but not to the skin on the hands?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_pipe.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%" alt="A squirrel dressed as Sherlock Holmes while thoughtfully smoking a curved pipe."></p>
+</figure>
+</div>
+<p>To help settle the debate, the American Cancer Society turned to two statistically minded epidemiologists: E. Cuyler Hammond, its director of statistical research and assistant director Daniel Horn. With the help of nearly 20,000 volunteers, they enrolled 187,783 men between the ages of 50 and 69. At enrollment, each man completed a questionnaire about his smoking habits. Then the researchers did something wonderfully simple: they waited. For nearly four years, volunteers tracked who died and, whenever possible, what they died from. By the end of the study, 11,870 men had died. They compared those deaths across smoking groups.</p>
+<p>Differences in mortality were striking. Overall, cigarette smokers experienced 397 lung cancer deaths, compared with only 37 that would have been expected had they experienced the same lung cancer rate as men who never smoked. This corresponds to a relative risk of 10.7. Even more striking was what happened as cigarette consumption increased. The more people smoked, the greater their risk became. Men who had never smoked experienced about 3.4 lung cancer deaths per 100,000 person-years. Among men smoking two or more packs of cigarettes each day, the rate climbed to 217.3—roughly 64 times higher. It was a remarkably strong association, and it became stronger with increasing exposure. If I told you today that a new medication increased your risk of cancer ninefold—let alone sixtyfold—I suspect you would stop taking it before you finished reading this chapter.</p>
+<p>But this was still an observational study. One prominent skeptic was the statistician Ronald Fisher, so influential that he was eventually knighted. He did not dispute the data. Instead, he questioned whether the observations alone were enough to conclude that smoking caused lung cancer <span class="citation" data-cites="fisher_dangers_1957 fisher_cigarettes_1958">(<a href="#ref-fisher_dangers_1957" role="doc-biblioref">R. A. Fisher 1957</a>; <a href="#ref-fisher_cigarettes_1958" role="doc-biblioref">R. Fisher 1958</a>)</span>. He reasoned:</p>
+<blockquote class="blockquote">
+<p>” any statistical association, observed without the precautions of a definite experiment, always allows-namely, (1) that the supposed effect is really the cause, or in this case that incipient cancer, or a pre-cancerous condition with chronic inflammation, is a factor in inducing the smoking of cigarettes, or (2) that cigarette-smoking and lung cancer, though not mutually causative, are both influenced by a common cause, in this case the individual genotype.” <span class="citation" data-cites="fisher_dangers_1957">(<a href="#ref-fisher_dangers_1957" role="doc-biblioref">R. A. Fisher 1957</a>)</span></p>
+</blockquote>
+<p>Let’s unpack this. We’ll use a graph. Later, we’ll make these graphs precise; for now, think of them as sketches of two competing explanations. Fisher argued that more than one explanation was consistent with the data. One is the explanation we now accept: smoking causes lung cancer. This is shown on the left. The arrow runs from Smoking to Cancer. If smoking causes cancer, then people who smoke more should develop lung cancer more often, exactly as Hammond and Horn observed.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_two_theories.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%" data-fig-align="center" alt="Two side-by-side causal diagrams. In both diagrams, Smoking is at the top, Genotype at the lower left, and Cancer at the lower right. In Explanation 1, there is a single arrow from Smoking to Cancer. In Explanation 2, there are arrows from Genotype to Smoking and from Genotype to Cancer."></p>
+</figure>
+</div>
+<p>The second explanation is is that both smoking and lung cancer might be consequences of some third factor. Because of his interest in genetics, he suggested genotype as a candidate. Some people might inherit a genotype that makes smoking more enjoyable, more addictive, or easier to tolerate. If those same genes also increase the risk of lung cancer, then smokers would still develop lung cancer more often than non-smokers, even if smoking itself played no causal role. This alternative is shown on the right, where Genotype points to both Smoking and Cancer.</p>
+<p>In the second explanation, genotype is a confounder: a common cause of both the exposure (smoking) and the outcome (lung cancer). (Confounders are the villains of this textbook, forever threatening our ability to draw causal conclusions from the associations we observe.) The mere possibility of confounding was enough to cast doubt on the claim that smoking causes lung cancer. Perhaps smokers were older. Perhaps they worked in occupations with hazardous exposures. Perhaps they lived in more polluted cities. Fortunately, possibilities like these could be investigated. Researchers repeatedly compared smokers and non-smokers within the same age group, occupation, or region, yet the association persisted <span class="citation" data-cites="doll_lung_1956 doll_mortality_1964">(<a href="#ref-doll_lung_1956" role="doc-biblioref">Doll and Hill 1956</a>; <a href="#ref-doll_mortality_1964" role="doc-biblioref">Doll and Hill 1964</a>)</span>. One by one, the measured confounders were ruled out.</p>
+<p>Genotype, however, was an entirely different beast. It was unmeasured. Measured confounders can be controlled by comparing people with the same value of the confounder. An unmeasured confounder cannot. An unmeasured confounder is an invisible explanation, lurking in your data, forever capable of casting doubt on an observed association. Fisher understood this perfectly. For him, the mere possibility of an unmeasured confounder was enough to remain skeptical. Because genotype could not be measured, he argued that the observational evidence alone could never distinguish between the two competing explanations.</p>
+<center>
+—
+</center>
+<p>If both explanations predict exactly the same association, how can we ever decide between them? This question is not historical. Open almost any modern observational study. Somewhere near the end, you will find an acknowledgment that unmeasured confounding cannot be ruled out, followed by a call for future studies. It is practically a ritual.</p>
+<p>In 1959, Jerome Cornfield and several of his colleagues had a clever idea <span class="citation" data-cites="cornfield_smoking_2009">(<a href="#ref-cornfield_smoking_2009" role="doc-biblioref">Cornfield et al. 2009</a>)</span>. Rather than arguing that Fisher’s explanation was impossible, he asked what the world would have to look like if Fisher were right. Suppose the entire association between smoking and lung cancer were explained by an unmeasured genotype. What would necessarily have to be true?</p>
+<p>The argument that follows is one of my favorites because, once you draw the right picture, the answer is almost impossible to miss. Let <span class="math inline">\(R_S\)</span> and <span class="math inline">\(R_N\)</span> be the risk of lung cancer among smokers and non-smokers. We begin by plotting the point <span class="math inline">\((R_N,R_S)\)</span>. The horizontal coordinate is the risk among non-smokers; the vertical coordinate is the risk among smokers.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_cornfield_a.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p>The rectangle helps us locate the point. Because smokers have a higher risk of lung cancer than non-smokers, the rectangle is taller than it is wide. Now connect the origin to the point we just plotted.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_cornfield_b.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p>The slope of this line is <span class="math inline">\(R_S/R_N,\)</span> which is exactly the relative risk. Steeper lines correspond to larger relative risks. Thus, instead of thinking of the relative risk as a number, we can think of it as the steepness of a line.</p>
+<p>Now suppose Fisher’s explanation is correct. Smoking itself has no effect on lung cancer. Instead, everyone faces the same background risk of lung cancer, which we denote by <span class="math inline">\(B\)</span>. Carrying the genotype adds an additional risk, which we denote by <span class="math inline">\(\Delta\)</span>. Suppose a fraction <span class="math inline">\(w_S\)</span> of smokers carry the genotype. Then the lung cancer risk among smokers is simply the common background risk plus the additional risk contributed by the genotype: <span class="math display">\[R_S = B + w_S\Delta.\]</span> Likewise, if a fraction <span class="math inline">\(w_N\)</span> of non-smokers carry the genotype, <span class="math display">\[R_N = B + w_N\Delta.\]</span></p>
+<p>Imagine removing the common background risk <span class="math inline">\(B\)</span> from everyone. Graphically, this shifts our point left by <span class="math inline">\(B\)</span> units and downward by <span class="math inline">\(B\)</span> units, leaving the point <span class="math display">\[(w_N\Delta,\;w_S\Delta).\]</span></p>
+<p>We add this new point to the graph.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_cornfield_c.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p>The two points differ only by the background risk. Moving from one point to the other means subtracting exactly the same quantity, <span class="math inline">\(B\)</span>, from both coordinates. Thus, the two points lie at opposite corners of a square of side length <span class="math inline">\(B\)</span>.</p>
+<p>Connect the origin to this second point.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/1_cornfield_d.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+</figure>
+</div>
+<p>The slope of the original line is <span class="math display">\[\frac{R_S}{R_N}
+=
+\frac{B+w_S\Delta}{B+w_N\Delta},\]</span> while the slope of the new line is <span class="math display">\[\frac{w_S\Delta}{w_N\Delta}
+=
+\frac{w_S}{w_N}.\]</span> The picture now tells the rest of the story. Removing the common background risk moves the point left and downward by the same amount. This makes the line from the origin steeper. Therefore, <span class="math display">\[ \frac{w_S}{w_N} &gt; \frac{R_S}{R_N}.\]</span> This is Cornfield’s inequality.</p>
+<p>Its interpretation is striking. If smokers have 11 times the lung cancer risk of non-smokers, then Fisher’s hypothetical genotype must be more than 11 times as common among smokers. If heavy smokers have 64 times the risk of never smokers, then the genotype must be more than 64 times as common among heavy smokers. Cornfield summarized the result this way:</p>
+<blockquote class="blockquote">
+<p>“the excess lung-cancer risk among cigarette smokers is so great that the results can not be interpreted as arising from an indirect association … since this hypothetical agent would have to be at least as strongly associated with lung cancer as cigarette use; no such agent has been found or suggested.”</p>
+</blockquote>
+<p>Cornfield’s argument did not prove that smoking causes lung cancer. Cornfield accepted Fisher’s alternative explanation (at least temporarily) and followed it to its logical conclusion. The alternative was certainly possible, but only if one accepted an extraordinarily implausible hidden genotype. The burden had shifted. It was no longer enough to say that another explanation could exist. That explanation now had to bear the weight of its own consequences.</p>
+<p>That is the broader lesson. Faced with competing explanations, we need not shrug our shoulders and conclude that “association is not causation.” Instead, we write down each explanation as clearly as we can and follow it wherever logic leads. Once we do, our assumptions become tools for reasoning - objects we can manipulate, question, and follow to their logical conclusions. A good detective does not wait for a confession. He keeps asking questions until one story holds together and the others fall apart.</p>
+<hr>
+<p>Q. Some current unresolved.</p>
+<p>Q. Fisher gave two alternative explanations for an association between two variables. Are there only two? If not, what other alternatives are there?</p>
+<hr>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-chen_abstract_2024" class="csl-entry" role="listitem">
+Chen, Meng, and Victor W Zhong. 2024. <span>“Abstract P192: Association Between Time-Restricted Eating and All-Cause and Cause-Specific Mortality.”</span> <em>Circulation</em> 149 (March): AP192–92. <a href="https://doi.org/10.1161/circ.149.suppl_1.P192">https://doi.org/10.1161/circ.149.suppl_1.P192</a>.
+</div>
+<div id="ref-cornfield_smoking_2009" class="csl-entry" role="listitem">
+Cornfield, Jerome, William Haenszel, E. Cuyler Hammond, Abraham M. Lilienfeld, Michael B. Shimkin, and Ernst L. Wynder. 2009. <span>“Smoking and Lung Cancer: Recent Evidence and a Discussion of Some Questions*.”</span> <em>International Journal of Epidemiology</em> 38 (5): 1175–91. <a href="https://doi.org/10.1093/ije/dyp289">https://doi.org/10.1093/ije/dyp289</a>.
+</div>
+<div id="ref-doll_lung_1956" class="csl-entry" role="listitem">
+Doll, Richard, and A. Bradford Hill. 1956. <span>“Lung Cancer and Other Causes of Death in Relation to Smoking.”</span> <em>British Medical Journal</em> 2 (5001): 1071–81. <a href="https://doi.org/10.1136/bmj.2.5001.1071">https://doi.org/10.1136/bmj.2.5001.1071</a>.
+</div>
+<div id="ref-doll_mortality_1964" class="csl-entry" role="listitem">
+Doll, Richard, and Austin Bradford Hill. 1964. <span>“Mortality in Relation to Smoking: Ten Years’ Observations of British Doctors.”</span> <em>British Medical Journal</em> 1 (5395): 1399–1410. <a href="https://doi.org/10.1136/bmj.1.5395.1399">https://doi.org/10.1136/bmj.1.5395.1399</a>.
+</div>
+<div id="ref-fisher_cigarettes_1958" class="csl-entry" role="listitem">
+Fisher, Ronald. 1958. <span>“Cigarettes, Cancer, and Statistics.”</span> <em>The Centennial Review of Arts &amp; Science</em> 2: 151–66. <a href="https://www.jstor.org/stable/23737529">https://www.jstor.org/stable/23737529</a>.
+</div>
+<div id="ref-fisher_dangers_1957" class="csl-entry" role="listitem">
+Fisher, Ronald A. 1957. <span>“Dangers of Cigarette-Smoking.”</span> <em>British Medical Journal</em> 2 (5039): 297–98. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1961712/">https://pmc.ncbi.nlm.nih.gov/articles/PMC1961712/</a>.
+</div>
+<div id="ref-hueper_quest_1956" class="csl-entry" role="listitem">
+Hueper, Wilhelm C. 1956. <span>“A Quest into the Environmental Causes of Cancer of the Lung.”</span> Public Health Monograph No. 36. Washington, <span>DC</span>: Department of Health, Education,; Welfare.
+</div>
+</div>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./00-syllabus.html" class="pagination-link" aria-label="Syllabus">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Syllabus</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
