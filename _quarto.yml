@@ -21,7 +21,7 @@ book:
         file: 00-syllabus.qmd
       - text: "Unit 1"
         menu:
-          - text: "A dectective among data"
+          - text: "A detective among data"
             file: 01-data-detective.qmd
   search:
     location: navbar
