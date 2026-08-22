@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Amy Cochran">
 
-<title>Causal inference (and other things)</title>
+<title>References – Causal inference (and other things)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,7 +20,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -30,7 +48,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./00-syllabus.html" rel="next">
+<link href="./glossary.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -142,7 +160,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-title">index.html</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./glossary.html">Back matter</a></li><li class="breadcrumb-item"><a href="./references.html"><span class="chapter-title">References</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -156,7 +174,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">index.html</span></a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">index.html</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -230,7 +248,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">References</span></a>
+  <a href="./references.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">References</span></a>
   </div>
 </li>
       </ul>
@@ -244,21 +262,15 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./glossary.html">Back matter</a></li><li class="breadcrumb-item"><a href="./references.html"><span class="chapter-title">References</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Causal inference (and other things)</h1>
+<h1 class="title"><span class="chapter-title">References</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Amy Cochran </p>
-          </div>
-  </div>
     
   
     
@@ -269,23 +281,74 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><img src="images/squirrel.png" class="img-fluid" style="width:100.0%" alt="Abstract composition of a squirrel as a graph in forest greens"></p>
-<p>Course materials for <em>Causal Inference, Surveys, and Missing Data</em> (PHS/BMI 661). The course develops practical tools for reasoning about cause and effect from observational data and extends them to missing data and complex surveys.</p>
-<ul>
-<li>See the <a href="./00-syllabus.html">syllabus</a> for policies and the course schedule.</li>
-<li>Find course notes in the menu bar.</li>
-</ul>
-<div class="callout callout-style-default callout-note callout-titled" title="About these notes">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-charig_renal_1986" class="csl-entry" role="listitem">
+Charig, C. R., D. R. Webb, S. R. Payne, and J. E. Wickham. 1986.
+<span>“Comparison of Treatment of Renal Calculi by Open Surgery,
+Percutaneous Nephrolithotomy, and Extracorporeal Shockwave
+Lithotripsy.”</span> <em>British Medical Journal (Clinical Research
+Edition)</em> 292 (6524): 879–82. <a href="https://doi.org/10.1136/bmj.292.6524.879">https://doi.org/10.1136/bmj.292.6524.879</a>.
 </div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>About these notes
+<div id="ref-chen_abstract_2024" class="csl-entry" role="listitem">
+Chen, Meng, and Victor W Zhong. 2024. <span>“Abstract P192: Association
+Between Time-Restricted Eating and All-Cause and Cause-Specific
+Mortality.”</span> <em>Circulation</em> 149 (March): AP192–92. <a href="https://doi.org/10.1161/circ.149.suppl_1.P192">https://doi.org/10.1161/circ.149.suppl_1.P192</a>.
 </div>
+<div id="ref-cornfield_smoking_2009" class="csl-entry" role="listitem">
+Cornfield, Jerome, William Haenszel, E. Cuyler Hammond, Abraham M.
+Lilienfeld, Michael B. Shimkin, and Ernst L. Wynder. 2009.
+<span>“Smoking and Lung Cancer: Recent Evidence and a Discussion of Some
+Questions*.”</span> <em>International Journal of Epidemiology</em> 38
+(5): 1175–91. <a href="https://doi.org/10.1093/ije/dyp289">https://doi.org/10.1093/ije/dyp289</a>.
 </div>
-<div class="callout-body-container callout-body">
-<p>These notes began as materials for another course aimed at a mathematical audience and have since been adapted for an epidemiology audience. I used OpenAI Codex to assist with parts of that process, including translating and reorganizing explanations, checking claims against the literature, designing and editing figures, and editing prose and course materials. Because AI-assisted work can contain errors, I review and revise the material and take full responsibility for its content, including any mistakes that remain.</p>
+<div id="ref-doll_lung_1956" class="csl-entry" role="listitem">
+Doll, Richard, and A. Bradford Hill. 1956. <span>“Lung Cancer and Other
+Causes of Death in Relation to Smoking.”</span> <em>British Medical
+Journal</em> 2 (5001): 1071–81. <a href="https://doi.org/10.1136/bmj.2.5001.1071">https://doi.org/10.1136/bmj.2.5001.1071</a>.
+</div>
+<div id="ref-doll_mortality_1964" class="csl-entry" role="listitem">
+Doll, Richard, and Austin Bradford Hill. 1964. <span>“Mortality in
+Relation to Smoking: Ten Years’ Observations of British Doctors.”</span>
+<em>British Medical Journal</em> 1 (5395): 1399–1410. <a href="https://doi.org/10.1136/bmj.1.5395.1399">https://doi.org/10.1136/bmj.1.5395.1399</a>.
+</div>
+<div id="ref-fisher_cigarettes_1958" class="csl-entry" role="listitem">
+Fisher, Ronald. 1958. <span>“Cigarettes, Cancer, and Statistics.”</span>
+<em>The Centennial Review of Arts &amp; Science</em> 2: 151–66. <a href="https://www.jstor.org/stable/23737529">https://www.jstor.org/stable/23737529</a>.
+</div>
+<div id="ref-fisher_dangers_1957" class="csl-entry" role="listitem">
+Fisher, Ronald A. 1957. <span>“Dangers of Cigarette-Smoking.”</span>
+<em>British Medical Journal</em> 2 (5039): 297–98. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1961712/">https://pmc.ncbi.nlm.nih.gov/articles/PMC1961712/</a>.
+</div>
+<div id="ref-gwiazda_myopia_2000" class="csl-entry" role="listitem">
+Gwiazda, Jane, Edward Ong, Richard Held, and Frank Thorn. 2000.
+<span>“Myopia and Ambient Night-Time Lighting.”</span> <em>Nature</em>
+404 (6774): 144. <a href="https://doi.org/10.1038/35004663">https://doi.org/10.1038/35004663</a>.
+</div>
+<div id="ref-hueper_quest_1956" class="csl-entry" role="listitem">
+Hueper, Wilhelm C. 1956. <span>“A Quest into the Environmental Causes of
+Cancer of the Lung.”</span> Public Health Monograph No. 36. Washington,
+<span>DC</span>: Department of Health, Education,; Welfare.
+</div>
+<div id="ref-julious_confounding_1994" class="csl-entry" role="listitem">
+Julious, Steven A., and Mark A. Mullee. 1994. <span>“Confounding and
+Simpson’s Paradox.”</span> <em>BMJ</em> 309 (6967): 1480–81. <a href="https://doi.org/10.1136/bmj.309.6967.1480">https://doi.org/10.1136/bmj.309.6967.1480</a>.
+</div>
+<div id="ref-quinn_myopia_1999" class="csl-entry" role="listitem">
+Quinn, Graham E., Chai H. Shin, Maureen G. Maguire, and Richard A.
+Stone. 1999. <span>“Myopia and Ambient Lighting at Night.”</span>
+<em>Nature</em> 399 (6732): 113–14. <a href="https://doi.org/10.1038/20094">https://doi.org/10.1038/20094</a>.
+</div>
+<div id="ref-rubin1980" class="csl-entry" role="listitem">
+Rubin, Donald B. 1980. <span>“Randomization Analysis of Experimental
+Data: The Fisher Randomization Test Comment.”</span> <em>Journal of the
+American Statistical Association</em> 75 (371): 591–93. <a href="https://doi.org/10.2307/2287653">https://doi.org/10.2307/2287653</a>.
+</div>
+<div id="ref-whi2002" class="csl-entry" role="listitem">
+Writing Group for the Women’s Health Initiative Investigators. 2002.
+<span>“Risks and Benefits of Estrogen Plus Progestin in Healthy
+Postmenopausal Women: Principal Results from the Women’s Health
+Initiative Randomized Controlled Trial.”</span> <em>JAMA</em> 288 (3):
+321–33. <a href="https://doi.org/10.1001/jama.288.3.321">https://doi.org/10.1001/jama.288.3.321</a>.
 </div>
 </div>
 
@@ -704,11 +767,11 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./glossary.html" class="pagination-link" aria-label="Glossary">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Glossary</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./00-syllabus.html" class="pagination-link" aria-label="Syllabus">
-        <span class="nav-page-text"><span class="chapter-title">Syllabus</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->

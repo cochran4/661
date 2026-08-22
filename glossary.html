@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Amy Cochran">
 
-<title>Causal inference (and other things)</title>
+<title>Glossary – Causal inference (and other things)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,7 +29,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./00-syllabus.html" rel="next">
+<link href="./references.html" rel="next">
+<link href="./03-clinical-trials.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -142,7 +142,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-title">index.html</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./glossary.html">Back matter</a></li><li class="breadcrumb-item"><a href="./glossary.html"><span class="chapter-title">Glossary</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -156,7 +156,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">index.html</span></a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">index.html</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -225,7 +225,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./glossary.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Glossary</span></a>
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Glossary</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -244,21 +244,15 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./glossary.html">Back matter</a></li><li class="breadcrumb-item"><a href="./glossary.html"><span class="chapter-title">Glossary</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Causal inference (and other things)</h1>
+<h1 class="title"><span class="chapter-title">Glossary</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Amy Cochran </p>
-          </div>
-  </div>
     
   
     
@@ -269,25 +263,40 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><img src="images/squirrel.png" class="img-fluid" style="width:100.0%" alt="Abstract composition of a squirrel as a graph in forest greens"></p>
-<p>Course materials for <em>Causal Inference, Surveys, and Missing Data</em> (PHS/BMI 661). The course develops practical tools for reasoning about cause and effect from observational data and extends them to missing data and complex surveys.</p>
-<ul>
-<li>See the <a href="./00-syllabus.html">syllabus</a> for policies and the course schedule.</li>
-<li>Find course notes in the menu bar.</li>
-</ul>
-<div class="callout callout-style-default callout-note callout-titled" title="About these notes">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>About these notes
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>These notes began as materials for another course aimed at a mathematical audience and have since been adapted for an epidemiology audience. I used OpenAI Codex to assist with parts of that process, including translating and reorganizing explanations, checking claims against the literature, designing and editing figures, and editing prose and course materials. Because AI-assisted work can contain errors, I review and revise the material and take full responsibility for its content, including any mistakes that remain.</p>
-</div>
-</div>
+<p><strong>Average treatment effect (ATE)</strong></p>
+<p>The difference between the average potential outcome under one treatment and the average potential outcome under another treatment.</p>
+<p><strong>Bias</strong></p>
+<p>The difference between an estimator’s expected value under a probability model and the quantity it is intended to estimate.</p>
+<p><strong>Causal estimand</strong></p>
+<p>A probabilistic quantity involving potential outcomes that we want to estimate.</p>
+<p><strong>Confounder</strong></p>
+<p>A common cause of the exposure and outcome that can create or distort their observed association.</p>
+<p><strong>Exposure</strong></p>
+<p>The condition, action, or factor whose causal effect is being studied. Depending on the setting, it may also be called the treatment or intervention.</p>
+<p><strong>Fundamental problem of causal inference</strong></p>
+<p>For each person, we observe the potential outcome under the treatment received but not the potential outcome under the other treatment. We therefore cannot observe both potential outcomes for the same person.</p>
+<p><strong>Identified</strong></p>
+<p>A causal estimand is identified when it can be written entirely in terms of observed variables and their probability model.</p>
+<p><strong>Estimator</strong></p>
+<p>A rule that uses sample data to estimate an unknown quantity in a population or probability model.</p>
+<p><strong>Observational study</strong></p>
+<p>A study that examines naturally occurring exposures or treatments rather than assigning them.</p>
+<p><strong>Outcome</strong></p>
+<p>The event, condition, or response that the exposure might affect.</p>
+<p><strong>Positivity</strong></p>
+<p>Each treatment under study has a positive probability of being assigned.</p>
+<p><strong>Risk difference</strong></p>
+<p>The risk of an outcome under one exposure or treatment minus the risk under another.</p>
+<p><strong>Relative risk</strong></p>
+<p>The risk of an outcome among exposed people divided by the risk among unexposed people.</p>
+<p><strong>Simpson’s paradox</strong></p>
+<p>A reversal in which the direction of an association in the combined data is opposite to its direction within groups defined by a third variable.</p>
+<p><strong>Unbiased estimator</strong></p>
+<p>An estimator whose expected value under a probability model equals the quantity it is intended to estimate.</p>
+<p><strong>Unmeasured confounder</strong></p>
+<p>A confounder that was not measured in the study data.</p>
+<p><strong>Well-defined (mathematical sense)</strong></p>
+<p>A definition is well-defined when each possible input determines one unambiguous object.</p>
 
 
 
@@ -704,10 +713,13 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./03-clinical-trials.html" class="pagination-link" aria-label="Clinical Trials">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Clinical Trials</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./00-syllabus.html" class="pagination-link" aria-label="Syllabus">
-        <span class="nav-page-text"><span class="chapter-title">Syllabus</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./references.html" class="pagination-link" aria-label="References">
+        <span class="nav-page-text"><span class="chapter-title">References</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
