@@ -22,11 +22,21 @@
   --c-primary:      #2F6F4E;   /* forest green */
   --c-primary-dark: #1F4D36;   /* darker forest green */
   --c-accent:       #B7791F;   /* muted gold */
+  --c-accent-dark:  #765014;   /* dark gold text */
   --c-ink:          #111827;   /* near-black */
   --c-muted:        #6B7280;   /* gray */
   --c-line:         #C9D8CE;   /* green-gray rule */
+  --c-accent-line:  rgba(183, 121, 31, 0.30);
   --c-wash:         #F3F7F4;   /* subtle green wash */
+  --c-warm-wash:    #F7F4EC;   /* subtle warm wash */
   --c-row:          #FAFCFA;   /* very subtle table stripe */
+  --c-surface:      #FFFFFF;
+
+  /* Reusable component dimensions */
+  --radius-sm: 0.25rem;
+  --radius: 0.35rem;
+  --block-margin: 1.35rem auto;
+  --block-padding: 1rem 1.2rem;
 }
 
 body {
@@ -47,6 +57,32 @@ a:hover {
   text-decoration-thickness: 0.12em;
 }
 
+/* Hover and keyboard-accessible definitions for key terms */
+.glossary-term {
+  font-weight: 600;
+  background-image: linear-gradient(
+    to bottom,
+    transparent 58%,
+    rgba(143, 201, 163, 0.55) 58%,
+    rgba(143, 201, 163, 0.55) 90%,
+    transparent 90%
+  );
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  cursor: help;
+}
+
+.glossary-term:hover,
+.glossary-term:focus-visible {
+  background-image: linear-gradient(
+    to bottom,
+    transparent 58%,
+    rgba(47, 111, 78, 0.34) 58%,
+    rgba(47, 111, 78, 0.34) 90%,
+    transparent 90%
+  );
+}
+
 /* Subtle visual hierarchy for headings */
 
 h3 {
@@ -55,9 +91,9 @@ h3 {
 
 /* Optional: a quieter section marker for h2 headings */
 h2 {
-  color: var(--c-primary);
-  border-bottom: 2px solid rgba(47, 111, 78, 0.24);
-  padding-bottom: 0.25rem;
+  color: var(--c-primary-dark);
+  border-bottom: 2px solid rgba(47, 111, 78, 0.32);
+  padding-bottom: 0.3rem;
 }
 
 /* Headings: slightly smaller and tighter so they don't overpower body text */
@@ -70,7 +106,7 @@ h1 {
   margin-bottom: 0.6rem;
   color: var(--c-primary-dark);
 }
-h2 { font-size: 1.35rem; margin-top: 1.6rem; margin-bottom: 0.5rem; }
+h2 { font-size: 1.45rem; margin-top: 1.75rem; margin-bottom: 0.6rem; }
 h3 { font-size: 1.12rem; margin-top: 1.2rem; margin-bottom: 0.4rem; }
 h4 { font-size: 1.0rem;  margin-top: 1.0rem; margin-bottom: 0.35rem; }
 
@@ -79,6 +115,215 @@ main.content > h1:first-child { margin-top: 0.4rem; }
 
 /* Paragraph rhythm */
 p { margin: 0.85rem 0; }
+
+/* Decorative pause between narrative or major page sections */
+.section-break {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  margin: 2.25rem auto;
+  color: var(--c-primary);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.section-break::before,
+.section-break::after {
+  content: "";
+  width: 3.25rem;
+  height: 2px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(47, 111, 78, 0.55)
+  );
+}
+
+.section-break::after {
+  transform: scaleX(-1);
+}
+
+.section-break .acorn-mark {
+  display: inline-block;
+  width: 1rem;
+  height: 1.25rem;
+  flex: 0 0 auto;
+  background: url("images/acorn-divider.svg") center / contain no-repeat;
+}
+
+/* Lesson elements adapted from the older GitBook */
+.lesson-focus,
+.definition-box,
+.assumption-box,
+.assumption-list,
+.theorem-box,
+.technical-note,
+.key-takeaway,
+.proposition-box {
+  max-width: var(--text-max);
+  margin: var(--block-margin);
+  padding: var(--block-padding);
+  border-radius: var(--radius);
+}
+
+.lesson-focus {
+  background: var(--c-wash);
+  border-left: 4px solid var(--c-primary);
+  font-size: 1.02em;
+}
+
+.lesson-focus p:first-child,
+.lesson-focus p:last-child,
+.definition-box p:first-child,
+.definition-box p:last-child,
+.assumption-box p:first-child,
+.assumption-box p:last-child,
+.theorem-box p:first-child,
+.theorem-box p:last-child,
+.technical-note p:first-child,
+.technical-note p:last-child,
+.key-takeaway p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.definition-box,
+.assumption-box,
+.assumption-list {
+  background: var(--c-row);
+  border: 1px solid var(--c-line);
+  border-left: 4px solid var(--c-primary);
+}
+
+.assumption-list > p + p {
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--c-line);
+}
+
+.theorem-box {
+  background: var(--c-warm-wash);
+  border: 1px solid var(--c-accent-line);
+  border-left: 4px solid var(--c-accent);
+}
+
+.proposition-box {
+  background: var(--c-wash);
+  border: 1px solid var(--c-line);
+  border-left: 4px solid var(--c-primary);
+}
+
+.proposition-box p {
+  margin: 0;
+}
+
+.technical-note {
+  background: var(--c-warm-wash);
+  border: 1px solid var(--c-accent-line);
+}
+
+.key-takeaway {
+  color: var(--c-ink);
+  background: var(--c-wash);
+  border: 1px solid var(--c-line);
+  border-left: 5px solid var(--c-primary);
+  font-size: 1.05em;
+}
+
+.takeaway-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--c-primary-dark);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+.example-label {
+  display: inline-block;
+  margin-top: 1.6rem;
+  margin-bottom: 0;
+  padding: 0.18rem 0.55rem;
+  color: var(--c-accent-dark);
+  background: var(--c-warm-wash);
+  border: 1px solid var(--c-accent-line);
+  border-radius: var(--radius-sm);
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+}
+
+/* Example setup: warm label and rule, without another filled callout */
+.example-intro {
+  box-sizing: border-box;
+  max-width: var(--text-max);
+  margin: 1.15rem auto 1.35rem;
+  padding: 0.15rem 0 0.15rem 1rem;
+  border-left: 3px solid var(--c-accent);
+}
+
+.example-intro > :first-child {
+  margin-top: 0;
+}
+
+.example-intro > :last-child {
+  margin-bottom: 0;
+}
+
+.example-intro .example-label {
+  margin-top: 0;
+  margin-bottom: 0.35rem;
+}
+
+h2 .example-label {
+  display: table;
+  margin: 0 0 0.4rem;
+}
+
+details.lesson-question {
+  max-width: var(--text-max);
+  margin: 1.15rem auto;
+  border: 1px solid var(--c-line);
+  border-radius: var(--radius);
+  background: var(--c-surface);
+  overflow: hidden;
+}
+
+details.lesson-question summary {
+  padding: 0.8rem 1rem;
+  color: var(--c-primary-dark);
+  background: var(--c-wash);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+details.lesson-question[open] summary {
+  border-bottom: 1px solid var(--c-line);
+}
+
+details.technical-proof {
+  border-color: var(--c-accent-line);
+}
+
+details.technical-proof summary {
+  color: var(--c-accent-dark);
+  background: var(--c-warm-wash);
+}
+
+details.technical-proof[open] summary {
+  border-bottom-color: var(--c-accent-line);
+}
+
+details.lesson-question > :not(summary) {
+  margin-left: 1rem;
+  margin-right: 1rem;
+}
+
+details.lesson-question > :last-child {
+  margin-bottom: 1rem;
+}
 
 /* Slightly calmer list spacing */
 ul, ol { margin-top: 0.5rem; margin-bottom: 0.9rem; }
@@ -126,9 +371,50 @@ table tbody tr:hover {
   background: #EEF5F0;
 }
 
+/* Compact numerical tables used in worked examples */
+.compact-data-table {
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
+  table-layout: fixed;
+}
+
+.compact-data-table th,
+.compact-data-table td {
+  text-align: center;
+}
+
+.compact-data-table caption {
+  text-align: center;
+}
+
 /* Keep long entries from blowing up the layout */
 table td, table th {
   overflow-wrap: anywhere;
+}
+
+/* Keep the detailed course schedule readable on narrow screens. */
+.schedule-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  margin: 1rem 0 1.25rem;
+  border-radius: 0.25rem;
+}
+
+.schedule-table-wrap:focus-visible {
+  outline: 3px solid rgba(47, 111, 78, 0.35);
+  outline-offset: 0.2rem;
+}
+
+.schedule-table-wrap .course-schedule {
+  min-width: 850px;
+  margin-top: 0;
+  table-layout: fixed;
+}
+
+.course-schedule th:nth-child(-n+4),
+.course-schedule td:nth-child(-n+4) {
+  white-space: nowrap;
 }
 
 /* Remove Quarto's multi-column grid and control width ourselves */

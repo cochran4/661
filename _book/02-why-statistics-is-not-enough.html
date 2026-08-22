@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Amy Cochran">
 
-<title>Causal inference (and other things)</title>
+<title>Why Statistics Is Not Enough – Causal inference (and other things)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -21,7 +20,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -30,7 +49,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./00-syllabus.html" rel="next">
+<link href="./03-clinical-trials.html" rel="next">
+<link href="./01-data-detective.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -69,6 +89,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -142,7 +191,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-title">index.html</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-data-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./02-why-statistics-is-not-enough.html"><span class="chapter-title">Why Statistics Is Not Enough</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -156,7 +205,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">index.html</span></a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">index.html</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -180,7 +229,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02-why-statistics-is-not-enough.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Why Statistics Is Not Enough</span></a>
+  <a href="./02-why-statistics-is-not-enough.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Why Statistics Is Not Enough</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -244,21 +293,15 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-data-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./02-why-statistics-is-not-enough.html"><span class="chapter-title">Why Statistics Is Not Enough</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Causal inference (and other things)</h1>
+<h1 class="title"><span class="chapter-title">Why Statistics Is Not Enough</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Amy Cochran </p>
-          </div>
-  </div>
     
   
     
@@ -269,27 +312,196 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><img src="images/squirrel.png" class="img-fluid" style="width:100.0%" alt="Abstract composition of a squirrel as a graph in forest greens"></p>
-<p>Course materials for <em>Causal Inference, Surveys, and Missing Data</em> (PHS/BMI 661). The course develops practical tools for reasoning about cause and effect from observational data and extends them to missing data and complex surveys.</p>
+<p>Suppose we want to understand the relationship between coffee and anxiety. Let <span class="math inline">\(X\)</span> be the number of cups of coffee a person drinks each day and let <span class="math inline">\(Y\)</span> be that person’s score on an anxiety scale. We collect data on coffee consumption and anxiety, and then fit a regression model:</p>
+<p><span class="math display">\[Y = \alpha + \beta X + \varepsilon.\]</span></p>
+<p>Here, <span class="math inline">\(\alpha\)</span> is the intercept, <span class="math inline">\(\beta\)</span> is the slope, and <span class="math inline">\(\varepsilon\)</span> is a mean-zero random variable.</p>
+<details class="lesson-question">
+<summary>
+How should we interpret <span class="math inline">\(\beta\)</span>?
+</summary>
+<p>The coefficient <span class="math inline">\(\beta\)</span> is the expected difference in anxiety score associated with drinking one additional cup of coffee per day. If <span class="math inline">\(\beta=2\)</span>, then people who drink one additional cup of coffee per day have an expected anxiety score that is two points higher.</p>
+</details>
+<p>That is already useful. It summarizes the pattern in our data. It can help us predict anxiety scores for people who drink different amounts of coffee. But notice the care in the wording: an additional cup of coffee is <em>associated with</em> a two-point difference in anxiety. We did not say that drinking another cup <em>causes</em> anxiety to increase by two points.</p>
+<p>Why are we so cautious? For one thing, we could fit another regression with the variables reversed:</p>
+<p><span class="math display">\[X = \alpha' + \beta'Y + \varepsilon'.\]</span></p>
+<p>Now anxiety is being used to predict coffee consumption. Here, <span class="math inline">\(\alpha'\)</span> is the intercept, <span class="math inline">\(\beta'\)</span> is the slope, and <span class="math inline">\(\varepsilon'\)</span> is the error.</p>
+<details class="lesson-question">
+<summary>
+Suppose <span class="math inline">\(\alpha=4\)</span> and <span class="math inline">\(\beta=2\)</span>. What are <span class="math inline">\(\alpha'\)</span> and <span class="math inline">\(\beta'\)</span>?
+</summary>
+<p>We cannot determine them from <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span> alone. These coefficients describe the regression of <span class="math inline">\(Y\)</span> on <span class="math inline">\(X\)</span>. They do not provide enough information to calculate the regression of <span class="math inline">\(X\)</span> on <span class="math inline">\(Y\)</span>.</p>
+<p>It may be tempting to rearrange the first equation and conclude that <span class="math inline">\(\alpha'=-2\)</span> and <span class="math inline">\(\beta'=1/2\)</span>. But the line that minimizes prediction errors for <span class="math inline">\(Y\)</span> is not generally the same line, turned around, that minimizes prediction errors for <span class="math inline">\(X\)</span>. To calculate <span class="math inline">\(\alpha'\)</span> and <span class="math inline">\(\beta'\)</span>, we would also need information about the means, variances, and covariance of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>.</p>
+</details>
+<p>Both regressions can describe the association. They may also invite opposite causal stories. Coffee may affect anxiety, or people may drink more coffee because anxiety interferes with sleep and leaves them tired the next day. The data do not label one variable as the cause and the other as the effect.</p>
+<p>This is not merely a quirk of linear regression. The following general fact states the idea more precisely.</p>
+<div class="proposition-box">
+<p><strong>A general fact.</strong> We can specify the joint distribution of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> in either direction:</p>
+<ol type="1">
+<li>Draw <span class="math inline">\(X\)</span> first. Independently draw a uniform random number <span class="math inline">\(U\)</span>, and then use <span class="math inline">\(X\)</span> and <span class="math inline">\(U\)</span> to specify <span class="math inline">\(Y\)</span>.</li>
+<li>Draw <span class="math inline">\(Y\)</span> first. Independently draw a uniform random number <span class="math inline">\(U\)</span>, and then use <span class="math inline">\(Y\)</span> and <span class="math inline">\(U\)</span> to specify <span class="math inline">\(X\)</span>.</li>
+</ol>
+</div>
+<p>From the data on <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> alone, these two specifications are indistinguishable. We therefore need information beyond the data to determine which causal direction, if either, is correct.</p>
+<details class="lesson-question technical-proof">
+<summary>
+Optional: Why does the uniform random number work?
+</summary>
+<p>For real-valued <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, we can choose a rule that assigns a conditional distribution of <span class="math inline">\(Y\)</span> to each value of <span class="math inline">\(X\)</span>. After drawing <span class="math inline">\(X\)</span>, use the conditional distribution assigned to the value that was drawn. A uniform random number <span class="math inline">\(U\)</span> chooses a percentile from that distribution. For example, <span class="math inline">\(U=0.25\)</span> selects its 25th percentile and <span class="math inline">\(U=0.90\)</span> selects its 90th percentile.</p>
+<p>Repeating this procedure, first drawing <span class="math inline">\(X\)</span>, then drawing an independent <span class="math inline">\(U\)</span>, and finally selecting the corresponding conditional percentile of <span class="math inline">\(Y\)</span>, reproduces the joint distribution of <span class="math inline">\((X,Y)\)</span>.</p>
+<p>We can reverse the procedure: draw <span class="math inline">\(Y\)</span>, independently draw <span class="math inline">\(U\)</span>, and use it to select a percentile from the distribution of <span class="math inline">\(X\)</span> conditional on that value of <span class="math inline">\(Y\)</span>. This reproduces the same joint distribution in the opposite order.</p>
+</details>
+<p>The picture below summarizes the problem as a snake eating its tail. A probability model can describe <span class="math inline">\(Y\)</span> using <span class="math inline">\(X\)</span>, and it can describe <span class="math inline">\(X\)</span> using <span class="math inline">\(Y\)</span>. If we interpreted both descriptions causally, we would conclude that <span class="math inline">\(X\)</span> causes <span class="math inline">\(Y\)</span> and that <span class="math inline">\(Y\)</span> causes <span class="math inline">\(X\)</span>. The circular picture is not meant to propose a plausible causal mechanism. It shows why the probability model alone cannot tell us which causal arrow, if either, is appropriate.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/probability-mechanisms.svg" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption>The “snake eating its tail”: using both statistical directions as causal explanations creates a circular story in which X causes Y and Y causes X.</figcaption>
+</figure>
+</div>
+<div class="key-takeaway">
+<p><span class="takeaway-label">Main point</span></p>
+<p><strong>The joint distribution of the observed variables does not, by itself, determine how those variables are causally related.</strong></p>
+</div>
+<p>At first, this ambiguity may not seem especially troubling. Perhaps the data cannot tell us whether <span class="math inline">\(X\)</span> causes <span class="math inline">\(Y\)</span> or <span class="math inline">\(Y\)</span> causes <span class="math inline">\(X\)</span>, but we might still conclude that one must cause the other.</p>
+<p>We have already seen why that conclusion does not follow. In the smoking and lung cancer example, a confounder could, in principle, explain the entire association. The association alone could not distinguish among three possibilities: smoking causes lung cancer, lung cancer causes smoking, or a third variable causes both.</p>
+<p>The following case studies show how consequential this problem can be. In the first, researchers identified a confounder that provided a compelling explanation for an apparent association. In the second, accounting for a confounder did more than explain the association: it reversed its direction.</p>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
+</div>
+<section id="night-lights-and-childhood-myopia" class="level2">
+<h2 class="anchored" data-anchor-id="night-lights-and-childhood-myopia">Night Lights and Childhood Myopia</h2>
+<div class="example-intro">
+<p><span class="example-label">Example 1</span></p>
+<p>In May 1999, <em>Nature</em> published a short report by Graham Quinn and colleagues on night-time lighting and childhood myopia <span class="citation" data-cites="quinn_myopia_1999">(<a href="references.html#ref-quinn_myopia_1999" role="doc-biblioref">Quinn et al. 1999</a>)</span>. The researchers asked the parents of children seen in a pediatric ophthalmology clinic about the lighting conditions in which their children had slept during their first two years of life. They reported a strong association: children exposed to more ambient light at night were more likely to develop myopia.</p>
+<p>The study included 479 children. The reported prevalence of myopia increased across the three nighttime lighting conditions:</p>
 <ul>
-<li>See the <a href="./00-syllabus.html">syllabus</a> for policies and the course schedule.</li>
-<li>Find course notes in the menu bar.</li>
+<li>Among 172 children who slept in darkness, 10% had myopia.</li>
+<li>Among 232 children who slept with a night light, 34% had myopia.</li>
+<li>Among 75 children who slept with room lighting, 55% had myopia.</li>
 </ul>
-<div class="callout callout-style-default callout-note callout-titled" title="About these notes">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
 </div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>About these notes
+<details class="lesson-question">
+<summary>
+Compared with sleeping in darkness, what was the relative risk of myopia for each lighted condition?
+</summary>
+<p>For children who slept with a night light, the relative risk was</p>
+<p><span class="math display">\[
+RR_{\text{night light}} = \frac{0.34}{0.10} = 3.4.
+\]</span></p>
+<p>For children who slept with room lighting, the relative risk was</p>
+<p><span class="math display">\[
+RR_{\text{room light}} = \frac{0.55}{0.10} = 5.5.
+\]</span></p>
+<p>Myopia was 3.4 times as common among children who slept with a night light and 5.5 times as common among children who slept with room lighting, compared with children who slept in darkness. These calculations describe the observed associations. They do not tell us that nighttime lighting caused myopia.</p>
+</details>
+<p>The result attracted attention because it suggested a simple environmental cause of myopia. Let <span class="math inline">\(X\)</span> indicate the nighttime lighting condition and let <span class="math inline">\(Y\)</span> indicate whether the child develops myopia. It is easy to tell a causal story in which exposure to light at night affects the development of the eye.</p>
+<details class="lesson-question">
+<summary>
+What do you think might confound the relationship between night-light use and childhood myopia? Why?
+</summary>
+<p>Parental myopia could confound the relationship. Parents with myopia may be more likely to use a night-light in their child’s room, and their children may inherit a greater risk of developing myopia. Parental myopia could therefore help explain both the exposure and the outcome.</p>
+<p>In March 2000, however, <em>Nature</em> published a response from Jane Gwiazda and colleagues <span class="citation" data-cites="gwiazda_myopia_2000">(<a href="references.html#ref-gwiazda_myopia_2000" role="doc-biblioref">Gwiazda et al. 2000</a>)</span>. They were unable to confirm the original association. They also found that myopic parents were more likely to use night-time lighting for their children, providing evidence for the confounding explanation above.</p>
+</details>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/nightlight-common-cause.svg" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption>Parental myopia as a common cause of night-light use and childhood myopia.</figcaption>
+</figure>
 </div>
+<p>Parental myopia is a common cause of the exposure and outcome. As we saw in Data Detective, this is what we call a confounder. Confounding can create an association even when the exposure does not cause the outcome.</p>
+<p>Sometimes a common cause does something even more surprising: it can reverse the apparent direction of an association.</p>
+</section>
+<section id="kidney-stone-treatments" class="level2">
+<h2 class="anchored" data-anchor-id="kidney-stone-treatments">Kidney-Stone Treatments</h2>
+<div class="example-intro">
+<p><span class="example-label">Example 2</span></p>
+<p>Our second case study begins in a London hospital during a period when the treatment of kidney stones was changing. From 1972 through 1980, patients in the study were treated with open surgery. From 1980 through 1985, physicians increasingly used a less invasive procedure called percutaneous nephrolithotomy. In 1986, C. R. Charig and colleagues published a historical comparison of these and other kidney-stone treatments <span class="citation" data-cites="charig_renal_1986">(<a href="references.html#ref-charig_renal_1986" role="doc-biblioref">Charig et al. 1986</a>)</span>.</p>
+<p>Among the patients they studied, open surgery succeeded for 273 of 350 patients, while percutaneous nephrolithotomy succeeded for 289 of 350 patients.</p>
 </div>
-<div class="callout-body-container callout-body">
-<p>These notes began as materials for another course aimed at a mathematical audience and have since been adapted for an epidemiology audience. I used OpenAI Codex to assist with parts of that process, including translating and reorganizing explanations, checking claims against the literature, designing and editing figures, and editing prose and course materials. Because AI-assisted work can contain errors, I review and revise the material and take full responsibility for its content, including any mistakes that remain.</p>
+<details class="lesson-question">
+<summary>
+What is the overall relative risk of successful treatment, comparing open surgery with percutaneous nephrolithotomy?
+</summary>
+<p>The risk of success was <span class="math inline">\(273/350\)</span> with open surgery and <span class="math inline">\(289/350\)</span> with percutaneous nephrolithotomy. Therefore,</p>
+<p><span class="math display">\[
+RR = \frac{273/350}{289/350} = 0.94.
+\]</span></p>
+<p>Overall, patients who received open surgery were about <span class="math inline">\(0.94\)</span> times as likely to have a successful treatment as patients who received percutaneous nephrolithotomy. Equivalently, the observed probability of success was about <span class="math inline">\(6\%\)</span> lower with open surgery.</p>
+</details>
+<p>Eight years later, Steven Julious and Mark Mullee revisited these data <span class="citation" data-cites="julious_confounding_1994">(<a href="references.html#ref-julious_confounding_1994" role="doc-biblioref">Julious and Mullee 1994</a>)</span>. They pointed out that kidney stones vary in size and that stone size was related both to treatment and to the chance of success. When they compared patients with similarly sized stones, the pattern reversed.</p>
+<p>For small stones:</p>
+<ul>
+<li>Open surgery succeeded for 81 of 87 patients.</li>
+<li>Percutaneous nephrolithotomy succeeded for 234 of 270 patients.</li>
+</ul>
+<p>For large stones:</p>
+<ul>
+<li>Open surgery succeeded for 192 of 263 patients.</li>
+<li>Percutaneous nephrolithotomy succeeded for 55 of 80 patients.</li>
+</ul>
+<details class="lesson-question">
+<summary>
+What is the relative risk of successful treatment within each kidney-stone size?
+</summary>
+<p>For patients with small stones,</p>
+<p><span class="math display">\[
+RR_{\text{small}} = \frac{81/87}{234/270} = 1.07.
+\]</span></p>
+<p>For patients with large stones,</p>
+<p><span class="math display">\[
+RR_{\text{large}} = \frac{192/263}{55/80} = 1.06.
+\]</span></p>
+<p>Within each kidney-stone size, patients who received open surgery were more likely to have a successful treatment. The direction of the association is the opposite of the overall comparison.</p>
+</details>
+<p>Open surgery was used much more often for difficult, large stones, while percutaneous nephrolithotomy was used much more often for easier, small stones. Combining the two stone sizes therefore compares treatment groups with very different mixtures of patients. Once we compare patients with similarly sized stones, open surgery has the higher observed success rate in both groups.</p>
+<details class="lesson-question">
+<summary>
+Based on these results, which treatment would you recommend?
+</summary>
+<p>If successful stone removal were our only consideration, the comparisons within kidney-stone size would favor open surgery. These comparisons are more informative than the overall comparison because stone size influenced treatment choice and was also related to treatment success.</p>
+<p>A clinical recommendation would require more than these success rates. Percutaneous nephrolithotomy is less invasive, and clinicians would also consider complications, recovery time, cost, other characteristics of the stone, and the patient’s preferences. Moreover, these data came from a historical comparison rather than a randomized trial.</p>
+</details>
+</section>
+<section id="simpsons-paradox" class="level2">
+<h2 class="anchored" data-anchor-id="simpsons-paradox">Simpson’s Paradox</h2>
+<p>The example we just saw showed us <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A reversal in which the direction of an association in the combined data is opposite to its direction within groups defined by a third variable." tabindex="0">Simpson’s paradox</span>. <strong>Simpson’s paradox</strong> occurs when the direction of an association in the combined data is opposite to its direction within groups defined by a third variable. In the kidney-stone example, the overall comparison favored percutaneous nephrolithotomy, while the comparisons within both stone sizes favored open surgery.</p>
+<p>Simpson’s paradox is not limited to binary exposures and outcomes. The same reversal can occur when <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are continuous. In the picture below, color indicates membership in a third group. Within every color, the points move downward as <span class="math inline">\(X\)</span> increases, showing a negative association between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. If we ignore the colors and combine all the points, the dark arrow moves upward, showing a positive association.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/simpsons-paradox.svg" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption>Each colored group has a negative association between X and Y, while the combined data have a positive association.</figcaption>
+</figure>
 </div>
+</section>
+<section id="something-more-than-statistics" class="level2">
+<h2 class="anchored" data-anchor-id="something-more-than-statistics">Something more than statistics</h2>
+<p>Statistical inference uses observed data to learn about a probability model. From data, we can infer means and probabilities. We can also infer measures of association, such as risk differences, relative risks, odds ratios, and correlations. These quantities tell us how variables are distributed and how they are related.</p>
+<p>Causal inference aims at a different target. We want to answer causal questions, such as: How much might an exposure cause an outcome to occur or change? A probability model alone cannot answer this question. It can tell us how the exposure and outcome occur together, but it cannot tell us how the outcome would change if the exposure changed.</p>
+<p>To answer causal questions, we need to say more than what is contained in the joint distribution of the variables. One important part of this “more” is directionality. We specify which variables can cause which other variables. A <strong>causal model</strong> makes this directionality explicit by describing each variable in terms of its direct causes. Because it adds causal structure to a probability model, a causal model subsumes a probability model.</p>
+<p>The bottom of the figure represents statistical inference. We use observed data to learn about a probability model. The top represents causal inference. We use data to learn about a causal model. This lets us infer quantities such as how much an exposure causes an outcome to change.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/causal-model-roadmap.svg" class="img-fluid figure-img" style="width:68.0%"></p>
+<figcaption>Statistical inference connects observational data to a probability model, while causal inference can also combine data with a causal model and information about interventions.</figcaption>
+</figure>
 </div>
+<p><strong>How do we add this directionality? What, more precisely, is a causal model?</strong></p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-charig_renal_1986" class="csl-entry" role="listitem">
+Charig, C. R., D. R. Webb, S. R. Payne, and J. E. Wickham. 1986. <span>“Comparison of Treatment of Renal Calculi by Open Surgery, Percutaneous Nephrolithotomy, and Extracorporeal Shockwave Lithotripsy.”</span> <em>British Medical Journal (Clinical Research Edition)</em> 292 (6524): 879–82. <a href="https://doi.org/10.1136/bmj.292.6524.879">https://doi.org/10.1136/bmj.292.6524.879</a>.
+</div>
+<div id="ref-gwiazda_myopia_2000" class="csl-entry" role="listitem">
+Gwiazda, Jane, Edward Ong, Richard Held, and Frank Thorn. 2000. <span>“Myopia and Ambient Night-Time Lighting.”</span> <em>Nature</em> 404 (6774): 144. <a href="https://doi.org/10.1038/35004663">https://doi.org/10.1038/35004663</a>.
+</div>
+<div id="ref-julious_confounding_1994" class="csl-entry" role="listitem">
+Julious, Steven A., and Mark A. Mullee. 1994. <span>“Confounding and Simpson’s Paradox.”</span> <em>BMJ</em> 309 (6967): 1480–81. <a href="https://doi.org/10.1136/bmj.309.6967.1480">https://doi.org/10.1136/bmj.309.6967.1480</a>.
+</div>
+<div id="ref-quinn_myopia_1999" class="csl-entry" role="listitem">
+Quinn, Graham E., Chai H. Shin, Maureen G. Maguire, and Richard A. Stone. 1999. <span>“Myopia and Ambient Lighting at Night.”</span> <em>Nature</em> 399 (6732): 113–14. <a href="https://doi.org/10.1038/20094">https://doi.org/10.1038/20094</a>.
+</div>
+</div>
+</section>
 
 </main> <!-- /main -->
 <script>
@@ -704,10 +916,13 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./01-data-detective.html" class="pagination-link" aria-label="A Detective Among Data">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">A Detective Among Data</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./00-syllabus.html" class="pagination-link" aria-label="Syllabus">
-        <span class="nav-page-text"><span class="chapter-title">Syllabus</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./03-clinical-trials.html" class="pagination-link" aria-label="Clinical Trials">
+        <span class="nav-page-text"><span class="chapter-title">Clinical Trials</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

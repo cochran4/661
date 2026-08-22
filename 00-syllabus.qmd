@@ -1,50 +1,52 @@
 # Syllabus
-## Causal Inference, Surveys, and Missing Data for Population Health (BMI/POP HLTH 661)
+**Causal Inference, Surveys, and Missing Data for Population Health**
+
+BMI/POP HLTH 661
 
 Fall 2026
 
----
+<div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
 
-## Course logistics
+## Course Information
 
-### Classroom and meeting times
+### Course Logistics
+
+#### Classroom and Meeting Times
 
 Days/Time: Tue/Thu 4:00–5:15 PM  
 Location: 726 WARF 
 
-### Instructor
+#### Instructor
 
 Amy Cochran  
 Email: cochran4@math.wisc.edu  
 Office hours: TBD, 685 WARF
 
-### Credit hours
+#### Credit Hours
 
 3 credits
 
 **UW–Madison credit hour policy.** The credit standard for this course is met by an expectation of a total of **135 hours** (at least 45 hours per credit) of student engagement with course learning activities. This includes regularly scheduled instructor–student meeting times (75-minute blocks on Tuesday and Thursday), reading, problem sets, and other work described in this syllabus.
 
-### Requisites
+#### Requisites
 
 POP HLTH/B M I 552, F&W ECOL/STAT 572 (or HORT 572 prior to Spring 2025), SOC/C&E SOC 361, or ED PSYCH 761
 
-### Course attributes
+#### Course Attributes
 
 Graduate level
 
-### Instructional mode
+#### Instructional Mode
 
 Face to face
 
----
+### Course Descriptions
 
-## Course description
-
-### Official course description
+#### Official Description
 
 Overview of modern statistical methods for dealing with "incomplete" data, including the design and analysis of complex surveys, the analysis of missing data, and causal inference.
 
-### Longer course description
+#### Instructor Description
 
 This course builds a foundation for making causal claims from observational data. We want to move past associations — *this thing is related to that thing* — and actually say that one thing **causes** another. Does vaping give you cancer? Is intermittent fasting bad for your heart? Can I eat eggs every morning? People are acting on these questions regardless (vaping, skipping breakfast, eating eggs), and the science they rely on should meet them with honest answers rather than a shrug about causation. 
 
@@ -52,48 +54,55 @@ Making those claims is hard. Without randomization, there are always at least tw
 
 Those tools are learned by using them. We write code in R, analyze real data in class, and the final project involves emulating a target trial from observational data.
 
----
+### Course Materials
 
-## Grading
+The course draws on several resource texts:
+
+- [*Causal Inference: What If*](https://miguelhernan.org/whatifbook) by Hernán and Robins
+- [*Flexible Imputation of Missing Data*](https://stefvanbuuren.name/fimd/) by van Buuren
+- [*Exploring Complex Survey Data Analysis Using R*](https://tidy-survey-r.github.io/tidy-survey-book/) by Zimmer, Powell, and Velásquez
+
+Additional notes and materials will be provided throughout the semester that build on and extend these texts.
+
+<div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
+
+## Course Format and Expectations
+
+### Assessment and Grading
 
 Your course work is weighted out of **100 points**:
 
-| Component | Points |
-|---|---:|
-| Homework | 20 |
-| Quizzes | 30 | 
-| Participation | 20 |
-| Project | 30 |
+- **Homework:** 15 points
+- **Quizzes:** 35 points
+- **Attendance:** 15 points
+- **Project:** 35 points
 
-### Guaranteed grade lines
+#### Guaranteed Grade Lines
 
 A percentage score in the indicated range guarantees at least the letter grade next to it:
 
-- **A:** [100, 93)
-- **AB:** [93, 88)
-- **B:** [88, 83)
-- **BC:** [83, 78)
-- **C:** [78, 63)
-- **D:** [63, 50)
-- **F:** [50, 0]
+- **A:** [93,100]
+- **AB:** [88,93)
+- **B:** [83, 88)
+- **BC:** [78, 83)
+- **C:** [63, 78)
+- **D:** [50, 63)
+- **F:** [0, 50]
 
 Grade lines may be lowered at the end.
 
----
-
-## Class components
-
 ### Devices
 
-This is a device-free classroom, except during designated coding sessions when laptops are expected. The evidence suggests that devices hurt learning, and a [recent Yale faculty report](https://president.yale.edu/sites/default/files/2026-04/Report-of-the-Committee-on-Trust-in-Higher-Education.pdf) recommended device-free classrooms as the default university-wide. This course asks you to think carefully about hard problems, and that kind of thinking requires your full attention.
+The class will be device-free: the use of laptops, tablets, and phones is prohibited except during class sessions when devices are used for specific learning activities. Students with approved accommodations through the McBurney Disability Resource Center may use devices as specified in their accommodations.
 
-### Participation
 
-Attendance is expected and participation is graded. Your participation grade is based on attendance: full credit for 3 or fewer unexcused absences, with proportional reduction beyond that.
+### Attendance
+
+Attendance is expected and graded. Full credit is earned with three or fewer unexcused absences. Each additional unexcused absence reduces the attendance grade by an equal share, calculated using the number of scheduled class meetings beyond the three allowed absences.
 
 Some absences can be anticipated and should be arranged with the instructor beforehand: conferences, academic travel, religious observances, or other scheduled commitments. Others arise unexpectedly: illness, family emergencies, or other extenuating circumstances. For these, let the instructor know as soon as you are able. All other absences are unexcused.
 
-### Class meetings
+### Class Meetings
 
 Class meets in person starting promptly at 4:00 PM on Tuesdays and Thursdays. Each class follows the same structure: a short lecture, followed by pen-and-paper problems worked through in small groups, followed by a coding session in R. The instructor will move between groups during problem-solving and coding to ask and answer questions.
 
@@ -101,7 +110,7 @@ This structure only works if you show up ready to engage. That means trying prob
 
 ### Homework
 
-Homework assignments are due by 4:00 PM on the Thursdays indicated in the course schedule, submitted on Canvas as a single PDF before class. There are 8 assignments total.
+Homework assignments are due by 4:00 PM on September 17; October 1, 8, 22, and 29; November 5 and 19; and December 8. With the exception of the final assignment, which is due on Tuesday, these dates are Thursdays. Submit each assignment on Canvas as a single PDF before class. There are 8 assignments total.
 
 Homework is graded for completeness, not correctness. Mastery is assessed through quizzes and the project.
 
@@ -112,7 +121,7 @@ Homework is graded for completeness, not correctness. Mastery is assessed throug
 
 ### Quizzes
 
-There are 8 short in-class quizzes, given on the same Thursdays as homework. Quizzes assess comprehension of recent material and will look similar to homework problems. The lowest quiz score will be dropped.
+There are 8 short in-class quizzes, given on the same dates as homework: September 17; October 1, 8, 22, and 29; November 5 and 19; and December 8. The final quiz is on a Tuesday; all other quizzes are on Thursdays. Quizzes assess comprehension of recent material and will look similar to homework problems. The lowest quiz score will be dropped.
 
 ### Project
 
@@ -120,33 +129,21 @@ The project is the central assessment of the course. Working individually, you w
 The final submission has two parts: a written protocol and an analysis script that executes on a sandbox dataset. 
 The protocol can be written in any format (e.g., Quarto, Word, or LaTeX). The project unfolds across six milestones:
 
-| Milestone | Due |
-|---|---|
-| Scientific gap | Thu, Sep 17 |
-| Target trial table | Thu, Oct 1 |
-| Construction | Thu, Oct 15 |
-| Identification | Thu, Nov 12 |
-| Estimation | Thu, Dec 3 |
-| Final document | Mon, Dec 14 |
+- **Scientific gap:** Thursday, September 10
+- **Target trial table:** Thursday, September 24
+- **Construction:** Thursday, October 15
+- **Identification:** Thursday, November 12
+- **Estimation:** Thursday, December 3
+- **Final document:** Tuesday, December 15
 
 More detail on each milestone will be provided on Canvas. You are welcome to use your own dataset or work with the dataset the instructor uses throughout the course.
 
-### Textbooks
+### Schedule (Tentative)
 
-The course draws on several resources texts:  
-- [https://miguelhernan.org/whatifbook](Causal Inference: What If) by Hernán and Robins  
-- [https://stefvanbuuren.name/fimd/](Flexible Imputation of Missing Data) by van Buuren
-- [https://tidy-survey-r.github.io/tidy-survey-book/](Exploring Complex Survey Data Analysis Using R) by Zimmer, Powell, and Velásquez
-Additional notes and materials will be provided throughout the semester that build on and extend these texts.
-
-
----
-
-## Schedule (tentative)
- 
+::: {.schedule-table-wrap role="region" aria-label="Scrollable course schedule" tabindex="0"}
 | Week | Date | Day | Section | Topics |
 |---:|---|---|---|---|
-| 1 | Sep 3 | Th | Motivation | Why probability/regression is not enough |
+| 1 | Sep 3 | Th | Motivation | Cornfield conditions |
 | 2 | Sep 8 | Tu |  | Clinical trials |
 | 2 | Sep 10 | Th | Review | Probability and statistics review  |
 | 3 | Sep 15 | Tu | Construction | Structural equation models (SEM) |
@@ -160,7 +157,7 @@ Additional notes and materials will be provided throughout the semester that bui
 | 7 | Oct 13 | Tu |  | Matching  |
 | 7 | Oct 15 | Th |  | Propensity score |
 | 8 | Oct 20 | Tu |  | Inverse probability weighting |
-| 8 | Oct 22 | Th |  | Doubly robust methods (AIPW) |
+| 8 | Oct 22 | Th |  | Doubly robust methods |
 | 9 | Oct 27 | Tu |  | Flexible modeling methods |
 | 9 | Oct 29 | Th | Unmeasured confounding | Instrumental variables |
 | 10 | Nov 3 | Tu |  | Regression discontinuity  |
@@ -173,10 +170,9 @@ Additional notes and materials will be provided throughout the semester that bui
 | 13 | Nov 26 | Th | | **Thanksgiving (no class)** |
 | 14 | Dec 1 | Tu | | Missing not at random |
 | 14 | Dec 3 | Th | Surveys | Complex survey design |
-| 15 | Dec 8 | Tu |  | Weighting |
-| 15 | Dec 10 | Th |  | Variance estimation |
-| 16 | Dec 15 | Tu |  | Wrap-up |
-: {tbl-colwidths="[9, 10, 6, 30, 45]"}
+| 15 | Dec 8 | Tu |  | Weighting and variance estimation |
+: Tentative course schedule for Fall 2026. {#tbl-course-schedule .course-schedule tbl-colwidths="[8, 12, 8, 25, 47]"}
+:::
 
 <!-- Useful resource https://bookdown.org/glorya_hu/MNAR-Guide/ -->
 
@@ -198,44 +194,48 @@ May need to skip below or update it
 | **Application** | Perform standard computations in linear algebra (e.g., rank of a matrix; determinant of a square matrix). |
 --> 
 
----
+<div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
 
-## UW–Madison required statements
+## Official UW Statements
 
-### Teaching & learning data transparency statement
+### Accommodations for Students with Disabilities
 
-The privacy and security of faculty, staff, and students’ personal information is a top priority for UW–Madison. The university carefully evaluates and vets all campus-supported digital tools used to support teaching and learning, to help support success through learning analytics, and to enable proctoring capabilities.
+The University of Wisconsin–Madison supports the right of all enrolled students to a full and equal educational opportunity. The Americans with Disabilities Act (ADA), Wisconsin State Statute (36.12), and UW–Madison policy ([UW-855](https://policy.wisc.edu/library/UW-855)) require the university to provide reasonable accommodations to students with disabilities to access and participate in its academic programs and educational services. Faculty and students share responsibility in the accommodation process. Students are expected to inform faculty of their need for instructional accommodations during the beginning of the semester, or as soon as possible after being approved for accommodations. Faculty will work either directly with the student or in coordination with the [McBurney Disability Resource Center](https://mcburney.wisc.edu/) to provide reasonable instructional and course-related accommodations. Disability information, including instructional accommodations as part of a student's educational record, is confidential and protected under [FERPA](https://registrar.wisc.edu/ferpa/).
 
-Full statement: [https://teachlearn.provost.wisc.edu/teaching-and-learning-data-transparency-statement/](https://teachlearn.provost.wisc.edu/teaching-and-learning-data-transparency-statement/)
+### Teaching & Learning Data Transparency Statement
 
-### Course evaluations
+The privacy and security of faculty, staff, and students' personal information is a top priority for UW–Madison. The university carefully reviews and vets all campus-supported digital tools used for teaching and learning, including those that support [data empowered educational practices](https://teachlearn.wisc.edu/deep/) and proctoring. View more information about [teaching and learning data transparency](https://teachlearn.wisc.edu/teaching-and-learning-data-transparency-statement/) at UW–Madison.
 
-UW–Madison uses a digital course evaluation survey tool called AEFIS. For this course, you will receive an official email two weeks prior to the end of the semester, notifying you that your course evaluation is available. In the email you will receive a link to log into the course evaluation with your NetID. Evaluations are anonymous.
+### Privacy of Student Records & Use of Audio Recorded Lectures
 
-Your participation is an integral component of this course, and your feedback is important to us. We strongly encourage you to participate in the course evaluation.
+Lecture materials and recordings for this course are protected intellectual property at UW–Madison. Students enrolled in this course may use the materials and recordings for their personal use related to participation in the course. Students may also take notes solely for their personal use. If a lecture is not already recorded, students are not authorized to record lectures without permission unless they are considered by the university to be a qualified student with a disability who has an approved accommodation that includes recording. Students may not copy or have lecture materials and recordings outside of class, including posting on internet sites or selling to commercial entities, with the exception of sharing copies of personal notes as a notetaker through the McBurney Disability Resource Center. Students are otherwise prohibited from providing or selling their personal notes to anyone else or being paid for taking notes by any person or commercial firm without the instructor's express written permission. Unauthorized use of these copyrighted lecture materials and recordings constitutes copyright infringement and may be addressed under the university's policies, UWS Chapters 14 and 17, governing student academic and non-academic misconduct. View [more information about FERPA](https://registrar.wisc.edu/ferpa/).
 
-### Students’ rules, rights & responsibilities
+### Course Evaluations
 
-University privacy rights (FERPA): [https://guide.wisc.edu/undergraduate/#rulesrightsandresponsibilitiestext](https://guide.wisc.edu/undergraduate/#rulesrightsandresponsibilitiestext)
+Students at the University of Wisconsin–Madison have the opportunity to evaluate their learning experiences and the courses they are enrolled in through course evaluations. Many instructors use a [digital course evaluation tool](https://kb.wisc.edu/luwmad/81069) to collect feedback from students. Students typically receive notifications two weeks prior to the end of the semester requesting that they complete course evaluations. Student participation is an integral component of course development, and confidential feedback is important. UW–Madison strongly encourages student participation in course evaluations.
 
-### Diversity & Inclusion statement
+### Students’ Rules, Rights & Responsibilities
 
-Diversity is a source of strength, creativity, and innovation for UW–Madison. We value the contributions of each person and respect the profound ways their identity, culture, background, experience, status, abilities, and opinion enrich the university community. We commit ourselves to the pursuit of excellence in teaching, research, outreach, and diversity as inextricably linked goals.
+View more information about [student rules, rights, and responsibilities](https://guide.wisc.edu/undergraduate/#rulesrightsandresponsibilitiestext), such as student privacy rights, sharing of academic record information, academic integrity, and grievances.
 
-### Academic integrity statement
+### Diversity & Inclusion Statement
 
-By virtue of enrollment, you agree to uphold the high academic standards of the University of Wisconsin–Madison; academic misconduct is behavior that negatively impacts the integrity of the institution. Cheating, fabrication, plagiarism, unauthorized collaboration, and helping others commit these acts are examples of misconduct which may result in disciplinary action.
+Diversity is a source of strength, creativity, and innovation for the University of Wisconsin–Madison. We value the contributions of each person and respect the profound ways their identity, culture, background, experience, status, abilities, and opinion enrich the university community. We commit ourselves to the pursuit of excellence in teaching, research, outreach, and diversity as inextricably linked goals. UW–Madison fulfills its public mission by creating a welcoming and inclusive community for people from every background -- people who as students, faculty, and staff serve Wisconsin and the world. (Source: [Institutional Statement on Diversity](https://diversity.wisc.edu/institutional-statement-on-diversity/))
 
-Official statement: [https://conduct.students.wisc.edu/faculty-staff-resources/syllabus-statement/](https://conduct.students.wisc.edu/faculty-staff-resources/syllabus-statement/)
+### Student Health, Well-Being & Basic Needs
 
-### Accommodations for students with disabilities
+Students often experience stressors outside the classroom that can impact their academic experience. These might include mental and physical health concerns; difficulty securing food, housing, and other basic needs; misuse of alcohol or other drugs; sexual or relationship violence; family challenges; and campus climate, among others. If you're experiencing one or more of these challenges, you're not alone and help is available. To learn more, visit [Get Help](https://students.wisc.edu/guides/get-help-now/).
 
-The University of Wisconsin–Madison supports the right of all enrolled students to a full and equal educational opportunity. The Americans with Disabilities Act (ADA), Wisconsin State Statute (36.12), and UW–Madison policy (UW-855) require the university to provide reasonable accommodations to students with disabilities to access and participate in academic programs and educational services.
+### Academic Integrity Statement
 
-Students are expected to inform faculty of their need for instructional accommodations at the beginning of the semester, or as soon as possible after being approved for accommodations. Faculty will work either directly with the student or in coordination with the McBurney Center.
+By virtue of enrollment, each student agrees to uphold the high academic standards of the University of Wisconsin–Madison. Academic misconduct is behavior that negatively impacts the integrity of the institution. Cheating, fabrication, plagiarism, unauthorized collaboration and helping others commit these previously listed acts are examples of misconduct that might result in disciplinary action. Examples of [disciplinary sanctions](https://conduct.students.wisc.edu/academic-misconduct/) include, but are not limited to, failure on the assignment/course, written reprimand, disciplinary probation, suspension, or expulsion.
 
-McBurney Disability Resource Center: [https://mcburney.wisc.edu/](https://mcburney.wisc.edu/)
+### AI Statement
 
-### Academic calendar & religious observance
+The use of artificial intelligence (AI) tools and applications, such as Copilot, Gemini, and others, is permitted in this course when it supports the course learning objectives. You are responsible for any information you submit based on an AI query. Ensure that you have permission before posting course content, including assignment or assessment prompts, and verify that AI-generated results do not contain misinformation or unethical content. Your use of AI tools must be documented and cited to conform to this course's expectations. When you use AI on a submitted assignment, include a brief AI-use statement naming the tool and describing how you used it. You remain responsible for the correctness, clarity, and completeness of all submitted work.
 
-Academic calendars and religious observance policy: [https://secfac.wisc.edu/academic-calendar/](https://secfac.wisc.edu/academic-calendar/)
+### Academic Calendar & Religious Observances
+
+View the full [academic calendar](https://secfac.wisc.edu/academic-calendar) in addition to information about religious and election day observances. Students are responsible for notifying instructors within the first two weeks of classes about any need for flexibility due to [religious observances](https://policy.wisc.edu/library/UW-880).
+
+Establishment of the academic calendar for the University of Wisconsin–Madison falls within the authority of the faculty as set forth in [Faculty Policies and Procedures](https://policy.wisc.edu/library/UW-801). Construction of the academic calendar is subject to various rules and laws prescribed by the Board of Regents, the Faculty Senate, State of Wisconsin and the federal government. Find [additional dates and deadlines for students](https://registrar.wisc.edu/dates/) on the Office of the Registrar website.

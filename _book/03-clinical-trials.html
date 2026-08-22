@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Clinical Trials – Causal inference (and other things)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./glossary.html" rel="next">
+<link href="./02-why-statistics-is-not-enough.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-c4079f0e898aa450387ebfef2f739c96.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Causal inference (and other things)</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./00-syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-motivation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Motivation</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-motivation">    
+        <li>
+    <a class="dropdown-item" href="./01-data-detective.html">
+ <span class="dropdown-text">A detective among data</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02-why-statistics-is-not-enough.html">
+ <span class="dropdown-text">Why statistics is not enough</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03-clinical-trials.html">
+ <span class="dropdown-text">Clinical trials</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-back-matter" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Back matter</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-back-matter">    
+        <li>
+    <a class="dropdown-item" href="./glossary.html">
+ <span class="dropdown-text">Glossary</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./references.html">
+ <span class="dropdown-text">References</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-data-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./03-clinical-trials.html"><span class="chapter-title">Clinical Trials</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">index.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-syllabus.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Syllabus</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Motivation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-data-detective.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">A Detective Among Data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-why-statistics-is-not-enough.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Why Statistics Is Not Enough</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-clinical-trials.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Clinical Trials</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Construction</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Measured confounding</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Unmeasured confounding</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Sensitivity analysis</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Missing data</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Complex surveys</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Back matter</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Glossary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">References</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-data-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./03-clinical-trials.html"><span class="chapter-title">Clinical Trials</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">Clinical Trials</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>For our first real foray into causal inference, we will use clinical trials as our exemplar. Clinical trials show us how causal inference is possible with randomization. They also introduce a roadmap that we will follow throughout this textbook: <strong>construction, identification, and estimation</strong>.</p>
+<section id="an-exemplar" class="level2">
+<h2 class="anchored" data-anchor-id="an-exemplar">An exemplar</h2>
+<div class="example-intro">
+<p><span class="example-label">Case study: Women’s Health Initiative</span></p>
+<p>The Women’s Health Initiative (WHI) included a landmark clinical trial of menopausal hormone therapy. At the time, hormone therapy was widely used to treat menopausal symptoms. Many clinicians also believed that it might prevent coronary heart disease. Most of that evidence came from observational studies.</p>
+<p>The trial enrolled 16,608 postmenopausal women ages 50 to 79 with an intact uterus at 40 clinical centers in the United States. Women were randomly assigned to take either a daily tablet containing estrogen plus progestin or a matching placebo. The primary outcome was coronary heart disease, defined as a nonfatal heart attack or death from coronary heart disease <span class="citation" data-cites="whi2002">(<a href="references.html#ref-whi2002" role="doc-biblioref">Writing Group for the Women’s Health Initiative Investigators 2002</a>)</span>.</p>
+<p>The WHI hormone-therapy trial is a two-arm randomized controlled trial (RCT). To describe the trial, we need to specify who was studied, what treatment was assigned, what it was compared with, and what outcome was measured.</p>
+</div>
+<details class="lesson-question">
+<summary>
+Specify, as precisely as possible, who was studied, the treatment, the comparator, and the outcome.
+</summary>
+<ul>
+<li><strong>Who was studied:</strong> 16,608 postmenopausal women ages 50 to 79 with an intact uterus who were recruited at 40 clinical centers in the United States.</li>
+<li><strong>Treatment:</strong> Assignment to a daily tablet containing 0.625 mg of conjugated equine estrogen plus 2.5 mg of medroxyprogesterone acetate.</li>
+<li><strong>Comparator:</strong> Assignment to a matching placebo tablet.</li>
+<li><strong>Outcome:</strong> Coronary heart disease, defined as a nonfatal heart attack or death from coronary heart disease.</li>
+</ul>
+<p><em>Note.</em> The treatment in this trial is <em>assignment</em> to hormone therapy, not whether a participant took every assigned tablet. This is an important distinction that we revisit later.</p>
+</details>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/prototrial-whi-paperback.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption>Six women from three age groups assigned to hormone therapy or placebo, with coronary heart disease recorded afterward.</figcaption>
+</figure>
+</div>
+<p>We use three variables to describe a patient in the study:</p>
+<ul>
+<li><span class="math inline">\(X\)</span> is their age: <span class="math inline">\(X=0\)</span> if 50-59 years of age, <span class="math inline">\(X=1\)</span> if 60-69, and <span class="math inline">\(X=2\)</span> if <span class="math inline">\(70-79\)</span>.</li>
+<li><span class="math inline">\(A\)</span> is their treatment assignment: <span class="math inline">\(A=1\)</span> if estrogen plus progestin and <span class="math inline">\(A=0\)</span> if placebo</li>
+<li><span class="math inline">\(Y\)</span> is their outcome after treatment assignment: <span class="math inline">\(Y=1\)</span> if a coronary heart disease event occurs and <span class="math inline">\(Y=0\)</span> if not.</li>
+</ul>
+<p>We treat <span class="math inline">\(X\)</span>, <span class="math inline">\(A\)</span>, and <span class="math inline">\(Y\)</span> as random variables with a probability model. We also assume that the observations from different participants are independent and that every participant’s observations come from the same probability model.</p>
+<details class="lesson-question">
+<summary>
+Using the figure, write the observed data as a table with one row for each participant and columns for <span class="math inline">\(X\)</span>, <span class="math inline">\(A\)</span>, and <span class="math inline">\(Y\)</span>.
+</summary>
+<p>For this exercise, let <span class="math inline">\(X\)</span> be the participant’s age group. Reading from left to right in the figure gives us:</p>
+<table class="compact-data-table">
+<caption>
+Observed data represented in the figure.
+</caption>
+<thead>
+<tr>
+<th scope="col">
+Participant
+</th>
+<th scope="col">
+<span class="math inline">\(X\)</span>
+</th>
+<th scope="col">
+<span class="math inline">\(A\)</span>
+</th>
+<th scope="col">
+<span class="math inline">\(Y\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th scope="row">
+1
+</th>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th scope="row">
+2
+</th>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th scope="row">
+3
+</th>
+<td>
+2
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+</tr>
+<tr>
+<th scope="row">
+4
+</th>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<th scope="row">
+5
+</th>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+</tr>
+<tr>
+<th scope="row">
+6
+</th>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+</tr>
+</tbody>
+</table>
+</details>
+<details class="lesson-question">
+<summary>
+Calculate the average outcome in each treatment group. What is the difference between the two averages?
+</summary>
+<p>Among participants assigned to estrogen plus progestin, the average outcome is</p>
+<p><span class="math display">\[
+\frac{0+1+0}{3}=\frac{1}{3}.
+\]</span></p>
+<p>Among participants assigned to placebo, the average outcome is</p>
+<p><span class="math display">\[
+\frac{0+0+1}{3}=\frac{1}{3}.
+\]</span></p>
+<p>The difference, comparing estrogen plus progestin with placebo, is</p>
+<p><span class="math display">\[
+\frac{1}{3}-\frac{1}{3}=0.
+\]</span></p>
+<p>Because <span class="math inline">\(Y\)</span> is either 0 or 1, the average of <span class="math inline">\(Y\)</span> is also the proportion of participants who experienced a coronary heart disease event. In this small dataset, that proportion is the same in both groups.</p>
+</details>
+<p>The average outcome in the estrogen-plus-progestin group estimates <span class="math inline">\(E[Y\mid A=1]\)</span>. This notation tells us to restrict attention to people assigned estrogen plus progestin, and then take the mean of their outcomes. Similarly, the average outcome in the placebo group estimates <span class="math inline">\(E[Y\mid A=0]\)</span>. Because <span class="math inline">\(Y\)</span> is either 0 or 1, each of these means is also the probability of a coronary heart disease event in that treatment group.</p>
+<p>For both treatment-group means to be defined, each treatment must have a positive probability of being assigned. If everyone received hormone therapy, there would be no placebo group, so <span class="math inline">\(E[Y\mid A=0]\)</span> would not be defined. The same problem would arise for <span class="math inline">\(E[Y\mid A=1]\)</span> if everyone received placebo. This property is called <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="Each treatment under study has a positive probability of being assigned." tabindex="0">positivity</span>. In the WHI trial, randomization gave each participant a positive probability of assignment to hormone therapy and to placebo.</p>
+<p>The difference between the two group averages estimates the <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="The risk of an outcome under one exposure or treatment minus the risk under another." tabindex="0">risk difference</span>:</p>
+<p><span class="math display">\[
+E[Y\mid A=1]-E[Y\mid A=0].
+\]</span></p>
+<p>Our strategy is not so bad. Because participants provide independent observations from the same probability model, the sample average in each treatment group is <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="Under a probability model, an estimator is unbiased if its expected value equals the quantity it is intended to estimate." tabindex="0">unbiased</span> for the corresponding treatment-group mean.</p>
+<p>This is statistical inference. We are using the observed data to learn about quantities in a probability model. We have not yet stated the causal quantity we want to learn. For that, we need a causal model.</p>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
+</div>
+</section>
+<section id="construction" class="level2">
+<h2 class="anchored" data-anchor-id="construction">Construction</h2>
+<p>For the WHI study, we want to know: Would assigning estrogen plus progestin rather than placebo change the probability of a coronary heart disease event? Before we can answer this question, we need to make it precise. We do this by constructing a causal model and defining the question in terms of that model. We call this step construction.</p>
+<p>For now, we think of a causal model as a story about how the data were generated. In the WHI trial, each participant first enters the study with baseline characteristics, such as age, which we represent by <span class="math inline">\(X\)</span>. They are then randomly assigned to treatment. The randomization procedure does not use their preferences, characteristics, or prognosis to determine treatment assignment <span class="math inline">\(A\)</span>. Later, after treatment is assigned, the outcome <span class="math inline">\(Y\)</span> occurs. Treatment may influence the outcome, and baseline characteristics may influence it too. This ordered story is our first informal causal model.</p>
+<section id="a-thought-experiment" class="level3">
+<h3 class="anchored" data-anchor-id="a-thought-experiment">A Thought Experiment</h3>
+<p>Now that we have a story for how the data came about, we can stop in the middle of that story and change something. When we reach treatment assignment, we can set aside the assignment made by randomization and choose what treatment the person receives. We then let the rest of the story play out and ask what the outcome would be.</p>
+<p>This thought experiment can feel abstract, perhaps more like science fiction than science. Imagine a multiverse with two parallel universes containing the same woman. In one universe, we give her hormone therapy (<span class="math inline">\(a=1\)</span>), shown as the red pill. In the other, we give her placebo (<span class="math inline">\(a=0\)</span>), shown as the blue pill. Only one universe is observed in the real world, but the thought experiment asks us to consider both and ask what her outcome would be in each one.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/potential-outcomes-whi-paperback-v3.png" class="img-fluid figure-img" style="width:82.0%"></p>
+<figcaption>A common path splits into two parallel universes containing the same woman. In one universe, she is assigned estrogen plus progestin; in the other, she is assigned placebo. Her outcome in each universe is unknown.</figcaption>
+</figure>
+</div>
+<p>These two imagined outcomes cannot both be represented by the outcome <span class="math inline">\(Y\)</span> that we observe in the real world. We introduce new random variables to describe them. We write <span class="math inline">\(Y(1)\)</span> for the outcome under assignment to estrogen plus progestin and <span class="math inline">\(Y(0)\)</span> for the outcome under assignment to placebo. These random variables are called <strong>potential outcomes</strong>.</p>
+<p>Potential outcomes under treatment assignments that were not actually realized are also called <em>counterfactuals</em>, meaning “counter to the fact.”</p>
+</section>
+<section id="well-definedness" class="level3">
+<h3 class="anchored" data-anchor-id="well-definedness">Well-Definedness</h3>
+<p>In mathematics, a definition is <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A definition is well-defined when each possible input determines one unambiguous object." tabindex="0">well-defined</span> when each possible input determines one unambiguous object. Here, the treatment value <span class="math inline">\(a\)</span> must describe a sufficiently precise change to our causal story that the potential outcome <span class="math inline">\(Y(a)\)</span> has one clear meaning.</p>
+<div class="example-intro">
+<p><span class="example-label">Example: The same nationality</span></p>
+<p>Suppose we ask: If Nadal and Federer were the same nationality, would Federer be from Spain? The proposed change is not well-defined. One version makes both players Spanish. Another makes both players Swiss. Saying only that they have the same nationality does not tell us which change to make.</p>
+<p>This example is from Willard Van Orman Quine’s <em>Methods of Logic</em>, with Nadal and Federer replacing the composers Bizet and Verdi.</p>
+</div>
+<p>Clinical trials try to make their treatments well-defined through precise protocols. The WHI protocol did not simply say “give hormone therapy.” It specified a daily tablet containing 0.625 mg of conjugated equine estrogen plus 2.5 mg of medroxyprogesterone acetate, compared with a matching placebo. Using the same protocol across clinical centers helps ensure that assignment to hormone therapy represents the same intervention everywhere.</p>
+<p>Well-definedness can fail when one treatment label hides versions that could lead to different outcomes. For example, “hormone therapy” could refer to different drugs, doses, schedules, or durations. Unless we specify the intervention more precisely, the meaning of <span class="math inline">\(Y(1)\)</span> may be ambiguous.</p>
+<p>Well-definedness can also fail when one person’s outcome depends on another person’s treatment. Suppose two friends participate in the same trial. What one friend receives might change the other’s behavior and, in turn, their outcome. In that case, specifying only one person’s treatment does not fully specify the scenario needed to determine their potential outcome. This is called <strong>interference</strong>.</p>
+<details class="lesson-question technical-proof">
+<summary>
+Optional technical note: SUTVA
+</summary>
+<p>The <strong>stable unit treatment value assumption</strong> (SUTVA) is a traditional name for technical conditions on potential outcomes <span class="citation" data-cites="rubin1980">(<a href="references.html#ref-rubin1980" role="doc-biblioref">Rubin 1980</a>)</span>:</p>
+<ul>
+<li><strong>No hidden versions of treatment.</strong> Each treatment represents one relevant intervention. If several versions exist, they must produce the same potential outcome. The latter condition is sometimes called <strong>treatment-variation irrelevance</strong>.</li>
+<li><strong>No interference.</strong> One person’s potential outcome does not depend on the treatments assigned to other people.</li>
+<li><strong>Consistency.</strong> Some presentations also include consistency under SUTVA: the observed outcome agrees with the potential outcome under the treatment received.</li>
+</ul>
+<p>For us, consistency is a consequence of well-definedness rather than a separate assumption.</p>
+</details>
+</section>
+<section id="the-fundamental-problem" class="level3">
+<h3 class="anchored" data-anchor-id="the-fundamental-problem">The Fundamental Problem</h3>
+<p>Well-defined potential outcomes connect our thought experiment to the observed data. If <span class="math inline">\(A=1\)</span>, then the observed outcome <span class="math inline">\(Y\)</span> is <span class="math inline">\(Y(1)\)</span>. If <span class="math inline">\(A=0\)</span>, then the observed outcome <span class="math inline">\(Y\)</span> is <span class="math inline">\(Y(0)\)</span>. This connection is called <strong>consistency</strong>.</p>
+<p>As a result, we observe only one potential outcome for each person. If a person receives treatment 1, we observe <span class="math inline">\(Y(1)\)</span> but not <span class="math inline">\(Y(0)\)</span>. If a person receives treatment 0, we observe <span class="math inline">\(Y(0)\)</span> but not <span class="math inline">\(Y(1)\)</span>.</p>
+<p>Ideally, we want to know the individual treatment effect:</p>
+<p><span class="math display">\[
+Y(1)-Y(0).
+\]</span></p>
+<p>Calculating this effect requires both potential outcomes, but the other potential outcome is missing. This is called the <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="For each person, we observe the potential outcome under the treatment received but not the potential outcome under the other treatment." tabindex="0">fundamental problem of causal inference</span>.</p>
+<p>Return to the six participants shown above. Complete the table as much as possible. Use the observed treatment and outcome to fill in the potential outcome that we observe. Enter a question mark for the potential outcome that we cannot determine.</p>
+<table class="compact-data-table potential-outcomes-table">
+<caption>
+Observed data and blank potential outcomes for six participants.
+</caption>
+<thead>
+<tr>
+<th scope="col">
+<span class="math inline">\(X\)</span>
+</th>
+<th scope="col">
+<span class="math inline">\(A\)</span>
+</th>
+<th scope="col">
+<span class="math inline">\(Y\)</span>
+</th>
+<th scope="col">
+<span class="math inline">\(Y(0)\)</span>
+</th>
+<th scope="col">
+<span class="math inline">\(Y(1)\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+<span aria-label="blank to be completed">_____</span>
+</td>
+<td>
+<span aria-label="blank to be completed">_____</span>
+</td>
+</tr>
+<tr>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+<span aria-label="blank to be completed">_____</span>
+</td>
+<td>
+<span aria-label="blank to be completed">_____</span>
+</td>
+</tr>
+<tr>
+<td>
+2
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+<span aria-label="blank to be completed">_____</span>
+</td>
+<td>
+<span aria-label="blank to be completed">_____</span>
+</td>
+</tr>
+<tr>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+<span aria-label="blank to be completed">_____</span>
+</td>
+<td>
+<span aria-label="blank to be completed">_____</span>
+</td>
+</tr>
+<tr>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+<span aria-label="blank to be completed">_____</span>
+</td>
+<td>
+<span aria-label="blank to be completed">_____</span>
+</td>
+</tr>
+<tr>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+<span aria-label="blank to be completed">_____</span>
+</td>
+<td>
+<span aria-label="blank to be completed">_____</span>
+</td>
+</tr>
+</tbody>
+</table>
+<details class="lesson-question">
+<summary>
+Show the completed table.
+</summary>
+<table class="compact-data-table potential-outcomes-table">
+<caption>
+Potential outcomes that can be determined from the observed data.
+</caption>
+<thead>
+<tr>
+<th scope="col">
+<span class="math inline">\(X\)</span>
+</th>
+<th scope="col">
+<span class="math inline">\(A\)</span>
+</th>
+<th scope="col">
+<span class="math inline">\(Y\)</span>
+</th>
+<th scope="col">
+<span class="math inline">\(Y(0)\)</span>
+</th>
+<th scope="col">
+<span class="math inline">\(Y(1)\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+?
+</td>
+</tr>
+<tr>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+?
+</td>
+</tr>
+<tr>
+<td>
+2
+</td>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+?
+</td>
+</tr>
+<tr>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+?
+</td>
+<td>
+0
+</td>
+</tr>
+<tr>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+?
+</td>
+<td>
+1
+</td>
+</tr>
+<tr>
+<td>
+2
+</td>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+?
+</td>
+<td>
+0
+</td>
+</tr>
+</tbody>
+</table>
+<p>When <span class="math inline">\(A=0\)</span>, the observed outcome gives us <span class="math inline">\(Y(0)\)</span>. When <span class="math inline">\(A=1\)</span>, the observed outcome gives us <span class="math inline">\(Y(1)\)</span>. The other potential outcome is unknown for every participant.</p>
+</details>
+</section>
+<section id="effects-on-average" class="level3">
+<h3 class="anchored" data-anchor-id="effects-on-average">Effects on Average</h3>
+<p>We cannot observe the effect of hormone therapy for any one woman, but we can ask about its effect across the population represented by the WHI trial. Imagine that every woman in this population receives hormone therapy. The quantity <span class="math inline">\(E[Y(1)]\)</span> is the average of their potential outcomes. Because the outcome is either 0 or 1, this average is also the probability of a coronary heart disease event if everyone receives hormone therapy.</p>
+<p>Now imagine that every woman receives placebo. The quantity <span class="math inline">\(E[Y(0)]\)</span> is the probability of a coronary heart disease event in this second scenario.</p>
+<p>Our causal question can now be stated precisely: Is</p>
+<p><span class="math display">\[
+E[Y(1)]-E[Y(0)]
+\]</span></p>
+<p>positive, negative, or zero?</p>
+<p>This difference is the <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="The difference between the average potential outcome under one treatment and the average potential outcome under another treatment." tabindex="0">average treatment effect (ATE)</span>. For the WHI study, the ATE is the difference between the probability of coronary heart disease if everyone receives hormone therapy and the probability if everyone receives placebo. A positive value would mean that hormone therapy increases risk, a negative value would mean that it decreases risk, and a value of zero would mean that the risks are the same.</p>
+<p>A <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A probabilistic quantity involving potential outcomes that we want to estimate." tabindex="0">causal estimand</span> is a probabilistic quantity involving potential outcomes that we want to estimate. The ATE is our causal estimand for the WHI study.</p>
+<p>We have now completed construction. We described how the data came about, used that story to define the potential outcomes, and stated the causal question as a comparison between them. The remaining problem is that the potential outcomes are partly missing.</p>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
+</div>
+</section>
+</section>
+<section id="identification" class="level2">
+<h2 class="anchored" data-anchor-id="identification">Identification</h2>
+<p>Construction told us what we want to learn. <strong>Identification</strong> asks whether the observed data can tell us that answer. This is where randomization returns to our story.</p>
+<section id="what-randomization-gives-us" class="level3">
+<h3 class="anchored" data-anchor-id="what-randomization-gives-us">What Randomization Gives Us</h3>
+<p>Recall how treatment assignment arose in the WHI trial. Participants entered the trial with baseline characteristics, and then the randomization procedure assigned hormone therapy or placebo. Their preferences, characteristics, and prognosis were not used to decide which treatment they received.</p>
+<p>Randomization therefore makes the treatment groups comparable before treatment, apart from differences that arise by chance. In terms of potential outcomes, knowing a person’s treatment assignment does not tell us anything about what her outcomes would be under hormone therapy or placebo. This property is called <strong>exchangeability</strong>.</p>
+<p>We write exchangeability as</p>
+<p><span class="math display">\[
+Y(a) \perp\!\!\!\perp A
+\]</span></p>
+<p>for each treatment <span class="math inline">\(a\)</span>. The notation says that the potential outcome under treatment <span class="math inline">\(a\)</span> is independent of the treatment that was actually assigned.</p>
+<p>In an observational study, this property may fail because health, preferences, or prognosis can influence the treatment a person receives. Randomization removes those factors from the treatment-assignment decision. In the WHI trial, the women assigned hormone therapy were not selected because they were more or less likely to experience coronary heart disease under either treatment.</p>
+</section>
+<section id="properties-of-the-whi-trial" class="level3">
+<h3 class="anchored" data-anchor-id="properties-of-the-whi-trial">Properties of the WHI Trial</h3>
+<p>Three properties of the WHI trial connect our thought experiment to the observed data:</p>
+<ul>
+<li><strong>Well-definedness.</strong> The trial protocol specified the hormone therapy and placebo precisely enough to define the two potential outcomes.</li>
+<li><strong>Positivity.</strong> Each participant had a positive probability of assignment to hormone therapy and to placebo, so both observed treatment-group means are defined.</li>
+<li><strong>Exchangeability.</strong> Randomization made treatment assignment independent of the potential outcomes.</li>
+</ul>
+<p>Consistency follows from well-definedness. For a woman assigned hormone therapy, her observed outcome is <span class="math inline">\(Y(1)\)</span>. For a woman assigned placebo, her observed outcome is <span class="math inline">\(Y(0)\)</span>.</p>
+<p>For hormone therapy, these ideas give us</p>
+<p><span class="math display">\[
+E[Y(1)]=E[Y\mid A=1].
+\]</span></p>
+<p>The left side is the average outcome in the universe where everyone receives hormone therapy. Exchangeability tells us that this average is the same among women who were assigned hormone therapy. Consistency tells us that, for these women, <span class="math inline">\(Y(1)\)</span> is the observed outcome <span class="math inline">\(Y\)</span>. The right side is therefore the observed average outcome in the WHI hormone-therapy group.</p>
+<p>The same reasoning gives us</p>
+<p><span class="math display">\[
+E[Y(0)]=E[Y\mid A=0].
+\]</span></p>
+<p>We can therefore rewrite our causal question using the observed treatment groups:</p>
+<p><span class="math display">\[
+E[Y(1)]-E[Y(0)]
+=E[Y\mid A=1]-E[Y\mid A=0].
+\]</span></p>
+<p>We say that a causal estimand is <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A causal estimand is identified when it can be written entirely in terms of observed variables and their probability model." tabindex="0">identified</span> when it can be written entirely in terms of observed variables and their probability model. Here, we have identified the average treatment effect by expressing the comparison between our two imagined universes as a comparison between the observed WHI treatment groups.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/causal-identification-path.svg" class="img-fluid figure-img" style="width:75.0%"></p>
+<figcaption>Identification expresses a causal estimand as a statistical estimand that can be learned from observed data.</figcaption>
+</figure>
+</div>
+<div class="key-takeaway">
+<p><span class="takeaway-label">The critical step</span></p>
+<p><strong>Randomization lets us replace the average outcomes in the two imagined universes with the average outcomes in the two observed WHI treatment groups.</strong></p>
+</div>
+<details class="lesson-question technical-proof">
+<summary>
+Optional technical note: Proving the identification result
+</summary>
+<p>Fix one treatment value <span class="math inline">\(a\)</span>, either hormone therapy (<span class="math inline">\(a=1\)</span>) or placebo (<span class="math inline">\(a=0\)</span>).</p>
+<ol type="1">
+<li><p><strong>Well-definedness</strong> ensures that the potential outcome <span class="math inline">\(Y(a)\)</span> has one unambiguous meaning.</p></li>
+<li><p><strong>Positivity</strong> ensures that <span class="math inline">\(P(A=a)&gt;0\)</span>, so the mean among people assigned treatment <span class="math inline">\(a\)</span> is defined.</p></li>
+<li><p><strong>Exchangeability</strong> says that treatment assignment does not provide information about <span class="math inline">\(Y(a)\)</span>. Therefore,</p>
+<p><span class="math display">\[
+E[Y(a)]=E[Y(a)\mid A=a].
+\]</span></p></li>
+<li><p><strong>Consistency</strong> says that, among people assigned treatment <span class="math inline">\(a\)</span>, the potential outcome <span class="math inline">\(Y(a)\)</span> is the observed outcome <span class="math inline">\(Y\)</span>. Therefore,</p>
+<p><span class="math display">\[
+E[Y(a)\mid A=a]=E[Y\mid A=a].
+\]</span></p></li>
+</ol>
+<p>Combining the last two equalities gives</p>
+<p><span class="math display">\[
+E[Y(a)]=E[Y\mid A=a].
+\]</span></p>
+<p>Applying this result once with <span class="math inline">\(a=1\)</span> and once with <span class="math inline">\(a=0\)</span>, and then subtracting, gives</p>
+<p><span class="math display">\[
+E[Y(1)]-E[Y(0)]
+=E[Y\mid A=1]-E[Y\mid A=0].
+\]</span></p>
+</details>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
+</div>
+</section>
+</section>
+<section id="estimation" class="level2">
+<h2 class="anchored" data-anchor-id="estimation">Estimation</h2>
+<p>Identification told us which comparison in the observed data answers our causal question. <strong>Estimation</strong> uses the data to calculate that comparison.</p>
+<p>Return to our six-person illustration and the treatment-group averages calculated earlier.</p>
+<details class="lesson-question">
+<summary>
+Estimate the average treatment effect and interpret your estimate.
+</summary>
+<p>The estimated risk under hormone therapy is <span class="math inline">\(1/3\)</span>, and the estimated risk under placebo is also <span class="math inline">\(1/3\)</span>. Therefore, the estimated average treatment effect is</p>
+<p><span class="math display">\[
+\frac{1}{3}-\frac{1}{3}=0.
+\]</span></p>
+<p>In this six-person dataset, the estimated probability of a coronary heart disease event is the same under hormone therapy and placebo. The estimated average treatment effect is therefore zero percentage points.</p>
+</details>
+<p>Before identification, this calculation was simply a difference between the observed treatment groups. After identification, we have a reason to interpret it as an estimate of the average causal effect.</p>
+<p>Of course, six participants provide very little information. A different group of six participants could give us a different estimate. In a real trial, estimation also includes describing how much uncertainty remains because we observed only a sample of participants.</p>
+<p>We chose a risk difference because it directly matches our causal question. Other questions might lead us to compare the groups with a relative risk, odds ratio, or another measure.</p>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
+</div>
+</section>
+<section id="the-causal-inference-roadmap" class="level2">
+<h2 class="anchored" data-anchor-id="the-causal-inference-roadmap">The Causal Inference Roadmap</h2>
+<p>The randomized trial gives us a complete example of causal inference:</p>
+<ul>
+<li><strong>Construction:</strong> We tell a causal story, imagine changing the treatment-assignment step, and state the causal question using potential outcomes.</li>
+<li><strong>Identification:</strong> We use well-definedness, positivity, and exchangeability to connect that question to a comparison between the observed treatment groups.</li>
+<li><strong>Estimation:</strong> We use the observed outcomes to calculate that comparison and describe our uncertainty.</li>
+</ul>
+<p>We will return to this framework throughout the textbook. The methods will change, especially when treatment is not randomized, but the questions remain the same: What causal effect do we want? Under what assumptions can the observed data tell us about it? How do we estimate it?</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-rubin1980" class="csl-entry" role="listitem">
+Rubin, Donald B. 1980. <span>“Randomization Analysis of Experimental Data: The Fisher Randomization Test Comment.”</span> <em>Journal of the American Statistical Association</em> 75 (371): 591–93. <a href="https://doi.org/10.2307/2287653">https://doi.org/10.2307/2287653</a>.
+</div>
+<div id="ref-whi2002" class="csl-entry" role="listitem">
+Writing Group for the Women’s Health Initiative Investigators. 2002. <span>“Risks and Benefits of Estrogen Plus Progestin in Healthy Postmenopausal Women: Principal Results from the Women’s Health Initiative Randomized Controlled Trial.”</span> <em>JAMA</em> 288 (3): 321–33. <a href="https://doi.org/10.1001/jama.288.3.321">https://doi.org/10.1001/jama.288.3.321</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((element) => {
+    new bootstrap.Tooltip(element, {
+      placement: "top",
+      trigger: "hover focus"
+    });
+  });
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./02-why-statistics-is-not-enough.html" class="pagination-link" aria-label="Why Statistics Is Not Enough">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Why Statistics Is Not Enough</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./glossary.html" class="pagination-link" aria-label="Glossary">
+        <span class="nav-page-text"><span class="chapter-title">Glossary</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

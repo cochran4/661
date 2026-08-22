@@ -8,9 +8,27 @@ book:
   chapters:
     - index.qmd
     - 00-syllabus.qmd
-    - part: "Why causal inference?"
+    - part: "Motivation"
       chapters:
         - 01-data-detective.qmd
+        - 02-why-statistics-is-not-enough.qmd
+        - 03-clinical-trials.qmd
+    - part: "Construction"
+      chapters: []
+    - part: "Measured confounding"
+      chapters: []
+    - part: "Unmeasured confounding"
+      chapters: []
+    - part: "Sensitivity analysis"
+      chapters: []
+    - part: "Missing data"
+      chapters: []
+    - part: "Complex surveys"
+      chapters: []
+    - part: "Back matter"
+      chapters:
+        - glossary.qmd
+        - references.qmd
   navbar:
     pinned: true
     search: true
@@ -19,10 +37,20 @@ book:
         file: index.qmd
       - text: "Syllabus"
         file: 00-syllabus.qmd
-      - text: "Unit 1"
+      - text: "Motivation"
         menu:
           - text: "A detective among data"
             file: 01-data-detective.qmd
+          - text: "Why statistics is not enough"
+            file: 02-why-statistics-is-not-enough.qmd
+          - text: "Clinical trials"
+            file: 03-clinical-trials.qmd
+      - text: "Back matter"
+        menu:
+          - text: "Glossary"
+            file: glossary.qmd
+          - text: "References"
+            file: references.qmd
   search:
     location: navbar
     type: overlay
@@ -36,6 +64,7 @@ format:
     theme:
       - cosmo
       - styles.scss
+    include-after-body: tooltip-init.html
     toc: false
     number-sections: false
     toc-depth: 2

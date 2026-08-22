@@ -1,0 +1,71 @@
+---
+title: "Glossary"
+---
+
+**Average treatment effect (ATE)**
+
+The difference between the average potential outcome under one treatment and the average potential outcome under another treatment.
+
+**Bias**
+
+The difference between an estimator's expected value under a probability model and the quantity it is intended to estimate.
+
+**Causal estimand**
+
+A probabilistic quantity involving potential outcomes that we want to estimate.
+
+**Confounder**
+
+A common cause of the exposure and outcome that can create or distort their observed association.
+
+**Exposure**
+
+The condition, action, or factor whose causal effect is being studied. Depending on the setting, it may also be called the treatment or intervention.
+
+**Fundamental problem of causal inference**
+
+For each person, we observe the potential outcome under the treatment received but not the potential outcome under the other treatment. We therefore cannot observe both potential outcomes for the same person.
+
+**Identified**
+
+A causal estimand is identified when it can be written entirely in terms of observed variables and their probability model.
+
+**Estimator**
+
+A rule that uses sample data to estimate an unknown quantity in a population or probability model.
+
+**Observational study**
+
+A study that examines naturally occurring exposures or treatments rather than assigning them.
+
+**Outcome**
+
+The event, condition, or response that the exposure might affect.
+
+**Positivity**
+
+Each treatment under study has a positive probability of being assigned.
+
+**Risk difference**
+
+The risk of an outcome under one exposure or treatment minus the risk under another.
+
+**Relative risk**
+
+The risk of an outcome among exposed people divided by the risk among unexposed people.
+
+**Simpson's paradox**
+
+A reversal in which the direction of an association in the combined data is opposite to its direction within groups defined by a third variable.
+
+**Unbiased estimator**
+
+An estimator whose expected value under a probability model equals the quantity it is intended to estimate.
+
+**Unmeasured confounder**
+
+A confounder that was not measured in the study data.
+
+**Well-defined (mathematical sense)**
+
+A definition is well-defined when each possible input determines one unambiguous object.
