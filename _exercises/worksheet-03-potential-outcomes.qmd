@@ -2,7 +2,11 @@
 
 A city randomly assigns people seeking employment to one of two programs. Let $A=1$ denote assignment to an intensive job-training program and $A=0$ denote assignment to standard job-search materials. Let $Y=1$ if the person is employed six months later and $Y=0$ otherwise.
 
-For each person, $Y(1)$ is the employment outcome if assigned to job training, and $Y(0)$ is the employment outcome if assigned to the standard materials. Use consistency to complete as much of the table as possible. Enter a question mark for any potential outcome that cannot be determined from the observed data.
+1. Describe $Y(1)$ and $Y(0)$ in the context of this trial.
+2. What should we assume about the interventions so that $Y(1)$ and $Y(0)$ are well-defined? Explain what that assumption means in this trial.
+3. Random assignment should make $A$ independent of $(Y(0),Y(1))$. Explain what this means in this trial.
+4. Interpret $E[Y(1)-Y(0)]$ in context.
+5. Use consistency to complete as much of the table as possible. Enter a question mark for any potential outcome that cannot be determined from the observed data.
 
 <table class="compact-data-table potential-outcomes-table">
 <caption>Observed assignments and employment outcomes for five participants.</caption>
@@ -20,6 +24,11 @@ For each person, $Y(1)$ is the employment outcome if assigned to job training, a
 
 ::: {.answer-block}
 **Solution**
+
+1. $Y(1)$ indicates whether a person would be employed six months after assignment to intensive job training. $Y(0)$ indicates whether that same person would be employed six months after assignment to the standard job-search materials.
+2. Each program must describe a sufficiently precise intervention, with no outcome-relevant versions hidden under either label. A person's employment outcome must also not depend on the program assignments of other participants. For example, the training program should specify its content and intensity, and one participant's assignment should not change another participant's access to jobs.
+3. Independence means that assignment to job training is unrelated to the employment outcomes participants would have under either program. Thus, before treatment, the two assigned groups are comparable in their distributions of potential outcomes. Randomization is what supports this assumption.
+4. $E[Y(1)-Y(0)]$ is the average causal effect of assignment to intensive job training rather than standard materials on the probability of being employed after six months. Because the outcome is binary, it is a risk difference.
 
 <table class="compact-data-table potential-outcomes-table">
 <caption>Potential outcomes that can be determined from the observed data.</caption>
