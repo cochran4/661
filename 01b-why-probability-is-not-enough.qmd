@@ -1,5 +1,5 @@
 ---
-title: "Why statistics is not enough"
+title: "Why probability is not enough"
 ---
 
 Suppose we want to understand the relationship between coffee and anxiety. Focus on one person, and let $X$ represent the number of cups of coffee a person drinks each day. Let $Y$ be that person's score on an anxiety scale, with higher values meaning more severe symptoms. We collect data on coffee consumption and anxiety from several people, and then fit a regression model:
@@ -58,7 +58,7 @@ Both regressions can describe the association. They may also invite opposite cau
 This is not merely a quirk of linear regression. The following general fact states the idea more precisely.
 
 ::: {.proposition-box}
-**A general fact.** For any joint distribution of $X$ and $Y$, we can draw a sample from $(X,Y)$ in two equivalent ways:
+**A general fact.** For any joint distribution of $X$ and $Y$, we can draw a sample from $(X,Y)$ in two ways:
 
 1. Draw $X$ first. Independently draw a uniform random number $U$, and then use $X$ and $U$ to specify $Y$.
 2. Draw $Y$ first. Independently draw a uniform random number $U$, and then use $Y$ and $U$ to specify $X$.
@@ -149,7 +149,15 @@ A clinical recommendation would require more than these success rates. Percutane
 
 ## Simpson's paradox
 
-The example we just saw showed us [Simpson's paradox]{.glossary-term data-bs-toggle="tooltip" data-bs-title="A reversal in which the direction of an association in the combined data is opposite to its direction within groups defined by a third variable." tabindex="0"}. **Simpson's paradox** occurs when the direction of an association in the combined data is opposite to its direction within groups defined by a third variable. In the kidney-stone example, the overall comparison favored percutaneous nephrolithotomy, while the comparisons within both stone sizes favored open surgery.
+We have already seen that an association or regression can invite a causal interpretation that the data alone cannot support. It can mislead us in another way: even the *direction* of an association can depend on how we group the data. [Simpson's paradox]{.glossary-term data-bs-toggle="tooltip" data-bs-title="A reversal in which the direction of an association in the combined data is opposite to its direction within groups defined by a third variable." tabindex="0"} occurs when the direction of an association in the combined data is opposite to its direction within groups defined by a third variable. In the kidney-stone example, the overall comparison favored percutaneous nephrolithotomy, while the comparisons within both stone sizes favored open surgery.
+
+::: {.example-intro}
+<span class="example-label">Example: Graduate admissions at Berkeley</span>
+
+A classic example comes from graduate admissions at the University of California, Berkeley. In 1973, women were less likely than men to be admitted when all departments were combined. Viewed one way, the association appeared to show an admissions process that favored men. Once department was taken into account, however, the association went slightly in the other direction: it appeared to favor women. Women were more likely to apply to departments with lower admission rates for everyone [@bickel_sex_bias_1975].
+
+The third variable—department—therefore matters greatly. Yet this example also warns us not to treat stratification as an automatic causal solution. Department choice may itself reflect earlier social and educational forces, so the departmental comparisons answer a narrower question than the overall comparison.
+:::
 
 Simpson's paradox is not limited to binary exposures and outcomes. The same reversal can occur when $X$ and $Y$ are continuous. In the picture below, color indicates membership in a third group. Within every color, the points move downward as $X$ increases, showing a negative association between $X$ and $Y$. If we ignore the colors and combine all the points, the dark arrow moves upward, showing a positive association.
 

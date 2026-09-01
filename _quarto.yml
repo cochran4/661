@@ -11,7 +11,7 @@ book:
     - part: "Motivation"
       chapters:
         - 01a-being-a-detective.qmd
-        - 01b-why-statistics-is-not-enough.qmd
+        - 01b-why-probability-is-not-enough.qmd
         - 01c-clinical-trials.qmd
         - 01d-probability.qmd
         - 01e-exercises.qmd
@@ -43,8 +43,8 @@ book:
         menu:
           - text: "Being a detective with data"
             file: 01a-being-a-detective.qmd
-          - text: "Why statistics is not enough"
-            file: 01b-why-statistics-is-not-enough.qmd
+          - text: "Why probability is not enough"
+            file: 01b-why-probability-is-not-enough.qmd
           - text: "Clinical trials as our exemplar"
             file: 01c-clinical-trials.qmd
           - text: "Probability gives us a formal language"
