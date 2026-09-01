@@ -127,32 +127,32 @@ Sometimes a common cause does something even more surprising: it can reverse the
 ::: {.example-intro}
 <span class="example-label">Example 2</span>
 
-Our second case study begins in a London hospital during a period when the treatment of kidney stones was changing. From 1972 through 1980, patients in the study were treated with open surgery. From 1980 through 1985, physicians increasingly used a less invasive procedure called percutaneous nephrolithotomy. In 1986, C. R. Charig and colleagues published a historical comparison of these and other kidney-stone treatments [@charig_renal_1986].
+Our second case study begins in a London hospital during a period when the treatment of kidney stones was changing. From 1972 through 1980, patients in the study were treated with open surgery. From 1980 through 1985, physicians increasingly used a less invasive procedure called percutaneous nephrolithotomy. We will call it the **percutaneous procedure**. In 1986, C. R. Charig and colleagues published a historical comparison of these and other kidney-stone treatments [@charig_renal_1986].
 
-In the overall comparison, percutaneous nephrolithotomy had a higher observed success rate than open surgery.
+In the overall comparison, the percutaneous procedure had a higher observed success rate than open surgery.
 :::
 
 Eight years later, Steven Julious and Mark Mullee revisited these data [@julious_confounding_1994]. They pointed out that kidney stones vary in size and that stone size was related both to treatment and to the chance of success. When they compared patients with similarly sized stones, the pattern reversed.
 
 Within both the small-stone and large-stone groups, open surgery had a slightly higher observed success rate. The direction of the association was therefore the opposite of the overall comparison.
 
-Open surgery was used much more often for difficult, large stones, while percutaneous nephrolithotomy was used much more often for easier, small stones. Combining the two stone sizes therefore compares treatment groups with very different mixtures of patients. Once we compare patients with similarly sized stones, open surgery has the higher observed success rate in both groups.
+Open surgery was used much more often for difficult, large stones, while the percutaneous procedure was used much more often for easier, small stones. Combining the two stone sizes therefore compares treatment groups with very different mixtures of patients. Once we compare patients with similarly sized stones, open surgery has the higher observed success rate in both groups.
 
 <details class="lesson-question">
 <summary>Based on these results, which treatment would you recommend?</summary>
 
 If successful stone removal were our only consideration, the comparisons within kidney-stone size would favor open surgery. These comparisons are more informative than the overall comparison because stone size influenced treatment choice and was also related to treatment success.
 
-A clinical recommendation would require more than these success rates. Percutaneous nephrolithotomy is less invasive, and clinicians would also consider complications, recovery time, cost, other characteristics of the stone, and the patient's preferences. Moreover, these data came from a historical comparison rather than a randomized trial.
+A clinical recommendation would require more than these success rates. The percutaneous procedure is less invasive, and clinicians would also consider complications, recovery time, cost, other characteristics of the stone, and the patient's preferences. Moreover, these data came from a historical comparison rather than a randomized trial.
 
 </details>
 
 ## Simpson's paradox
 
-We have already seen that an association or regression can invite a causal interpretation that the data alone cannot support. It can mislead us in another way: even the *direction* of an association can depend on how we group the data. [Simpson's paradox]{.glossary-term data-bs-toggle="tooltip" data-bs-title="A reversal in which the direction of an association in the combined data is opposite to its direction within groups defined by a third variable." tabindex="0"} occurs when the direction of an association in the combined data is opposite to its direction within groups defined by a third variable. In the kidney-stone example, the overall comparison favored percutaneous nephrolithotomy, while the comparisons within both stone sizes favored open surgery.
+We have already seen that an association or regression can invite a causal interpretation that the data alone cannot support. It can mislead us in another way: even the *direction* of an association can depend on how we group the data. [Simpson's paradox]{.glossary-term data-bs-toggle="tooltip" data-bs-title="A reversal in which the direction of an association in the combined data is opposite to its direction within groups defined by a third variable." tabindex="0"} occurs when the direction of an association in the combined data is opposite to its direction within groups defined by a third variable. In the kidney-stone example, the overall comparison favored the percutaneous procedure, while the comparisons within both stone sizes favored open surgery.
 
 ::: {.example-intro}
-<span class="example-label">Example: Graduate admissions at Berkeley</span>
+<span class="example-label">Example 3: Graduate admissions at Berkeley</span>
 
 A classic example comes from graduate admissions at the University of California, Berkeley. In 1973, women were less likely than men to be admitted when all departments were combined. Viewed one way, the association appeared to show an admissions process that favored men. Once department was taken into account, however, the association went slightly in the other direction: it appeared to favor women. Women were more likely to apply to departments with lower admission rates for everyone [@bickel_sex_bias_1975].
 

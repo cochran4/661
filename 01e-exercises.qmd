@@ -6,10 +6,8 @@ filters:
 
 ## Being a detective with data {.unnumbered}
 
-{{< include _exercises/worksheet-01.qmd >}}
+{{< include _exercises/01-being-a-detective.qmd >}}
 
 ## Clinical trials as our exemplar {.unnumbered}
 
-{{< include _exercises/worksheet-02-well-definedness.qmd >}}
-
-{{< include _exercises/worksheet-03-potential-outcomes.qmd >}}
+{{< include _exercises/02-clinical-trials.qmd >}}

@@ -65,21 +65,21 @@ Under the simple Cornfield setup, to explain each association completely through
 
 ### 3. Kidney-stone treatment and success
 
-Charig and colleagues compared open surgery with percutaneous nephrolithotomy for treating kidney stones [@charig_renal_1986]. Julious and Mullee later highlighted how the results differed by stone size [@julious_confounding_1994].
+Charig and colleagues compared open surgery with percutaneous nephrolithotomy for treating kidney stones [@charig_renal_1986]. We will refer to the latter as the **percutaneous procedure**. Julious and Mullee later highlighted how the results differed by stone size [@julious_confounding_1994].
 
 | Stone size | Treatment | Successful treatments | Total patients |
 |---|---|---:|---:|
 | Small | Open surgery | 81 | 87 |
-| Small | Percutaneous nephrolithotomy | 234 | 270 |
+| Small | Percutaneous procedure | 234 | 270 |
 | Large | Open surgery | 192 | 263 |
-| Large | Percutaneous nephrolithotomy | 55 | 80 |
+| Large | Percutaneous procedure | 55 | 80 |
 | **All stones** | **Open surgery** | **273** | **350** |
-| **All stones** | **Percutaneous nephrolithotomy** | **289** | **350** |
+| **All stones** | **Percutaneous procedure** | **289** | **350** |
 
 <p class="source-note">Source: Charig et al. (1986); the comparison by stone size was subsequently highlighted by Julious and Mullee (1994) [@charig_renal_1986; @julious_confounding_1994].</p>
 
-a. Compute the overall relative risk comparing open surgery with percutaneous nephrolithotomy.
-b. Compute the relative risk comparing open surgery with percutaneous nephrolithotomy separately for:
+a. Compute the overall relative risk comparing open surgery with the percutaneous procedure.
+b. Compute the relative risk comparing open surgery with the percutaneous procedure separately for:
    - small stones;
    - large stones.
 c. Compare the overall and stone-size-specific results. What changes, and why?
@@ -94,21 +94,21 @@ e. Are those Cornfield thresholds alone enough to conclude that the within-size 
 Overall, the risks of success are:
 
 - Open surgery: 273 / 350 = **0.780**.
-- Percutaneous nephrolithotomy: 289 / 350 = **0.826**.
+- Percutaneous procedure: 289 / 350 = **0.826**.
 - Relative risk: 0.780 / 0.826 = **0.94**.
 
-The overall association favors percutaneous nephrolithotomy.
+The overall association favors the percutaneous procedure.
 
 For small stones:
 
 - Open surgery: 81 / 87 = **0.931**.
-- Percutaneous nephrolithotomy: 234 / 270 = **0.867**.
+- Percutaneous procedure: 234 / 270 = **0.867**.
 - Relative risk: 0.931 / 0.867 = **1.07**.
 
 For large stones:
 
 - Open surgery: 192 / 263 = **0.730**.
-- Percutaneous nephrolithotomy: 55 / 80 = **0.688**.
+- Percutaneous procedure: 55 / 80 = **0.688**.
 - Relative risk: 0.730 / 0.688 = **1.06**.
 
 Within both stone-size groups, the association favors open surgery. The reversal occurs because stone size is associated with both treatment choice and success: open surgery was used much more often for large, difficult stones, which had lower success rates. Stone size is measured in this table.
