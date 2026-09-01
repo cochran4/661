@@ -1,0 +1,299 @@
+---
+title: "Probability gives us a formal language"
+---
+
+Everything we do is grounded in probability and statistics, so we begin with a brief review. Our goal is to balance technical precision with accessibility for public health researchers. If you already have a strong background in probability and statistics, we hope the discussion remains rigorous without oversimplifying familiar concepts. If you have less formal training, a grasp of the key ideas should be enough to follow along. We illustrate them throughout using a single study and its associated data. Although relying on one example has some technical limitations, it helps make the abstract concepts more concrete.
+
+::: {.example-intro}
+<span class="example-label">Case study: Right heart catheterization</span>
+
+Between 1989 and 1994, the Study to Understand Prognoses and Preferences for Outcomes and Risks of Treatments (SUPPORT) followed critically ill adults receiving care in five teaching hospitals in the United States. In 1996, Connors and colleagues used data from 5,735 of these patients to study right heart catheterization (RHC), a procedure used to measure cardiac function. They asked whether receiving an RHC during the first 24 hours of intensive care was associated with survival, length of stay, intensity of care, and cost [@connors1996].
+
+After adjusting for differences between patients who did and did not receive RHC, the investigators found that RHC was associated with increased mortality and greater use of resources. They did not find a subgroup for which RHC was associated with better outcomes. Their sensitivity analysis suggested that an unmeasured confounder would need to be strongly related to both RHC and mortality to explain away a truly beneficial effect [@connors1996].
+
+The data are available through the [Vanderbilt University Department of Biostatistics dataset repository](https://hbiostat.org/data/). In the row labeled **Right heart catheterization dataset**, the CSV file is linked under the **ASCII** column. The repository also provides a [description of the study and dataset](https://hbiostat.org/data/repo/rhc), a [direct link to the CSV file](https://hbiostat.org/data/repo/rhc.csv), and [documentation for the variables and their coding](https://hbiostat.org/data/repo/crhc). One row in the dataset represents one critically ill patient. We will introduce the variables as we need them.
+
+*Data obtained from the Vanderbilt University Department of Biostatistics dataset repository.*
+:::
+
+## Random variables
+
+Random variables model the data collected from an experiment.
+
+::: {.callout-note title="Content placeholder"}
+Introduce random variables conceptually for an epidemiology audience. The original GitBook defines a random variable as a measurable function on a probability space; that definition has not been copied here.
+:::
+
+From here on out, we assume a probability space whenever random variables are introduced. Multiple random variables are assumed to be defined on the same probability space.
+
+A random variable $X$ yields multiple concepts:
+
+- A *distribution* $P_X$
+- A *cumulative distribution function (cdf)* $F_X(x):=P(X\leq x)$
+
+Further, we say $X$ is
+
+- *identically distributed* with $Y$ if they have the same distribution;
+- *discrete* if it takes a countable number of values; and
+- *continuous* if there exists $f_X$ such that
+
+  $$
+  F_X(x)=\int_{-\infty}^x f_X(u)\,du.
+  $$
+
+Random variables you should be familiar with:
+
+- Discrete: Bernoulli, binomial, Poisson
+- Continuous: exponential, gamma, uniform, normal
+
+Multiple random variables $X_1,\ldots,X_n$ also give rise to joint distributions.
+
+::: {.callout-note title="Concrete example placeholder"}
+Identify random variables in the Canvas dataset. Include binary, categorical, and continuous variables.
+:::
+
+## Expectation
+
+We want a notion of a random variable's "average" - a single number to measure $X$'s central tendency. We do this separately for discrete and continuous random variables:
+
+> **Definition 1 (discrete).** Assume $X$ is discrete taking values $x_j$. Define $E[X]$ to be
+>
+> $$
+> \sum_j x_jP(X=x_j).
+> $$
+
+> **Definition 2 (continuous).** Assume $X$ is continuous. Define $E[X]$ to be
+>
+> $$
+> \int_{\mathbb R}x f_X(x)\,dx.
+> $$
+
+Useful properties and extensions follow:
+
+- $E[g(X)]=\sum_jg(x_j)P(X=x_j)$ for discrete $X$
+- $E[g(X)]=\int_{\mathbb R}g(x)f_X(x)\,dx$ for continuous $X$
+- Linearity: $E[aX+bY]=aE[X]+bE[Y]$ for random variables $X,Y$ and scalars $a,b$
+- A quantity to reflect spread: $\operatorname{Var}(X):=E[(X-E[X])^2]$
+- $E[g(X,Y)]=\sum_{i,j}g(x_i,y_j)P(X=x_i,Y=y_j)$ for discrete $X,Y$
+
+::: {.callout-note title="Concrete example placeholder"}
+Use the Canvas dataset to compute and interpret expectations. Include the fact that the expectation of a binary random variable is a probability.
+:::
+
+## Independence
+
+Intuitively, we need to know whether one variable or set provides information on another set or variable. This is captured with independence:
+
+> **Definition.** Random variables $X_j$ are independent if, for all $x_j\in\mathbb R$, any finite collection of the sets $\{X_j\leq x_j\}$ are independent.
+
+Independence will be useful to simplify the following computations:
+
+> **Proposition.** $X$ and $Y$ independent implies
+>
+> - $E[XY]=E[X]E[Y]$
+> - $\operatorname{Var}(X+Y)=\operatorname{Var}(X)+\operatorname{Var}(Y)$.
+
+For example, the sample mean
+
+$$
+\overline X_n=\frac{1}{n}(X_1+\cdots+X_n)
+$$
+
+of independent and identically distributed random variables $X_j$ has mean $E[X_1]$ and variance $\operatorname{Var}(X_1)/n$.
+
+::: {.callout-note title="Concrete example placeholder"}
+Use the Canvas dataset to explain what independence would mean in scientific language.
+:::
+
+## Conditioning
+
+We first condition on a set:
+
+> **Definition.** The *conditional probability* of $A$ conditional on a set $B$ with nonzero probability is denoted by $P(A\mid B)$ and given by
+>
+> $$
+> \frac{P(A\cap B)}{P(B)}.
+> $$
+
+Conditional probability gives us the factorization
+
+$$
+P(A_1\cap A_2\cap\cdots\cap A_n)
+=P(A_1)P(A_2\mid A_1)P(A_3\mid A_1\cap A_2)\cdots
+P(A_n\mid A_1\cap\cdots\cap A_{n-1})
+$$
+
+for any ordering of the $A_j$ whenever the conditional probabilities are defined.
+
+We then define conditional expectation for the special cases of discrete and continuous random variables:
+
+> **Definition 1 (discrete).** Given discrete $X$ and discrete $Y$ that takes a value $y$ with positive probability, define conditional expectation $E[X\mid Y=y]$ as
+>
+> $$
+> \sum_i x_iP(X=x_i\mid Y=y).
+> $$
+
+> **Definition 2 (continuous).** Given continuous $X$ and continuous $Y$ with $f_Y(y)>0$, define conditional expectation $E[X\mid Y=y]$ as
+>
+> $$
+> \int_{\mathbb R}x f_{X\mid Y=y}(x)\,dx,
+> $$
+>
+> with
+>
+> $$
+> f_{X\mid Y=y}(x):=\frac{f_{X,Y}(x,y)}{f_Y(y)}
+> $$
+>
+> called the conditional density of $X$ given $Y=y$.
+
+Two immediate consequences:
+
+- The mapping $y\mapsto E[X\mid Y=y]$ defines a function $g(y)$. Let $E[X\mid Y]$ be the random variable $g(Y)$.
+- $E[1_{X\leq x}\mid Y=y]$ defines a cumulative distribution function $F_{X\mid Y=y}(x)$.
+
+A helpful understanding is that $g(Y)$ is the closest function of $Y$ to $X$ in terms of expected square error. We thus interpret $E[X\mid Y]$ as our best prediction for $X$ given knowledge of $Y$.
+
+::: {.callout-note title="Concrete example placeholder"}
+Compute and interpret conditional expectations and conditional probabilities using the Canvas dataset.
+:::
+
+## Conditional independence
+
+We want to know if knowledge of one event $A$ provides extra information about another event $B$ beyond what is already known from an event $C$. For example, we may want to know if knowing whether a sprinkler is on provides us any additional information about whether the lawn is wet when we already know that it is raining. This yields the idea of conditional independence:
+
+> **Definition.** Random variables $X$ and $Y$ are independent given a random variable $Z$ if
+>
+> $$
+> F_{X,Y\mid Z=z}(x,y)=F_{X\mid Z=z}(x)F_{Y\mid Z=z}(y)
+> $$
+>
+> for every $x,y,z\in\mathbb R$ for which the above is defined. In such cases, we write
+>
+> $$
+> X\mathrel{\perp\!\!\!\perp}Y\mid Z.
+> $$
+
+Unexpectedly, random variables can be independent without being conditionally independent, and they can be conditionally independent without being independent.
+
+::: {.callout-note title="Concrete example placeholder"}
+Use the Canvas dataset to explain conditional independence in scientific language and contrast it with marginal independence.
+:::
+
+## Iterated expectations and total probability
+
+Make sure you are comfortable working with conditional expectations using properties like:
+
+- $E[X\mid Y]=E[X]$ if $X$ and $Y$ are independent
+- $E[f(X)g(Y)\mid Y]=g(Y)E[f(X)\mid Y]$
+- Linearity: $E[aX+bZ\mid Y]=aE[X\mid Y]+bE[Z\mid Y]$
+- Law of total expectation: $E[E[X\mid Y]]=E[X]$
+- $E[X\mid Z]=E[X\mid Y,Z]$ if $X$ and $Y$ are independent given $Z$
+
+::: {.callout-note title="Content placeholder"}
+Add the law of total probability, then work through the law of total probability and the law of iterated expectation using the Canvas dataset.
+:::
+
+## Regression models
+
+Outcome regression involves proposing a function $\mu(X,A;\theta)$, specified by unknown parameters $\theta$, so that
+
+$$
+E[Y\mid X,A]:=\mu(X,A;\theta).
+$$
+
+Data is used to recover an estimate $\widehat\theta$ for $\theta$ from which we arrive at an approximation of the conditional mean.
+
+The *art* of outcome regression, like all regression approaches, is deciding:
+
+- What form should $\mu$ take
+- How to recover $\widehat\theta$
+
+### Linear regression
+
+In linear regression, we choose a form for $\mu(X,A;\theta)$ that is linear in its parameters $\theta$.
+
+For example, we might choose
+
+$$
+\mu(X,A;\theta):=\theta^{\mathsf T}
+\begin{bmatrix}
+X\\A
+\end{bmatrix},
+$$
+
+or alternatively include interaction terms:
+
+$$
+\mu(X,A;\theta):=\theta^{\mathsf T}
+\begin{bmatrix}
+X\\XA
+\end{bmatrix}.
+$$
+
+To estimate $\theta$, we could then follow an ordinary least squares approach and try to minimize mean square error.
+
+### Logistic regression
+
+The image of $E[Y\mid X,A]$ can frequently be a strict subset of $\mathbb R$. This conditional mean, for example, lies in $[0,1]$ for binary $Y$.
+
+We can enforce this restriction with an invertible function $g$ called a *link function*. For binary $Y$, a common choice for $g$ is the logit function:
+
+$$
+\operatorname{logit}(p):=\log\left(\frac{p}{1-p}\right),
+$$
+
+whose inverse is
+
+$$
+\operatorname{logit}^{-1}(x):=\frac{1}{1+\exp(-x)}.
+$$
+
+With a logit function as a link, logistic regression consists of modeling the transformed conditional mean as a linear function of its parameters and recovering $\widehat\theta$ by maximizing the likelihood of the data.
+
+::: {.callout-note title="Regression examples placeholder"}
+Using the Canvas dataset:
+
+- build linear and logistic regression models;
+- describe each regression model as a function;
+- interpret the fitted coefficients mathematically;
+- interpret the fitted coefficients in the language of the scientific problem;
+- manipulate each fitted function to predict means or probabilities;
+- generate predictions for everyone in the dataset; and
+- optionally compare models using AIC and BIC.
+:::
+
+## Estimators
+
+::: {.callout-note title="Content placeholder"}
+The original GitBook identifies bias, consistency, and efficiency as material to add in a future version. Develop this section using the Canvas dataset:
+
+- define an estimator and distinguish it from an estimate;
+- describe what makes a good estimator;
+- define bias;
+- discuss variability, consistency, and efficiency; and
+- show these properties through a concrete example or simulation.
+:::
+
+## Using fitted response models
+
+Once we have $\widehat\theta$, we can evaluate $\mu(X,a;\widehat\theta)$ for each person in the dataset and compute its empirical expectation:
+
+$$
+E_N[\mu(X,a;\widehat\theta)].
+$$
+
+::: {.callout-note title="Concrete example placeholder"}
+Use the Canvas dataset to calculate predictions for everyone, first using their observed values and then after setting a selected predictor to the same value for everyone. Average and interpret the predictions without giving them a causal interpretation.
+:::
+
+<div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
+
+## Takeaways
+
+1. A probability space is a necessary construction for causal inference.
+2. However, random variables will be our main object of interest.
+3. As such, the probability space is often implied but not explicit.
+4. Our main tool will be to manipulate and compute expectations and conditional expectations.
+5. This is especially true when leveraging independence and conditional independence.
+6. Once suitably manipulated, we will often use sample means for estimation and so rely on theorems like the central limit theorem.

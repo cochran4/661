@@ -10,9 +10,11 @@ book:
     - 00-syllabus.qmd
     - part: "Motivation"
       chapters:
-        - 01-data-detective.qmd
-        - 02-why-statistics-is-not-enough.qmd
-        - 03-clinical-trials.qmd
+        - 01a-being-a-detective.qmd
+        - 01b-why-statistics-is-not-enough.qmd
+        - 01c-clinical-trials.qmd
+        - 01d-probability.qmd
+        - 01e-exercises.qmd
     - part: "Construction"
       chapters: []
     - part: "Measured confounding"
@@ -39,12 +41,16 @@ book:
         file: 00-syllabus.qmd
       - text: "Motivation"
         menu:
-          - text: "A detective among data"
-            file: 01-data-detective.qmd
+          - text: "Being a detective with data"
+            file: 01a-being-a-detective.qmd
           - text: "Why statistics is not enough"
-            file: 02-why-statistics-is-not-enough.qmd
-          - text: "Clinical trials"
-            file: 03-clinical-trials.qmd
+            file: 01b-why-statistics-is-not-enough.qmd
+          - text: "Clinical trials as our exemplar"
+            file: 01c-clinical-trials.qmd
+          - text: "Probability gives us a formal language"
+            file: 01d-probability.qmd
+          - text: "Exercises"
+            file: 01e-exercises.qmd
       - text: "Back matter"
         menu:
           - text: "Glossary"

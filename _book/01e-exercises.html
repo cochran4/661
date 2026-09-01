@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Glossary – Causal inference (and other things)</title>
+<title>Exercises – Causal inference (and other things)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,7 +20,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -29,8 +49,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./references.html" rel="next">
-<link href="./01e-exercises.html" rel="prev">
+<link href="./glossary.html" rel="next">
+<link href="./01d-probability.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -150,7 +170,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./glossary.html">Back matter</a></li><li class="breadcrumb-item"><a href="./glossary.html"><span class="chapter-title">Glossary</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01a-being-a-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./01e-exercises.html"><span class="chapter-title">Exercises</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -203,7 +223,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01e-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  <a href="./01e-exercises.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Exercises</span></a>
   </div>
 </li>
       </ul>
@@ -243,7 +263,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./glossary.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Glossary</span></a>
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Glossary</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -262,9 +282,9 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./glossary.html">Back matter</a></li><li class="breadcrumb-item"><a href="./glossary.html"><span class="chapter-title">Glossary</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01a-being-a-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./01e-exercises.html"><span class="chapter-title">Exercises</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Glossary</span></h1>
+<h1 class="title"><span class="chapter-title">Exercises</span></h1>
 </div>
 
 
@@ -281,42 +301,213 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><strong>Average treatment effect (ATE)</strong></p>
-<p>The difference between the average potential outcome under one treatment and the average potential outcome under another treatment.</p>
-<p><strong>Bias</strong></p>
-<p>The difference between an estimator’s expected value under a probability model and the quantity it is intended to estimate.</p>
-<p><strong>Causal estimand</strong></p>
-<p>A probabilistic quantity involving potential outcomes that we want to estimate.</p>
-<p><strong>Confounder</strong></p>
-<p>A common cause of the exposure and outcome that can create or distort their observed association.</p>
-<p><strong>Exposure</strong></p>
-<p>The condition, action, or factor whose causal effect is being studied. Depending on the setting, it may also be called the treatment or intervention.</p>
-<p><strong>Fundamental problem of causal inference</strong></p>
-<p>For each person, we observe the potential outcome under the treatment received but not the potential outcome under the other treatment. We therefore cannot observe both potential outcomes for the same person.</p>
-<p><strong>Identified</strong></p>
-<p>A causal estimand is identified when it can be written entirely in terms of observed variables and their probability model.</p>
-<p><strong>Estimator</strong></p>
-<p>A rule that uses sample data to estimate an unknown quantity in a population or probability model.</p>
-<p><strong>Observational study</strong></p>
-<p>A study that examines naturally occurring exposures or treatments rather than assigning them.</p>
-<p><strong>Outcome</strong></p>
-<p>The event, condition, or response that the exposure might affect.</p>
-<p><strong>Positivity</strong></p>
-<p>Each treatment under study has a positive probability of being assigned.</p>
-<p><strong>Risk difference</strong></p>
-<p>The risk of an outcome under one exposure or treatment minus the risk under another.</p>
-<p><strong>Relative risk</strong></p>
-<p>The risk of an outcome among exposed people divided by the risk among unexposed people.</p>
-<p><strong>Simpson’s paradox</strong></p>
-<p>A reversal in which the direction of an association in the combined data is opposite to its direction within groups defined by a third variable.</p>
-<p><strong>Unbiased estimator</strong></p>
-<p>An estimator whose expected value under a probability model equals the quantity it is intended to estimate.</p>
-<p><strong>Unmeasured confounder</strong></p>
-<p>A confounder that was not measured in the study data.</p>
-<p><strong>Well-defined (mathematical sense)</strong></p>
-<p>A definition is well-defined when each possible input determines one unambiguous object.</p>
+<section id="being-a-detective-with-data" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="being-a-detective-with-data">Being a detective with data</h2>
+<section id="an-association-in-the-news" class="level3">
+<h3 class="anchored" data-anchor-id="an-association-in-the-news">1. An association in the news</h3>
+<p>Find a recent news story that describes an association from an observational study.</p>
+<ol type="a">
+<li>Identify the <strong>exposure or treatment</strong>.</li>
+<li>Identify the <strong>outcome</strong>.</li>
+<li>Does the headline or story suggest that the exposure causes the outcome? Identify the specific language that suggests (or does not suggest) a causal claim.</li>
+<li>Do you think the association could be causal? Explain why or why not. Consider the timing of the exposure and outcome, the size and pattern of the association, the plausibility of a causal mechanism, and reasonable alternative explanations.</li>
+<li>Identify at least one possible confounder, and explain how it might affect both the exposure and the outcome.</li>
+<li>Determine whether the possible confounder was measured in the study. You may need to consult the original study.</li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="night-lights-and-childhood-myopia" class="level3">
+<h3 class="anchored" data-anchor-id="night-lights-and-childhood-myopia">2. Night lights and childhood myopia</h3>
+<p>Quinn and colleagues studied 479 children seen in a pediatric ophthalmology clinic. Parents reported the lighting conditions in which their children slept during the first two years of life. The table combines the myopia and high-myopia categories reported by the investigators <span class="citation" data-cites="quinn_myopia_1999">(<a href="references.html#ref-quinn_myopia_1999" role="doc-biblioref">Quinn et al. 1999</a>)</span>.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Nighttime lighting</th>
+<th style="text-align: right;">Myopia</th>
+<th style="text-align: right;">No myopia</th>
+<th style="text-align: right;">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Darkness</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">172</td>
+</tr>
+<tr class="even">
+<td>Night light</td>
+<td style="text-align: right;">79</td>
+<td style="text-align: right;">153</td>
+<td style="text-align: right;">232</td>
+</tr>
+<tr class="odd">
+<td>Room light</td>
+<td style="text-align: right;">41</td>
+<td style="text-align: right;">34</td>
+<td style="text-align: right;">75</td>
+</tr>
+<tr class="even">
+<td><strong>Total</strong></td>
+<td style="text-align: right;"><strong>137</strong></td>
+<td style="text-align: right;"><strong>342</strong></td>
+<td style="text-align: right;"><strong>479</strong></td>
+</tr>
+</tbody>
+</table>
+<p class="source-note">
+Source: Quinn et al.&nbsp;(1999). The table combines the myopia and high-myopia categories reported by the investigators <span class="citation" data-cites="quinn_myopia_1999">(<a href="references.html#ref-quinn_myopia_1999" role="doc-biblioref">Quinn et al. 1999</a>)</span>.
+</p>
+<ol type="a">
+<li>Compute the risk of myopia in each lighting group.</li>
+<li>Using darkness as the reference group, calculate:
+<ul>
+<li>the relative risk of myopia comparing a night light with darkness;</li>
+<li>the relative risk of myopia comparing room light with darkness.</li>
+</ul></li>
+<li>Identify a possible confounder and explain how it might affect both nighttime lighting and childhood myopia.</li>
+<li>Apply the Cornfield condition separately to both comparisons. If the entire association were due to your proposed confounder, at minimum, how much more prevalent would the confounder need to be:
+<ul>
+<li>among children who slept with a night light than among children who slept in darkness?</li>
+<li>among children who slept with room lighting than among children who slept in darkness?</li>
+</ul></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="kidney-stone-treatment-and-success" class="level3">
+<h3 class="anchored" data-anchor-id="kidney-stone-treatment-and-success">3. Kidney-stone treatment and success</h3>
+<p>Charig and colleagues compared open surgery with percutaneous nephrolithotomy for treating kidney stones <span class="citation" data-cites="charig_renal_1986">(<a href="references.html#ref-charig_renal_1986" role="doc-biblioref">Charig et al. 1986</a>)</span>. Julious and Mullee later highlighted how the results differed by stone size <span class="citation" data-cites="julious_confounding_1994">(<a href="references.html#ref-julious_confounding_1994" role="doc-biblioref">Julious and Mullee 1994</a>)</span>.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 28%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Stone size</th>
+<th>Treatment</th>
+<th style="text-align: right;">Successful treatments</th>
+<th style="text-align: right;">Total patients</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Small</td>
+<td>Open surgery</td>
+<td style="text-align: right;">81</td>
+<td style="text-align: right;">87</td>
+</tr>
+<tr class="even">
+<td>Small</td>
+<td>Percutaneous nephrolithotomy</td>
+<td style="text-align: right;">234</td>
+<td style="text-align: right;">270</td>
+</tr>
+<tr class="odd">
+<td>Large</td>
+<td>Open surgery</td>
+<td style="text-align: right;">192</td>
+<td style="text-align: right;">263</td>
+</tr>
+<tr class="even">
+<td>Large</td>
+<td>Percutaneous nephrolithotomy</td>
+<td style="text-align: right;">55</td>
+<td style="text-align: right;">80</td>
+</tr>
+<tr class="odd">
+<td><strong>All stones</strong></td>
+<td><strong>Open surgery</strong></td>
+<td style="text-align: right;"><strong>273</strong></td>
+<td style="text-align: right;"><strong>350</strong></td>
+</tr>
+<tr class="even">
+<td><strong>All stones</strong></td>
+<td><strong>Percutaneous nephrolithotomy</strong></td>
+<td style="text-align: right;"><strong>289</strong></td>
+<td style="text-align: right;"><strong>350</strong></td>
+</tr>
+</tbody>
+</table>
+<p class="source-note">
+Source: Charig et al.&nbsp;(1986); the comparison by stone size was subsequently highlighted by Julious and Mullee (1994) <span class="citation" data-cites="charig_renal_1986 julious_confounding_1994">(<a href="references.html#ref-charig_renal_1986" role="doc-biblioref">Charig et al. 1986</a>; <a href="references.html#ref-julious_confounding_1994" role="doc-biblioref">Julious and Mullee 1994</a>)</span>.
+</p>
+<ol type="a">
+<li>Compute the overall relative risk comparing open surgery with percutaneous nephrolithotomy.</li>
+<li>Compute the relative risk comparing open surgery with percutaneous nephrolithotomy separately for:
+<ul>
+<li>small stones;</li>
+<li>large stones.</li>
+</ul></li>
+<li>Compare the overall and stone-size-specific results. What changes, and why?</li>
+<li>Even within stone-size groups, other confounding may remain. Name one possible unmeasured confounder. Apply the Cornfield condition to determine how much more prevalent it would need to be among open-surgery patients to explain away the observed association entirely for:
+<ul>
+<li>small stones;</li>
+<li>large stones.</li>
+</ul></li>
+<li>Are those Cornfield thresholds alone enough to conclude that the within-size associations are causal? Why or why not?</li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+</section>
+<section id="clinical-trials-as-our-exemplar" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="clinical-trials-as-our-exemplar">Clinical trials as our exemplar</h2>
+<section id="are-these-interventions-well-defined" class="level3">
+<h3 class="anchored" data-anchor-id="are-these-interventions-well-defined">Are these interventions well-defined?</h3>
+<p>For each proposed trial below:</p>
+<ol type="a">
+<li>Identify the intervention and comparator.</li>
+<li>Explain what, if anything, threatens well-definedness of the potential outcomes.</li>
+<li>Decide whether the concern involves relevant versions of treatment, interference, or neither.</li>
+<li>Describe what you would add to the trial protocol—or to the definition of the intervention—to address the concern.</li>
+</ol>
+<p>The scenarios are hypothetical and do not present data from actual trials.</p>
+<section id="scenario-1" class="level4">
+<h4 class="anchored" data-anchor-id="scenario-1">Scenario 1</h4>
+<p>Adults with hypertension are randomized either to receive a bottle of a new medication or to receive usual care. No further instructions are provided.</p>
+</section>
+<section id="scenario-2" class="level4">
+<h4 class="anchored" data-anchor-id="scenario-2">Scenario 2</h4>
+<p>Adults admitted to the hospital with a particular infection are randomized either to initiate an antibiotic sometime during the next seven days or not to initiate it during the next seven days.</p>
+</section>
+<section id="scenario-3" class="level4">
+<h4 class="anchored" data-anchor-id="scenario-3">Scenario 3</h4>
+<p>People who smoke are randomized either to receive smoking-cessation counseling or to receive no counseling. Counselors at each clinic decide what to discuss, how many sessions to offer, and how to respond when a participant misses a session or continues smoking.</p>
+</section>
+<section id="scenario-4" class="level4">
+<h4 class="anchored" data-anchor-id="scenario-4">Scenario 4</h4>
+<p>Adults are individually randomized to receive a flu vaccine or no flu vaccine. The outcome is whether each participant develops influenza during the following winter. Some participants live in the same household or belong to the same social networks.</p>
+</section>
+<section id="scenario-5" class="level4">
+<h4 class="anchored" data-anchor-id="scenario-5">Scenario 5</h4>
+<p>Participants are randomized to receive the same medication, dose, schedule, and instructions. One clinic dispenses the medication in a white bottle and another uses a blue bottle.</p>
+<div class="response-space">
+
+</div>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-charig_renal_1986" class="csl-entry" role="listitem">
+Charig, C. R., D. R. Webb, S. R. Payne, and J. E. Wickham. 1986. <span>“Comparison of Treatment of Renal Calculi by Open Surgery, Percutaneous Nephrolithotomy, and Extracorporeal Shockwave Lithotripsy.”</span> <em>British Medical Journal (Clinical Research Edition)</em> 292 (6524): 879–82. <a href="https://doi.org/10.1136/bmj.292.6524.879">https://doi.org/10.1136/bmj.292.6524.879</a>.
+</div>
+<div id="ref-julious_confounding_1994" class="csl-entry" role="listitem">
+Julious, Steven A., and Mark A. Mullee. 1994. <span>“Confounding and Simpson’s Paradox.”</span> <em>BMJ</em> 309 (6967): 1480–81. <a href="https://doi.org/10.1136/bmj.309.6967.1480">https://doi.org/10.1136/bmj.309.6967.1480</a>.
+</div>
+<div id="ref-quinn_myopia_1999" class="csl-entry" role="listitem">
+Quinn, Graham E., Chai H. Shin, Maureen G. Maguire, and Richard A. Stone. 1999. <span>“Myopia and Ambient Lighting at Night.”</span> <em>Nature</em> 399 (6732): 113–14. <a href="https://doi.org/10.1038/20094">https://doi.org/10.1038/20094</a>.
+</div>
+</div>
+</section>
+</section>
+</section>
 
 </main> <!-- /main -->
 <script>
@@ -731,13 +922,13 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./01e-exercises.html" class="pagination-link" aria-label="Exercises">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Exercises</span></span>
+      <a href="./01d-probability.html" class="pagination-link" aria-label="Probability gives us a formal language">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Probability gives us a formal language</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./references.html" class="pagination-link" aria-label="References">
-        <span class="nav-page-text"><span class="chapter-title">References</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./glossary.html" class="pagination-link" aria-label="Glossary">
+        <span class="nav-page-text"><span class="chapter-title">Glossary</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Clinical Trials – Causal inference (and other things)</title>
+<title>Clinical trials as our exemplar – Causal inference (and other things)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -49,8 +49,8 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./glossary.html" rel="next">
-<link href="./02-why-statistics-is-not-enough.html" rel="prev">
+<link href="./01d-probability.html" rel="next">
+<link href="./01b-why-statistics-is-not-enough.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -61,7 +61,7 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-c4079f0e898aa450387ebfef2f739c96.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-045a0d54034e564cbfcd7805100d8819.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -152,16 +152,24 @@ window.Quarto = {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-motivation">    
         <li>
-    <a class="dropdown-item" href="./01-data-detective.html">
- <span class="dropdown-text">A detective among data</span></a>
+    <a class="dropdown-item" href="./01a-being-a-detective.html">
+ <span class="dropdown-text">Being a detective with data</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./02-why-statistics-is-not-enough.html">
+    <a class="dropdown-item" href="./01b-why-statistics-is-not-enough.html">
  <span class="dropdown-text">Why statistics is not enough</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./03-clinical-trials.html">
- <span class="dropdown-text">Clinical trials</span></a>
+    <a class="dropdown-item" href="./01c-clinical-trials.html">
+ <span class="dropdown-text">Clinical trials as our exemplar</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01d-probability.html">
+ <span class="dropdown-text">Probability gives us a formal language</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01e-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
   </li>  
     </ul>
   </li>
@@ -191,7 +199,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-data-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./03-clinical-trials.html"><span class="chapter-title">Clinical Trials</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01a-being-a-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./01c-clinical-trials.html"><span class="chapter-title">Clinical trials as our exemplar</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -224,17 +232,27 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01-data-detective.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">A Detective Among Data</span></a>
+  <a href="./01a-being-a-detective.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Being a detective with data</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02-why-statistics-is-not-enough.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Why Statistics Is Not Enough</span></a>
+  <a href="./01b-why-statistics-is-not-enough.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Why statistics is not enough</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03-clinical-trials.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Clinical Trials</span></a>
+  <a href="./01c-clinical-trials.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Clinical trials as our exemplar</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01d-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Probability gives us a formal language</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01e-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
   </div>
 </li>
       </ul>
@@ -293,9 +311,9 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-data-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./03-clinical-trials.html"><span class="chapter-title">Clinical Trials</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01a-being-a-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./01c-clinical-trials.html"><span class="chapter-title">Clinical trials as our exemplar</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Clinical Trials</span></h1>
+<h1 class="title"><span class="chapter-title">Clinical trials as our exemplar</span></h1>
 </div>
 
 
@@ -312,7 +330,7 @@ window.Quarto = {
 </header>
 
 
-<p>For our first real foray into causal inference, we will use clinical trials as our exemplar. Clinical trials show us how causal inference is possible with randomization. They also introduce a roadmap that we will follow throughout this textbook: <strong>construction, identification, and estimation</strong>.</p>
+<p>For our first real foray into causal inference, we use clinical trials as our exemplar. Clinical trials show us how causal inference is possible with randomization. They also introduce a roadmap that we will follow throughout this textbook: <strong>construction, identification, and estimation</strong>.</p>
 <section id="an-exemplar" class="level2">
 <h2 class="anchored" data-anchor-id="an-exemplar">An exemplar</h2>
 <div class="example-intro">
@@ -341,11 +359,11 @@ Specify, as precisely as possible, who was studied, the treatment, the comparato
 </div>
 <p>We use three variables to describe a patient in the study:</p>
 <ul>
-<li><span class="math inline">\(X\)</span> is their age: <span class="math inline">\(X=0\)</span> if 50-59 years of age, <span class="math inline">\(X=1\)</span> if 60-69, and <span class="math inline">\(X=2\)</span> if <span class="math inline">\(70-79\)</span>.</li>
-<li><span class="math inline">\(A\)</span> is their treatment assignment: <span class="math inline">\(A=1\)</span> if estrogen plus progestin and <span class="math inline">\(A=0\)</span> if placebo</li>
-<li><span class="math inline">\(Y\)</span> is their outcome after treatment assignment: <span class="math inline">\(Y=1\)</span> if a coronary heart disease event occurs and <span class="math inline">\(Y=0\)</span> if not.</li>
+<li><strong>Age:</strong> <span class="math inline">\(X=0\)</span> if 50-59 years of age, <span class="math inline">\(X=1\)</span> if 60-69, and <span class="math inline">\(X=2\)</span> if <span class="math inline">\(70-79\)</span>.</li>
+<li><strong>Treatment assignment:</strong> <span class="math inline">\(A=1\)</span> if estrogen plus progestin and <span class="math inline">\(A=0\)</span> if placebo</li>
+<li><strong>Outcome:</strong> <span class="math inline">\(Y=1\)</span> if a coronary heart disease event occurs and <span class="math inline">\(Y=0\)</span> if not.</li>
 </ul>
-<p>We treat <span class="math inline">\(X\)</span>, <span class="math inline">\(A\)</span>, and <span class="math inline">\(Y\)</span> as random variables with a probability model. We also assume that the observations from different participants are independent and that every participant’s observations come from the same probability model.</p>
+<p>We treat <span class="math inline">\(X\)</span>, <span class="math inline">\(A\)</span>, and <span class="math inline">\(Y\)</span> as random variables. We also assume that the observations from different participants are independent and that every participant’s observations come from the same probability model.</p>
 <details class="lesson-question">
 <summary>
 Using the figure, write the observed data as a table with one row for each participant and columns for <span class="math inline">\(X\)</span>, <span class="math inline">\(A\)</span>, and <span class="math inline">\(Y\)</span>.
@@ -483,7 +501,7 @@ Calculate the average outcome in each treatment group. What is the difference be
 <p><span class="math display">\[
 E[Y\mid A=1]-E[Y\mid A=0].
 \]</span></p>
-<p>Our strategy is not so bad. Because participants provide independent observations from the same probability model, the sample average in each treatment group is <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="Under a probability model, an estimator is unbiased if its expected value equals the quantity it is intended to estimate." tabindex="0">unbiased</span> for the corresponding treatment-group mean.</p>
+<p>Our strategy is not so bad. Because we assume participants provide independent observations from the same probability model, the sample average in each treatment group is <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="Under a probability model, an estimator is unbiased if its expected value equals the quantity it is intended to estimate." tabindex="0">unbiased</span> for the corresponding treatment-group mean.</p>
 <p>This is statistical inference. We are using the observed data to learn about quantities in a probability model. We have not yet stated the causal quantity we want to learn. For that, we need a causal model.</p>
 <div class="section-break" aria-hidden="true">
 <span class="acorn-mark"></span>
@@ -510,18 +528,35 @@ E[Y\mid A=1]-E[Y\mid A=0].
 <h3 class="anchored" data-anchor-id="well-definedness">Well-Definedness</h3>
 <p>In mathematics, a definition is <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A definition is well-defined when each possible input determines one unambiguous object." tabindex="0">well-defined</span> when each possible input determines one unambiguous object. Here, the treatment value <span class="math inline">\(a\)</span> must describe a sufficiently precise change to our causal story that the potential outcome <span class="math inline">\(Y(a)\)</span> has one clear meaning.</p>
 <div class="example-intro">
+<p><span class="example-label">Example: Which value of <span class="math inline">\(x\)</span>?</span></p>
+<p>Suppose we define <span class="math inline">\(x\)</span> to be the number satisfying</p>
+<p><span class="math display">\[x^2=9.\]</span></p>
+<p>This does not define one value of <span class="math inline">\(x\)</span>. Both <span class="math inline">\(x=3\)</span> and <span class="math inline">\(x=-3\)</span> satisfy the equation. We could make the definition well-defined by saying that <span class="math inline">\(x\)</span> is the <em>positive</em> number satisfying <span class="math inline">\(x^2=9\)</span>. That additional information tells us which value we mean.</p>
+</div>
+<div class="example-intro">
 <p><span class="example-label">Example: The same nationality</span></p>
 <p>Suppose we ask: If Nadal and Federer were the same nationality, would Federer be from Spain? The proposed change is not well-defined. One version makes both players Spanish. Another makes both players Swiss. Saying only that they have the same nationality does not tell us which change to make.</p>
 <p>This example is from Willard Van Orman Quine’s <em>Methods of Logic</em>, with Nadal and Federer replacing the composers Bizet and Verdi.</p>
 </div>
-<p>Clinical trials try to make their treatments well-defined through precise protocols. The WHI protocol did not simply say “give hormone therapy.” It specified a daily tablet containing 0.625 mg of conjugated equine estrogen plus 2.5 mg of medroxyprogesterone acetate, compared with a matching placebo. Using the same protocol across clinical centers helps ensure that assignment to hormone therapy represents the same intervention everywhere.</p>
-<p>Well-definedness can fail when one treatment label hides versions that could lead to different outcomes. For example, “hormone therapy” could refer to different drugs, doses, schedules, or durations. Unless we specify the intervention more precisely, the meaning of <span class="math inline">\(Y(1)\)</span> may be ambiguous.</p>
-<p>Well-definedness can also fail when one person’s outcome depends on another person’s treatment. Suppose two friends participate in the same trial. What one friend receives might change the other’s behavior and, in turn, their outcome. In that case, specifying only one person’s treatment does not fully specify the scenario needed to determine their potential outcome. This is called <strong>interference</strong>.</p>
+<p>Well-definedness is also a consideration for a clinical trial. The intervention and comparator should be described clearly enough that we know which two scenarios we are comparing. This is one reason clinical trials have protocols. A drug protocol specifies such details as the medication, dose, timing, duration, and what to do after a missed dose or an adverse event. A behavioral intervention might specify the script a counselor follows, the number and length of sessions, and how the counselor responds to particular situations. The protocol turns a broad treatment label into an intervention that can be implemented consistently.</p>
+<p>The WHI protocol did not simply say “give hormone therapy.” It specified a daily tablet containing 0.625 mg of conjugated equine estrogen plus 2.5 mg of medroxyprogesterone acetate, compared with a matching placebo. Using the same protocol across clinical centers helps ensure that assignment to hormone therapy represents the same intervention everywhere.</p>
+<p>To see the problem more concretely, we consider several examples where potential outcomes might not be well-defined.</p>
+<div class="example-intro">
+<p><span class="example-label">Example: Unclear medication schedule</span> imagine instead that the WHI investigators simply handed each woman a bottle of hormone-therapy pills without explaining how to take them. One woman might take one pill each morning, another might take two pills, and another might take pills only when she experienced symptoms. These versions could produce different coronary-heart-disease outcomes. “Receive a bottle of pills” would therefore not determine one unambiguous potential outcome.</p>
+</div>
+<div class="example-intro">
+<p><span class="example-label">Example: Grace periods</span> A grace period provides a subtler example. Suppose the intervention is “initiate the medication sometime during the next seven days.” One person might initiate it today, while another might wait until the seventh day. If the timing of initiation could affect the outcome, those are relevant versions of the intervention. The protocol would need to specify when treatment is initiated (or specify a rule for choosing the initiation time) before the corresponding potential outcome has one clear meaning.</p>
+</div>
+<div class="example-intro">
+<p><span class="example-label">Example: Interference</span> There is another way in which specifying one person’s intervention may not completely describe the relevant scenario. Suppose the outcome is whether I develop influenza and the intervention is whether I receive a flu vaccine. My outcome may depend not only on whether I am vaccinated but also on whether my husband is vaccinated. His vaccination could make him less likely to become infected and pass influenza to me. In that setting, “my outcome if I am vaccinated” does not specify everything that could affect my potential outcome.</p>
+<p>This dependence of one person’s potential outcome on another person’s treatment is called <strong>interference</strong>. It commonly arises with contagious diseases, but it can also occur when interventions spread through households, schools, workplaces, or social networks. If one participant’s assignment changes another participant’s exposure, behavior, or access to resources, specifying only each person’s own treatment may not define the relevant potential outcome.</p>
+</div>
+<p>Some variation is natural even under a detailed protocol, and that is not automatically a problem. The bottles might differ in color, or one participant might take her tablet with water while another takes it with juice. If these versions would not change the potential outcome, the variation is irrelevant to the causal question. This condition is called <strong>treatment-variation irrelevance</strong>. What matters is that the treatment label not hide versions—such as different drugs, doses, schedules, or durations—that could produce meaningfully different potential outcomes.</p>
 <details class="lesson-question technical-proof">
 <summary>
 Optional technical note: SUTVA
 </summary>
-<p>The <strong>stable unit treatment value assumption</strong> (SUTVA) is a traditional name for technical conditions on potential outcomes <span class="citation" data-cites="rubin1980">(<a href="references.html#ref-rubin1980" role="doc-biblioref">Rubin 1980</a>)</span>:</p>
+<p>The <strong>stable unit treatment value assumption</strong> (SUTVA) is the traditional property used to make sure potential outcomes are well-defined <span class="citation" data-cites="rubin1980">(<a href="references.html#ref-rubin1980" role="doc-biblioref">Rubin 1980</a>)</span>:</p>
 <ul>
 <li><strong>No hidden versions of treatment.</strong> Each treatment represents one relevant intervention. If several versions exist, they must produce the same potential outcome. The latter condition is sometimes called <strong>treatment-variation irrelevance</strong>.</li>
 <li><strong>No interference.</strong> One person’s potential outcome does not depend on the treatments assigned to other people.</li>
@@ -538,6 +573,7 @@ Optional technical note: SUTVA
 <p><span class="math display">\[
 Y(1)-Y(0).
 \]</span></p>
+<p>In the WHI example, knowing the individual treatment effect would tell us whether the patient should or should not take hormone replacement therapy. An individual treatment effect of one would tell me that hormone replacement therapy is <strong>not</strong> a good idea for the patient. They get coronary heart disease under therapy, but not if they take the placebo. An individual treatment effect of -1 tells me hormone replacement therapy is a good idea. They get coronary heart disease under placebo, but not if they take hormone replacement therapy.</p>
 <p>Calculating this effect requires both potential outcomes, but the other potential outcome is missing. This is called the <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="For each person, we observe the potential outcome under the treatment received but not the potential outcome under the other treatment." tabindex="0">fundamental problem of causal inference</span>.</p>
 <p>Return to the six participants shown above. Complete the table as much as possible. Use the observed treatment and outcome to fill in the potential outcome that we observe. Enter a question mark for the potential outcome that we cannot determine.</p>
 <table class="compact-data-table potential-outcomes-table">
@@ -838,8 +874,8 @@ Y(a) \perp\!\!\!\perp A
 <h3 class="anchored" data-anchor-id="properties-of-the-whi-trial">Properties of the WHI Trial</h3>
 <p>Three properties of the WHI trial connect our thought experiment to the observed data:</p>
 <ul>
-<li><strong>Well-definedness.</strong> The trial protocol specified the hormone therapy and placebo precisely enough to define the two potential outcomes.</li>
 <li><strong>Positivity.</strong> Each participant had a positive probability of assignment to hormone therapy and to placebo, so both observed treatment-group means are defined.</li>
+<li><strong>Well-definedness.</strong> The trial protocol specified the hormone therapy and placebo precisely enough to define the two potential outcomes.</li>
 <li><strong>Exchangeability.</strong> Randomization made treatment assignment independent of the potential outcomes.</li>
 </ul>
 <p>Consistency follows from well-definedness. For a woman assigned hormone therapy, her observed outcome is <span class="math inline">\(Y(1)\)</span>. For a woman assigned placebo, her observed outcome is <span class="math inline">\(Y(0)\)</span>.</p>
@@ -874,8 +910,8 @@ Optional technical note: Proving the identification result
 </summary>
 <p>Fix one treatment value <span class="math inline">\(a\)</span>, either hormone therapy (<span class="math inline">\(a=1\)</span>) or placebo (<span class="math inline">\(a=0\)</span>).</p>
 <ol type="1">
-<li><p><strong>Well-definedness</strong> ensures that the potential outcome <span class="math inline">\(Y(a)\)</span> has one unambiguous meaning.</p></li>
 <li><p><strong>Positivity</strong> ensures that <span class="math inline">\(P(A=a)&gt;0\)</span>, so the mean among people assigned treatment <span class="math inline">\(a\)</span> is defined.</p></li>
+<li><p><strong>Well-definedness</strong> ensures that the potential outcome <span class="math inline">\(Y(a)\)</span> has one unambiguous meaning.</p></li>
 <li><p><strong>Exchangeability</strong> says that treatment assignment does not provide information about <span class="math inline">\(Y(a)\)</span>. Therefore,</p>
 <p><span class="math display">\[
 E[Y(a)]=E[Y(a)\mid A=a].
@@ -1355,13 +1391,13 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./02-why-statistics-is-not-enough.html" class="pagination-link" aria-label="Why Statistics Is Not Enough">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Why Statistics Is Not Enough</span></span>
+      <a href="./01b-why-statistics-is-not-enough.html" class="pagination-link" aria-label="Why statistics is not enough">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Why statistics is not enough</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./glossary.html" class="pagination-link" aria-label="Glossary">
-        <span class="nav-page-text"><span class="chapter-title">Glossary</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./01d-probability.html" class="pagination-link" aria-label="Probability gives us a formal language">
+        <span class="nav-page-text"><span class="chapter-title">Probability gives us a formal language</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

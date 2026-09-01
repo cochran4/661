@@ -1,0 +1,122 @@
+
+### 1. An association in the news
+
+Find a recent news story that describes an association from an observational study.
+
+a. Identify the **exposure or treatment**.
+b. Identify the **outcome**.
+c. Does the headline or story suggest that the exposure causes the outcome? Identify the specific language that suggests (or does not suggest) a causal claim.
+d. Do you think the association could be causal? Explain why or why not. Consider the timing of the exposure and outcome, the size and pattern of the association, the plausibility of a causal mechanism, and reasonable alternative explanations.
+e. Identify at least one possible confounder, and explain how it might affect both the exposure and the outcome.
+f. Determine whether the possible confounder was measured in the study. You may need to consult the original study.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+Answers will depend on the article.
+:::
+
+### 2. Night lights and childhood myopia
+
+Quinn and colleagues studied 479 children seen in a pediatric ophthalmology clinic. Parents reported the lighting conditions in which their children slept during the first two years of life. The table combines the myopia and high-myopia categories reported by the investigators [@quinn_myopia_1999].
+
+| Nighttime lighting | Myopia | No myopia | Total |
+|---|---:|---:|---:|
+| Darkness | 17 | 155 | 172 |
+| Night light | 79 | 153 | 232 |
+| Room light | 41 | 34 | 75 |
+| **Total** | **137** | **342** | **479** |
+
+<p class="source-note">Source: Quinn et al. (1999). The table combines the myopia and high-myopia categories reported by the investigators [@quinn_myopia_1999].</p>
+
+a. Compute the risk of myopia in each lighting group.
+b. Using darkness as the reference group, calculate:
+   - the relative risk of myopia comparing a night light with darkness;
+   - the relative risk of myopia comparing room light with darkness.
+c. Identify a possible confounder and explain how it might affect both nighttime lighting and childhood myopia.
+d. Apply the Cornfield condition separately to both comparisons. If the entire association were due to your proposed confounder, at minimum, how much more prevalent would the confounder need to be:
+   - among children who slept with a night light than among children who slept in darkness?
+   - among children who slept with room lighting than among children who slept in darkness?
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+The risks are:
+
+- Darkness: 17 / 172 = **0.099**, or about 9.9%.
+- Night light: 79 / 232 = **0.341**, or about 34.1%.
+- Room light: 41 / 75 = **0.547**, or about 54.7%.
+
+The relative risks are:
+
+- Night light versus darkness: (79 / 232) / (17 / 172) = **3.45**.
+- Room light versus darkness: (41 / 75) / (17 / 172) = **5.53**.
+
+Thus, myopia was about 3.45 times as common among children who slept with a night light and 5.53 times as common among children who slept with room lighting, compared with children who slept in darkness.
+
+Parental myopia is a plausible confounder. Myopic parents may be more likely to use nighttime lighting, and their children may inherit a greater risk of myopia. Parental myopia was not measured in the data summarized in this table. A subsequent study measured parental myopia and found evidence supporting this explanation [@gwiazda_myopia_2000].
+
+Under the simple Cornfield setup, to explain each association completely through parental myopia alone, parental myopia would need to be at least as strongly associated with lighting as the observed relative risk:
+
+- at least **3.45 times as prevalent** among night-light users as among children sleeping in darkness;
+- at least **5.53 times as prevalent** among room-light users as among children sleeping in darkness.
+
+:::
+
+### 3. Kidney-stone treatment and success
+
+Charig and colleagues compared open surgery with percutaneous nephrolithotomy for treating kidney stones [@charig_renal_1986]. Julious and Mullee later highlighted how the results differed by stone size [@julious_confounding_1994].
+
+| Stone size | Treatment | Successful treatments | Total patients |
+|---|---|---:|---:|
+| Small | Open surgery | 81 | 87 |
+| Small | Percutaneous nephrolithotomy | 234 | 270 |
+| Large | Open surgery | 192 | 263 |
+| Large | Percutaneous nephrolithotomy | 55 | 80 |
+| **All stones** | **Open surgery** | **273** | **350** |
+| **All stones** | **Percutaneous nephrolithotomy** | **289** | **350** |
+
+<p class="source-note">Source: Charig et al. (1986); the comparison by stone size was subsequently highlighted by Julious and Mullee (1994) [@charig_renal_1986; @julious_confounding_1994].</p>
+
+a. Compute the overall relative risk comparing open surgery with percutaneous nephrolithotomy.
+b. Compute the relative risk comparing open surgery with percutaneous nephrolithotomy separately for:
+   - small stones;
+   - large stones.
+c. Compare the overall and stone-size-specific results. What changes, and why?
+d. Even within stone-size groups, other confounding may remain. Name one possible unmeasured confounder. Apply the Cornfield condition to determine how much more prevalent it would need to be among open-surgery patients to explain away the observed association entirely for:
+   - small stones;
+   - large stones.
+e. Are those Cornfield thresholds alone enough to conclude that the within-size associations are causal? Why or why not?
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+Overall, the risks of success are:
+
+- Open surgery: 273 / 350 = **0.780**.
+- Percutaneous nephrolithotomy: 289 / 350 = **0.826**.
+- Relative risk: 0.780 / 0.826 = **0.94**.
+
+The overall association favors percutaneous nephrolithotomy.
+
+For small stones:
+
+- Open surgery: 81 / 87 = **0.931**.
+- Percutaneous nephrolithotomy: 234 / 270 = **0.867**.
+- Relative risk: 0.931 / 0.867 = **1.07**.
+
+For large stones:
+
+- Open surgery: 192 / 263 = **0.730**.
+- Percutaneous nephrolithotomy: 55 / 80 = **0.688**.
+- Relative risk: 0.730 / 0.688 = **1.06**.
+
+Within both stone-size groups, the association favors open surgery. The reversal occurs because stone size is associated with both treatment choice and success: open surgery was used much more often for large, difficult stones, which had lower success rates. Stone size is measured in this table.
+
+Other characteristics—such as stone location, complexity, comorbidities, or the treating surgeon's experience—could still confound the comparisons within stone-size groups. If one such favorable factor completely explained the higher success under open surgery, the factor would need to be at least:
+
+- **1.07 times as prevalent** among open-surgery patients with small stones as among percutaneous-nephrolithotomy patients with small stones;
+- **1.06 times as prevalent** among open-surgery patients with large stones as among percutaneous-nephrolithotomy patients with large stones.
+
+These are low thresholds, so modest residual confounding could potentially explain the observed within-size associations.
+:::

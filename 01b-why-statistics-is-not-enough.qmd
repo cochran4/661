@@ -1,12 +1,35 @@
 ---
-title: "Why Statistics Is Not Enough"
+title: "Why statistics is not enough"
 ---
 
-Suppose we want to understand the relationship between coffee and anxiety. Let $X$ be the number of cups of coffee a person drinks each day and let $Y$ be that person's score on an anxiety scale. We collect data on coffee consumption and anxiety, and then fit a regression model:
+Suppose we want to understand the relationship between coffee and anxiety. Focus on one person, and let $X$ represent the number of cups of coffee a person drinks each day. Let $Y$ be that person's score on an anxiety scale, with higher values meaning more severe symptoms. We collect data on coffee consumption and anxiety from several people, and then fit a regression model:
 
 $$Y = \alpha + \beta X + \varepsilon.$$
 
-Here, $\alpha$ is the intercept, $\beta$ is the slope, and $\varepsilon$ is a mean-zero random variable.
+Here, $\alpha$ is the intercept, $\beta$ is the slope, and $\varepsilon$ is an error with mean zero within each level of $X$.
+
+<details class="lesson-question technical-proof">
+<summary>Optional technical note: Where are the person subscripts?</summary>
+
+Suppose our sample contains $n$ people. For person $j$, let $(X_j,Y_j)$ denote the pair of random variables. Once that person is observed, the realized values are written in lowercase as $(x_j,y_j)$. Thus, the observed dataset is
+
+$$
+(x_1,y_1),\ldots,(x_n,y_n).
+$$
+
+Under the usual independent and identically distributed—or **i.i.d.**—sampling model, the random pairs
+
+$$
+(X_1,Y_1),\ldots,(X_n,Y_n)
+$$
+
+are independent copies of the same pair of random variables $(X,Y)$.
+
+Because the same model applies to each person, we usually write $X$ and $Y$ when discussing the generic probability model and reserve $X_j$ and $Y_j$ for occasions when a person-specific random variable matters. Lowercase $x_j$ and $y_j$ always refer to the values that were actually observed for person $j$. This lets us drop unnecessary subscripts from the probability model without confusing random variables with their realizations.
+
+The simplification is not appropriate when observations do not follow a common distribution, such as when a single patient contributes multiple observations, patients clustered within hospitals, or people connected through households or social networks. In those settings, the indices and the dependence structure must be represented explicitly.
+
+</details>
 
 <details class="lesson-question">
 <summary>How should we interpret $\beta$?</summary>
@@ -15,35 +38,33 @@ The coefficient $\beta$ is the expected difference in anxiety score associated w
 
 </details>
 
-That is already useful. It summarizes the pattern in our data. It can help us predict anxiety scores for people who drink different amounts of coffee. But notice the care in the wording: an additional cup of coffee is *associated with* a two-point difference in anxiety. We did not say that drinking another cup *causes* anxiety to increase by two points.
+A regression model is useful. It summarizes the pattern in our data. It can help us predict anxiety scores for people who drink different amounts of coffee. But notice the care in the wording: an additional cup of coffee is *associated with* a $\beta$ difference in average anxiety. We did not say that drinking another cup *causes* anxiety to increase by two points.
 
 Why are we so cautious? For one thing, we could fit another regression with the variables reversed:
 
 $$X = \alpha' + \beta'Y + \varepsilon'.$$
 
-Now anxiety is being used to predict coffee consumption. Here, $\alpha'$ is the intercept, $\beta'$ is the slope, and $\varepsilon'$ is the error.
+Now anxiety is being used to predict coffee consumption. Here, $\alpha'$ is the intercept, $\beta'$ is the slope, and $\varepsilon'$ has mean zero within each level of $Y$.
 
 <details class="lesson-question">
-<summary>Suppose $\alpha=4$ and $\beta=2$. What are $\alpha'$ and $\beta'$?</summary>
+<summary>Suppose $\alpha'=1$ and $\beta'=0.25$. How should we interpret $\beta'$?</summary>
 
-We cannot determine them from $\alpha$ and $\beta$ alone. These coefficients describe the regression of $Y$ on $X$. They do not provide enough information to calculate the regression of $X$ on $Y$.
-
-It may be tempting to rearrange the first equation and conclude that $\alpha'=-2$ and $\beta'=1/2$. But the line that minimizes prediction errors for $Y$ is not generally the same line, turned around, that minimizes prediction errors for $X$. To calculate $\alpha'$ and $\beta'$, we would also need information about the means, variances, and covariance of $X$ and $Y$.
+The slope $\beta'=0.25$ says that a one-point higher anxiety score is associated with an expected difference of 0.25 additional cups of coffee per day. It does not say that increasing anxiety by one point would cause someone to drink 0.25 additional cups.
 
 </details>
 
-Both regressions can describe the association. They may also invite opposite causal stories. Coffee may affect anxiety, or people may drink more coffee because anxiety interferes with sleep and leaves them tired the next day. The data do not label one variable as the cause and the other as the effect.
+Both regressions can describe the association. They may also invite opposite causal stories. When coffee is regressed onto anxiety, you can imagine coffee increasing a person's anxiety. When anxiety is regressed onto coffee, you imagine people drinking more coffee because anxiety interferes with sleep and leaves them tired the next day. The data do not label one variable as the cause and the other as the effect.
 
 This is not merely a quirk of linear regression. The following general fact states the idea more precisely.
 
 ::: {.proposition-box}
-**A general fact.** We can specify the joint distribution of $X$ and $Y$ in either direction:
+**A general fact.** For any joint distribution of $X$ and $Y$, we can draw a sample from $(X,Y)$ in two equivalent ways:
 
 1. Draw $X$ first. Independently draw a uniform random number $U$, and then use $X$ and $U$ to specify $Y$.
 2. Draw $Y$ first. Independently draw a uniform random number $U$, and then use $Y$ and $U$ to specify $X$.
 :::
 
-From the data on $X$ and $Y$ alone, these two specifications are indistinguishable. We therefore need information beyond the data to determine which causal direction, if either, is correct.
+From the data on $X$ and $Y$ alone, we cannot tell whether the data came from the first sampling strategy or the second. We therefore need information beyond the data to determine which causal direction, if either, is correct.
 
 <details class="lesson-question technical-proof">
 <summary>Optional: Why does the uniform random number work?</summary>
@@ -74,38 +95,15 @@ The following case studies show how consequential this problem can be. In the fi
 
 <div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
 
-## Night Lights and Childhood Myopia
+## Night lights and childhood myopia
 
 ::: {.example-intro}
 <span class="example-label">Example 1</span>
 
 In May 1999, *Nature* published a short report by Graham Quinn and colleagues on night-time lighting and childhood myopia [@quinn_myopia_1999]. The researchers asked the parents of children seen in a pediatric ophthalmology clinic about the lighting conditions in which their children had slept during their first two years of life. They reported a strong association: children exposed to more ambient light at night were more likely to develop myopia.
 
-The study included 479 children. The reported prevalence of myopia increased across the three nighttime lighting conditions:
-
-- Among 172 children who slept in darkness, 10% had myopia.
-- Among 232 children who slept with a night light, 34% had myopia.
-- Among 75 children who slept with room lighting, 55% had myopia.
+The study included 479 children. The reported prevalence of myopia was lowest among children who slept in darkness, higher among children who slept with a night light, and highest among children who slept with room lighting. The pattern suggested that greater exposure to light at night was associated with a greater probability of myopia.
 :::
-
-<details class="lesson-question">
-<summary>Compared with sleeping in darkness, what was the relative risk of myopia for each lighted condition?</summary>
-
-For children who slept with a night light, the relative risk was
-
-$$
-RR_{\text{night light}} = \frac{0.34}{0.10} = 3.4.
-$$
-
-For children who slept with room lighting, the relative risk was
-
-$$
-RR_{\text{room light}} = \frac{0.55}{0.10} = 5.5.
-$$
-
-Myopia was 3.4 times as common among children who slept with a night light and 5.5 times as common among children who slept with room lighting, compared with children who slept in darkness. These calculations describe the observed associations. They do not tell us that nighttime lighting caused myopia.
-
-</details>
 
 The result attracted attention because it suggested a simple environmental cause of myopia. Let $X$ indicate the nighttime lighting condition and let $Y$ indicate whether the child develops myopia. It is easy to tell a causal story in which exposure to light at night affects the development of the eye.
 
@@ -120,63 +118,23 @@ In March 2000, however, *Nature* published a response from Jane Gwiazda and coll
 
 ![Parental myopia as a common cause of night-light use and childhood myopia.](images/nightlight-common-cause.svg){width="60%" fig-align="center"}
 
-Parental myopia is a common cause of the exposure and outcome. As we saw in Data Detective, this is what we call a confounder. Confounding can create an association even when the exposure does not cause the outcome.
+Parental myopia could be a common cause of the exposure and outcome. As we saw in Data Detective, this is what we call a confounder. Confounding can create an association even when the exposure does not cause the outcome.
 
 Sometimes a common cause does something even more surprising: it can reverse the apparent direction of an association.
 
-## Kidney-Stone Treatments
+## Kidney-stone treatments
 
 ::: {.example-intro}
 <span class="example-label">Example 2</span>
 
 Our second case study begins in a London hospital during a period when the treatment of kidney stones was changing. From 1972 through 1980, patients in the study were treated with open surgery. From 1980 through 1985, physicians increasingly used a less invasive procedure called percutaneous nephrolithotomy. In 1986, C. R. Charig and colleagues published a historical comparison of these and other kidney-stone treatments [@charig_renal_1986].
 
-Among the patients they studied, open surgery succeeded for 273 of 350 patients, while percutaneous nephrolithotomy succeeded for 289 of 350 patients.
+In the overall comparison, percutaneous nephrolithotomy had a higher observed success rate than open surgery.
 :::
-
-<details class="lesson-question">
-<summary>What is the overall relative risk of successful treatment, comparing open surgery with percutaneous nephrolithotomy?</summary>
-
-The risk of success was $273/350$ with open surgery and $289/350$ with percutaneous nephrolithotomy. Therefore,
-
-$$
-RR = \frac{273/350}{289/350} = 0.94.
-$$
-
-Overall, patients who received open surgery were about $0.94$ times as likely to have a successful treatment as patients who received percutaneous nephrolithotomy. Equivalently, the observed probability of success was about $6\%$ lower with open surgery.
-
-</details>
 
 Eight years later, Steven Julious and Mark Mullee revisited these data [@julious_confounding_1994]. They pointed out that kidney stones vary in size and that stone size was related both to treatment and to the chance of success. When they compared patients with similarly sized stones, the pattern reversed.
 
-For small stones:
-
-- Open surgery succeeded for 81 of 87 patients.
-- Percutaneous nephrolithotomy succeeded for 234 of 270 patients.
-
-For large stones:
-
-- Open surgery succeeded for 192 of 263 patients.
-- Percutaneous nephrolithotomy succeeded for 55 of 80 patients.
-
-<details class="lesson-question">
-<summary>What is the relative risk of successful treatment within each kidney-stone size?</summary>
-
-For patients with small stones,
-
-$$
-RR_{\text{small}} = \frac{81/87}{234/270} = 1.07.
-$$
-
-For patients with large stones,
-
-$$
-RR_{\text{large}} = \frac{192/263}{55/80} = 1.06.
-$$
-
-Within each kidney-stone size, patients who received open surgery were more likely to have a successful treatment. The direction of the association is the opposite of the overall comparison.
-
-</details>
+Within both the small-stone and large-stone groups, open surgery had a slightly higher observed success rate. The direction of the association was therefore the opposite of the overall comparison.
 
 Open surgery was used much more often for difficult, large stones, while percutaneous nephrolithotomy was used much more often for easier, small stones. Combining the two stone sizes therefore compares treatment groups with very different mixtures of patients. Once we compare patients with similarly sized stones, open surgery has the higher observed success rate in both groups.
 
@@ -189,7 +147,7 @@ A clinical recommendation would require more than these success rates. Percutane
 
 </details>
 
-## Simpson's Paradox
+## Simpson's paradox
 
 The example we just saw showed us [Simpson's paradox]{.glossary-term data-bs-toggle="tooltip" data-bs-title="A reversal in which the direction of an association in the combined data is opposite to its direction within groups defined by a third variable." tabindex="0"}. **Simpson's paradox** occurs when the direction of an association in the combined data is opposite to its direction within groups defined by a third variable. In the kidney-stone example, the overall comparison favored percutaneous nephrolithotomy, while the comparisons within both stone sizes favored open surgery.
 

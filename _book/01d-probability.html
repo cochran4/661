@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Glossary – Causal inference (and other things)</title>
+<title>Probability gives us a formal language – Causal inference (and other things)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,7 +20,27 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -29,8 +49,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./references.html" rel="next">
-<link href="./01e-exercises.html" rel="prev">
+<link href="./01e-exercises.html" rel="next">
+<link href="./01c-clinical-trials.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -69,6 +89,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -150,7 +199,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./glossary.html">Back matter</a></li><li class="breadcrumb-item"><a href="./glossary.html"><span class="chapter-title">Glossary</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01a-being-a-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./01d-probability.html"><span class="chapter-title">Probability gives us a formal language</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -198,7 +247,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01d-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Probability gives us a formal language</span></a>
+  <a href="./01d-probability.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Probability gives us a formal language</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -243,7 +292,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./glossary.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Glossary</span></a>
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Glossary</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -262,9 +311,9 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./glossary.html">Back matter</a></li><li class="breadcrumb-item"><a href="./glossary.html"><span class="chapter-title">Glossary</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01a-being-a-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./01d-probability.html"><span class="chapter-title">Probability gives us a formal language</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Glossary</span></h1>
+<h1 class="title"><span class="chapter-title">Probability gives us a formal language</span></h1>
 </div>
 
 
@@ -281,42 +330,372 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><strong>Average treatment effect (ATE)</strong></p>
-<p>The difference between the average potential outcome under one treatment and the average potential outcome under another treatment.</p>
-<p><strong>Bias</strong></p>
-<p>The difference between an estimator’s expected value under a probability model and the quantity it is intended to estimate.</p>
-<p><strong>Causal estimand</strong></p>
-<p>A probabilistic quantity involving potential outcomes that we want to estimate.</p>
-<p><strong>Confounder</strong></p>
-<p>A common cause of the exposure and outcome that can create or distort their observed association.</p>
-<p><strong>Exposure</strong></p>
-<p>The condition, action, or factor whose causal effect is being studied. Depending on the setting, it may also be called the treatment or intervention.</p>
-<p><strong>Fundamental problem of causal inference</strong></p>
-<p>For each person, we observe the potential outcome under the treatment received but not the potential outcome under the other treatment. We therefore cannot observe both potential outcomes for the same person.</p>
-<p><strong>Identified</strong></p>
-<p>A causal estimand is identified when it can be written entirely in terms of observed variables and their probability model.</p>
-<p><strong>Estimator</strong></p>
-<p>A rule that uses sample data to estimate an unknown quantity in a population or probability model.</p>
-<p><strong>Observational study</strong></p>
-<p>A study that examines naturally occurring exposures or treatments rather than assigning them.</p>
-<p><strong>Outcome</strong></p>
-<p>The event, condition, or response that the exposure might affect.</p>
-<p><strong>Positivity</strong></p>
-<p>Each treatment under study has a positive probability of being assigned.</p>
-<p><strong>Risk difference</strong></p>
-<p>The risk of an outcome under one exposure or treatment minus the risk under another.</p>
-<p><strong>Relative risk</strong></p>
-<p>The risk of an outcome among exposed people divided by the risk among unexposed people.</p>
-<p><strong>Simpson’s paradox</strong></p>
-<p>A reversal in which the direction of an association in the combined data is opposite to its direction within groups defined by a third variable.</p>
-<p><strong>Unbiased estimator</strong></p>
-<p>An estimator whose expected value under a probability model equals the quantity it is intended to estimate.</p>
-<p><strong>Unmeasured confounder</strong></p>
-<p>A confounder that was not measured in the study data.</p>
-<p><strong>Well-defined (mathematical sense)</strong></p>
-<p>A definition is well-defined when each possible input determines one unambiguous object.</p>
+<p>Everything we do is grounded in probability and statistics, so we begin with a brief review. Our goal is to balance technical precision with accessibility for public health researchers. If you already have a strong background in probability and statistics, we hope the discussion remains rigorous without oversimplifying familiar concepts. If you have less formal training, a grasp of the key ideas should be enough to follow along. We illustrate them throughout using a single study and its associated data. Although relying on one example has some technical limitations, it helps make the abstract concepts more concrete.</p>
+<div class="example-intro">
+<p><span class="example-label">Case study: Right heart catheterization</span></p>
+<p>Between 1989 and 1994, the Study to Understand Prognoses and Preferences for Outcomes and Risks of Treatments (SUPPORT) followed critically ill adults receiving care in five teaching hospitals in the United States. In 1996, Connors and colleagues used data from 5,735 of these patients to study right heart catheterization (RHC), a procedure used to measure cardiac function. They asked whether receiving an RHC during the first 24 hours of intensive care was associated with survival, length of stay, intensity of care, and cost <span class="citation" data-cites="connors1996">(<a href="references.html#ref-connors1996" role="doc-biblioref">Connors et al. 1996</a>)</span>.</p>
+<p>After adjusting for differences between patients who did and did not receive RHC, the investigators found that RHC was associated with increased mortality and greater use of resources. They did not find a subgroup for which RHC was associated with better outcomes. Their sensitivity analysis suggested that an unmeasured confounder would need to be strongly related to both RHC and mortality to explain away a truly beneficial effect <span class="citation" data-cites="connors1996">(<a href="references.html#ref-connors1996" role="doc-biblioref">Connors et al. 1996</a>)</span>.</p>
+<p>The data are available through the <a href="https://hbiostat.org/data/">Vanderbilt University Department of Biostatistics dataset repository</a>. In the row labeled <strong>Right heart catheterization dataset</strong>, the CSV file is linked under the <strong>ASCII</strong> column. The repository also provides a <a href="https://hbiostat.org/data/repo/rhc">description of the study and dataset</a>, a <a href="https://hbiostat.org/data/repo/rhc.csv">direct link to the CSV file</a>, and <a href="https://hbiostat.org/data/repo/crhc">documentation for the variables and their coding</a>. One row in the dataset represents one critically ill patient. We will introduce the variables as we need them.</p>
+<p><em>Data obtained from the Vanderbilt University Department of Biostatistics dataset repository.</em></p>
+</div>
+<section id="random-variables" class="level2">
+<h2 class="anchored" data-anchor-id="random-variables">Random variables</h2>
+<p>Random variables model the data collected from an experiment.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Content placeholder">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Content placeholder
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Introduce random variables conceptually for an epidemiology audience. The original GitBook defines a random variable as a measurable function on a probability space; that definition has not been copied here.</p>
+</div>
+</div>
+<p>From here on out, we assume a probability space whenever random variables are introduced. Multiple random variables are assumed to be defined on the same probability space.</p>
+<p>A random variable <span class="math inline">\(X\)</span> yields multiple concepts:</p>
+<ul>
+<li>A <em>distribution</em> <span class="math inline">\(P_X\)</span></li>
+<li>A <em>cumulative distribution function (cdf)</em> <span class="math inline">\(F_X(x):=P(X\leq x)\)</span></li>
+</ul>
+<p>Further, we say <span class="math inline">\(X\)</span> is</p>
+<ul>
+<li><p><em>identically distributed</em> with <span class="math inline">\(Y\)</span> if they have the same distribution;</p></li>
+<li><p><em>discrete</em> if it takes a countable number of values; and</p></li>
+<li><p><em>continuous</em> if there exists <span class="math inline">\(f_X\)</span> such that</p>
+<p><span class="math display">\[
+F_X(x)=\int_{-\infty}^x f_X(u)\,du.
+\]</span></p></li>
+</ul>
+<p>Random variables you should be familiar with:</p>
+<ul>
+<li>Discrete: Bernoulli, binomial, Poisson</li>
+<li>Continuous: exponential, gamma, uniform, normal</li>
+</ul>
+<p>Multiple random variables <span class="math inline">\(X_1,\ldots,X_n\)</span> also give rise to joint distributions.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Concrete example placeholder">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Concrete example placeholder
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Identify random variables in the Canvas dataset. Include binary, categorical, and continuous variables.</p>
+</div>
+</div>
+</section>
+<section id="expectation" class="level2">
+<h2 class="anchored" data-anchor-id="expectation">Expectation</h2>
+<p>We want a notion of a random variable’s “average” - a single number to measure <span class="math inline">\(X\)</span>’s central tendency. We do this separately for discrete and continuous random variables:</p>
+<blockquote class="blockquote">
+<p><strong>Definition 1 (discrete).</strong> Assume <span class="math inline">\(X\)</span> is discrete taking values <span class="math inline">\(x_j\)</span>. Define <span class="math inline">\(E[X]\)</span> to be</p>
+<p><span class="math display">\[
+\sum_j x_jP(X=x_j).
+\]</span></p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Definition 2 (continuous).</strong> Assume <span class="math inline">\(X\)</span> is continuous. Define <span class="math inline">\(E[X]\)</span> to be</p>
+<p><span class="math display">\[
+\int_{\mathbb R}x f_X(x)\,dx.
+\]</span></p>
+</blockquote>
+<p>Useful properties and extensions follow:</p>
+<ul>
+<li><span class="math inline">\(E[g(X)]=\sum_jg(x_j)P(X=x_j)\)</span> for discrete <span class="math inline">\(X\)</span></li>
+<li><span class="math inline">\(E[g(X)]=\int_{\mathbb R}g(x)f_X(x)\,dx\)</span> for continuous <span class="math inline">\(X\)</span></li>
+<li>Linearity: <span class="math inline">\(E[aX+bY]=aE[X]+bE[Y]\)</span> for random variables <span class="math inline">\(X,Y\)</span> and scalars <span class="math inline">\(a,b\)</span></li>
+<li>A quantity to reflect spread: <span class="math inline">\(\operatorname{Var}(X):=E[(X-E[X])^2]\)</span></li>
+<li><span class="math inline">\(E[g(X,Y)]=\sum_{i,j}g(x_i,y_j)P(X=x_i,Y=y_j)\)</span> for discrete <span class="math inline">\(X,Y\)</span></li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled" title="Concrete example placeholder">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Concrete example placeholder
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Use the Canvas dataset to compute and interpret expectations. Include the fact that the expectation of a binary random variable is a probability.</p>
+</div>
+</div>
+</section>
+<section id="independence" class="level2">
+<h2 class="anchored" data-anchor-id="independence">Independence</h2>
+<p>Intuitively, we need to know whether one variable or set provides information on another set or variable. This is captured with independence:</p>
+<blockquote class="blockquote">
+<p><strong>Definition.</strong> Random variables <span class="math inline">\(X_j\)</span> are independent if, for all <span class="math inline">\(x_j\in\mathbb R\)</span>, any finite collection of the sets <span class="math inline">\(\{X_j\leq x_j\}\)</span> are independent.</p>
+</blockquote>
+<p>Independence will be useful to simplify the following computations:</p>
+<blockquote class="blockquote">
+<p><strong>Proposition.</strong> <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> independent implies</p>
+<ul>
+<li><span class="math inline">\(E[XY]=E[X]E[Y]\)</span></li>
+<li><span class="math inline">\(\operatorname{Var}(X+Y)=\operatorname{Var}(X)+\operatorname{Var}(Y)\)</span>.</li>
+</ul>
+</blockquote>
+<p>For example, the sample mean</p>
+<p><span class="math display">\[
+\overline X_n=\frac{1}{n}(X_1+\cdots+X_n)
+\]</span></p>
+<p>of independent and identically distributed random variables <span class="math inline">\(X_j\)</span> has mean <span class="math inline">\(E[X_1]\)</span> and variance <span class="math inline">\(\operatorname{Var}(X_1)/n\)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Concrete example placeholder">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Concrete example placeholder
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Use the Canvas dataset to explain what independence would mean in scientific language.</p>
+</div>
+</div>
+</section>
+<section id="conditioning" class="level2">
+<h2 class="anchored" data-anchor-id="conditioning">Conditioning</h2>
+<p>We first condition on a set:</p>
+<blockquote class="blockquote">
+<p><strong>Definition.</strong> The <em>conditional probability</em> of <span class="math inline">\(A\)</span> conditional on a set <span class="math inline">\(B\)</span> with nonzero probability is denoted by <span class="math inline">\(P(A\mid B)\)</span> and given by</p>
+<p><span class="math display">\[
+\frac{P(A\cap B)}{P(B)}.
+\]</span></p>
+</blockquote>
+<p>Conditional probability gives us the factorization</p>
+<p><span class="math display">\[
+P(A_1\cap A_2\cap\cdots\cap A_n)
+=P(A_1)P(A_2\mid A_1)P(A_3\mid A_1\cap A_2)\cdots
+P(A_n\mid A_1\cap\cdots\cap A_{n-1})
+\]</span></p>
+<p>for any ordering of the <span class="math inline">\(A_j\)</span> whenever the conditional probabilities are defined.</p>
+<p>We then define conditional expectation for the special cases of discrete and continuous random variables:</p>
+<blockquote class="blockquote">
+<p><strong>Definition 1 (discrete).</strong> Given discrete <span class="math inline">\(X\)</span> and discrete <span class="math inline">\(Y\)</span> that takes a value <span class="math inline">\(y\)</span> with positive probability, define conditional expectation <span class="math inline">\(E[X\mid Y=y]\)</span> as</p>
+<p><span class="math display">\[
+\sum_i x_iP(X=x_i\mid Y=y).
+\]</span></p>
+</blockquote>
+<blockquote class="blockquote">
+<p><strong>Definition 2 (continuous).</strong> Given continuous <span class="math inline">\(X\)</span> and continuous <span class="math inline">\(Y\)</span> with <span class="math inline">\(f_Y(y)&gt;0\)</span>, define conditional expectation <span class="math inline">\(E[X\mid Y=y]\)</span> as</p>
+<p><span class="math display">\[
+\int_{\mathbb R}x f_{X\mid Y=y}(x)\,dx,
+\]</span></p>
+<p>with</p>
+<p><span class="math display">\[
+f_{X\mid Y=y}(x):=\frac{f_{X,Y}(x,y)}{f_Y(y)}
+\]</span></p>
+<p>called the conditional density of <span class="math inline">\(X\)</span> given <span class="math inline">\(Y=y\)</span>.</p>
+</blockquote>
+<p>Two immediate consequences:</p>
+<ul>
+<li>The mapping <span class="math inline">\(y\mapsto E[X\mid Y=y]\)</span> defines a function <span class="math inline">\(g(y)\)</span>. Let <span class="math inline">\(E[X\mid Y]\)</span> be the random variable <span class="math inline">\(g(Y)\)</span>.</li>
+<li><span class="math inline">\(E[1_{X\leq x}\mid Y=y]\)</span> defines a cumulative distribution function <span class="math inline">\(F_{X\mid Y=y}(x)\)</span>.</li>
+</ul>
+<p>A helpful understanding is that <span class="math inline">\(g(Y)\)</span> is the closest function of <span class="math inline">\(Y\)</span> to <span class="math inline">\(X\)</span> in terms of expected square error. We thus interpret <span class="math inline">\(E[X\mid Y]\)</span> as our best prediction for <span class="math inline">\(X\)</span> given knowledge of <span class="math inline">\(Y\)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Concrete example placeholder">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Concrete example placeholder
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Compute and interpret conditional expectations and conditional probabilities using the Canvas dataset.</p>
+</div>
+</div>
+</section>
+<section id="conditional-independence" class="level2">
+<h2 class="anchored" data-anchor-id="conditional-independence">Conditional independence</h2>
+<p>We want to know if knowledge of one event <span class="math inline">\(A\)</span> provides extra information about another event <span class="math inline">\(B\)</span> beyond what is already known from an event <span class="math inline">\(C\)</span>. For example, we may want to know if knowing whether a sprinkler is on provides us any additional information about whether the lawn is wet when we already know that it is raining. This yields the idea of conditional independence:</p>
+<blockquote class="blockquote">
+<p><strong>Definition.</strong> Random variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent given a random variable <span class="math inline">\(Z\)</span> if</p>
+<p><span class="math display">\[
+F_{X,Y\mid Z=z}(x,y)=F_{X\mid Z=z}(x)F_{Y\mid Z=z}(y)
+\]</span></p>
+<p>for every <span class="math inline">\(x,y,z\in\mathbb R\)</span> for which the above is defined. In such cases, we write</p>
+<p><span class="math display">\[
+X\mathrel{\perp\!\!\!\perp}Y\mid Z.
+\]</span></p>
+</blockquote>
+<p>Unexpectedly, random variables can be independent without being conditionally independent, and they can be conditionally independent without being independent.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Concrete example placeholder">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Concrete example placeholder
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Use the Canvas dataset to explain conditional independence in scientific language and contrast it with marginal independence.</p>
+</div>
+</div>
+</section>
+<section id="iterated-expectations-and-total-probability" class="level2">
+<h2 class="anchored" data-anchor-id="iterated-expectations-and-total-probability">Iterated expectations and total probability</h2>
+<p>Make sure you are comfortable working with conditional expectations using properties like:</p>
+<ul>
+<li><span class="math inline">\(E[X\mid Y]=E[X]\)</span> if <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent</li>
+<li><span class="math inline">\(E[f(X)g(Y)\mid Y]=g(Y)E[f(X)\mid Y]\)</span></li>
+<li>Linearity: <span class="math inline">\(E[aX+bZ\mid Y]=aE[X\mid Y]+bE[Z\mid Y]\)</span></li>
+<li>Law of total expectation: <span class="math inline">\(E[E[X\mid Y]]=E[X]\)</span></li>
+<li><span class="math inline">\(E[X\mid Z]=E[X\mid Y,Z]\)</span> if <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent given <span class="math inline">\(Z\)</span></li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled" title="Content placeholder">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Content placeholder
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Add the law of total probability, then work through the law of total probability and the law of iterated expectation using the Canvas dataset.</p>
+</div>
+</div>
+</section>
+<section id="regression-models" class="level2">
+<h2 class="anchored" data-anchor-id="regression-models">Regression models</h2>
+<p>Outcome regression involves proposing a function <span class="math inline">\(\mu(X,A;\theta)\)</span>, specified by unknown parameters <span class="math inline">\(\theta\)</span>, so that</p>
+<p><span class="math display">\[
+E[Y\mid X,A]:=\mu(X,A;\theta).
+\]</span></p>
+<p>Data is used to recover an estimate <span class="math inline">\(\widehat\theta\)</span> for <span class="math inline">\(\theta\)</span> from which we arrive at an approximation of the conditional mean.</p>
+<p>The <em>art</em> of outcome regression, like all regression approaches, is deciding:</p>
+<ul>
+<li>What form should <span class="math inline">\(\mu\)</span> take</li>
+<li>How to recover <span class="math inline">\(\widehat\theta\)</span></li>
+</ul>
+<section id="linear-regression" class="level3">
+<h3 class="anchored" data-anchor-id="linear-regression">Linear regression</h3>
+<p>In linear regression, we choose a form for <span class="math inline">\(\mu(X,A;\theta)\)</span> that is linear in its parameters <span class="math inline">\(\theta\)</span>.</p>
+<p>For example, we might choose</p>
+<p><span class="math display">\[
+\mu(X,A;\theta):=\theta^{\mathsf T}
+\begin{bmatrix}
+X\\A
+\end{bmatrix},
+\]</span></p>
+<p>or alternatively include interaction terms:</p>
+<p><span class="math display">\[
+\mu(X,A;\theta):=\theta^{\mathsf T}
+\begin{bmatrix}
+X\\XA
+\end{bmatrix}.
+\]</span></p>
+<p>To estimate <span class="math inline">\(\theta\)</span>, we could then follow an ordinary least squares approach and try to minimize mean square error.</p>
+</section>
+<section id="logistic-regression" class="level3">
+<h3 class="anchored" data-anchor-id="logistic-regression">Logistic regression</h3>
+<p>The image of <span class="math inline">\(E[Y\mid X,A]\)</span> can frequently be a strict subset of <span class="math inline">\(\mathbb R\)</span>. This conditional mean, for example, lies in <span class="math inline">\([0,1]\)</span> for binary <span class="math inline">\(Y\)</span>.</p>
+<p>We can enforce this restriction with an invertible function <span class="math inline">\(g\)</span> called a <em>link function</em>. For binary <span class="math inline">\(Y\)</span>, a common choice for <span class="math inline">\(g\)</span> is the logit function:</p>
+<p><span class="math display">\[
+\operatorname{logit}(p):=\log\left(\frac{p}{1-p}\right),
+\]</span></p>
+<p>whose inverse is</p>
+<p><span class="math display">\[
+\operatorname{logit}^{-1}(x):=\frac{1}{1+\exp(-x)}.
+\]</span></p>
+<p>With a logit function as a link, logistic regression consists of modeling the transformed conditional mean as a linear function of its parameters and recovering <span class="math inline">\(\widehat\theta\)</span> by maximizing the likelihood of the data.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Regression examples placeholder">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Regression examples placeholder
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Using the Canvas dataset:</p>
+<ul>
+<li>build linear and logistic regression models;</li>
+<li>describe each regression model as a function;</li>
+<li>interpret the fitted coefficients mathematically;</li>
+<li>interpret the fitted coefficients in the language of the scientific problem;</li>
+<li>manipulate each fitted function to predict means or probabilities;</li>
+<li>generate predictions for everyone in the dataset; and</li>
+<li>optionally compare models using AIC and BIC.</li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="estimators" class="level2">
+<h2 class="anchored" data-anchor-id="estimators">Estimators</h2>
+<div class="callout callout-style-default callout-note callout-titled" title="Content placeholder">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Content placeholder
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The original GitBook identifies bias, consistency, and efficiency as material to add in a future version. Develop this section using the Canvas dataset:</p>
+<ul>
+<li>define an estimator and distinguish it from an estimate;</li>
+<li>describe what makes a good estimator;</li>
+<li>define bias;</li>
+<li>discuss variability, consistency, and efficiency; and</li>
+<li>show these properties through a concrete example or simulation.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="using-fitted-response-models" class="level2">
+<h2 class="anchored" data-anchor-id="using-fitted-response-models">Using fitted response models</h2>
+<p>Once we have <span class="math inline">\(\widehat\theta\)</span>, we can evaluate <span class="math inline">\(\mu(X,a;\widehat\theta)\)</span> for each person in the dataset and compute its empirical expectation:</p>
+<p><span class="math display">\[
+E_N[\mu(X,a;\widehat\theta)].
+\]</span></p>
+<div class="callout callout-style-default callout-note callout-titled" title="Concrete example placeholder">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Concrete example placeholder
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Use the Canvas dataset to calculate predictions for everyone, first using their observed values and then after setting a selected predictor to the same value for everyone. Average and interpret the predictions without giving them a causal interpretation.</p>
+</div>
+</div>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
+</div>
+</section>
+<section id="takeaways" class="level2">
+<h2 class="anchored" data-anchor-id="takeaways">Takeaways</h2>
+<ol type="1">
+<li>A probability space is a necessary construction for causal inference.</li>
+<li>However, random variables will be our main object of interest.</li>
+<li>As such, the probability space is often implied but not explicit.</li>
+<li>Our main tool will be to manipulate and compute expectations and conditional expectations.</li>
+<li>This is especially true when leveraging independence and conditional independence.</li>
+<li>Once suitably manipulated, we will often use sample means for estimation and so rely on theorems like the central limit theorem.</li>
+</ol>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-connors1996" class="csl-entry" role="listitem">
+Connors, Jr., Alfred F., Theodore Speroff, Neal V. Dawson, Charles Thomas, Jr. Harrell Frank E., Douglas Wagner, Norman Desbiens, et al. 1996. <span>“The Effectiveness of Right Heart Catheterization in the Initial Care of Critically Ill Patients.”</span> <em>JAMA</em> 276 (11): 889–97. <a href="https://doi.org/10.1001/jama.1996.03540110043030">https://doi.org/10.1001/jama.1996.03540110043030</a>.
+</div>
+</div>
+</section>
 
 </main> <!-- /main -->
 <script>
@@ -731,13 +1110,13 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./01e-exercises.html" class="pagination-link" aria-label="Exercises">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Exercises</span></span>
+      <a href="./01c-clinical-trials.html" class="pagination-link" aria-label="Clinical trials as our exemplar">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Clinical trials as our exemplar</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./references.html" class="pagination-link" aria-label="References">
-        <span class="nav-page-text"><span class="chapter-title">References</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./01e-exercises.html" class="pagination-link" aria-label="Exercises">
+        <span class="nav-page-text"><span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

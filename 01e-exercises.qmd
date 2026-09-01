@@ -1,0 +1,13 @@
+---
+title: "Exercises"
+filters:
+  - _filters/solutions.lua
+---
+
+## Being a detective with data {.unnumbered}
+
+{{< include _exercises/worksheet-01.qmd >}}
+
+## Clinical trials as our exemplar {.unnumbered}
+
+{{< include _exercises/worksheet-02-well-definedness.qmd >}}

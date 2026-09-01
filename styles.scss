@@ -6,8 +6,7 @@
   font-size: 20px;
 
   /* Reading layout defaults */
-  --page-max: 1200px;
-  --page-left: 3rem;
+  --page-max: 1040px;
   --page-pad: 2rem;
 
   /* Wide-screen layout */
@@ -16,7 +15,7 @@
   --xwide-page-pad: 6rem;
 
   /* Line length for text + bottom navigation on wide screens */
-  --text-max: 820px;
+  --text-max: 760px;
 
   /* Color theme: forest green with warm neutral accents */
   --c-primary:      #2F6F4E;   /* forest green */
@@ -43,6 +42,8 @@ body {
   font-family: 'Inter', sans-serif;
   line-height: 1.6;
   color: var(--c-ink);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 /* Links */
@@ -425,22 +426,23 @@ table td, table th {
   display: block !important;
   grid-template-columns: 1fr !important;
   column-gap: 0 !important;
-
+  box-sizing: border-box;
+  width: 100%;
   max-width: var(--page-max);
-  margin-left: var(--page-left);
+  margin-left: auto;
   margin-right: auto;
   padding-left: var(--page-pad);
   padding-right: var(--page-pad);
 }
 
-/* Main content fills the container; keep padding on medium screens */
+/* Main content fills the padded page container */
 #quarto-content main.content,
 #quarto-content .content {
   width: 100% !important;
   max-width: none !important;
   margin: 0 !important;
-  padding-left: var(--page-pad) !important;
-  padding-right: var(--page-pad) !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
 }
@@ -539,7 +541,7 @@ nav.quarto-page-navigation {
 
   width: 100% !important;
   max-width: var(--page-max);
-  margin: 2.5rem 0 1.5rem var(--page-left);
+  margin: 2.5rem auto 1.5rem;
   padding-left: var(--page-pad);
   padding-right: var(--page-pad);
 }
@@ -566,10 +568,20 @@ nav.quarto-page-navigation {
   margin-left: auto;
 }
 
+/* Exercise response areas */
+.response-space {
+  min-height: 4.5rem;
+  margin: 0.6rem 0 1.2rem;
+  border-bottom: 1px solid #cfd6ca;
+}
+
+.response-space.short {
+  min-height: 2.5rem;
+}
+
 /* Narrow screens */
 @media (max-width: 992px) {
   :root {
-    --page-left: 0;
     --page-pad: 1.25rem;
   }
 
@@ -584,6 +596,29 @@ nav.quarto-page-navigation {
   nav.quarto-page-navigation {
     margin-left: auto !important;
     margin-right: auto !important;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    font-size: 19px;
+    --page-pad: 1rem;
+  }
+
+  h1 {
+    font-size: 1.65rem;
+  }
+
+  h2 {
+    font-size: 1.35rem;
+  }
+
+  main.content table:not(.compact-data-table) {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-size: 0.9rem;
   }
 }
 

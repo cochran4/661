@@ -1,7 +1,5 @@
 ---
-title: "A Detective Among Data"
-aliases:
-  - 01-lung-cancer.html
+title: "Being a detective with data"
 ---
 
 > "When you have eliminated the impossible, whatever remains, however improbable, must be the truth."
