@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Why statistics is not enough – Causal inference (and other things)</title>
+<title>Why probability is not enough – Causal inference (and other things)</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -160,8 +160,8 @@ window.Quarto = {
  <span class="dropdown-text">Being a detective with data</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./01b-why-statistics-is-not-enough.html">
- <span class="dropdown-text">Why statistics is not enough</span></a>
+    <a class="dropdown-item" href="./01b-why-probability-is-not-enough.html">
+ <span class="dropdown-text">Why probability is not enough</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./01c-clinical-trials.html">
@@ -203,7 +203,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01a-being-a-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./01b-why-statistics-is-not-enough.html"><span class="chapter-title">Why statistics is not enough</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01a-being-a-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./01b-why-probability-is-not-enough.html"><span class="chapter-title">Why probability is not enough</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -241,7 +241,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01b-why-statistics-is-not-enough.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Why statistics is not enough</span></a>
+  <a href="./01b-why-probability-is-not-enough.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Why probability is not enough</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -315,9 +315,9 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01a-being-a-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./01b-why-statistics-is-not-enough.html"><span class="chapter-title">Why statistics is not enough</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01a-being-a-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./01b-why-probability-is-not-enough.html"><span class="chapter-title">Why probability is not enough</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Why statistics is not enough</span></h1>
+<h1 class="title"><span class="chapter-title">Why probability is not enough</span></h1>
 </div>
 
 
@@ -372,7 +372,7 @@ Suppose <span class="math inline">\(\alpha'=1\)</span> and <span class="math inl
 <p>Both regressions can describe the association. They may also invite opposite causal stories. When coffee is regressed onto anxiety, you can imagine coffee increasing a person’s anxiety. When anxiety is regressed onto coffee, you imagine people drinking more coffee because anxiety interferes with sleep and leaves them tired the next day. The data do not label one variable as the cause and the other as the effect.</p>
 <p>This is not merely a quirk of linear regression. The following general fact states the idea more precisely.</p>
 <div class="proposition-box">
-<p><strong>A general fact.</strong> For any joint distribution of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, we can draw a sample from <span class="math inline">\((X,Y)\)</span> in two equivalent ways:</p>
+<p><strong>A general fact.</strong> For any joint distribution of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, we can draw a sample from <span class="math inline">\((X,Y)\)</span> in two ways:</p>
 <ol type="1">
 <li>Draw <span class="math inline">\(X\)</span> first. Independently draw a uniform random number <span class="math inline">\(U\)</span>, and then use <span class="math inline">\(X\)</span> and <span class="math inline">\(U\)</span> to specify <span class="math inline">\(Y\)</span>.</li>
 <li>Draw <span class="math inline">\(Y\)</span> first. Independently draw a uniform random number <span class="math inline">\(U\)</span>, and then use <span class="math inline">\(Y\)</span> and <span class="math inline">\(U\)</span> to specify <span class="math inline">\(X\)</span>.</li>
@@ -448,7 +448,12 @@ Based on these results, which treatment would you recommend?
 </section>
 <section id="simpsons-paradox" class="level2">
 <h2 class="anchored" data-anchor-id="simpsons-paradox">Simpson’s paradox</h2>
-<p>The example we just saw showed us <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A reversal in which the direction of an association in the combined data is opposite to its direction within groups defined by a third variable." tabindex="0">Simpson’s paradox</span>. <strong>Simpson’s paradox</strong> occurs when the direction of an association in the combined data is opposite to its direction within groups defined by a third variable. In the kidney-stone example, the overall comparison favored percutaneous nephrolithotomy, while the comparisons within both stone sizes favored open surgery.</p>
+<p>We have already seen that an association or regression can invite a causal interpretation that the data alone cannot support. It can mislead us in another way: even the <em>direction</em> of an association can depend on how we group the data. <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A reversal in which the direction of an association in the combined data is opposite to its direction within groups defined by a third variable." tabindex="0">Simpson’s paradox</span> occurs when the direction of an association in the combined data is opposite to its direction within groups defined by a third variable. In the kidney-stone example, the overall comparison favored percutaneous nephrolithotomy, while the comparisons within both stone sizes favored open surgery.</p>
+<div class="example-intro">
+<p><span class="example-label">Example: Graduate admissions at Berkeley</span></p>
+<p>A classic example comes from graduate admissions at the University of California, Berkeley. In 1973, women were less likely than men to be admitted when all departments were combined. Viewed one way, the association appeared to show an admissions process that favored men. Once department was taken into account, however, the association went slightly in the other direction: it appeared to favor women. Women were more likely to apply to departments with lower admission rates for everyone <span class="citation" data-cites="bickel_sex_bias_1975">(<a href="references.html#ref-bickel_sex_bias_1975" role="doc-biblioref">Bickel et al. 1975</a>)</span>.</p>
+<p>The third variable—department—therefore matters greatly. Yet this example also warns us not to treat stratification as an automatic causal solution. Department choice may itself reflect earlier social and educational forces, so the departmental comparisons answer a narrower question than the overall comparison.</p>
+</div>
 <p>Simpson’s paradox is not limited to binary exposures and outcomes. The same reversal can occur when <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are continuous. In the picture below, color indicates membership in a third group. Within every color, the points move downward as <span class="math inline">\(X\)</span> increases, showing a negative association between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. If we ignore the colors and combine all the points, the dark arrow moves upward, showing a positive association.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -473,6 +478,9 @@ Based on these results, which treatment would you recommend?
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-bickel_sex_bias_1975" class="csl-entry" role="listitem">
+Bickel, Peter J., Eugene A. Hammel, and J. W. O’Connell. 1975. <span>“Sex Bias in Graduate Admissions: Data from Berkeley.”</span> <em>Science</em> 187 (4175): 398–404. <a href="https://doi.org/10.1126/science.187.4175.398">https://doi.org/10.1126/science.187.4175.398</a>.
+</div>
 <div id="ref-charig_renal_1986" class="csl-entry" role="listitem">
 Charig, C. R., D. R. Webb, S. R. Payne, and J. E. Wickham. 1986. <span>“Comparison of Treatment of Renal Calculi by Open Surgery, Percutaneous Nephrolithotomy, and Extracorporeal Shockwave Lithotripsy.”</span> <em>British Medical Journal (Clinical Research Edition)</em> 292 (6524): 879–82. <a href="https://doi.org/10.1136/bmj.292.6524.879">https://doi.org/10.1136/bmj.292.6524.879</a>.
 </div>
