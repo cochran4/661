@@ -65,7 +65,7 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ffc02c1aeb1157e3a4629ede7704a19c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-b6552f9b9f0ad2669b0838e76bd5447a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -178,6 +178,17 @@ window.Quarto = {
     </ul>
   </li>
   <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-construction" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Construction</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-construction">    
+        <li>
+    <a class="dropdown-item" href="./02a-structural-equation-models.html">
+ <span class="dropdown-text">Structural equation models tell a story</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-back-matter" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Back matter</span>
     </a>
@@ -262,8 +273,20 @@ window.Quarto = {
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-      <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text">Construction</span></span>
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Construction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02a-structural-equation-models.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Structural equation models tell a story</span></a>
+  </div>
+</li>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
@@ -340,7 +363,7 @@ window.Quarto = {
 </blockquote>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/1_sherlock.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%" alt="A squirrel dressed as Sherlock Holmes wearing a deerstalker cap and cape while holding a magnifying glass."></p>
+<p><img src="images/01a-sherlock.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%" alt="A squirrel dressed as Sherlock Holmes wearing a deerstalker cap and cape while holding a magnifying glass."></p>
 </figure>
 </div>
 <div class="section-break" aria-hidden="true">
@@ -350,7 +373,7 @@ window.Quarto = {
 <p>I want to know the answer. I love eggs. So I click on the article, nervously scanning for the conclusion. Instead, I find another study showing that people who eat more eggs have a higher rate of heart disease. Or a lower rate. It seems to depend on the week.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/1_news.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%" alt="A fictional newspaper called The Morning Nut from Keene, New Hampshire, with the headline 'Does Eating Too Many Acorns Cause High Cholesterol?' and a photograph of a squirrel eating acorns."></p>
+<p><img src="images/01a-news.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:50.0%" alt="A fictional newspaper called The Morning Nut from Keene, New Hampshire, with the headline 'Does Eating Too Many Acorns Cause High Cholesterol?' and a photograph of a squirrel eating acorns."></p>
 </figure>
 </div>
 <p>Someone once joked that whenever a headline is phrased as a question, the answer is almost always “no.” Are eggs bad for your heart? <em>No.</em> Does your morning coffee cause anxiety? <em>No.</em> It is a surprisingly useful rule of thumb.</p>
@@ -358,7 +381,7 @@ window.Quarto = {
 <p>Every morning, I sit in my office looking out at the large green elm outside my window. There is often a squirrel in it. Over the years, I have watched that squirrel happily munch away on whatever seeds or fruits a green elm produces. (I should probably know what they are called.) I have never once seen it eat a walnut. Based on my observations alone, I might conclude that squirrels prefer green elms to walnut trees. Until I realize that there isn’t a walnut tree anywhere outside my office. The squirrel was never given the choice.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/1_elm_v_walnut.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%" data-fig-align="center" alt="A squirrel dressed as Sherlock Holmes thoughtfully comparing a green elm tree and a walnut tree."></p>
+<p><img src="images/01a-elm-v-walnut.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:40.0%" data-fig-align="center" alt="A squirrel dressed as Sherlock Holmes thoughtfully comparing a green elm tree and a walnut tree."></p>
 </figure>
 </div>
 <p>In a nutshell, that is what we call an <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A study that examines naturally occurring exposures or treatments rather than assigning them." tabindex="0">observational study</span>. The squirrel is simply living its life. I am not telling it where to climb or what to eat. I am just sitting back, watching, and taking notes. Nature decides what the squirrel does; I simply observe.</p>
@@ -368,7 +391,7 @@ window.Quarto = {
 <p>One of my favorite examples comes from my home state of New Hampshire. There is a strong association between the annual number of burglaries and the number of babies named Johnny. I even had a friend named Johnny growing up. I can assure you he was not secretly masterminding statewide burglary rings. The association is real, but the explanation is nonsense. The phrase <em>association is not causation</em> exists for a reason.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/1_nh_johnny.png" class="img-fluid figure-img" style="width:80.0%" alt="A fake line graph showing that annual burglaries in New Hampshire track closely with the number of babies named Johnny over the same period."></p>
+<p><img src="images/01a-nh-johnny.png" class="img-fluid figure-img" style="width:80.0%" alt="A fake line graph showing that annual burglaries in New Hampshire track closely with the number of babies named Johnny over the same period."></p>
 <figcaption>Fake line graph showing correlation between burglaries and popularity of the name Johnny. An example of a spurious association.</figcaption>
 </figure>
 </div>
@@ -382,7 +405,7 @@ window.Quarto = {
 <p>That’s true. They don’t. The butler may be the murderer. Or perhaps he handled the weapon earlier that day. Or perhaps someone planted the evidence. But imagine if Holmes shrugged, closed his notebook, and went home. That would make for a very short detective novel. Sure, fingerprints are not proof. But they are evidence. Holmes’ job is not to dismiss the evidence because another explanation is possible. His job is to investigate them until only the most convincing explanation remains.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/1_shrug.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%" alt="A squirrel dressed as Sherlock Holmes shrugging while examining fingerprints on a knife beside a magnifying glass."></p>
+<p><img src="images/01a-shrug.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%" alt="A squirrel dressed as Sherlock Holmes shrugging while examining fingerprints on a knife beside a magnifying glass."></p>
 </figure>
 </div>
 <p>Science is much the same. The hard part is not dreaming up theories. That is easy. Whenever we observe an association, there is almost always multiple stories we could tell. Perhaps one variable causes the other. Or perhaps some third factor causes them both. The hard part is deciding whether that alternative explanation can withstand careful scrutiny. Like any good detective, we are not trying to find an explanation. We are trying to find the explanation that best accounts for the evidence after reasonable alternatives have been investigated.</p>
@@ -392,7 +415,7 @@ window.Quarto = {
 <p>Few stories illustrate this better than the debate over smoking and lung cancer. Today, it is difficult to imagine the question ever being controversial. Cigarette packages carry warning labels. Physicians routinely advise patients to quit. Yet in the early 1950s, none of that was settled. Scientists debated whether smoking truly caused lung cancer. One pathologist observed the nicotine stains on the fingers of many cigarette smokers, remarking that cancers of the fingers were essentially unheard of <span class="citation" data-cites="hueper_quest_1956">(<a href="references.html#ref-hueper_quest_1956" role="doc-biblioref">Hueper 1956</a>)</span>. If tobacco tar really caused cancer, why did it seem so devastating to the lungs but not to the skin on the hands?</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/1_pipe.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%" alt="A squirrel dressed as Sherlock Holmes while thoughtfully smoking a curved pipe."></p>
+<p><img src="images/01a-pipe.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%" alt="A squirrel dressed as Sherlock Holmes while thoughtfully smoking a curved pipe."></p>
 </figure>
 </div>
 <p>To help settle the debate, the American Cancer Society turned to two statistically minded epidemiologists: E. Cuyler Hammond, its director of statistical research and assistant director Daniel Horn. With the help of roughly 20,000 volunteers, they enrolled 187,783 men between the ages of 50 and 69. At enrollment, each man completed a questionnaire about his smoking habits. Then the researchers did something wonderfully simple: they waited. For nearly four years, volunteers tracked who died and, whenever possible, what they died from. By the end of the study, 11,870 men had died. They compared those deaths across smoking groups <span class="citation" data-cites="hammond_smoking_1958">(<a href="references.html#ref-hammond_smoking_1958" role="doc-biblioref">Hammond and Horn 1958</a>)</span>.</p>
@@ -404,7 +427,7 @@ window.Quarto = {
 <p>Let’s unpack this. We’ll use a graph. Later, we’ll make these graphs precise; for now, think of them as sketches of two competing explanations. Fisher argued that more than one explanation was consistent with the data. One is the explanation we now accept: smoking causes lung cancer. This is shown on the left. The arrow runs from Smoking to Cancer. If smoking causes cancer, then people who smoke more should develop lung cancer more often, exactly as Hammond and Horn observed.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/1_two_theories.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%" data-fig-align="center" alt="Two side-by-side causal diagrams. In both diagrams, Smoking is at the top, Genotype at the lower left, and Cancer at the lower right. In Explanation 1, there is a single arrow from Smoking to Cancer. In Explanation 2, there are arrows from Genotype to Smoking and from Genotype to Cancer."></p>
+<p><img src="images/01a-two-theories.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%" data-fig-align="center" alt="Two side-by-side causal diagrams. In both diagrams, Smoking is at the top, Genotype at the lower left, and Cancer at the lower right. In Explanation 1, there is a single arrow from Smoking to Cancer. In Explanation 2, there are arrows from Genotype to Smoking and from Genotype to Cancer."></p>
 </figure>
 </div>
 <p>The second explanation is is that both smoking and lung cancer might be consequences of some third factor. Because of his interest in genetics, he suggested genotype as a candidate. Some people might inherit a genotype that makes smoking more enjoyable, more addictive, or easier to tolerate. If those same genes also increase the risk of lung cancer, then smokers would still develop lung cancer more often than non-smokers, even if smoking itself played no causal role. This alternative is shown on the right, where Genotype points to both Smoking and Cancer.</p>
@@ -418,13 +441,13 @@ window.Quarto = {
 <p>The argument that follows is one of my favorites because, once you draw the right picture, the answer is almost impossible to miss. Let <span class="math inline">\(R_S\)</span> and <span class="math inline">\(R_N\)</span> be the risk of lung cancer among smokers and non-smokers. We begin by plotting the point <span class="math inline">\((R_N,R_S)\)</span>. The horizontal coordinate is the risk among non-smokers; the vertical coordinate is the risk among smokers.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/1_cornfield_a.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+<p><img src="images/01a-cornfield-a.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
 </figure>
 </div>
 <p>The rectangle helps us locate the point. Because smokers have a higher risk of lung cancer than non-smokers, the rectangle is taller than it is wide. Now connect the origin to the point we just plotted.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/1_cornfield_b.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+<p><img src="images/01a-cornfield-b.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
 </figure>
 </div>
 <p>The slope of this line is <span class="math inline">\(R_S/R_N,\)</span> which is exactly the relative risk. Steeper lines correspond to larger relative risks. Thus, instead of thinking of the relative risk as a number, we can think of it as the steepness of a line.</p>
@@ -433,14 +456,14 @@ window.Quarto = {
 <p>We add this new point to the graph.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/1_cornfield_c.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+<p><img src="images/01a-cornfield-c.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
 </figure>
 </div>
 <p>The two points differ only by the background risk. Moving from one point to the other means subtracting exactly the same quantity, <span class="math inline">\(B\)</span>, from both coordinates. Thus, the two points lie at opposite corners of a square of side length <span class="math inline">\(B\)</span>.</p>
 <p>Connect the origin to this second point.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/1_cornfield_d.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
+<p><img src="images/01a-cornfield-d.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:70.0%"></p>
 </figure>
 </div>
 <p>The slope of the original line is <span class="math display">\[\frac{R_S}{R_N}

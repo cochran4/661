@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="500" viewBox="0 0 1000 500" role="img" aria-labelledby="title desc">
+  <title id="title">Expectation as the center of mass of a probability distribution</title>
+  <desc id="desc">Two balance diagrams. A Bernoulli distribution with probability one fourth balances at one fourth. A binomial distribution with two trials and success probability one fourth balances at one half.</desc>
+  <style>
+    .heading { font: 700 25px system-ui, sans-serif; fill: #202124; }
+    .label { font: 18px system-ui, sans-serif; fill: #202124; }
+    .small { font: 16px system-ui, sans-serif; fill: #4b5563; }
+    .axis { stroke: #202124; stroke-width: 5; stroke-linecap: round; }
+    .tick { stroke: #202124; stroke-width: 3; }
+    .mass { fill: #5b8e7d; stroke: #31594d; stroke-width: 2; }
+    .fulcrum { fill: #d99058; stroke: #8c4f25; stroke-width: 2; }
+    .mean { stroke: #b14b4b; stroke-width: 3; stroke-dasharray: 7 6; }
+  </style>
+  <text x="250" y="42" text-anchor="middle" class="heading">Bernoulli(1/4)</text>
+  <text x="750" y="42" text-anchor="middle" class="heading">Binomial(2, 1/4)</text>
+  <line x1="90" y1="330" x2="410" y2="330" class="axis"/>
+  <line x1="130" y1="322" x2="130" y2="340" class="tick"/>
+  <line x1="370" y1="322" x2="370" y2="340" class="tick"/>
+  <rect x="105" y="150" width="50" height="175" rx="4" class="mass"/>
+  <rect x="345" y="267" width="50" height="58" rx="4" class="mass"/>
+  <text x="130" y="137" text-anchor="middle" class="label">3/4</text>
+  <text x="370" y="254" text-anchor="middle" class="label">1/4</text>
+  <text x="130" y="368" text-anchor="middle" class="label">0</text>
+  <text x="370" y="368" text-anchor="middle" class="label">1</text>
+  <line x1="190" y1="305" x2="190" y2="408" class="mean"/>
+  <path d="M190 330 L162 397 L218 397 Z" class="fulcrum"/>
+  <text x="190" y="432" text-anchor="middle" class="label">balance point = 1/4</text>
+  <line x1="570" y1="330" x2="930" y2="330" class="axis"/>
+  <line x1="610" y1="322" x2="610" y2="340" class="tick"/>
+  <line x1="750" y1="322" x2="750" y2="340" class="tick"/>
+  <line x1="890" y1="322" x2="890" y2="340" class="tick"/>
+  <rect x="585" y="150" width="50" height="175" rx="4" class="mass"/>
+  <rect x="725" y="208" width="50" height="117" rx="4" class="mass"/>
+  <rect x="865" y="306" width="50" height="19" rx="4" class="mass"/>
+  <text x="610" y="137" text-anchor="middle" class="label">9/16</text>
+  <text x="750" y="195" text-anchor="middle" class="label">6/16</text>
+  <text x="890" y="293" text-anchor="middle" class="label">1/16</text>
+  <text x="610" y="368" text-anchor="middle" class="label">0</text>
+  <text x="750" y="368" text-anchor="middle" class="label">1</text>
+  <text x="890" y="368" text-anchor="middle" class="label">2</text>
+  <line x1="680" y1="305" x2="680" y2="408" class="mean"/>
+  <path d="M680 330 L652 397 L708 397 Z" class="fulcrum"/>
+  <text x="680" y="432" text-anchor="middle" class="label">balance point = 1/2</text>
+  <text x="500" y="478" text-anchor="middle" class="small">Bar height represents probability; the triangle marks the expectation.</text>
+</svg>

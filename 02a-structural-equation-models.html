@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>References – Causal inference (and other things)</title>
+<title>Structural equation models tell a story – Causal inference (and other things)</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -54,7 +54,8 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./glossary.html" rel="prev">
+<link href="./glossary.html" rel="next">
+<link href="./01e-exercises.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -92,6 +93,35 @@ div.csl-indent {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -184,7 +214,7 @@ div.csl-indent {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./glossary.html">Back matter</a></li><li class="breadcrumb-item"><a href="./references.html"><span class="chapter-title">References</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-structural-equation-models.html">Construction</a></li><li class="breadcrumb-item"><a href="./02a-structural-equation-models.html"><span class="chapter-title">Structural equation models tell a story</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -253,7 +283,7 @@ div.csl-indent {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02a-structural-equation-models.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Structural equation models tell a story</span></a>
+  <a href="./02a-structural-equation-models.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Structural equation models tell a story</span></a>
   </div>
 </li>
       </ul>
@@ -294,7 +324,7 @@ div.csl-indent {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">References</span></a>
+  <a href="./references.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">References</span></a>
   </div>
 </li>
       </ul>
@@ -308,9 +338,9 @@ div.csl-indent {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./glossary.html">Back matter</a></li><li class="breadcrumb-item"><a href="./references.html"><span class="chapter-title">References</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-structural-equation-models.html">Construction</a></li><li class="breadcrumb-item"><a href="./02a-structural-equation-models.html"><span class="chapter-title">Structural equation models tell a story</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">References</span></h1>
+<h1 class="title"><span class="chapter-title">Structural equation models tell a story</span></h1>
 </div>
 
 
@@ -327,95 +357,208 @@ div.csl-indent {
 </header>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list">
-<div id="ref-bickel_sex_bias_1975" class="csl-entry" role="listitem">
-Bickel, Peter J., Eugene A. Hammel, and J. W. O’Connell. 1975.
-<span>“Sex Bias in Graduate Admissions: Data from Berkeley.”</span>
-<em>Science</em> 187 (4175): 398–404. <a href="https://doi.org/10.1126/science.187.4175.398">https://doi.org/10.1126/science.187.4175.398</a>.
+<p>We begin construction by telling a story about how the world generated our data. The story proceeds in an order. First, the world gives us one variable. Then it gives us another, possibly using variables it has already generated. A structural equation model makes this sequence explicit.</p>
+<section id="the-world-gives-us-x-then-y" class="level2">
+<h2 class="anchored" data-anchor-id="the-world-gives-us-x-then-y">The world gives us <span class="math inline">\(X\)</span>, then <span class="math inline">\(Y\)</span></h2>
+<p>Start with two random variables, <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. The world first generates <span class="math inline">\(X\)</span>. For now, we do not care how. Once <span class="math inline">\(X\)</span> has taken a value, the world generates <span class="math inline">\(Y\)</span> using a probability model that can depend on <span class="math inline">\(X\)</span>:</p>
+<p><span class="math display">\[
+X\sim P_X,
+\qquad
+Y\mid X=x\sim P_{Y\mid X=x}.
+\]</span></p>
+<p>This notation gives us a recipe for sampling one observation:</p>
+<ol type="1">
+<li>Draw a value <span class="math inline">\(x\)</span> from the distribution of <span class="math inline">\(X\)</span>.</li>
+<li>Having observed <span class="math inline">\(X=x\)</span>, draw a value <span class="math inline">\(y\)</span> from the conditional distribution of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X=x\)</span>.</li>
+</ol>
+<p>The sequence matters. The rule that generates <span class="math inline">\(Y\)</span> is allowed to use <span class="math inline">\(X\)</span> because <span class="math inline">\(X\)</span> has already been generated. In this story, the rule that generates <span class="math inline">\(X\)</span> cannot use <span class="math inline">\(Y\)</span>, because <span class="math inline">\(Y\)</span> does not yet exist.</p>
+<p>Together, these two steps specify a joint probability model. We can express the same idea through the factorization</p>
+<p><span class="math display">\[
+P(X=x,Y=y)=P(X=x)P(Y=y\mid X=x)
+\]</span></p>
+<p>when <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are discrete. The sequential story and the joint distribution are two descriptions of the same probability model.</p>
+<details class="lesson-question">
+<summary>
+Suppose <span class="math inline">\(X\sim\operatorname{Bernoulli}(0.4)\)</span> and <span class="math inline">\(Y\mid X=x\sim\operatorname{Bernoulli}(0.1+0.6x)\)</span>. The world has generated <span class="math inline">\(X=1\)</span>. What happens next?
+</summary>
+<p>The world draws <span class="math inline">\(Y\)</span> from a <span class="math inline">\(\operatorname{Bernoulli}(0.7)\)</span> distribution, because</p>
+<p><span class="math display">\[
+0.1+0.6(1)=0.7.
+\]</span></p>
+<p>Thus, the next step produces <span class="math inline">\(Y=1\)</span> with probability <span class="math inline">\(0.7\)</span> and <span class="math inline">\(Y=0\)</span> with probability <span class="math inline">\(0.3\)</span>.</p>
+</details>
+<details class="lesson-question">
+<summary>
+Using the same model, what changes if the world instead generates <span class="math inline">\(X=0\)</span>?
+</summary>
+<p>The sequence of steps does not change, but the distribution used in the second step does. The world draws <span class="math inline">\(Y\)</span> from a <span class="math inline">\(\operatorname{Bernoulli}(0.1)\)</span> distribution.</p>
+</details>
+<details class="lesson-question">
+<summary>
+Suppose <span class="math inline">\(X\sim\operatorname{Normal}(0,1)\)</span> and <span class="math inline">\(Y\mid X=x\sim\operatorname{Normal}(2+x,4)\)</span>. If the first step produces <span class="math inline">\(X=-1\)</span>, what distribution is used in the second step?
+</summary>
+<p>The world draws <span class="math inline">\(Y\)</span> from</p>
+<p><span class="math display">\[
+\operatorname{Normal}(2+(-1),4)=\operatorname{Normal}(1,4).
+\]</span></p>
+</details>
+<p>These exercises may look simple, but the habit is essential: stop at a particular point in the data-generating sequence, identify what has already happened, and use that information to determine the next step.</p>
+</section>
+<section id="regression-models-describe-the-next-step" class="level2">
+<h2 class="anchored" data-anchor-id="regression-models-describe-the-next-step">Regression models describe the next step</h2>
+<div class="example-intro">
+<p><span class="example-label">Case study: Right heart catheterization</span></p>
+<p>Between 1989 and 1994, the Study to Understand Prognoses and Preferences for Outcomes and Risks of Treatments (SUPPORT) followed critically ill adults receiving care in five teaching hospitals in the United States. In 1996, Connors and colleagues used data from 5,735 of these patients to study right heart catheterization (RHC), a procedure used to measure cardiac function. They asked whether receiving an RHC during the first 24 hours of intensive care was associated with survival, length of stay, intensity of care, and cost <span class="citation" data-cites="connors1996">(<a href="references.html#ref-connors1996" role="doc-biblioref">Connors et al. 1996</a>)</span>.</p>
+<p>The data are available through the <a href="https://hbiostat.org/data/">Vanderbilt University Department of Biostatistics dataset repository</a>. In the row labeled <strong>Right heart catheterization dataset</strong>, the CSV file is linked under the <strong>ASCII</strong> column. The repository also provides a <a href="https://hbiostat.org/data/repo/rhc">description of the study and dataset</a>, a <a href="https://hbiostat.org/data/repo/rhc.csv">direct link to the CSV file</a>, and <a href="https://hbiostat.org/data/repo/crhc">documentation for the variables and their coding</a>. One row in the dataset represents one critically ill patient. We will introduce the variables as we need them.</p>
+<p><em>Data obtained from the Vanderbilt University Department of Biostatistics dataset repository.</em></p>
 </div>
-<div id="ref-charig_renal_1986" class="csl-entry" role="listitem">
-Charig, C. R., D. R. Webb, S. R. Payne, and J. E. Wickham. 1986.
-<span>“Comparison of Treatment of Renal Calculi by Open Surgery,
-Percutaneous Nephrolithotomy, and Extracorporeal Shockwave
-Lithotripsy.”</span> <em>British Medical Journal (Clinical Research
-Edition)</em> 292 (6524): 879–82. <a href="https://doi.org/10.1136/bmj.292.6524.879">https://doi.org/10.1136/bmj.292.6524.879</a>.
+<p>A regression function describes the conditional mean used in the second step:</p>
+<p><span class="math display">\[
+\mu(x):=E[Y\mid X=x].
+\]</span></p>
+<p>If we also observe a variable <span class="math inline">\(A\)</span> before <span class="math inline">\(Y\)</span>, we might instead propose a function <span class="math inline">\(\mu(X,A;\theta)\)</span>, specified by unknown parameters <span class="math inline">\(\theta\)</span>, such that</p>
+<p><span class="math display">\[
+E[Y\mid X,A]=\mu(X,A;\theta).
+\]</span></p>
+<p>Data can be used to estimate <span class="math inline">\(\theta\)</span>, producing <span class="math inline">\(\widehat\theta\)</span> and an estimated conditional mean <span class="math inline">\(\mu(X,A;\widehat\theta)\)</span>.</p>
+<p>A conditional-mean model does not generally specify the entire conditional distribution of <span class="math inline">\(Y\)</span>. To sample <span class="math inline">\(Y\)</span>, the world also needs to know how values vary around that mean. For a binary <span class="math inline">\(Y\)</span>, however, its conditional mean is its conditional probability of equaling 1 and therefore determines its conditional Bernoulli distribution.</p>
+<p>The <em>art</em> of regression includes deciding:</p>
+<ul>
+<li>what form <span class="math inline">\(\mu\)</span> should take; and</li>
+<li>how to estimate <span class="math inline">\(\theta\)</span>.</li>
+</ul>
+<section id="linear-regression" class="level3">
+<h3 class="anchored" data-anchor-id="linear-regression">Linear regression</h3>
+<p>In linear regression, we choose a form for <span class="math inline">\(\mu(X,A;\theta)\)</span> that is linear in its parameters <span class="math inline">\(\theta\)</span>. For example, we might choose</p>
+<p><span class="math display">\[
+\mu(X,A;\theta):=\theta^{\mathsf T}
+\begin{bmatrix}
+1\\X\\A
+\end{bmatrix},
+\]</span></p>
+<p>or include an interaction:</p>
+<p><span class="math display">\[
+\mu(X,A;\theta):=\theta^{\mathsf T}
+\begin{bmatrix}
+1\\X\\A\\XA
+\end{bmatrix}.
+\]</span></p>
+<p>Ordinary least squares estimates <span class="math inline">\(\theta\)</span> by minimizing squared error.</p>
+</section>
+<section id="logistic-regression" class="level3">
+<h3 class="anchored" data-anchor-id="logistic-regression">Logistic regression</h3>
+<p>When <span class="math inline">\(Y\)</span> is binary, <span class="math inline">\(E[Y\mid X,A]\)</span> lies in <span class="math inline">\([0,1]\)</span>. Logistic regression respects this restriction by modeling the logit of the conditional mean as a linear function. The logit function is</p>
+<p><span class="math display">\[
+\operatorname{logit}(p):=\log\left(\frac{p}{1-p}\right),
+\]</span></p>
+<p>and its inverse is</p>
+<p><span class="math display">\[
+\operatorname{logit}^{-1}(u):=\frac{1}{1+\exp(-u)}.
+\]</span></p>
+<p>For example, we might specify</p>
+<p><span class="math display">\[
+E[Y\mid X,A]
+=\operatorname{logit}^{-1}
+\left(
+\theta^{\mathsf T}
+\begin{bmatrix}
+1\\X\\A
+\end{bmatrix}
+\right).
+\]</span></p>
+<p>Once <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span> have been generated, this model supplies the probability used to generate the binary variable <span class="math inline">\(Y\)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="RHC regression examples placeholder">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<div id="ref-chen_abstract_2024" class="csl-entry" role="listitem">
-Chen, Meng, and Victor W Zhong. 2024. <span>“Abstract P192: Association
-Between Time-Restricted Eating and All-Cause and Cause-Specific
-Mortality.”</span> <em>Circulation</em> 149 (March): AP192–92. <a href="https://doi.org/10.1161/circ.149.suppl_1.P192">https://doi.org/10.1161/circ.149.suppl_1.P192</a>.
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>RHC regression examples placeholder
 </div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Using the RHC dataset:</p>
+<ul>
+<li>identify binary, categorical, count, and continuous random variables;</li>
+<li>discuss the possible values and plausible distributions of selected variables;</li>
+<li>use pairs of variables to illustrate joint probabilities;</li>
+<li>compute and interpret expectations, including the expectation of a binary random variable as a probability;</li>
+<li>build linear and logistic regression models;</li>
+<li>describe each regression model as a function;</li>
+<li>interpret conditional means and probabilities as best guesses based on patient information;</li>
+<li>interpret the fitted coefficients mathematically and scientifically;</li>
+<li>manipulate each fitted function to predict means or probabilities;</li>
+<li>use the fitted models to illustrate linearity, taking out what is known, the law of iterated expectation, and the law of total probability;</li>
+<li>contrast variables that might be independent with variables likely to share information, noting that RHC was not randomized; and</li>
+<li>generate predictions for everyone in the dataset.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="using-fitted-response-models" class="level3">
+<h3 class="anchored" data-anchor-id="using-fitted-response-models">Using fitted response models</h3>
+<p>Once we have <span class="math inline">\(\widehat\theta\)</span>, we can evaluate <span class="math inline">\(\mu(X,a;\widehat\theta)\)</span> for each person in the dataset and compute its empirical expectation:</p>
+<p><span class="math display">\[
+E_N[\mu(X,a;\widehat\theta)].
+\]</span></p>
+<div class="callout callout-style-default callout-note callout-titled" title="Concrete example placeholder">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Concrete example placeholder
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Use the RHC dataset to calculate predictions for everyone, first using their observed values and then after setting a selected predictor to the same value for everyone. Average and interpret the predictions without giving them a causal interpretation.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="from-a-sequence-to-structural-assignments" class="level2">
+<h2 class="anchored" data-anchor-id="from-a-sequence-to-structural-assignments">From a sequence to structural assignments</h2>
+<p>We now make the mechanisms behind the sequence explicit. Introduce variables <span class="math inline">\(U_X\)</span> and <span class="math inline">\(U_Y\)</span> that contain whatever additional inputs the world uses when generating <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. We write</p>
+<p><span class="math display">\[
+X:=f_X(U_X),
+\qquad
+Y:=f_Y(X,U_Y).
+\]</span></p>
+<p>These are <strong>assignments</strong>, not ordinary algebraic equations. Read them from left to right:</p>
+<ol type="1">
+<li>Generate <span class="math inline">\(U_X\)</span>, then assign <span class="math inline">\(X\)</span> the value <span class="math inline">\(f_X(U_X)\)</span>.</li>
+<li>Generate <span class="math inline">\(U_Y\)</span>, then assign <span class="math inline">\(Y\)</span> the value <span class="math inline">\(f_Y(X,U_Y)\)</span> using the value of <span class="math inline">\(X\)</span> produced in the first step.</li>
+</ol>
+<p>The second assignment records the direction in the story: <span class="math inline">\(X\)</span> can help determine <span class="math inline">\(Y\)</span>. It does not say that we should rearrange the expression and use <span class="math inline">\(Y\)</span> to generate <span class="math inline">\(X\)</span>.</p>
+<p>For the binary example above, let <span class="math inline">\(U_X\)</span> and <span class="math inline">\(U_Y\)</span> be independent uniform random variables on <span class="math inline">\((0,1)\)</span> and define</p>
+<p><span class="math display">\[
+X:=1_{\{U_X\leq0.4\}},
+\qquad
+Y:=1_{\{U_Y\leq0.1+0.6X\}}.
+\]</span></p>
+<p>These assignments reproduce the earlier sequential model: <span class="math inline">\(X\)</span> equals 1 with probability <span class="math inline">\(0.4\)</span>, and after <span class="math inline">\(X\)</span> is generated, the probability that <span class="math inline">\(Y=1\)</span> is <span class="math inline">\(0.1+0.6X\)</span>.</p>
+<details class="lesson-question">
+<summary>
+Follow the assignments when <span class="math inline">\(U_X=0.3\)</span> and <span class="math inline">\(U_Y=0.5\)</span>. What values do <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> take?
+</summary>
+<p>Because <span class="math inline">\(0.3\leq0.4\)</span>, the first assignment gives <span class="math inline">\(X=1\)</span>. The second threshold is therefore <span class="math inline">\(0.1+0.6(1)=0.7\)</span>. Because <span class="math inline">\(0.5\leq0.7\)</span>, the second assignment gives <span class="math inline">\(Y=1\)</span>.</p>
+</details>
+<details class="lesson-question">
+<summary>
+Keep <span class="math inline">\(U_X=0.3\)</span> but change <span class="math inline">\(U_Y\)</span> to <span class="math inline">\(0.8\)</span>. What changes?
+</summary>
+<p>The first assignment still gives <span class="math inline">\(X=1\)</span>. The threshold for <span class="math inline">\(Y\)</span> remains <span class="math inline">\(0.7\)</span>, but now <span class="math inline">\(0.8&gt;0.7\)</span>, so the second assignment gives <span class="math inline">\(Y=0\)</span>.</p>
+</details>
+<p>This simple model establishes the basic skill we will use throughout Construction: read a data-generating story in sequence and determine what each assignment produces from the information available at that point.</p>
+<p>In the next section, we will specify this construction more generally to obtain a nonparametric structural equation model (NPSEM). We will then use the structure of those assignments to draw causal graphs.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
 <div id="ref-connors1996" class="csl-entry" role="listitem">
-Connors, Jr., Alfred F., Theodore Speroff, Neal V. Dawson, et al. 1996.
-<span>“The Effectiveness of Right Heart Catheterization in the Initial
-Care of Critically Ill Patients.”</span> <em>JAMA</em> 276 (11): 889–97.
-<a href="https://doi.org/10.1001/jama.1996.03540110043030">https://doi.org/10.1001/jama.1996.03540110043030</a>.
-</div>
-<div id="ref-cornfield_smoking_2009" class="csl-entry" role="listitem">
-Cornfield, Jerome, William Haenszel, E. Cuyler Hammond, Abraham M.
-Lilienfeld, Michael B. Shimkin, and Ernst L. Wynder. 2009.
-<span>“Smoking and Lung Cancer: Recent Evidence and a Discussion of Some
-Questions*.”</span> <em>International Journal of Epidemiology</em> 38
-(5): 1175–91. <a href="https://doi.org/10.1093/ije/dyp289">https://doi.org/10.1093/ije/dyp289</a>.
-</div>
-<div id="ref-doll_lung_1956" class="csl-entry" role="listitem">
-Doll, Richard, and A. Bradford Hill. 1956. <span>“Lung Cancer and Other
-Causes of Death in Relation to Smoking.”</span> <em>British Medical
-Journal</em> 2 (5001): 1071–81. <a href="https://doi.org/10.1136/bmj.2.5001.1071">https://doi.org/10.1136/bmj.2.5001.1071</a>.
-</div>
-<div id="ref-doll_mortality_1964" class="csl-entry" role="listitem">
-Doll, Richard, and Austin Bradford Hill. 1964. <span>“Mortality in
-Relation to Smoking: Ten Years’ Observations of British Doctors.”</span>
-<em>British Medical Journal</em> 1 (5395): 1399–410. <a href="https://doi.org/10.1136/bmj.1.5395.1399">https://doi.org/10.1136/bmj.1.5395.1399</a>.
-</div>
-<div id="ref-fisher_cigarettes_1958" class="csl-entry" role="listitem">
-Fisher, Ronald. 1958. <span>“Cigarettes, Cancer, and Statistics.”</span>
-<em>The Centennial Review of Arts &amp; Science</em> 2: 151–66. <a href="https://www.jstor.org/stable/23737529">https://www.jstor.org/stable/23737529</a>.
-</div>
-<div id="ref-fisher_dangers_1957" class="csl-entry" role="listitem">
-Fisher, Ronald A. 1957. <span>“Dangers of Cigarette-Smoking.”</span>
-<em>British Medical Journal</em> 2 (5039): 297–98. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC1961712/">https://pmc.ncbi.nlm.nih.gov/articles/PMC1961712/</a>.
-</div>
-<div id="ref-gwiazda_myopia_2000" class="csl-entry" role="listitem">
-Gwiazda, Jane, Edward Ong, Richard Held, and Frank Thorn. 2000.
-<span>“Myopia and Ambient Night-Time Lighting.”</span> <em>Nature</em>
-404 (6774): 144. <a href="https://doi.org/10.1038/35004663">https://doi.org/10.1038/35004663</a>.
-</div>
-<div id="ref-hammond_smoking_1958" class="csl-entry" role="listitem">
-Hammond, E. Cuyler, and Daniel Horn. 1958. <span>“Smoking and Death
-Rates—Report on Forty-Four Months of Follow-up of 187,783 Men.”</span>
-<em>Journal of the American Medical Association</em> 166 (11): 1294–308.
-<a href="https://doi.org/10.1001/jama.1958.02990110030007">https://doi.org/10.1001/jama.1958.02990110030007</a>.
-</div>
-<div id="ref-hueper_quest_1956" class="csl-entry" role="listitem">
-Hueper, Wilhelm C. 1956. <em>A Quest into the Environmental Causes of
-Cancer of the Lung</em>. Public Health Monograph No. 36. Department of
-Health, Education,; Welfare.
-</div>
-<div id="ref-julious_confounding_1994" class="csl-entry" role="listitem">
-Julious, Steven A., and Mark A. Mullee. 1994. <span>“Confounding and
-Simpson’s Paradox.”</span> <em>BMJ</em> 309 (6967): 1480–81. <a href="https://doi.org/10.1136/bmj.309.6967.1480">https://doi.org/10.1136/bmj.309.6967.1480</a>.
-</div>
-<div id="ref-quinn_myopia_1999" class="csl-entry" role="listitem">
-Quinn, Graham E., Chai H. Shin, Maureen G. Maguire, and Richard A.
-Stone. 1999. <span>“Myopia and Ambient Lighting at Night.”</span>
-<em>Nature</em> 399 (6732): 113–14. <a href="https://doi.org/10.1038/20094">https://doi.org/10.1038/20094</a>.
-</div>
-<div id="ref-rubin1980" class="csl-entry" role="listitem">
-Rubin, Donald B. 1980. <span>“Randomization Analysis of Experimental
-Data: The Fisher Randomization Test Comment.”</span> <em>Journal of the
-American Statistical Association</em> 75 (371): 591–93. <a href="https://doi.org/10.2307/2287653">https://doi.org/10.2307/2287653</a>.
-</div>
-<div id="ref-whi2002" class="csl-entry" role="listitem">
-Writing Group for the Women’s Health Initiative Investigators. 2002.
-<span>“Risks and Benefits of Estrogen Plus Progestin in Healthy
-Postmenopausal Women: Principal Results from the Women’s Health
-Initiative Randomized Controlled Trial.”</span> <em>JAMA</em> 288 (3):
-321–33. <a href="https://doi.org/10.1001/jama.288.3.321">https://doi.org/10.1001/jama.288.3.321</a>.
+Connors, Jr., Alfred F., Theodore Speroff, Neal V. Dawson, et al. 1996. <span>“The Effectiveness of Right Heart Catheterization in the Initial Care of Critically Ill Patients.”</span> <em>JAMA</em> 276 (11): 889–97. <a href="https://doi.org/10.1001/jama.1996.03540110043030">https://doi.org/10.1001/jama.1996.03540110043030</a>.
 </div>
 </div>
-
-
+</section>
 
 </main> <!-- /main -->
 <script>
@@ -830,11 +973,14 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./glossary.html" class="pagination-link" aria-label="Glossary">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Glossary</span></span>
+      <a href="./01e-exercises.html" class="pagination-link" aria-label="Exercises">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Exercises</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./glossary.html" class="pagination-link" aria-label="Glossary">
+        <span class="nav-page-text"><span class="chapter-title">Glossary</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

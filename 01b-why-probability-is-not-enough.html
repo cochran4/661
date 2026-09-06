@@ -65,7 +65,7 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ffc02c1aeb1157e3a4629ede7704a19c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-b6552f9b9f0ad2669b0838e76bd5447a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -178,6 +178,17 @@ window.Quarto = {
     </ul>
   </li>
   <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-construction" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Construction</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-construction">    
+        <li>
+    <a class="dropdown-item" href="./02a-structural-equation-models.html">
+ <span class="dropdown-text">Structural equation models tell a story</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-back-matter" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Back matter</span>
     </a>
@@ -262,8 +273,20 @@ window.Quarto = {
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-      <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text">Construction</span></span>
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Construction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02a-structural-equation-models.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Structural equation models tell a story</span></a>
+  </div>
+</li>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
@@ -390,7 +413,7 @@ Optional: Why does the uniform random number work?
 <p>The picture below summarizes the problem as a snake eating its tail. A probability model can describe <span class="math inline">\(Y\)</span> using <span class="math inline">\(X\)</span>, and it can describe <span class="math inline">\(X\)</span> using <span class="math inline">\(Y\)</span>. If we interpreted both descriptions causally, we would conclude that <span class="math inline">\(X\)</span> causes <span class="math inline">\(Y\)</span> and that <span class="math inline">\(Y\)</span> causes <span class="math inline">\(X\)</span>. The circular picture is not meant to propose a plausible causal mechanism. It shows why the probability model alone cannot tell us which causal arrow, if either, is appropriate.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/probability-mechanisms.svg" class="img-fluid figure-img" style="width:70.0%"></p>
+<p><img src="images/01b-probability-mechanisms.svg" class="img-fluid figure-img" style="width:70.0%"></p>
 <figcaption>The “snake eating its tail”: using both statistical directions as causal explanations creates a circular story in which X causes Y and Y causes X.</figcaption>
 </figure>
 </div>
@@ -421,7 +444,7 @@ What do you think might confound the relationship between night-light use and ch
 </details>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/nightlight-common-cause.svg" class="img-fluid figure-img" style="width:60.0%"></p>
+<p><img src="images/01b-nightlight-common-cause.svg" class="img-fluid figure-img" style="width:60.0%"></p>
 <figcaption>Parental myopia as a common cause of night-light use and childhood myopia.</figcaption>
 </figure>
 </div>
@@ -457,7 +480,7 @@ Based on these results, which treatment would you recommend?
 <p>Simpson’s paradox is not limited to binary exposures and outcomes. The same reversal can occur when <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are continuous. In the picture below, color indicates membership in a third group. Within every color, the points move downward as <span class="math inline">\(X\)</span> increases, showing a negative association between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. If we ignore the colors and combine all the points, the dark arrow moves upward, showing a positive association.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/simpsons-paradox.svg" class="img-fluid figure-img" style="width:70.0%"></p>
+<p><img src="images/01b-simpsons-paradox.svg" class="img-fluid figure-img" style="width:70.0%"></p>
 <figcaption>Each colored group has a negative association between X and Y, while the combined data have a positive association.</figcaption>
 </figure>
 </div>
@@ -470,7 +493,7 @@ Based on these results, which treatment would you recommend?
 <p>The bottom of the figure represents statistical inference. We use observed data to learn about a probability model. The top represents causal inference. We use data to learn about a causal model. This lets us infer quantities such as how much an exposure causes an outcome to change.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/causal-model-roadmap.svg" class="img-fluid figure-img" style="width:68.0%"></p>
+<p><img src="images/01b-causal-model-roadmap.svg" class="img-fluid figure-img" style="width:68.0%"></p>
 <figcaption>Statistical inference connects observational data to a probability model, while causal inference can also combine data with a causal model and information about interventions.</figcaption>
 </figure>
 </div>

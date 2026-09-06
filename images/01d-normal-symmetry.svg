@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="500" viewBox="0 0 1000 500" role="img" aria-labelledby="title desc">
+  <title id="title">Symmetry of a general normal density</title>
+  <desc id="desc">The left panel colors the two mirror-image halves of a normal density with mean mu and variance sigma squared. Equal-probability intervals extend from mu minus 1.96 sigma to mu and from mu to mu plus 1.96 sigma. The right panel reflects the left half and overlays it on the right half, where the curves coincide.</desc>
+  <style>
+    .heading { font: 700 23px system-ui, sans-serif; fill: #202124; }
+    .label { font: 17px system-ui, sans-serif; fill: #202124; }
+    .small { font: 15px system-ui, sans-serif; fill: #4b5563; }
+    .axis { stroke: #333; stroke-width: 2; }
+    .tick { stroke: #333; stroke-width: 2; }
+    .left { fill: none; stroke: #3978a8; stroke-width: 5; }
+    .right { fill: none; stroke: #d26a3a; stroke-width: 5; }
+    .left-fill { fill: #7fb3d5; fill-opacity: .55; }
+    .right-fill { fill: #efa37d; fill-opacity: .55; }
+    .mirror { fill: none; stroke: #3978a8; stroke-width: 6; stroke-dasharray: 11 8; }
+    .center { stroke: #666; stroke-width: 2; stroke-dasharray: 5 5; }
+  </style>
+
+  <text x="250" y="38" text-anchor="middle" class="heading">Normal(μ, σ²) density</text>
+  <line x1="55" y1="285" x2="445" y2="285" class="axis"/>
+  <line x1="250" y1="72" x2="250" y2="285" class="center"/>
+  <path d="M149 225 C178 170 205 92 250 78 L250 285 L149 285 Z" class="left-fill"/>
+  <path d="M250 78 C295 92 322 170 351 225 L351 285 L250 285 Z" class="right-fill"/>
+  <path d="M65 282 C100 280 125 265 149 225 C178 170 205 92 250 78" class="left"/>
+  <path d="M250 78 C295 92 322 170 351 225 C375 265 400 280 435 282" class="right"/>
+  <line x1="149" y1="278" x2="149" y2="292" class="tick"/>
+  <line x1="250" y1="278" x2="250" y2="292" class="tick"/>
+  <line x1="351" y1="278" x2="351" y2="292" class="tick"/>
+  <text x="149" y="316" text-anchor="middle" class="label">μ−1.96σ</text>
+  <text x="250" y="316" text-anchor="middle" class="label">μ</text>
+  <text x="351" y="316" text-anchor="middle" class="label">μ+1.96σ</text>
+  <text x="190" y="254" text-anchor="middle" class="label">0.475</text>
+  <text x="310" y="254" text-anchor="middle" class="label">0.475</text>
+  <text x="154" y="102" class="small" fill="#3978a8">left half</text>
+  <text x="302" y="102" class="small" fill="#d26a3a">right half</text>
+
+  <text x="750" y="38" text-anchor="middle" class="heading">Reflect and overlay</text>
+  <line x1="565" y1="285" x2="945" y2="285" class="axis"/>
+  <line x1="610" y1="72" x2="610" y2="285" class="center"/>
+  <path d="M610 78 C655 92 690 170 730 225 C770 270 825 281 920 282" class="right"/>
+  <path d="M610 78 C655 92 690 170 730 225 C770 270 825 281 920 282" class="mirror"/>
+  <line x1="610" y1="278" x2="610" y2="292" class="tick"/>
+  <text x="610" y="316" text-anchor="middle" class="label">μ</text>
+  <text x="765" y="316" text-anchor="middle" class="label">distance from μ</text>
+  <line x1="665" y1="365" x2="715" y2="365" class="right"/>
+  <text x="728" y="371" class="label">right half</text>
+  <line x1="665" y1="407" x2="715" y2="407" class="mirror"/>
+  <text x="728" y="413" class="label">reflected left half</text>
+  <text x="750" y="464" text-anchor="middle" class="small">The two curves coincide at every distance from the center.</text>
+</svg>
