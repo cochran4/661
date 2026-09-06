@@ -16,7 +16,8 @@ book:
         - 01d-probability.qmd
         - 01e-exercises.qmd
     - part: "Construction"
-      chapters: []
+      chapters:
+        - 02a-structural-equation-models.qmd
     - part: "Measured confounding"
       chapters: []
     - part: "Unmeasured confounding"
@@ -51,6 +52,10 @@ book:
             file: 01d-probability.qmd
           - text: "Exercises"
             file: 01e-exercises.qmd
+      - text: "Construction"
+        menu:
+          - text: "Structural equation models tell a story"
+            file: 02a-structural-equation-models.qmd
       - text: "Back matter"
         menu:
           - text: "Glossary"

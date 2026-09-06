@@ -79,7 +79,7 @@ We can reverse the procedure: draw $Y$, independently draw $U$, and use it to se
 
 The picture below summarizes the problem as a snake eating its tail. A probability model can describe $Y$ using $X$, and it can describe $X$ using $Y$. If we interpreted both descriptions causally, we would conclude that $X$ causes $Y$ and that $Y$ causes $X$. The circular picture is not meant to propose a plausible causal mechanism. It shows why the probability model alone cannot tell us which causal arrow, if either, is appropriate.
 
-![The “snake eating its tail”: using both statistical directions as causal explanations creates a circular story in which X causes Y and Y causes X.](images/probability-mechanisms.svg){width="70%" fig-align="center"}
+![The “snake eating its tail”: using both statistical directions as causal explanations creates a circular story in which X causes Y and Y causes X.](images/01b-probability-mechanisms.svg){width="70%" fig-align="center"}
 
 ::: {.key-takeaway}
 <span class="takeaway-label">Main point</span>
@@ -116,7 +116,7 @@ In March 2000, however, *Nature* published a response from Jane Gwiazda and coll
 
 </details>
 
-![Parental myopia as a common cause of night-light use and childhood myopia.](images/nightlight-common-cause.svg){width="60%" fig-align="center"}
+![Parental myopia as a common cause of night-light use and childhood myopia.](images/01b-nightlight-common-cause.svg){width="60%" fig-align="center"}
 
 Parental myopia could be a common cause of the exposure and outcome. As we saw in Data Detective, this is what we call a confounder. Confounding can create an association even when the exposure does not cause the outcome.
 
@@ -161,7 +161,7 @@ The third variable—department—therefore matters greatly. Yet this example al
 
 Simpson's paradox is not limited to binary exposures and outcomes. The same reversal can occur when $X$ and $Y$ are continuous. In the picture below, color indicates membership in a third group. Within every color, the points move downward as $X$ increases, showing a negative association between $X$ and $Y$. If we ignore the colors and combine all the points, the dark arrow moves upward, showing a positive association.
 
-![Each colored group has a negative association between X and Y, while the combined data have a positive association.](images/simpsons-paradox.svg){width="70%" fig-align="center"}
+![Each colored group has a negative association between X and Y, while the combined data have a positive association.](images/01b-simpsons-paradox.svg){width="70%" fig-align="center"}
 
 ## Something more than statistics
 
@@ -173,6 +173,6 @@ To answer causal questions, we need to say more than what is contained in the jo
 
 The bottom of the figure represents statistical inference. We use observed data to learn about a probability model. The top represents causal inference. We use data to learn about a causal model. This lets us infer quantities such as how much an exposure causes an outcome to change.
 
-![Statistical inference connects observational data to a probability model, while causal inference can also combine data with a causal model and information about interventions.](images/causal-model-roadmap.svg){width="68%" fig-align="center"}
+![Statistical inference connects observational data to a probability model, while causal inference can also combine data with a causal model and information about interventions.](images/01b-causal-model-roadmap.svg){width="68%" fig-align="center"}
 
 **How do we add this directionality? What, more precisely, is a causal model?**

@@ -6,7 +6,7 @@ title: "Being a detective with data"
 >
 > — Sherlock Holmes in *The Sign of Four*, by Arthur Conan Doyle
 
-![](images/1_sherlock.png){width=40% fig-align="center" fig-alt="A squirrel dressed as Sherlock Holmes wearing a deerstalker cap and cape while holding a magnifying glass."}
+![](images/01a-sherlock.png){width=40% fig-align="center" fig-alt="A squirrel dressed as Sherlock Holmes wearing a deerstalker cap and cape while holding a magnifying glass."}
 
 <div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
 
@@ -14,7 +14,7 @@ Open up any major newspaper, flip to the health section, and you will find the l
 
 I want to know the answer. I love eggs. So I click on the article, nervously scanning for the conclusion. Instead, I find another study showing that people who eat more eggs have a higher rate of heart disease. Or a lower rate. It seems to depend on the week.
 
-![](images/1_news.png){width=50% fig-align="center" fig-alt="A fictional newspaper called The Morning Nut from Keene, New Hampshire, with the headline 'Does Eating Too Many Acorns Cause High Cholesterol?' and a photograph of a squirrel eating acorns."}
+![](images/01a-news.png){width=50% fig-align="center" fig-alt="A fictional newspaper called The Morning Nut from Keene, New Hampshire, with the headline 'Does Eating Too Many Acorns Cause High Cholesterol?' and a photograph of a squirrel eating acorns."}
 
 Someone once joked that whenever a headline is phrased as a question, the answer is almost always "no." Are eggs bad for your heart? *No.* Does your morning coffee cause anxiety? *No.* It is a surprisingly useful rule of thumb.
 
@@ -22,7 +22,7 @@ Scientists develop a similar reflex. We see the words "linked to," roll our eyes
 
 Every morning, I sit in my office looking out at the large green elm outside my window. There is often a squirrel in it. Over the years, I have watched that squirrel happily munch away on whatever seeds or fruits a green elm produces. (I should probably know what they are called.) I have never once seen it eat a walnut. Based on my observations alone, I might conclude that squirrels prefer green elms to walnut trees. Until I realize that there isn't a walnut tree anywhere outside my office. The squirrel was never given the choice.
 
-![](images/1_elm_v_walnut.png){width=40% fig-align="center" fig-align="center" fig-alt="A squirrel dressed as Sherlock Holmes thoughtfully comparing a green elm tree and a walnut tree."}
+![](images/01a-elm-v-walnut.png){width=40% fig-align="center" fig-align="center" fig-alt="A squirrel dressed as Sherlock Holmes thoughtfully comparing a green elm tree and a walnut tree."}
 
 
 In a nutshell, that is what we call an [observational study]{.glossary-term data-bs-toggle="tooltip" data-bs-title="A study that examines naturally occurring exposures or treatments rather than assigning them." tabindex="0"}. The squirrel is simply living its life. I am not telling it where to climb or what to eat. I am just sitting back, watching, and taking notes. Nature decides what the squirrel does; I simply observe.
@@ -35,7 +35,7 @@ Statisticians have a word for associations that are misleading: *spurious.* I al
 
 One of my favorite examples comes from my home state of New Hampshire. There is a strong association between the annual number of burglaries and the number of babies named Johnny. I even had a friend named Johnny growing up. I can assure you he was not secretly masterminding statewide burglary rings. The association is real, but the explanation is nonsense. The phrase *association is not causation* exists for a reason.
 
-![Fake line graph showing correlation between burglaries and popularity of the name Johnny. An example of a spurious association.](images/1_nh_johnny.png){width=80% fig-align="center" fig-alt="A fake line graph showing that annual burglaries in New Hampshire track closely with the number of babies named Johnny over the same period."}
+![Fake line graph showing correlation between burglaries and popularity of the name Johnny. An example of a spurious association.](images/01a-nh-johnny.png){width=80% fig-align="center" fig-alt="A fake line graph showing that annual burglaries in New Hampshire track closely with the number of babies named Johnny over the same period."}
 
 <div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
 
@@ -49,7 +49,7 @@ Imagine Holmes arriving at the scene of a crime. He notices fingerprints on the 
 
 That's true. They don't. The butler may be the murderer. Or perhaps he handled the weapon earlier that day. Or perhaps someone planted the evidence. But imagine if Holmes shrugged, closed his notebook, and went home. That would make for a very short detective novel. Sure, fingerprints are not proof. But they are evidence. Holmes' job is not to dismiss the evidence because another explanation is possible. His job is to investigate them until only the most convincing explanation remains.
 
-![](images/1_shrug.png){width=60% fig-align="center" fig-alt="A squirrel dressed as Sherlock Holmes shrugging while examining fingerprints on a knife beside a magnifying glass."}
+![](images/01a-shrug.png){width=60% fig-align="center" fig-alt="A squirrel dressed as Sherlock Holmes shrugging while examining fingerprints on a knife beside a magnifying glass."}
 
 
 Science is much the same. The hard part is not dreaming up theories. That is easy. Whenever we observe an association, there is almost always multiple stories we could tell. Perhaps one variable causes the other. Or perhaps some third factor causes them both. The hard part is deciding whether that alternative explanation can withstand careful scrutiny. Like any good detective, we are not trying to find an explanation. We are trying to find the explanation that best accounts for the evidence after reasonable alternatives have been investigated.
@@ -59,7 +59,7 @@ Science is much the same. The hard part is not dreaming up theories. That is eas
 
 Few stories illustrate this better than the debate over smoking and lung cancer. Today, it is difficult to imagine the question ever being controversial. Cigarette packages carry warning labels. Physicians routinely advise patients to quit. Yet in the early 1950s, none of that was settled. Scientists debated whether smoking truly caused lung cancer. One pathologist observed the nicotine stains on the fingers of many cigarette smokers, remarking that cancers of the fingers were essentially unheard of [@hueper_quest_1956]. If tobacco tar really caused cancer, why did it seem so devastating to the lungs but not to the skin on the hands? 
 
-![](images/1_pipe.png){width=60% fig-align="center" fig-alt="A squirrel dressed as Sherlock Holmes while thoughtfully smoking a curved pipe."}
+![](images/01a-pipe.png){width=60% fig-align="center" fig-alt="A squirrel dressed as Sherlock Holmes while thoughtfully smoking a curved pipe."}
 
 To help settle the debate, the American Cancer Society turned to two statistically minded epidemiologists: E. Cuyler Hammond, its director of statistical research and assistant director Daniel Horn. With the help of roughly 20,000 volunteers, they enrolled 187,783 men between the ages of 50 and 69. At enrollment, each man completed a questionnaire about his smoking habits. Then the researchers did something wonderfully simple: they waited. For nearly four years, volunteers tracked who died and, whenever possible, what they died from. By the end of the study, 11,870 men had died. They compared those deaths across smoking groups [@hammond_smoking_1958].
 
@@ -71,7 +71,7 @@ But this was still an observational study. One prominent skeptic was the statist
 
 Let's unpack this. We’ll use a graph. Later, we’ll make these graphs precise; for now, think of them as sketches of two competing explanations. Fisher argued that more than one explanation was consistent with the data. One is the explanation we now accept: smoking causes lung cancer. This is shown on the left. The arrow runs from Smoking to Cancer. If smoking causes cancer, then people who smoke more should develop lung cancer more often, exactly as Hammond and Horn observed.
 
-![](images/1_two_theories.png){width=70% fig-align="center" fig-align="center" fig-alt="Two side-by-side causal diagrams. In both diagrams, Smoking is at the top, Genotype at the lower left, and Cancer at the lower right. In Explanation 1, there is a single arrow from Smoking to Cancer. In Explanation 2, there are arrows from Genotype to Smoking and from Genotype to Cancer."}
+![](images/01a-two-theories.png){width=70% fig-align="center" fig-align="center" fig-alt="Two side-by-side causal diagrams. In both diagrams, Smoking is at the top, Genotype at the lower left, and Cancer at the lower right. In Explanation 1, there is a single arrow from Smoking to Cancer. In Explanation 2, there are arrows from Genotype to Smoking and from Genotype to Cancer."}
 
 The second explanation is is that both smoking and lung cancer might be consequences of some third factor. Because of his interest in genetics, he suggested genotype as a candidate. Some people might inherit a genotype that makes smoking more enjoyable, more addictive, or easier to tolerate. If those same genes also increase the risk of lung cancer, then smokers would still develop lung cancer more often than non-smokers, even if smoking itself played no causal role. This alternative is shown on the right, where Genotype points to both Smoking and Cancer.
 
@@ -88,12 +88,12 @@ In 1959, Jerome Cornfield and several of his colleagues had a clever idea [@corn
 
 The argument that follows is one of my favorites because, once you draw the right picture, the answer is almost impossible to miss. Let $R_S$ and $R_N$ be the risk of lung cancer among smokers and non-smokers. We begin by plotting the point $(R_N,R_S)$. The horizontal coordinate is the risk among non-smokers; the vertical coordinate is the risk among smokers. 
 
-![](images/1_cornfield_a.svg){width=70% fig-align="center"}
+![](images/01a-cornfield-a.svg){width=70% fig-align="center"}
 
 The rectangle helps us locate the point. Because smokers have a higher risk of lung cancer than non-smokers, the rectangle is taller than it is wide. Now connect the origin to the point we just plotted.
 
 
-![](images/1_cornfield_b.svg){width=70% fig-align="center"}
+![](images/01a-cornfield-b.svg){width=70% fig-align="center"}
 
 The slope of this line is $R_S/R_N,$ which is exactly the relative risk. Steeper lines correspond to larger relative risks. Thus, instead of thinking of the relative risk as a number, we can think of it as the steepness of a line. 
 
@@ -107,13 +107,13 @@ $$(w_N\Delta,\;w_S\Delta).$$
 
 We add this new point to the graph.
 
-![](images/1_cornfield_c.svg){width=70% fig-align="center"}
+![](images/01a-cornfield-c.svg){width=70% fig-align="center"}
 
 The two points differ only by the background risk. Moving from one point to the other means subtracting exactly the same quantity, $B$, from both coordinates. Thus, the two points lie at opposite corners of a square of side length $B$. 
 
 Connect the origin to this second point.
 
-![](images/1_cornfield_d.svg){width=70% fig-align="center"}
+![](images/01a-cornfield-d.svg){width=70% fig-align="center"}
 
 The slope of the original line is
 $$\frac{R_S}{R_N}

@@ -29,7 +29,7 @@ The WHI hormone-therapy trial is a two-arm randomized controlled trial (RCT). To
 </details>
 
 
-![Six women from three age groups assigned to hormone therapy or placebo, with coronary heart disease recorded afterward.](images/prototrial-whi-paperback.png){fig-align="center" width="80%"}
+![Six women from three age groups assigned to hormone therapy or placebo, with coronary heart disease recorded afterward.](images/01c-prototrial-whi-paperback.png){fig-align="center" width="80%"}
 
 We use three variables to describe a patient in the study:
 
@@ -114,7 +114,7 @@ Now that we have a story for how the data came about, we can stop in the middle 
 
 This thought experiment can feel abstract, perhaps more like science fiction than science. Imagine a multiverse with two parallel universes containing the same woman. In one universe, we give her hormone therapy ($a=1$), shown as the red pill. In the other, we give her placebo ($a=0$), shown as the blue pill. Only one universe is observed in the real world, but the thought experiment asks us to consider both and ask what her outcome would be in each one.
 
-![A common path splits into two parallel universes containing the same woman. In one universe, she is assigned estrogen plus progestin; in the other, she is assigned placebo. Her outcome in each universe is unknown.](images/potential-outcomes-whi-paperback-v3.png){width="82%" fig-align="center"}
+![A common path splits into two parallel universes containing the same woman. In one universe, she is assigned estrogen plus progestin; in the other, she is assigned placebo. Her outcome in each universe is unknown.](images/01c-potential-outcomes-whi-paperback-v3.png){width="82%" fig-align="center"}
 
 These two imagined outcomes cannot both be represented by the outcome $Y$ that we observe in the real world. We introduce new random variables to describe them. We write $Y(1)$ for the outcome under assignment to estrogen plus progestin and $Y(0)$ for the outcome under assignment to placebo. These random variables are called **potential outcomes**.
 
@@ -311,7 +311,7 @@ $$
 
 We say that a causal estimand is [identified]{.glossary-term data-bs-toggle="tooltip" data-bs-title="A causal estimand is identified when it can be written entirely in terms of observed variables and their probability model." tabindex="0"} when it can be written entirely in terms of observed variables and their probability model. Here, we have identified the average treatment effect by expressing the comparison between our two imagined universes as a comparison between the observed WHI treatment groups.
 
-![Identification expresses a causal estimand as a statistical estimand that can be learned from observed data.](images/causal-identification-path.svg){width="75%" fig-align="center"}
+![Identification expresses a causal estimand as a statistical estimand that can be learned from observed data.](images/01c-causal-identification-path.svg){width="75%" fig-align="center"}
 
 ::: {.key-takeaway}
 <span class="takeaway-label">The critical step</span>

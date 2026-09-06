@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520" role="img" aria-labelledby="title desc">
+  <title id="title">Observed systolic blood pressure by age</title>
+  <desc id="desc">A scatterplot of hypothetical observations. Blood pressure generally increases with age, with a pattern that becomes steeper at older ages.</desc>
+  <defs>
+    <style>
+      .title { font: 700 24px system-ui, sans-serif; fill: #202124; }
+      .label { font: 18px system-ui, sans-serif; fill: #202124; }
+      .tick { font: 15px system-ui, sans-serif; fill: #4b5563; }
+      .frame { fill: #ffffff; stroke: #c9ced6; stroke-width: 1.5; }
+      .grid { stroke: #e5e7eb; stroke-width: 1; }
+      .axis { stroke: #202124; stroke-width: 2; }
+      .point { fill: #2878b5; opacity: 0.66; stroke: #ffffff; stroke-width: 1; }
+    </style>
+  </defs>
+
+  <text x="450" y="36" text-anchor="middle" class="title">Systolic blood pressure and age</text>
+  <rect x="95" y="65" width="735" height="375" class="frame"/>
+
+  <line x1="95" y1="365" x2="830" y2="365" class="grid"/>
+  <line x1="95" y1="290" x2="830" y2="290" class="grid"/>
+  <line x1="95" y1="215" x2="830" y2="215" class="grid"/>
+  <line x1="95" y1="140" x2="830" y2="140" class="grid"/>
+
+  <line x1="95" y1="440" x2="830" y2="440" class="axis"/>
+  <line x1="95" y1="65" x2="95" y2="440" class="axis"/>
+
+  <text x="95" y="466" text-anchor="middle" class="tick">20</text>
+  <text x="279" y="466" text-anchor="middle" class="tick">35</text>
+  <text x="463" y="466" text-anchor="middle" class="tick">50</text>
+  <text x="646" y="466" text-anchor="middle" class="tick">65</text>
+  <text x="830" y="466" text-anchor="middle" class="tick">80</text>
+
+  <text x="78" y="445" text-anchor="end" class="tick">100</text>
+  <text x="78" y="370" text-anchor="end" class="tick">120</text>
+  <text x="78" y="295" text-anchor="end" class="tick">140</text>
+  <text x="78" y="220" text-anchor="end" class="tick">160</text>
+  <text x="78" y="145" text-anchor="end" class="tick">180</text>
+  <text x="78" y="70" text-anchor="end" class="tick">200</text>
+
+  <text x="463" y="503" text-anchor="middle" class="label">age in years, X</text>
+  <text x="25" y="252" text-anchor="middle" class="label" transform="rotate(-90 25 252)">systolic blood pressure in mm Hg, Y</text>
+
+  <g class="point">
+    <circle cx="116" cy="402" r="6"/><circle cx="129" cy="365" r="6"/><circle cx="143" cy="417" r="6"/>
+    <circle cx="158" cy="383" r="6"/><circle cx="172" cy="341" r="6"/><circle cx="187" cy="395" r="6"/>
+    <circle cx="203" cy="354" r="6"/><circle cx="220" cy="384" r="6"/><circle cx="236" cy="323" r="6"/>
+    <circle cx="252" cy="369" r="6"/><circle cx="268" cy="334" r="6"/><circle cx="285" cy="392" r="6"/>
+    <circle cx="302" cy="318" r="6"/><circle cx="319" cy="350" r="6"/><circle cx="336" cy="301" r="6"/>
+    <circle cx="353" cy="365" r="6"/><circle cx="370" cy="326" r="6"/><circle cx="387" cy="286" r="6"/>
+    <circle cx="404" cy="340" r="6"/><circle cx="421" cy="303" r="6"/><circle cx="438" cy="265" r="6"/>
+    <circle cx="455" cy="323" r="6"/><circle cx="472" cy="278" r="6"/><circle cx="489" cy="238" r="6"/>
+    <circle cx="506" cy="299" r="6"/><circle cx="523" cy="255" r="6"/><circle cx="540" cy="214" r="6"/>
+    <circle cx="557" cy="274" r="6"/><circle cx="574" cy="226" r="6"/><circle cx="591" cy="187" r="6"/>
+    <circle cx="608" cy="251" r="6"/><circle cx="625" cy="203" r="6"/><circle cx="642" cy="158" r="6"/>
+    <circle cx="659" cy="222" r="6"/><circle cx="676" cy="175" r="6"/><circle cx="693" cy="126" r="6"/>
+    <circle cx="710" cy="196" r="6"/><circle cx="727" cy="146" r="6"/><circle cx="744" cy="98" r="6"/>
+    <circle cx="761" cy="169" r="6"/><circle cx="778" cy="119" r="6"/><circle cx="795" cy="82" r="6"/>
+    <circle cx="812" cy="143" r="6"/>
+  </g>
+</svg>

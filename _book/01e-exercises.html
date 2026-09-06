@@ -49,7 +49,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./glossary.html" rel="next">
+<link href="./02a-structural-equation-models.html" rel="next">
 <link href="./01d-probability.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -174,6 +174,17 @@ window.Quarto = {
     </ul>
   </li>
   <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-construction" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Construction</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-construction">    
+        <li>
+    <a class="dropdown-item" href="./02a-structural-equation-models.html">
+ <span class="dropdown-text">Structural equation models tell a story</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-back-matter" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Back matter</span>
     </a>
@@ -258,8 +269,20 @@ window.Quarto = {
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-      <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text">Construction</span></span>
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Construction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02a-structural-equation-models.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Structural equation models tell a story</span></a>
+  </div>
+</li>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
@@ -520,7 +543,7 @@ Source: Charig et al.&nbsp;(1986); the comparison by stone size was subsequently
 <section id="complete-the-potential-outcomes-table" class="level3">
 <h3 class="anchored" data-anchor-id="complete-the-potential-outcomes-table">5. Complete the potential-outcomes table</h3>
 <p>A city randomly assigns people seeking employment to one of two programs. Let <span class="math inline">\(A=1\)</span> denote assignment to an intensive job-training program and <span class="math inline">\(A=0\)</span> denote assignment to standard job-search materials. Let <span class="math inline">\(Y=1\)</span> if the person is employed six months later and <span class="math inline">\(Y=0\)</span> otherwise.</p>
-<ol type="1">
+<ol type="a">
 <li>Describe <span class="math inline">\(Y(1)\)</span> and <span class="math inline">\(Y(0)\)</span> in the context of this trial.</li>
 <li>What should we assume about the interventions so that <span class="math inline">\(Y(1)\)</span> and <span class="math inline">\(Y(0)\)</span> are well-defined? Explain what that assumption means in this trial.</li>
 <li>Random assignment should make <span class="math inline">\(A\)</span> independent of <span class="math inline">\((Y(0),Y(1))\)</span>. Explain what this means in this trial.</li>
@@ -638,6 +661,182 @@ Person
 </tr>
 </tbody>
 </table>
+</section>
+</section>
+<section id="probability-review" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="probability-review">Probability review</h2>
+<section id="best-guesses-in-the-emergency-department" class="level3">
+<h3 class="anchored" data-anchor-id="best-guesses-in-the-emergency-department">6. Best guesses in the emergency department</h3>
+<p>In a hypothetical emergency department, each arriving patient could need up to three laboratory tests. Each test is independently needed with probability <span class="math inline">\(1/2\)</span>. Let <span class="math inline">\(X\)</span> be the number of tests the patient needs. Thus,</p>
+<p><span class="math display">\[
+X\sim\operatorname{Binomial}(3,1/2).
+\]</span></p>
+<p>In plain language, there are three opportunities for a test to be needed, each with probability <span class="math inline">\(1/2\)</span>, and <span class="math inline">\(X\)</span> counts how many are needed.</p>
+<p>For each needed test, the physician flips a fair coin and orders the test only if the coin lands heads. Let <span class="math inline">\(Y\)</span> be the number of needed tests that are actually ordered.</p>
+<ol type="a">
+<li>What is your best guess for <span class="math inline">\(Y\)</span> when you learn that <span class="math inline">\(X=0\)</span>?</li>
+<li>What is your best guess when <span class="math inline">\(X=1\)</span>, <span class="math inline">\(X=2\)</span>, and <span class="math inline">\(X=3\)</span>?</li>
+<li>Write the full random variable <span class="math inline">\(E[Y\mid X]\)</span> as a function of <span class="math inline">\(X\)</span>.</li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="recovering-the-overall-mean" class="level3">
+<h3 class="anchored" data-anchor-id="recovering-the-overall-mean">7. Recovering the overall mean</h3>
+<p>Let <span class="math inline">\(X\)</span> describe the urgency assigned to a patient arriving at a community clinic. The possible values are <span class="math inline">\(0\)</span>, <span class="math inline">\(1\)</span>, and <span class="math inline">\(2\)</span>, with probabilities</p>
+<p><span class="math display">\[
+P(X=0)=0.5,\qquad P(X=1)=0.3,\qquad P(X=2)=0.2.
+\]</span></p>
+<p>Let <span class="math inline">\(Y\)</span> be the number of follow-up visits the patient makes during the next month. Suppose</p>
+<p><span class="math display">\[
+E[Y\mid X]=1+2X.
+\]</span></p>
+<ol type="a">
+<li>Find the best guess for <span class="math inline">\(Y\)</span> at each value of <span class="math inline">\(X\)</span>.</li>
+<li>Use the law of iterated expectation to find <span class="math inline">\(E[Y]\)</span>.</li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="conditional-means-from-observed-data" class="level3">
+<h3 class="anchored" data-anchor-id="conditional-means-from-observed-data">8. Conditional means from observed data</h3>
+<p>A community health program records whether adults received help scheduling a cancer screening appointment. Let <span class="math inline">\(A=1\)</span> indicate that a person received scheduling help and <span class="math inline">\(A=0\)</span> indicate that they did not. Let <span class="math inline">\(X=1\)</span> indicate age 65 or older and <span class="math inline">\(X=0\)</span> indicate age 40 through 64. Let <span class="math inline">\(Y=1\)</span> indicate that screening was completed within three months and <span class="math inline">\(Y=0\)</span> otherwise.</p>
+<p>Imagine selecting one person at random from the observed dataset, with every person equally likely to be selected. The table gives the number of people with each combination of <span class="math inline">\(A\)</span>, <span class="math inline">\(X\)</span>, and <span class="math inline">\(Y\)</span>.</p>
+<table class="compact-data-table">
+<caption>
+Screening completion by scheduling help and age.
+</caption>
+<thead>
+<tr>
+<th scope="col">
+<span class="math inline">\(X\)</span>
+</th>
+<th scope="col">
+<span class="math inline">\(A\)</span>
+</th>
+<th scope="col">
+Completed screening<br><span class="math inline">\(Y=1\)</span>
+</th>
+<th scope="col">
+Did not complete screening<br><span class="math inline">\(Y=0\)</span>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+0
+</td>
+<td>
+0
+</td>
+<td>
+18
+</td>
+<td>
+42
+</td>
+</tr>
+<tr>
+<td>
+0
+</td>
+<td>
+1
+</td>
+<td>
+32
+</td>
+<td>
+48
+</td>
+</tr>
+<tr>
+<td>
+1
+</td>
+<td>
+0
+</td>
+<td>
+24
+</td>
+<td>
+36
+</td>
+</tr>
+<tr>
+<td>
+1
+</td>
+<td>
+1
+</td>
+<td>
+45
+</td>
+<td>
+45
+</td>
+</tr>
+</tbody>
+</table>
+<ol type="a">
+<li>Find <span class="math inline">\(E[Y\mid A=1,X=0]\)</span> and explain what the quantity represents.</li>
+<li>Find <span class="math inline">\(E[Y\mid A=0,X=1]\)</span> and explain what the quantity represents.</li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="binary-outcomes-and-linearity" class="level3">
+<h3 class="anchored" data-anchor-id="binary-outcomes-and-linearity">9. Binary outcomes and linearity</h3>
+<p>At an urgent-care clinic, let <span class="math inline">\(Y=1\)</span> indicate a positive COVID-19 test and let <span class="math inline">\(W=1\)</span> indicate a positive influenza test. Let</p>
+<p><span class="math display">\[
+T=Y+W
+\]</span></p>
+<p>be the number of positive tests for a patient. Suppose</p>
+<p><span class="math display">\[
+P(Y=1)=0.12
+\qquad\text{and}\qquad
+P(W=1)=0.08.
+\]</span></p>
+<ol type="a">
+<li>Find <span class="math inline">\(E[Y]\)</span> and <span class="math inline">\(E[W]\)</span>.</li>
+<li>Find the expected number of positive tests, <span class="math inline">\(E[T]\)</span>.</li>
+</ol>
+<p>Now let <span class="math inline">\(X=1\)</span> indicate that the patient has a fever at arrival. Among patients with a fever, suppose</p>
+<p><span class="math display">\[
+P(Y=1\mid X=1)=0.30
+\qquad\text{and}\qquad
+P(W=1\mid X=1)=0.10.
+\]</span></p>
+<ol start="3" type="a">
+<li>Rewrite these two conditional probabilities as conditional means. Then, find <span class="math inline">\(E[T\mid X=1]\)</span>.</li>
+<li>Do we know if <span class="math inline">\(Y\)</span> and <span class="math inline">\(W\)</span> are independent? What about <span class="math inline">\(Y\)</span> and <span class="math inline">\(X\)</span>, or <span class="math inline">\(W\)</span> and <span class="math inline">\(X\)</span>?</li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="drawing-a-conditional-mean" class="level3">
+<h3 class="anchored" data-anchor-id="drawing-a-conditional-mean">10. Drawing a conditional mean</h3>
+<p>The scatterplot shows independent and identically distributed observations of age <span class="math inline">\(X\)</span> and systolic blood pressure <span class="math inline">\(Y\)</span> from a hypothetical population.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/01e-probability-continuous-exercise.svg" class="img-fluid figure-img" style="width:78.0%"></p>
+<figcaption>Observed systolic blood pressure and age for a hypothetical sample.</figcaption>
+</figure>
+</div>
+<ol type="a">
+<li>Draw a curve that represents your best estimate of <span class="math inline">\(E[Y\mid X]\)</span>.</li>
+<li>Would a straight line provide a reasonable model for the conditional mean? What other functional form might you consider?</li>
+</ol>
+<div class="response-space">
+
+</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
@@ -1072,8 +1271,8 @@ document.addEventListener("DOMContentLoaded", () => {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./glossary.html" class="pagination-link" aria-label="Glossary">
-        <span class="nav-page-text"><span class="chapter-title">Glossary</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./02a-structural-equation-models.html" class="pagination-link" aria-label="Structural equation models tell a story">
+        <span class="nav-page-text"><span class="chapter-title">Structural equation models tell a story</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

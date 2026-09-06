@@ -30,6 +30,10 @@ For each person, we observe the potential outcome under the treatment received b
 
 A causal estimand is identified when it can be written entirely in terms of observed variables and their probability model.
 
+**Independence**
+
+Learning the value of one random variable does not change the probability distribution of the other.
+
 **Estimator**
 
 A rule that uses sample data to estimate an unknown quantity in a population or probability model.
@@ -45,6 +49,10 @@ The event, condition, or response that the exposure might affect.
 **Positivity**
 
 Each treatment under study has a positive probability of being assigned.
+
+**Random variable**
+
+A function that assigns a numerical value to each possible outcome of an uncertain experiment or scenario.
 
 **Risk difference**
 

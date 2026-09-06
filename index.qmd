@@ -1,4 +1,4 @@
-![](images/squirrel.png){width=100% fig-alt="Abstract composition of a squirrel as a graph in forest greens"}
+![](images/index-squirrel.png){width=100% fig-alt="Abstract composition of a squirrel as a graph in forest greens"}
 
 Course materials for *Causal Inference, Surveys, and Missing Data* (PHS/BMI 661). The course develops practical tools for reasoning about cause and effect from observational data and extends them to missing data and complex surveys.
 

@@ -20,27 +20,7 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-  margin-bottom: 0em;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -174,6 +154,17 @@ window.Quarto = {
     </ul>
   </li>
   <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-construction" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Construction</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-construction">    
+        <li>
+    <a class="dropdown-item" href="./02a-structural-equation-models.html">
+ <span class="dropdown-text">Structural equation models tell a story</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-back-matter" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Back matter</span>
     </a>
@@ -258,8 +249,20 @@ window.Quarto = {
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-      <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text">Construction</span></span>
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Construction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02a-structural-equation-models.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Structural equation models tell a story</span></a>
+  </div>
+</li>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
@@ -330,371 +333,542 @@ window.Quarto = {
 </header>
 
 
-<p>Everything we do is grounded in probability and statistics, so we begin with a brief review. Our goal is to balance technical precision with accessibility for public health researchers. If you already have a strong background in probability and statistics, we hope the discussion remains rigorous without oversimplifying familiar concepts. If you have less formal training, a grasp of the key ideas should be enough to follow along. We illustrate them throughout using a single study and its associated data. Although relying on one example has some technical limitations, it helps make the abstract concepts more concrete.</p>
-<div class="example-intro">
-<p><span class="example-label">Case study: Right heart catheterization</span></p>
-<p>Between 1989 and 1994, the Study to Understand Prognoses and Preferences for Outcomes and Risks of Treatments (SUPPORT) followed critically ill adults receiving care in five teaching hospitals in the United States. In 1996, Connors and colleagues used data from 5,735 of these patients to study right heart catheterization (RHC), a procedure used to measure cardiac function. They asked whether receiving an RHC during the first 24 hours of intensive care was associated with survival, length of stay, intensity of care, and cost <span class="citation" data-cites="connors1996">(<a href="references.html#ref-connors1996" role="doc-biblioref">Connors et al. 1996</a>)</span>.</p>
-<p>After adjusting for differences between patients who did and did not receive RHC, the investigators found that RHC was associated with increased mortality and greater use of resources. They did not find a subgroup for which RHC was associated with better outcomes. Their sensitivity analysis suggested that an unmeasured confounder would need to be strongly related to both RHC and mortality to explain away a truly beneficial effect <span class="citation" data-cites="connors1996">(<a href="references.html#ref-connors1996" role="doc-biblioref">Connors et al. 1996</a>)</span>.</p>
-<p>The data are available through the <a href="https://hbiostat.org/data/">Vanderbilt University Department of Biostatistics dataset repository</a>. In the row labeled <strong>Right heart catheterization dataset</strong>, the CSV file is linked under the <strong>ASCII</strong> column. The repository also provides a <a href="https://hbiostat.org/data/repo/rhc">description of the study and dataset</a>, a <a href="https://hbiostat.org/data/repo/rhc.csv">direct link to the CSV file</a>, and <a href="https://hbiostat.org/data/repo/crhc">documentation for the variables and their coding</a>. One row in the dataset represents one critically ill patient. We will introduce the variables as we need them.</p>
-<p><em>Data obtained from the Vanderbilt University Department of Biostatistics dataset repository.</em></p>
-</div>
+<p>Several concepts kept surfacing when we talked about clinical trials: random variables, expectations, independence, among others. All of these come from probability. This is our formal language for talking about scenarios with uncertain outcomes: Are we in an AI bubble? Are the Badgers likely to make the basketball tournament this year? Will my bus arrive in the next ten minutes <em>and</em> have space for me?</p>
+<p>We provide a brief review. We hope to neither offend anyone with a strong background in probability and statistics, nor scare people away from moving forward with these notes. Readers who would like a fuller review can consult Timo Seppäläinen’s <a href="https://people.math.wisc.edu/~seppalai/notes-for-courses/prob-basics.pdf"><em>Notes on Elementary Probability</em></a>.</p>
 <section id="random-variables" class="level2">
 <h2 class="anchored" data-anchor-id="random-variables">Random variables</h2>
-<p>Random variables model the data collected from an experiment.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Content placeholder">
-<div class="callout-header d-flex align-content-center">
+<p>Nothing centers more in causal inference than <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A (suitably well-behaved) function that assigns a numerical value to each possible outcome in a sample space." tabindex="0">random variables</span>. These take capital letters such as <span class="math inline">\(X\)</span>, <span class="math inline">\(A\)</span>, and <span class="math inline">\(Y\)</span>. In the Women’s Health Initiative (WHI) trial, for example, <span class="math inline">\(A\)</span> represented a patient’s treatment assignment: <span class="math inline">\(A=1\)</span> for assignment to hormone therapy and <span class="math inline">\(A=0\)</span> for assignment to placebo. We use lowercase letters such as <span class="math inline">\(x\)</span>, <span class="math inline">\(a\)</span>, and <span class="math inline">\(y\)</span> for values that were actually observed—or as a probabilist might say: <em>realized</em>. Before a patient is assigned, <span class="math inline">\(A\)</span> represents the uncertain assignment; after assignment, <span class="math inline">\(a\)</span> is the value we record for that patient.</p>
+<p>The word <em>variable</em> can confuse. It sounds like the <span class="math inline">\(x\)</span> used to represent an unknown number in middle-school algebra. A random variable is not a number; it’s a <strong>function</strong>. Like any function, it takes an input and spits out an output. Its input is one of the possible outcomes of the uncertain experiment or scenario we are describing. Its output is a real number. A random variable therefore lets us extract and numerically encode some aspect of an uncertain scenario: a participant’s age group, treatment assignment, or coronary heart disease outcome, for example.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/01d-random-variable.excalidraw.svg" class="img-fluid figure-img" style="width:92.0%"></p>
+<figcaption>A random variable <span class="math inline">\(X\)</span> maps each possible outcome in the sample space <span class="math inline">\(\Omega\)</span> to one value on the real line. Different outcomes may map to the same value.</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: probability spaces">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Content placeholder
+<span class="screen-reader-only">Note</span>Optional technical note: probability spaces
 </div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Introduce random variables conceptually for an epidemiology audience. The original GitBook defines a random variable as a measurable function on a probability space; that definition has not been copied here.</p>
-</div>
-</div>
-<p>From here on out, we assume a probability space whenever random variables are introduced. Multiple random variables are assumed to be defined on the same probability space.</p>
-<p>A random variable <span class="math inline">\(X\)</span> yields multiple concepts:</p>
+<p>A random variable is formally defined on a <em>probability space</em>. A probability space consists of:</p>
 <ul>
-<li>A <em>distribution</em> <span class="math inline">\(P_X\)</span></li>
-<li>A <em>cumulative distribution function (cdf)</em> <span class="math inline">\(F_X(x):=P(X\leq x)\)</span></li>
+<li>a set <span class="math inline">\(\Omega\)</span> of all possible outcomes, called the <em>sample space</em>;</li>
+<li>a collection of subsets of <span class="math inline">\(\Omega\)</span> called <em>events</em>, to which probabilities can be assigned; and</li>
+<li>a probability measure <span class="math inline">\(P\)</span> that assigns those events numbers between 0 and 1 and satisfies the probability axioms.</li>
 </ul>
-<p>Further, we say <span class="math inline">\(X\)</span> is</p>
-<ul>
-<li><p><em>identically distributed</em> with <span class="math inline">\(Y\)</span> if they have the same distribution;</p></li>
-<li><p><em>discrete</em> if it takes a countable number of values; and</p></li>
-<li><p><em>continuous</em> if there exists <span class="math inline">\(f_X\)</span> such that</p>
+<p>A random variable <span class="math inline">\(X\)</span> is a suitably well-behaved function from <span class="math inline">\(\Omega\)</span> to the real numbers. When we write <span class="math inline">\(P(X=1)\)</span>, we are using shorthand for the probability of the event containing every outcome <span class="math inline">\(\omega\in\Omega\)</span> that <span class="math inline">\(X\)</span> maps to 1:</p>
+<p><span class="math display">\[
+P(X=1)=P\bigl(\{\omega\in\Omega:X(\omega)=1\}\bigr).
+\]</span></p>
+<p>From here on, we assume that an appropriate probability space exists whenever we introduce random variables. We also assume that random variables discussed together are defined on the same probability space, even when we do not say so explicitly.</p>
+</div>
+</div>
+</div>
+<section id="distributions" class="level3">
+<h3 class="anchored" data-anchor-id="distributions">Distributions</h3>
+<p>Every random variable has a <em>distribution</em>. A distribution tells us the probability that the variable takes particular values or falls within particular sets. For example, <span class="math inline">\(P(X=1)\)</span> is the probability that <span class="math inline">\(X\)</span> equals 1, while</p>
+<p><span class="math display">\[
+P(X\in[1,10])
+\]</span></p>
+<p>is the probability that <span class="math inline">\(X\)</span> falls in the closed interval from 1 to 10. A distribution can also be described through its cumulative distribution function (cdf),</p>
+<p><span class="math display">\[
+F_X(x):=P(X\leq x).
+\]</span></p>
+<p>We call a random variable <em>discrete</em> if it takes a countable number of possible values. We call it <em>continuous</em> if its cdf can be represented using a density <span class="math inline">\(f_X\)</span> such that</p>
 <p><span class="math display">\[
 F_X(x)=\int_{-\infty}^x f_X(u)\,du.
+\]</span></p>
+<p>Several distributions occur so often that they have names. Some especially useful examples are:</p>
+<ul>
+<li><p><strong>Bernoulli:</strong> If <span class="math inline">\(X\)</span> is <span class="math inline">\(\operatorname{Bernoulli}(p)\)</span>, then <span class="math inline">\(X\)</span> takes two values <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>. It takes the value <span class="math inline">\(1\)</span> with probability <span class="math inline">\(p\)</span> and the value <span class="math inline">\(0\)</span> with probability <span class="math inline">\(1-p\)</span>.</p></li>
+<li><p><strong>Binomial:</strong> If <span class="math inline">\(X\)</span> is <span class="math inline">\(\operatorname{Binomial}(n,p)\)</span>, where <span class="math inline">\(n\)</span> is a positive integer and <span class="math inline">\(0\leq p\leq 1\)</span>, then</p>
+<p><span class="math display">\[
+P(X=x)=\binom{n}{x}p^x(1-p)^{n-x},\qquad x\in\{0,1,\ldots,n\}.
+\]</span></p></li>
+<li><p><strong>Poisson:</strong> If <span class="math inline">\(X\)</span> is <span class="math inline">\(\operatorname{Poisson}(\lambda)\)</span>, where <span class="math inline">\(\lambda&gt;0\)</span>, then</p>
+<p><span class="math display">\[
+P(X=x)=\frac{e^{-\lambda}\lambda^x}{x!},\qquad x\in\{0,1,2,\ldots\}.
+\]</span></p></li>
+<li><p><strong>Normal:</strong> If <span class="math inline">\(X\)</span> is <span class="math inline">\(\operatorname{Normal}(\mu,\sigma^2)\)</span>, where <span class="math inline">\(\mu\in\mathbb R\)</span> and <span class="math inline">\(\sigma^2&gt;0\)</span>, then</p>
+<p><span class="math display">\[
+f_X(x)=\frac{1}{\sqrt{2\pi\sigma^2}}
+\exp\left\{-\frac{(x-\mu)^2}{2\sigma^2}\right\},\qquad x\in\mathbb R.
 \]</span></p></li>
 </ul>
-<p>Random variables you should be familiar with:</p>
-<ul>
-<li>Discrete: Bernoulli, binomial, Poisson</li>
-<li>Continuous: exponential, gamma, uniform, normal</li>
-</ul>
-<p>Multiple random variables <span class="math inline">\(X_1,\ldots,X_n\)</span> also give rise to joint distributions.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Concrete example placeholder">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Concrete example placeholder
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Identify random variables in the Canvas dataset. Include binary, categorical, and continuous variables.</p>
-</div>
-</div>
+<p>One of the beauties of causal inference is that we can often leave the exact distribution unspecified. We can say that some distribution exists without knowing—or needing to know—its precise form.</p>
+</section>
+<section id="joint-distributions" class="level3">
+<h3 class="anchored" data-anchor-id="joint-distributions">Joint distributions</h3>
+<p>Studying a single random variable is rarely interesting. How, after all, would we study cause and effect with just one variable? Our investigations involve several variables at a time. These variables are usually functions of the same underlying outcome. Their <em>joint distribution</em> tells us the probability that they collectively take particular values or fall within particular sets.</p>
+<p>For the pair <span class="math inline">\((X,A)\)</span> in the WHI trial, we might ask for <span class="math inline">\(P(X=0,A=1)\)</span>: the probability that a participant is 50–59 years old <em>and</em> is assigned to hormone therapy. We might instead ask for <span class="math inline">\(P(A=1,Y=1)\)</span>, the probability that a participant is assigned to hormone therapy <em>and</em> experiences a coronary heart disease event, or for <span class="math inline">\(P(X\in\{1,2\},Y=0)\)</span>, the probability that a participant is at least 60 years old and does not experience the outcome.</p>
+<p>The joint distribution describes how variables are associated: that is, how their values tend to vary together. Knowing only that two variables are each normally distributed tells us nothing about their relationship. They might be unrelated, strongly related, or even perfectly correlated. If instead we specify their joint distribution—for example, a bivariate or multivariate normal distribution—we must also describe how the variables relate through covariances or correlations. The distribution of each variable separately describes one variable at a time; a joint distribution describes both the individual variables and their relationships.</p>
+</section>
 </section>
 <section id="expectation" class="level2">
 <h2 class="anchored" data-anchor-id="expectation">Expectation</h2>
-<p>We want a notion of a random variable’s “average” - a single number to measure <span class="math inline">\(X\)</span>’s central tendency. We do this separately for discrete and continuous random variables:</p>
-<blockquote class="blockquote">
-<p><strong>Definition 1 (discrete).</strong> Assume <span class="math inline">\(X\)</span> is discrete taking values <span class="math inline">\(x_j\)</span>. Define <span class="math inline">\(E[X]\)</span> to be</p>
+<p>The <em>expectation</em>, <em>mean</em>, or <em>expected value</em> of a random variable is a single number meant to give us a notion of a random variable’s “center.” Its written like <span class="math inline">\(E[X]\)</span>. You might already know that if <span class="math inline">\(X\)</span> is <span class="math inline">\(\operatorname{Bernoulli}(p)\)</span>, then its expected value <span class="math inline">\(E[X]\)</span> is <span class="math inline">\(p\)</span>; if <span class="math inline">\(X\)</span> is <span class="math inline">\(\operatorname{Binomial}(n,p)\)</span>, then <span class="math inline">\(E[X]=np\)</span>.</p>
+<p>To see why we think of these values as centers, imagine a rigid bar marked with the possible values of <span class="math inline">\(X\)</span>. At each value, place an amount of weight equal to its probability. The expectation is the point at which the bar balances. More likely values exert more influence on the balance point than less likely values. For a <span class="math inline">\(\operatorname{Bernoulli}(1/4)\)</span> random variable, the balance point is <span class="math inline">\(1/4\)</span>. For a <span class="math inline">\(\operatorname{Binomial}(2,1/4)\)</span> random variable, it is <span class="math inline">\(1/2\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/01d-expectation-center-of-mass.svg" class="img-fluid figure-img" style="width:95.0%"></p>
+<figcaption>Expectation as a center of mass. Probability is placed at each possible value of a Bernoulli(1/4) variable and a Binomial(2, 1/4) variable. The balance points are 1/4 and 1/2, respectively.</figcaption>
+</figure>
+</div>
+<p>For a discrete random variable, this balance-point picture coincides with the following definition of expectation. If <span class="math inline">\(X\)</span> takes values <span class="math inline">\(x_j\)</span>, then</p>
 <p><span class="math display">\[
-\sum_j x_jP(X=x_j).
+E[X]:=\sum_j x_jP(X=x_j).
 \]</span></p>
-</blockquote>
-<blockquote class="blockquote">
-<p><strong>Definition 2 (continuous).</strong> Assume <span class="math inline">\(X\)</span> is continuous. Define <span class="math inline">\(E[X]\)</span> to be</p>
+<p>We multiply each possible value by the probability placed there and add the results. Put differently, its a weighted sum of the possible values of <span class="math inline">\(X\)</span> with weights given by the respective probability that the value occurs. For <span class="math inline">\(X\sim\operatorname{Bernoulli}(1/4)\)</span>,</p>
 <p><span class="math display">\[
-\int_{\mathbb R}x f_X(x)\,dx.
+E[X]=0\left(\frac34\right)+1\left(\frac14\right)=\frac14.
 \]</span></p>
-</blockquote>
-<p>Useful properties and extensions follow:</p>
-<ul>
-<li><span class="math inline">\(E[g(X)]=\sum_jg(x_j)P(X=x_j)\)</span> for discrete <span class="math inline">\(X\)</span></li>
-<li><span class="math inline">\(E[g(X)]=\int_{\mathbb R}g(x)f_X(x)\,dx\)</span> for continuous <span class="math inline">\(X\)</span></li>
-<li>Linearity: <span class="math inline">\(E[aX+bY]=aE[X]+bE[Y]\)</span> for random variables <span class="math inline">\(X,Y\)</span> and scalars <span class="math inline">\(a,b\)</span></li>
-<li>A quantity to reflect spread: <span class="math inline">\(\operatorname{Var}(X):=E[(X-E[X])^2]\)</span></li>
-<li><span class="math inline">\(E[g(X,Y)]=\sum_{i,j}g(x_i,y_j)P(X=x_i,Y=y_j)\)</span> for discrete <span class="math inline">\(X,Y\)</span></li>
-</ul>
-<div class="callout callout-style-default callout-note callout-titled" title="Concrete example placeholder">
-<div class="callout-header d-flex align-content-center">
+<p>For <span class="math inline">\(X\sim\operatorname{Binomial}(2,1/4)\)</span>, the probabilities at 0, 1, and 2 are <span class="math inline">\(9/16\)</span>, <span class="math inline">\(6/16\)</span>, and <span class="math inline">\(1/16\)</span>, respectively. Therefore,</p>
+<p><span class="math display">\[
+E[X]=0\left(\frac{9}{16}\right)+1\left(\frac{6}{16}\right)+2\left(\frac{1}{16}\right)=\frac12.
+\]</span></p>
+<p>The mean does not have to be one of the values the variable can take. A fair six-sided die has mean <span class="math inline">\(3.5\)</span>, even though a roll can never equal <span class="math inline">\(3.5\)</span>.</p>
+<p>The normal distribution provides another natural example of a center. Take <span class="math inline">\(X\sim\operatorname{Normal}(\mu,\sigma^2)\)</span>. Its expected value is <span class="math inline">\(E[X]=\mu\)</span>. The normal curve is centered at <span class="math inline">\(\mu\)</span> in a very literal sense. Every interval to the right of <span class="math inline">\(\mu\)</span> has a matching interval the same distance to the left with the same probability. In fact, its <strong>density</strong> is symmetric about <span class="math inline">\(\mu\)</span>: if we cut the density at <span class="math inline">\(\mu\)</span>, reflect the left side, and place it over the right side, the two curves coincide.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/01d-normal-symmetry.svg" class="img-fluid figure-img" style="width:95.0%"></p>
+<figcaption>The density of a general Normal(<span class="math inline">\(\mu\)</span>,<span class="math inline">\(\sigma^2\)</span>) random variable split at <span class="math inline">\(\mu\)</span>. The intervals from <span class="math inline">\(\mu-1.96\sigma\)</span> to <span class="math inline">\(\mu\)</span> and from <span class="math inline">\(\mu\)</span> to <span class="math inline">\(\mu+1.96\sigma\)</span> each contain probability approximately 0.475. After the left half is reflected over <span class="math inline">\(\mu\)</span>, it coincides with the right half.</figcaption>
+</figure>
+</div>
+<p>The two sides therefore balance around <span class="math inline">\(\mu\)</span>: neither side pulls the average away from it. For example, the probability that <span class="math inline">\(X\)</span> lies between <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\mu+1.96\sigma\)</span> is approximately <span class="math inline">\(0.475\)</span>. The probability that it lies between <span class="math inline">\(\mu-1.96\sigma\)</span> and <span class="math inline">\(\mu\)</span> is also approximately <span class="math inline">\(0.475\)</span>. The expected value is therefore naturally <span class="math inline">\(\mu\)</span>, the point around which the distribution is symmetric.</p>
+<p>Continuous random variables do not generally have such an obvious point of symmetry. We can instead think of the area under the density curve as a thin sheet of material. Its horizontal center of mass—the point at which the density would balance—is the expected value. Regions where the density is higher contain more area and therefore exert more influence on that balance point.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/01d-density-center-of-mass.svg" class="img-fluid figure-img" style="width:95.0%"></p>
+<figcaption>The expected value as the horizontal center of mass under two densities. A flat density balances at its midpoint, while the tail of a decreasing, right-skewed density pulls its balance point to the right.</figcaption>
+</figure>
+</div>
+<p>If <span class="math inline">\(X\)</span> has density <span class="math inline">\(f_X\)</span>, this horizontal center of mass is calculated by</p>
+<p><span class="math display">\[
+E[X]:=\int_{\mathbb R}x f_X(x)\,dx.
+\]</span></p>
+<p>Discrete variables and variables with densities are not the only random variables we care about. Consider the amount of alcohol a person consumes in a day. A person who does not drink that day consumes exactly zero, so the variable has positive probability at zero. Among people who do drink, the amount consumed can vary continuously over positive values. The resulting variable is neither discrete nor continuous in the senses defined above. Suffice it to say that we can define the expected value <span class="math inline">\(E[Y]\)</span> for these more general random variables <span class="math inline">\(Y\)</span>, but since its definition is a bit more involved, we leave it as a technical note.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: expectation for a general random variable">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Concrete example placeholder
+<span class="screen-reader-only">Note</span>Optional technical note: expectation for a general random variable
 </div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Use the Canvas dataset to compute and interpret expectations. Include the fact that the expectation of a binary random variable is a probability.</p>
+<p>Defining expectation for every kind of random variable uses a <strong>Lebesgue–Stieltjes integral</strong>, a more general kind of integral than the one ordinarily encountered in calculus. Instead of integrating with respect to length, represented by <span class="math inline">\(dx\)</span>, we integrate with respect to the cdf <span class="math inline">\(X\)</span>, represented by <span class="math inline">\(dF_X(x)\)</span>. Conceptually, <span class="math inline">\(F_X\)</span> places probability weight across the real line, and the integral adds values after weighting them by that probability.</p>
+<p>If <span class="math inline">\(F_X\)</span> is the cumulative distribution function of <span class="math inline">\(X\)</span>, then</p>
+<p><span class="math display">\[
+E[X]:=\int_{\mathbb R}x\,dF_X(x),
+\]</span></p>
+<p>provided this integral is defined. When <span class="math inline">\(X\)</span> is discrete, <span class="math inline">\(F_X\)</span> jumps at each possible value and the integral reduces to</p>
+<p><span class="math display">\[
+E[X]=\sum_j x_jP(X=x_j).
+\]</span></p>
+<p>When <span class="math inline">\(X\)</span> has a density <span class="math inline">\(f_X\)</span>, the probability weight can be written as <span class="math inline">\(dF_X(x)=f_X(x)\,dx\)</span>, and the definition reduces to</p>
+<p><span class="math display">\[
+E[X]=\int_{\mathbb R}x f_X(x)\,dx.
+\]</span></p>
+<p>More generally,</p>
+<p><span class="math display">\[
+E[g(X)]=\int_{\mathbb R}g(x)\,dF_X(x).
+\]</span></p>
 </div>
 </div>
+</div>
+<p>There are a few things we need to know about expectation. We can take expectations of functions of one or more random variables, including <span class="math inline">\(X+Y\)</span>, <span class="math inline">\(XY\)</span>, and <span class="math inline">\(X^2\)</span>. More generally, we can write <span class="math inline">\(E[g(X,Y)]\)</span>. The joint distribution of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> determines this expectation.</p>
+<p>Most importantly, expectation is <strong>linear</strong>: for random variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> and scalars <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>,</p>
+<p><span class="math display">\[
+E[aX+bY]=aE[X]+bE[Y].
+\]</span></p>
+<p>In words, expectation respects addition and multiplication by constants. We get the same answer whether we first scale and add the random variables and then take the expectation, or first take each expectation and then scale and add the resulting numbers. We will use this property repeatedly.</p>
+<p>Expectation also lets us describe how far a variable tends to be from its mean. The <strong>variance</strong> of <span class="math inline">\(X\)</span> is the average squared distance between <span class="math inline">\(X\)</span> and <span class="math inline">\(E[X]\)</span>:</p>
+<p><span class="math display">\[
+\operatorname{Var}(X):=E\left[(X-E[X])^2\right].
+\]</span></p>
+<p>Here, distance is measured by squared difference. Squaring prevents positive and negative deviations from canceling and gives greater weight to larger deviations.</p>
+</section>
+<section id="conditional-expectation" class="level2">
+<h2 class="anchored" data-anchor-id="conditional-expectation">Conditional expectation</h2>
+<section id="as-subgroup-means" class="level3">
+<h3 class="anchored" data-anchor-id="as-subgroup-means">As subgroup means</h3>
+<p>We have already encountered conditional expectations in the clinical-trial section. For example,</p>
+<p><span class="math display">\[
+E[Y\mid A=1]
+\]</span></p>
+<p>described åthe mean outcome among participants assigned to hormone therapy. We read <span class="math inline">\(E[Y\mid A=1]\)</span> as “the mean of <span class="math inline">\(Y\)</span> given that <span class="math inline">\(A=1\)</span>.” The condition after the vertical bar told us which group to consider, while <span class="math inline">\(Y\)</span> tells us what to average within that group.</p>
+<p>We can condition on more than one variable. Recall that <span class="math inline">\(X=0\)</span> denotes participants who are 50–59 years old. Then</p>
+<p><span class="math display">\[
+E[Y\mid A=1,X=0]
+\]</span></p>
+<p>captures the mean outcome among participants who were both assigned to hormone therapy and 50–59 years old. We first restrict attention to outcomes for which the event <span class="math inline">\(\{A=1,X=0\}\)</span> occurs and then take the mean of <span class="math inline">\(Y\)</span> within that group.</p>
+<p>Interpreting conditional expectation as a subgroup mean only gets us so far. Imagine that <span class="math inline">\(X\)</span> records a person’s exact age—not an age group, but age measured down to the year, month, day, minute, second, etc. We might want to condition on someone being exactly 35 years, 11 months, 10 days, and 5 minutes old. The probability of that exact age is zero. So there is no group at exactly that age to average over.</p>
+</section>
+<section id="as-best-guesses" class="level3">
+<h3 class="anchored" data-anchor-id="as-best-guesses">As best guesses</h3>
+<p>For a more general interpretation, we view expectation as a best guess. If we must guess the value of a random variable <span class="math inline">\(Y\)</span> before observing it, and we measure the quality of our guess using squared error, the best constant guess is <span class="math inline">\(E[Y]\)</span>:</p>
+<p><span class="math display">\[
+E[Y]=\underset{c\in\mathbb R}{\operatorname{argmin}}\;E[(Y-c)^2].
+\]</span></p>
+<p>This best-guess interpretation agrees with what we already know about the means of familiar random variables. For a Bernoulli random variable, the best constant guess under squared error is its success probability <span class="math inline">\(p\)</span>. For a binomial random variable, it is <span class="math inline">\(np\)</span>. It also agrees with the balance-point picture: the value that balances the probability weights is the value that minimizes the mean squared distance to them.</p>
+<p>Now suppose we are allowed to observe another random variable <span class="math inline">\(X\)</span> before guessing <span class="math inline">\(Y\)</span>. We can improve our guess by allowing it to depend on the value of <span class="math inline">\(X\)</span>. Among all guesses that are functions of <span class="math inline">\(X\)</span>, the conditional expectation <span class="math inline">\(E[Y\mid X]\)</span> has the smallest mean squared error:</p>
+<p><span class="math display">\[
+E[Y\mid X]
+=\underset{g(X)}{\operatorname{argmin}}\;E\left[(Y-g(X))^2\right].
+\]</span></p>
+<p>In this sense, <span class="math inline">\(E[Y\mid X]\)</span> is our best guess for <span class="math inline">\(Y\)</span> using the information in <span class="math inline">\(X\)</span>.</p>
+<p>For example, suppose <span class="math inline">\(Y\)</span> is a person’s systolic blood pressure. If we know nothing about the person, our best single guess is the overall mean blood pressure, <span class="math inline">\(E[Y]\)</span>. Now suppose we learn the person’s age <span class="math inline">\(X\)</span>. The conditional expectation <span class="math inline">\(E[Y\mid X]\)</span> allows our guess to change with the age we observe. If we observe that the person is 30, its value is the mean blood pressure among 30-year-olds, written <span class="math inline">\(E[Y\mid X=30]\)</span>. If the person is 70, its value is the mean among 70-year-olds, written <span class="math inline">\(E[Y\mid X=70]\)</span>. Thus, a conditional mean is a best guess that uses the information we have observed.</p>
+<details class="lesson-question">
+<summary>
+In this blood-pressure-and-age example, which should be higher: <span class="math inline">\(E[Y\mid X=30]\)</span> or <span class="math inline">\(E[Y\mid X=70]\)</span>?
+</summary>
+<p>We would generally think</p>
+<p><span class="math display">\[
+E[Y\mid X=70]&gt;E[Y\mid X=30]
+\]</span></p>
+<p>because systolic blood pressure tends to be higher among older adults. This is a comparison of the conditional mean blood pressures at the two ages. It does not say that every 70-year-old has higher blood pressure than every 30-year-old.</p>
+</details>
+<details class="lesson-question">
+<summary>
+A fair six-sided die is rolled, and <span class="math inline">\(Y\)</span> is the number rolled. What is your best guess for <span class="math inline">\(Y\)</span> if you have no information about the roll? What is your best guess if you know that the number rolled is odd? What is your best guess if you know that it is even?
+</summary>
+<p>With no information about the roll, the best guess is the mean of the six possible values:</p>
+<p><span class="math display">\[
+E[Y]=3.5.
+\]</span></p>
+<p>If we know that <span class="math inline">\(Y\)</span> is odd, its possible values are <span class="math inline">\(1\)</span>, <span class="math inline">\(3\)</span>, and <span class="math inline">\(5\)</span>. The best guess is their conditional mean:</p>
+<p><span class="math display">\[
+E[Y\mid Y\text{ is odd}]=3.
+\]</span></p>
+<p>If we know that <span class="math inline">\(Y\)</span> is even, its possible values are <span class="math inline">\(2\)</span>, <span class="math inline">\(4\)</span>, and <span class="math inline">\(6\)</span>. The best guess is their conditional mean:</p>
+<p><span class="math display">\[
+E[Y\mid Y\text{ is even}]=4.
+\]</span></p>
+<p>Without any information, the best guess is the mean. Once we learn whether the roll is odd or even, the best guess is the corresponding <strong>conditional mean</strong>.</p>
+</details>
+<p><span class="math inline">\(E[Y\mid X]\)</span> can hide it is. It is not a single number, like expectation, but rather a function of <span class="math inline">\(X\)</span>, something more like <span class="math inline">\(g(X)\)</span>. Like any function, it takes an input and returns an output. In the blood-pressure example, the input is age and the output is our best guess for blood pressure. An input of 30 gives the single number <span class="math inline">\(E[Y\mid X=30]\)</span>, while an input of 70 gives <span class="math inline">\(E[Y\mid X=70]\)</span>.</p>
+<p>This best-guess idea turns out to be precise enough to use it to define conditional expectation. There are a few caveats, but they will not cause problems for the conditional expectations we study in practice. They are technical enough, however, that we leave them to an optional note.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: making the best-guess idea precise">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Optional technical note: making the best-guess idea precise
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The precise best-guess statement requires <span class="math inline">\(Y\)</span> to have a finite mean and a finite variance. This is not a concern for the variables we usually encounter: most cannot wander arbitrarily far toward infinity or negative infinity, or their probabilities of taking extreme values become small quickly enough.</p>
+<p>The minimization is over the choice of the function <span class="math inline">\(g\)</span>. Because <span class="math inline">\(X\)</span> is real-valued, we consider measurable functions <span class="math inline">\(g:\mathbb R\to\mathbb R\)</span> for which <span class="math inline">\(g(X)\)</span> has finite first and second moments. Measurability is a mild technical condition that ensures <span class="math inline">\(g(X)\)</span> is itself a random variable, so its probabilities and expectations are defined. It excludes pathological functions, not the familiar functions we ordinarily use.</p>
+<p>Subject to these conditions, we can use the best-guess idea as our definition: the <strong>conditional expectation</strong> <span class="math inline">\(E[Y\mid X]\)</span> is the unique random variable, up to differences that occur with probability zero, of the form <span class="math inline">\(g(X)\)</span> that minimizes</p>
+<p><span class="math display">\[
+E\left[(Y-g(X))^2\right].
+\]</span></p>
+</div>
+</div>
+</div>
+</section>
+<section id="as-probabilities" class="level3">
+<h3 class="anchored" data-anchor-id="as-probabilities">As probabilities</h3>
+<p>We introduced conditional expectation before conditional probability, which may feel backward. This order lets us begin with one idea that applies to many kinds of random variables. The more familiar conditional probability then follows when the random variables are discrete. Take <span class="math inline">\(Y\)</span> to be binary, for example. Then,</p>
+<p><span class="math display">\[
+E[Y\mid X]=P(Y=1\mid X).
+\]</span></p>
+<p>Thus, the conditional expectation of a binary outcome <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span> is the probability that the outcome occurs given <span class="math inline">\(X\)</span>. For a particular value <span class="math inline">\(x\)</span> of <span class="math inline">\(X\)</span>, this probability is</p>
+<p><span class="math display">\[
+E[Y\mid X=x]=P(Y=1\mid X=x).
+\]</span> The right-hand side is the familiar form of conditional probability.</p>
+<p>Conditional expectation also gives us the usual form of conditional probability for two events. Let <span class="math inline">\(B\)</span> and <span class="math inline">\(C\)</span> be events with <span class="math inline">\(P(B)&gt;0\)</span>. Define <span class="math inline">\(1_C\)</span> to equal one when <span class="math inline">\(C\)</span> occurs and zero otherwise. Define <span class="math inline">\(1_B\)</span> in the same way. Conditioning on the event <span class="math inline">\(B\)</span> is equivalent to conditioning on <span class="math inline">\(1_B=1\)</span>. Therefore,</p>
+<p><span class="math display">\[
+E[1_C\mid 1_B=1]
+=P(C\mid B),
+\]</span></p>
+<p>From an elementary probability course, you may recognize</p>
+<p><span class="math display">\[
+P(C\mid B)=\frac{P(C\cap B)}{P(B)}.
+\]</span></p>
+<p>This is the probability that <span class="math inline">\(C\)</span> occurs given that <span class="math inline">\(B\)</span> has occurred. Because <span class="math inline">\(1_C\)</span> records whether <span class="math inline">\(C\)</span> occurs and <span class="math inline">\(1_B\)</span> records when <span class="math inline">\(B\)</span> occurs, this probability is also the conditional mean of <span class="math inline">\(1_C\)</span> given <span class="math inline">\(1_B = 1\)</span>.</p>
+</section>
+<section id="as-regression-functions" class="level3">
+<h3 class="anchored" data-anchor-id="as-regression-functions">As regression functions</h3>
+<p>The conditional expectation <span class="math inline">\(E[Y\mid X]\)</span> is a function of <span class="math inline">\(X\)</span>. When <span class="math inline">\(Y\)</span> is binary, this function gives the probability of the outcome at each value of <span class="math inline">\(X\)</span>.</p>
+<p><span class="math display">\[
+E[Y\mid X]=P(Y=1\mid X).
+\]</span></p>
+<p>This should look familiar from regression. In regression, we call <span class="math inline">\(Y\)</span> the outcome and <span class="math inline">\(X\)</span> a predictor. A regression model specifies how the predicted probability of the outcome depends on the predictor. For a binary outcome, it is therefore a model for the conditional expectation <span class="math inline">\(E[Y\mid X]\)</span>.</p>
+<p>Suppose <span class="math inline">\(X\)</span> is also binary. It might indicate whether a person was exposed or unexposed. We need one predicted probability when <span class="math inline">\(X=0\)</span> and another when <span class="math inline">\(X=1\)</span>. On the probability scale, we could write</p>
+<p><span class="math display">\[
+P(Y=1\mid X)=\alpha+\beta X.
+\]</span></p>
+<p>The predicted probability is <span class="math inline">\(\alpha\)</span> for the unexposed group and <span class="math inline">\(\alpha+\beta\)</span> for the exposed group. The coefficient <span class="math inline">\(\beta\)</span> is the risk difference between the two groups. This is a linear probability model. Because <span class="math inline">\(X\)</span> has only two possible values, the model can represent any two group probabilities.</p>
+<p>Students more often see logistic regression for a binary outcome. Logistic regression models the log odds of the outcome rather than the probability itself.</p>
+<p><span class="math display">\[
+\operatorname{logit}\{P(Y=1\mid X)\}=\alpha+\beta X.
+\]</span></p>
+<p>The coefficient <span class="math inline">\(\alpha\)</span> is the log odds for the unexposed group. The coefficient <span class="math inline">\(\beta\)</span> is the log odds ratio comparing the exposed and unexposed groups, so <span class="math inline">\(\exp(\beta)\)</span> is the odds ratio. The predicted probabilities are <span class="math inline">\(\operatorname{expit}(\alpha)\)</span> when <span class="math inline">\(X=0\)</span> and <span class="math inline">\(\operatorname{expit}(\alpha+\beta)\)</span> when <span class="math inline">\(X=1\)</span>. In conditional-expectation notation, <span class="math inline">\(\alpha=\operatorname{logit}\{E[Y\mid X=0]\}\)</span> and <span class="math inline">\(\alpha+\beta=\operatorname{logit}\{E[Y\mid X=1]\}\)</span>.</p>
+<p>Now suppose the outcome <span class="math inline">\(Y\)</span> is continuous. It might be systolic blood pressure. If <span class="math inline">\(X\)</span> is binary, a simple linear regression can be written</p>
+<p><span class="math display">\[
+E[Y\mid X]=\alpha+\beta X.
+\]</span></p>
+<p>The coefficient <span class="math inline">\(\alpha\)</span> is the mean blood pressure in the group with <span class="math inline">\(X=0\)</span>. The quantity <span class="math inline">\(\alpha+\beta\)</span> is the mean in the group with <span class="math inline">\(X=1\)</span>. The coefficient <span class="math inline">\(\beta\)</span> is the difference between the two group means. Again, the model can represent any two conditional means because <span class="math inline">\(X\)</span> is binary.</p>
+<p>Regression requires more thought when the predictor is continuous. Suppose <span class="math inline">\(X\)</span> is age and <span class="math inline">\(Y\)</span> is systolic blood pressure. Our goal is to learn the mean blood pressure at each age, which is <span class="math inline">\(E[Y\mid X]\)</span>. If we had samples of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, we might look at a narrow range of ages and average the observed blood pressures in that strip. Repeating this across ages traces an estimate of the conditional mean.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/01d-conditional-expectation-strips.svg" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption>A narrow strip of the observed data estimates the conditional mean near one value of <span class="math inline">\(X\)</span>. Repeating this across values of <span class="math inline">\(X\)</span> traces an estimate of the conditional mean function, which we might capture with a regression line.</figcaption>
+</figure>
+</div>
+<p>A simple linear regression tries to summarize this pattern with a straight line:</p>
+<p><span class="math display">\[
+E[Y\mid X] \approx \alpha+\beta X
+\]</span></p>
+<p>and assumes that mean blood pressure follows a straight line across age. The coefficient <span class="math inline">\(\beta\)</span> is the difference in mean blood pressure associated with a one-year difference in age. Unlike the model with a binary predictor, this model imposes a shape on the conditional mean.</p>
+<p>The same issue arises in multiple regression. A model such as</p>
+<p><span class="math display">\[
+E[Y\mid X,Z] \approx \alpha+\beta X+\gamma Z
+\]</span></p>
+<p>assumes that the predictors enter additively and linearly. It leaves out curved relationships and interactions unless we include terms for them. The model is correctly specified only when the function of <span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span> on the left matches the true conditional mean on the right.</p>
+</section>
+<section id="manipulating-conditional-expectations" class="level3">
+<h3 class="anchored" data-anchor-id="manipulating-conditional-expectations">Manipulating conditional expectations</h3>
+<p>Many familiar rules for expectation also have conditional versions. A useful way to remember them is to keep the conditioning variable <span class="math inline">\(X\)</span> along for the ride. Three will be especially important.</p>
+<p><strong>Linearity.</strong> Just like regular expectation, conditional expectation respects adding random variables and scaling them by constants. We can first combine <span class="math inline">\(Y\)</span> and <span class="math inline">\(W\)</span> and then take the conditional expectation, or take their conditional expectations first and then combine the results. Either order gives the same answer.</p>
+<p><span class="math display">\[
+E[aY+bW\mid X]=aE[Y\mid X]+bE[W\mid X].
+\]</span></p>
+<p>There is a warning here, though. Linearity applies to the random variables being averaged, which appear to the left of the vertical bar. It does not apply to the variables after the bar. In general,</p>
+<p><span class="math display">\[
+E[Y\mid X+Z] \neq E[Y\mid X]+E[Y\mid Z].
+\]</span></p>
+<p>Even multiplying a conditioning variable by a nonzero constant behaves differently. When <span class="math inline">\(a\neq 0\)</span>, observing <span class="math inline">\(aX\)</span> gives us the same information as observing <span class="math inline">\(X\)</span>, so</p>
+<p><span class="math display">\[
+E[Y\mid aX]=E[Y\mid X],
+\]</span></p>
+<p>not <span class="math inline">\(aE[Y\mid X]\)</span>.</p>
+<p><strong>Taking out what is known.</strong> Once we condition on <span class="math inline">\(X\)</span>, we know the value of any function <span class="math inline">\(h(X)\)</span>. Suppose we want the best guess for <span class="math inline">\(h(X)Y\)</span> using <span class="math inline">\(X\)</span>. The value <span class="math inline">\(h(X)\)</span> is already known, so we multiply it by our best guess for <span class="math inline">\(Y\)</span> using <span class="math inline">\(X\)</span>. This gives</p>
+<p><span class="math display">\[
+E[h(X)Y\mid X]=h(X)E[Y\mid X].
+\]</span></p>
+<p><strong>Law of iterated expectation.</strong> Conditional expectations allow us to average in stages. We can first find the best guess for <span class="math inline">\(Y\)</span> using <span class="math inline">\(X\)</span> and then average those guesses over the distribution of <span class="math inline">\(X\)</span>. This recovers the overall mean of <span class="math inline">\(Y\)</span>.</p>
+<p><span class="math display">\[
+E[E[Y\mid X]]=E[Y].
+\]</span></p>
+<p>We can also apply the same rule while keeping <span class="math inline">\(X\)</span> along for the ride. We first find the best guess using both <span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span>. We then average over the remaining uncertainty in <span class="math inline">\(Z\)</span> while retaining <span class="math inline">\(X\)</span>. This recovers the best guess using <span class="math inline">\(X\)</span> alone.</p>
+<p><span class="math display">\[
+E\left[E[Y\mid X,Z]\mid X\right]=E[Y\mid X].
+\]</span></p>
+</section>
 </section>
 <section id="independence" class="level2">
 <h2 class="anchored" data-anchor-id="independence">Independence</h2>
-<p>Intuitively, we need to know whether one variable or set provides information on another set or variable. This is captured with independence:</p>
-<blockquote class="blockquote">
-<p><strong>Definition.</strong> Random variables <span class="math inline">\(X_j\)</span> are independent if, for all <span class="math inline">\(x_j\in\mathbb R\)</span>, any finite collection of the sets <span class="math inline">\(\{X_j\leq x_j\}\)</span> are independent.</p>
-</blockquote>
-<p>Independence will be useful to simplify the following computations:</p>
-<blockquote class="blockquote">
-<p><strong>Proposition.</strong> <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> independent implies</p>
-<ul>
-<li><span class="math inline">\(E[XY]=E[X]E[Y]\)</span></li>
-<li><span class="math inline">\(\operatorname{Var}(X+Y)=\operatorname{Var}(X)+\operatorname{Var}(Y)\)</span>.</li>
-</ul>
-</blockquote>
-<p>For example, the sample mean</p>
+<p>Before turning to the formal definition, it is worth dwelling on the idea that independence is about <em>shared information</em>. If two random variables are independent, learning the value of one tells us nothing about the value of the other. The information does not change what we know about the other variable.</p>
+<p>One way to make this idea concrete is to imagine placing a bet. Suppose a roulette wheel is fair and each spin is independent. You are about to bet on whether the next spin will land on red. Someone tells you that the previous five spins all landed on black. Should that information change your bet? No.&nbsp;The wheel has no memory; the probability of red on the next spin is unchanged. The history may feel informative, but it provides no useful information about the next spin. The history is <em>independent</em> of the next spin.</p>
+<p>Contrast that with betting on a card game. If you are deciding whether to bet that the next card will be an ace, learning which cards have already been dealt <em>does</em> help: cards are drawn without replacement, so the number of aces already dealt tells you something about whether the next card will be an ace. Those two quantities are therefore not independent. Similarly, if knowing whether a basketball team’s leading scorer will play tells you something about whether the team will win, player availability and the game outcome are not independent.</p>
+<p>Return to the WHI trial. Imagine its random assignment as a coin flip that determines whether a participant is assigned to hormone therapy (<span class="math inline">\(A=1\)</span>) or placebo (<span class="math inline">\(A=0\)</span>). Before seeing the flip, suppose I tell you the participant’s age group <span class="math inline">\(X\)</span>. Would that information help you predict the result of the random assignment? No: the randomization procedure does not use age to assign treatment. Looking in the other direction, if I tell you the treatment assignment, have you learned anything about the participant’s age? Again, no. Treatment assignment <span class="math inline">\(A\)</span> is <em>independent</em> of age <span class="math inline">\(X\)</span>. We write</p>
 <p><span class="math display">\[
-\overline X_n=\frac{1}{n}(X_1+\cdots+X_n)
+A\mathrel{\perp\!\!\!\perp}X.
 \]</span></p>
-<p>of independent and identically distributed random variables <span class="math inline">\(X_j\)</span> has mean <span class="math inline">\(E[X_1]\)</span> and variance <span class="math inline">\(\operatorname{Var}(X_1)/n\)</span>.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Concrete example placeholder">
-<div class="callout-header d-flex align-content-center">
+<p>We can make independence precise with conditional expectation. Independence means that <span class="math inline">\(X\)</span> provides no information about any aspect of <span class="math inline">\(Y\)</span>. In terms of best guesses, <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent exactly when knowing <span class="math inline">\(X\)</span> does not improve our best guess for any suitable function <span class="math inline">\(g(Y)\)</span>. In other words,</p>
+<p><span class="math display">\[
+E[g(Y)\mid X]=E[g(Y)].
+\]</span></p>
+<p>This equality must hold for every suitable function <span class="math inline">\(g\)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note on the functions g">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Concrete example placeholder
+<span class="screen-reader-only">Note</span>Optional technical note on the functions g
 </div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Use the Canvas dataset to explain what independence would mean in scientific language.</p>
+<p>It is enough to require this equality for every bounded measurable function <span class="math inline">\(g\)</span>. Measurability ensures that <span class="math inline">\(g(Y)\)</span> is a random variable with probabilities and expectations that are defined. Boundedness ensures that its mean is finite. Requiring the equality for all such functions is equivalent to independence.</p>
 </div>
 </div>
-</section>
-<section id="conditioning" class="level2">
-<h2 class="anchored" data-anchor-id="conditioning">Conditioning</h2>
-<p>We first condition on a set:</p>
-<blockquote class="blockquote">
-<p><strong>Definition.</strong> The <em>conditional probability</em> of <span class="math inline">\(A\)</span> conditional on a set <span class="math inline">\(B\)</span> with nonzero probability is denoted by <span class="math inline">\(P(A\mid B)\)</span> and given by</p>
+</div>
+<p>One important special case comes from using <span class="math inline">\(Y\)</span> itself. If <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent, then our best guess for <span class="math inline">\(Y\)</span> using <span class="math inline">\(X\)</span> is the same as our best guess without it:</p>
 <p><span class="math display">\[
-\frac{P(A\cap B)}{P(B)}.
+E[Y\mid X]=E[Y].
 \]</span></p>
-</blockquote>
-<p>Conditional probability gives us the factorization</p>
+<p>The reverse is not necessarily true. If <span class="math inline">\(E[Y\mid X]=E[Y]\)</span>, we cannot conclude that <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent. This equality tells us only that <span class="math inline">\(X\)</span> does not change our best guess for the value of <span class="math inline">\(Y\)</span>. The variable <span class="math inline">\(X\)</span> could still tell us something else about <span class="math inline">\(Y\)</span>, such as whether <span class="math inline">\(Y\)</span> is likely to be unusually large or unusually small.</p>
+<p>The consequence we use most in causal inference often concerns potential outcomes. In the WHI trial, for example, randomization also makes treatment assignment <span class="math inline">\(A\)</span> independent of the potential outcome <span class="math inline">\(Y(1)\)</span>. Therefore,</p>
 <p><span class="math display">\[
-P(A_1\cap A_2\cap\cdots\cap A_n)
-=P(A_1)P(A_2\mid A_1)P(A_3\mid A_1\cap A_2)\cdots
-P(A_n\mid A_1\cap\cdots\cap A_{n-1})
+E[Y(1)\mid A]=E[Y(1)].
 \]</span></p>
-<p>for any ordering of the <span class="math inline">\(A_j\)</span> whenever the conditional probabilities are defined.</p>
-<p>We then define conditional expectation for the special cases of discrete and continuous random variables:</p>
-<blockquote class="blockquote">
-<p><strong>Definition 1 (discrete).</strong> Given discrete <span class="math inline">\(X\)</span> and discrete <span class="math inline">\(Y\)</span> that takes a value <span class="math inline">\(y\)</span> with positive probability, define conditional expectation <span class="math inline">\(E[X\mid Y=y]\)</span> as</p>
+<p>The left side would ordinarily be a function of <span class="math inline">\(A\)</span>. Independence tells us that this function is constant. Evaluating it at <span class="math inline">\(A=1\)</span> gives</p>
 <p><span class="math display">\[
-\sum_i x_iP(X=x_i\mid Y=y).
+E[Y(1)\mid A=1]=E[Y(1)].
 \]</span></p>
-</blockquote>
-<blockquote class="blockquote">
-<p><strong>Definition 2 (continuous).</strong> Given continuous <span class="math inline">\(X\)</span> and continuous <span class="math inline">\(Y\)</span> with <span class="math inline">\(f_Y(y)&gt;0\)</span>, define conditional expectation <span class="math inline">\(E[X\mid Y=y]\)</span> as</p>
+<p>We will often describe this as removing <span class="math inline">\(A\)</span> from the conditioning event. Independence tells us that knowing <span class="math inline">\(A\)</span> does not change our best guess for <span class="math inline">\(Y(1)\)</span>, so conditioning on <span class="math inline">\(A\)</span> makes no difference.</p>
+<section id="conditional-independence" class="level3">
+<h3 class="anchored" data-anchor-id="conditional-independence">Conditional independence</h3>
+<p>Ordinary independence is often too much to expect in an observational study. Treatment decisions may depend on a patient’s characteristics, and those same characteristics may be related to the patient’s outcome. Treatment assignment and the potential outcomes may therefore share information. This differs from a randomized trial, where randomization gives us independence between treatment assignment and the potential outcomes.</p>
+<p>Conditional independence asks a more practical question. Does one variable provide any <em>additional</em> information about another once we already know a third variable? Suppose <span class="math inline">\(A\)</span> is treatment assignment, <span class="math inline">\(Y(a)\)</span> is a potential outcome, and <span class="math inline">\(X\)</span> contains patient characteristics measured before treatment. Treatment assignment <span class="math inline">\(A\)</span> and the potential outcome <span class="math inline">\(Y(a)\)</span> may not be independent. Sicker patients may be more likely to receive treatment and may also have worse outcomes. But once we know the patient characteristics <span class="math inline">\(X\)</span>, we can ask whether learning <span class="math inline">\(A\)</span> tells us anything more about <span class="math inline">\(Y(a)\)</span>.</p>
+<p>If it does not, then <span class="math inline">\(A\)</span> and <span class="math inline">\(Y(a)\)</span> are independent given <span class="math inline">\(X\)</span>. We write</p>
 <p><span class="math display">\[
-\int_{\mathbb R}x f_{X\mid Y=y}(x)\,dx,
+Y(a)\mathrel{\perp\!\!\!\perp}A\mid X.
 \]</span></p>
-<p>with</p>
+<p>The phrase “given <span class="math inline">\(X\)</span>” matters. We are not claiming that treatment assignment and the potential outcome share no information at all. We are claiming that treatment assignment provides no extra information about the potential outcome beyond the information already contained in <span class="math inline">\(X\)</span>.</p>
+<p>Here is a simpler example where conditional independence follows directly from how the experiment works. Suppose we randomly select one of two coins. Coin 1 lands heads with probability <span class="math inline">\(1/4\)</span>, while Coin 2 lands heads with probability <span class="math inline">\(3/4\)</span>. We then flip the selected coin twice. Let <span class="math inline">\(Z\)</span> identify the coin, let <span class="math inline">\(X=1\)</span> indicate heads on the first flip, and let <span class="math inline">\(Y=1\)</span> indicate heads on the second flip.</p>
+<p>If we do not know which coin was selected, the first flip provides information about the second. Both coins are equally likely to be selected, so</p>
 <p><span class="math display">\[
-f_{X\mid Y=y}(x):=\frac{f_{X,Y}(x,y)}{f_Y(y)}
+P(Y=1)=\frac12.
 \]</span></p>
-<p>called the conditional density of <span class="math inline">\(X\)</span> given <span class="math inline">\(Y=y\)</span>.</p>
-</blockquote>
-<p>Two immediate consequences:</p>
-<ul>
-<li>The mapping <span class="math inline">\(y\mapsto E[X\mid Y=y]\)</span> defines a function <span class="math inline">\(g(y)\)</span>. Let <span class="math inline">\(E[X\mid Y]\)</span> be the random variable <span class="math inline">\(g(Y)\)</span>.</li>
-<li><span class="math inline">\(E[1_{X\leq x}\mid Y=y]\)</span> defines a cumulative distribution function <span class="math inline">\(F_{X\mid Y=y}(x)\)</span>.</li>
-</ul>
-<p>A helpful understanding is that <span class="math inline">\(g(Y)\)</span> is the closest function of <span class="math inline">\(Y\)</span> to <span class="math inline">\(X\)</span> in terms of expected square error. We thus interpret <span class="math inline">\(E[X\mid Y]\)</span> as our best prediction for <span class="math inline">\(X\)</span> given knowledge of <span class="math inline">\(Y\)</span>.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Concrete example placeholder">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Concrete example placeholder
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Compute and interpret conditional expectations and conditional probabilities using the Canvas dataset.</p>
-</div>
-</div>
-</section>
-<section id="conditional-independence" class="level2">
-<h2 class="anchored" data-anchor-id="conditional-independence">Conditional independence</h2>
-<p>We want to know if knowledge of one event <span class="math inline">\(A\)</span> provides extra information about another event <span class="math inline">\(B\)</span> beyond what is already known from an event <span class="math inline">\(C\)</span>. For example, we may want to know if knowing whether a sprinkler is on provides us any additional information about whether the lawn is wet when we already know that it is raining. This yields the idea of conditional independence:</p>
-<blockquote class="blockquote">
-<p><strong>Definition.</strong> Random variables <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent given a random variable <span class="math inline">\(Z\)</span> if</p>
+<p>But seeing heads on the first flip makes it more likely that we selected Coin 2. In fact,</p>
 <p><span class="math display">\[
-F_{X,Y\mid Z=z}(x,y)=F_{X\mid Z=z}(x)F_{Y\mid Z=z}(y)
+P(Y=1\mid X=1)=\frac58.
 \]</span></p>
-<p>for every <span class="math inline">\(x,y,z\in\mathbb R\)</span> for which the above is defined. In such cases, we write</p>
+<p>Thus, <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are not independent. Once we know which coin was selected, however, the first flip provides no additional information about the second. The two flips are independent for either coin, so</p>
+<p><span class="math display">\[
+P(Y=1\mid X,Z)=P(Y=1\mid Z).
+\]</span></p>
+<p>Therefore, the two flips are independent given the selected coin.</p>
 <p><span class="math display">\[
 X\mathrel{\perp\!\!\!\perp}Y\mid Z.
 \]</span></p>
-</blockquote>
+<p>More generally, <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent given <span class="math inline">\(Z\)</span> when learning <span class="math inline">\(X\)</span> does not change our best guess for any suitable function of <span class="math inline">\(Y\)</span> once we already know <span class="math inline">\(Z\)</span>. We define this by requiring</p>
+<p><span class="math display">\[
+E[g(Y)\mid X,Z]=E[g(Y)\mid Z].
+\]</span></p>
+<p>for every suitable function <span class="math inline">\(g\)</span>. When it does, we write</p>
+<p><span class="math display">\[
+X\mathrel{\perp\!\!\!\perp}Y\mid Z.
+\]</span></p>
 <p>Unexpectedly, random variables can be independent without being conditionally independent, and they can be conditionally independent without being independent.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Concrete example placeholder">
-<div class="callout-header d-flex align-content-center">
+<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note on the functions g">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Concrete example placeholder
+<span class="screen-reader-only">Note</span>Optional technical note on the functions g
 </div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Use the Canvas dataset to explain conditional independence in scientific language and contrast it with marginal independence.</p>
+<p>It is enough to require this equality for every bounded measurable function <span class="math inline">\(g\)</span>. Measurability ensures that <span class="math inline">\(g(Y)\)</span> is a random variable with probabilities and expectations that are defined. Boundedness ensures that its mean is finite. Requiring the equality for all such functions is equivalent to conditional independence.</p>
+</div>
 </div>
 </div>
 </section>
-<section id="iterated-expectations-and-total-probability" class="level2">
-<h2 class="anchored" data-anchor-id="iterated-expectations-and-total-probability">Iterated expectations and total probability</h2>
-<p>Make sure you are comfortable working with conditional expectations using properties like:</p>
-<ul>
-<li><span class="math inline">\(E[X\mid Y]=E[X]\)</span> if <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent</li>
-<li><span class="math inline">\(E[f(X)g(Y)\mid Y]=g(Y)E[f(X)\mid Y]\)</span></li>
-<li>Linearity: <span class="math inline">\(E[aX+bZ\mid Y]=aE[X\mid Y]+bE[Z\mid Y]\)</span></li>
-<li>Law of total expectation: <span class="math inline">\(E[E[X\mid Y]]=E[X]\)</span></li>
-<li><span class="math inline">\(E[X\mid Z]=E[X\mid Y,Z]\)</span> if <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent given <span class="math inline">\(Z\)</span></li>
-</ul>
-<div class="callout callout-style-default callout-note callout-titled" title="Content placeholder">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Content placeholder
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Add the law of total probability, then work through the law of total probability and the law of iterated expectation using the Canvas dataset.</p>
-</div>
-</div>
-</section>
-<section id="regression-models" class="level2">
-<h2 class="anchored" data-anchor-id="regression-models">Regression models</h2>
-<p>Outcome regression involves proposing a function <span class="math inline">\(\mu(X,A;\theta)\)</span>, specified by unknown parameters <span class="math inline">\(\theta\)</span>, so that</p>
+<section id="manipulating-expectations-using-independence" class="level3">
+<h3 class="anchored" data-anchor-id="manipulating-expectations-using-independence">Manipulating expectations using independence</h3>
+<p>Independence lets us simplify several calculations involving expectations and variances. Conditional independence gives us the same kinds of simplifications while keeping the variables we condition on along for the ride.</p>
+<p><strong>Removing information.</strong> If <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent, knowing <span class="math inline">\(X\)</span> does not change our best guess for <span class="math inline">\(Y\)</span>. We can therefore remove <span class="math inline">\(X\)</span> from the conditioning information.</p>
 <p><span class="math display">\[
-E[Y\mid X,A]:=\mu(X,A;\theta).
+E[Y\mid X]=E[Y].
 \]</span></p>
-<p>Data is used to recover an estimate <span class="math inline">\(\widehat\theta\)</span> for <span class="math inline">\(\theta\)</span> from which we arrive at an approximation of the conditional mean.</p>
-<p>The <em>art</em> of outcome regression, like all regression approaches, is deciding:</p>
-<ul>
-<li>What form should <span class="math inline">\(\mu\)</span> take</li>
-<li>How to recover <span class="math inline">\(\widehat\theta\)</span></li>
-</ul>
-<section id="linear-regression" class="level3">
-<h3 class="anchored" data-anchor-id="linear-regression">Linear regression</h3>
-<p>In linear regression, we choose a form for <span class="math inline">\(\mu(X,A;\theta)\)</span> that is linear in its parameters <span class="math inline">\(\theta\)</span>.</p>
-<p>For example, we might choose</p>
+<p>If <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent given <span class="math inline">\(Z\)</span>, knowing <span class="math inline">\(X\)</span> adds nothing to the information already provided by <span class="math inline">\(Z\)</span>. We can remove <span class="math inline">\(X\)</span> while keeping <span class="math inline">\(Z\)</span>.</p>
 <p><span class="math display">\[
-\mu(X,A;\theta):=\theta^{\mathsf T}
-\begin{bmatrix}
-X\\A
-\end{bmatrix},
+E[Y\mid X,Z]=E[Y\mid Z].
 \]</span></p>
-<p>or alternatively include interaction terms:</p>
+<p>For the observational-study example, the assumption <span class="math inline">\(Y(a)\mathrel{\perp\!\!\!\perp}A\mid X\)</span> allows us to write</p>
 <p><span class="math display">\[
-\mu(X,A;\theta):=\theta^{\mathsf T}
-\begin{bmatrix}
-X\\XA
-\end{bmatrix}.
+E[Y(a)\mid A,X]=E[Y(a)\mid X].
 \]</span></p>
-<p>To estimate <span class="math inline">\(\theta\)</span>, we could then follow an ordinary least squares approach and try to minimize mean square error.</p>
-</section>
-<section id="logistic-regression" class="level3">
-<h3 class="anchored" data-anchor-id="logistic-regression">Logistic regression</h3>
-<p>The image of <span class="math inline">\(E[Y\mid X,A]\)</span> can frequently be a strict subset of <span class="math inline">\(\mathbb R\)</span>. This conditional mean, for example, lies in <span class="math inline">\([0,1]\)</span> for binary <span class="math inline">\(Y\)</span>.</p>
-<p>We can enforce this restriction with an invertible function <span class="math inline">\(g\)</span> called a <em>link function</em>. For binary <span class="math inline">\(Y\)</span>, a common choice for <span class="math inline">\(g\)</span> is the logit function:</p>
+<p><strong>Products.</strong> Independence lets expectation pass through a product. We can take the expectation of each variable separately and then multiply the results.</p>
 <p><span class="math display">\[
-\operatorname{logit}(p):=\log\left(\frac{p}{1-p}\right),
+E[XY]=E[X]E[Y].
 \]</span></p>
-<p>whose inverse is</p>
+<p>Conditional independence gives the corresponding rule after conditioning on <span class="math inline">\(Z\)</span>.</p>
 <p><span class="math display">\[
-\operatorname{logit}^{-1}(x):=\frac{1}{1+\exp(-x)}.
+E[XY\mid Z]=E[X\mid Z]E[Y\mid Z].
 \]</span></p>
-<p>With a logit function as a link, logistic regression consists of modeling the transformed conditional mean as a linear function of its parameters and recovering <span class="math inline">\(\widehat\theta\)</span> by maximizing the likelihood of the data.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Regression examples placeholder">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Regression examples placeholder
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Using the Canvas dataset:</p>
-<ul>
-<li>build linear and logistic regression models;</li>
-<li>describe each regression model as a function;</li>
-<li>interpret the fitted coefficients mathematically;</li>
-<li>interpret the fitted coefficients in the language of the scientific problem;</li>
-<li>manipulate each fitted function to predict means or probabilities;</li>
-<li>generate predictions for everyone in the dataset; and</li>
-<li>optionally compare models using AIC and BIC.</li>
-</ul>
-</div>
-</div>
+<p><strong>Variances of sums.</strong> The variance of a sum usually includes a covariance term. When <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent, that covariance is zero, so their variances add.</p>
+<p><span class="math display">\[
+\operatorname{Var}(X+Y)=\operatorname{Var}(X)+\operatorname{Var}(Y).
+\]</span></p>
+<p>The same rule holds conditionally when <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent given <span class="math inline">\(Z\)</span>.</p>
+<p><span class="math display">\[
+\operatorname{Var}(X+Y\mid Z)
+=\operatorname{Var}(X\mid Z)+\operatorname{Var}(Y\mid Z).
+\]</span></p>
 </section>
 </section>
 <section id="estimators" class="level2">
 <h2 class="anchored" data-anchor-id="estimators">Estimators</h2>
-<div class="callout callout-style-default callout-note callout-titled" title="Content placeholder">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Content placeholder
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The original GitBook identifies bias, consistency, and efficiency as material to add in a future version. Develop this section using the Canvas dataset:</p>
-<ul>
-<li>define an estimator and distinguish it from an estimate;</li>
-<li>describe what makes a good estimator;</li>
-<li>define bias;</li>
-<li>discuss variability, consistency, and efficiency; and</li>
-<li>show these properties through a concrete example or simulation.</li>
-</ul>
-</div>
-</div>
-</section>
-<section id="using-fitted-response-models" class="level2">
-<h2 class="anchored" data-anchor-id="using-fitted-response-models">Using fitted response models</h2>
-<p>Once we have <span class="math inline">\(\widehat\theta\)</span>, we can evaluate <span class="math inline">\(\mu(X,a;\widehat\theta)\)</span> for each person in the dataset and compute its empirical expectation:</p>
+<p>So far, <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span>, and <span class="math inline">\(Z\)</span> have represented random variables for one person. A study gives us copies of these random variables, one for each person in our sample. We distinguish the copies with subscripts</p>
 <p><span class="math display">\[
-E_N[\mu(X,a;\widehat\theta)].
+(X_1,Y_1,Z_1),\ldots,(X_n,Y_n,Z_n).
 \]</span></p>
-<div class="callout callout-style-default callout-note callout-titled" title="Concrete example placeholder">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Concrete example placeholder
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Use the Canvas dataset to calculate predictions for everyone, first using their observed values and then after setting a selected predictor to the same value for everyone. Average and interpret the predictions without giving them a causal interpretation.</p>
-</div>
-</div>
-<div class="section-break" aria-hidden="true">
-<span class="acorn-mark"></span>
-</div>
-</section>
-<section id="takeaways" class="level2">
-<h2 class="anchored" data-anchor-id="takeaways">Takeaways</h2>
-<ol type="1">
-<li>A probability space is a necessary construction for causal inference.</li>
-<li>However, random variables will be our main object of interest.</li>
-<li>As such, the probability space is often implied but not explicit.</li>
-<li>Our main tool will be to manipulate and compute expectations and conditional expectations.</li>
-<li>This is especially true when leveraging independence and conditional independence.</li>
-<li>Once suitably manipulated, we will often use sample means for estimation and so rely on theorems like the central limit theorem.</li>
-</ol>
+<p>We assume these triples are independent across people and have the same joint distribution. The capital letters still matter. Before we collect the data, <span class="math inline">\(X_i\)</span>, <span class="math inline">\(Y_i\)</span>, and <span class="math inline">\(Z_i\)</span> are random variables. After we observe person <span class="math inline">\(i\)</span>, the realized values are written <span class="math inline">\(x_i\)</span>, <span class="math inline">\(y_i\)</span>, and <span class="math inline">\(z_i\)</span>.</p>
+<p>We eventually want to learn something about the distribution of <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span>, and <span class="math inline">\(Z\)</span>. The particular quantity we want to learn is called an <strong>estimand</strong>. An estimand might be an overall mean such as</p>
+<p><span class="math display">\[
+E[Y],
+\]</span></p>
+<p>or a conditional mean such as</p>
+<p><span class="math display">\[
+E[Y\mid X=1].
+\]</span></p>
+<p>The estimand is a feature of the joint distribution of <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span>, and <span class="math inline">\(Z\)</span>. We usually do not know its value, which is why we collected a sample.</p>
+<p>An <strong>estimator</strong> is a function of the random variables in our sample that we use to estimate the estimand. The name is not very imaginative. An estimator is simply the rule we use to estimate the quantity (i.e.&nbsp;estimand) we want to know. Because it is a function of random variables, an estimator is itself a random variable. Its value can change from one possible sample to another.</p>
+<p>Once we observe the data and evaluate the estimator, the resulting number is an <strong>estimate</strong>. The estimand is the thing we want. The estimator is the rule before we see the sample. The estimate is the number that the rule produces for the sample we actually observed.</p>
+<p>Suppose our estimand is the mean <span class="math inline">\(E[Y]\)</span>. The natural estimator is the sample mean</p>
+<p><span class="math display">\[
+\overline Y_n=\frac{1}{n}(Y_1+\cdots+Y_n).
+\]</span></p>
+<p>Linearity gives</p>
+<p><span class="math display">\[
+E[\overline Y_n]=E[Y].
+\]</span></p>
+<p>Independence allows us to add their variances, which gives</p>
+<p><span class="math display">\[
+\operatorname{Var}(\overline Y_n)
+=\frac{\operatorname{Var}(Y)}{n}.
+\]</span></p>
+<p>The sample mean therefore has the same expected value as the population mean we want to learn, but its variance becomes smaller as the sample size grows.</p>
+<p>Now suppose <span class="math inline">\(X\)</span> is binary and our estimand is the conditional mean</p>
+<p><span class="math display">\[
+E[Y\mid X=1].
+\]</span></p>
+<p>We estimate it by taking the sample mean of <span class="math inline">\(Y\)</span> among the people for whom <span class="math inline">\(X_i=1\)</span>. Calling this estimator <span class="math inline">\(\widehat\mu_1\)</span>, we can write</p>
+<p><span class="math display">\[
+\widehat\mu_1
+=\frac{Y_1X_1+\cdots+Y_nX_n}{X_1+\cdots+X_n}.
+\]</span></p>
+<p>The denominator <span class="math inline">\(X_1+\cdots+X_n\)</span> counts how many people in the sample have <span class="math inline">\(X_i=1\)</span>. The numerator adds their values of <span class="math inline">\(Y_i\)</span>. When <span class="math inline">\(X_i=0\)</span>, the product <span class="math inline">\(Y_iX_i\)</span> is zero, so person <span class="math inline">\(i\)</span> contributes nothing to the numerator. The ratio is therefore exactly the mean of <span class="math inline">\(Y_i\)</span> among the people with <span class="math inline">\(X_i=1\)</span>. It is defined as long as at least one person in the sample has <span class="math inline">\(X_i=1\)</span>.</p>
+<p>An estimator is not automatically a good estimator merely because we use it to estimate an estimand. We need to ask how it behaves across the different samples we could have drawn.</p>
+<p><strong>Bias.</strong> An estimator <span class="math inline">\(\widehat\theta\)</span> is unbiased for an estimand <span class="math inline">\(\theta\)</span> when</p>
+<p><span class="math display">\[
+E[\widehat\theta]=\theta.
+\]</span></p>
+<p>The expectation here averages the estimator over repeated samples of the random variables. An unbiased estimator gets the right answer on average, even though it will not get exactly the right answer in every sample. Its bias is</p>
+<p><span class="math display">\[
+\operatorname{Bias}(\widehat\theta)
+=E[\widehat\theta]-\theta.
+\]</span></p>
+<p>Bias will be especially important for causal inference. In an observational study, an association between treatment and outcome can be a biased estimator of a causal effect. Collecting more observations makes that association more precisely estimated, but it does not by itself turn the association into the causal effect. A very precise answer to the wrong question is still the wrong answer.</p>
+<p><strong>Variability.</strong> Two unbiased estimators can differ in how much they vary from sample to sample. We prefer an estimator with less variability because it will usually land closer to the estimand. The variance <span class="math inline">\(\operatorname{Var}(\widehat\theta)\)</span> describes this sampling variability. For the sample mean, the variance <span class="math inline">\(\operatorname{Var}(Y)/n\)</span> shows why larger samples give us more precise estimates.</p>
+<p><strong>Mean squared error.</strong> Bias and variability can be considered together through mean squared error.</p>
+<p><span class="math display">\[
+E[(\widehat\theta-\theta)^2]
+=\operatorname{Var}(\widehat\theta)
++\operatorname{Bias}(\widehat\theta)^2.
+\]</span></p>
+<p>An estimator can sometimes accept a small amount of bias in exchange for a large reduction in variability. Mean squared error describes the combined result.</p>
+<p><strong>Consistency.</strong> An estimator is consistent when it gets closer to the estimand as the sample size grows. More precisely, <span class="math inline">\(\widehat\theta_n\)</span> is consistent for <span class="math inline">\(\theta\)</span> when</p>
+<p><span class="math display">\[
+\widehat\theta_n\longrightarrow\theta
+\]</span></p>
+<p>in probability as <span class="math inline">\(n\)</span> grows. Consistency is a large-sample property. An estimator may be biased in a finite sample and still be consistent if that bias disappears as the sample grows.</p>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
-<div id="ref-connors1996" class="csl-entry" role="listitem">
-Connors, Jr., Alfred F., Theodore Speroff, Neal V. Dawson, Charles Thomas, Jr. Harrell Frank E., Douglas Wagner, Norman Desbiens, et al. 1996. <span>“The Effectiveness of Right Heart Catheterization in the Initial Care of Critically Ill Patients.”</span> <em>JAMA</em> 276 (11): 889–97. <a href="https://doi.org/10.1001/jama.1996.03540110043030">https://doi.org/10.1001/jama.1996.03540110043030</a>.
-</div>
-</div>
 </section>
 
 </main> <!-- /main -->

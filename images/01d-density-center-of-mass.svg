@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="480" viewBox="0 0 1000 480" role="img" aria-labelledby="title desc">
+  <title id="title">The expected value as the horizontal center of mass under a density</title>
+  <desc id="desc">Two density curves are shown as shaded areas. A flat rectangular density balances at its midpoint. A decreasing right-skewed density balances to the right of its highest point.</desc>
+  <defs>
+    <linearGradient id="flat-fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#74c0fc" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#d0ebff" stop-opacity="0.65"/>
+    </linearGradient>
+    <linearGradient id="skew-fill" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffb36b" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#ffe0b2" stop-opacity="0.55"/>
+    </linearGradient>
+    <style>
+      .heading { font: 700 24px system-ui, sans-serif; fill: #202124; }
+      .label { font: 18px system-ui, sans-serif; fill: #202124; }
+      .small { font: 16px system-ui, sans-serif; fill: #4b5563; }
+      .axis { stroke: #202124; stroke-width: 2.5; }
+      .curve-flat { stroke: #2878b5; stroke-width: 4; fill: none; }
+      .curve-skew { stroke: #c96328; stroke-width: 4; fill: none; }
+      .balance { fill: #7b4ab5; stroke: #4d287d; stroke-width: 2; }
+      .center { stroke: #7b4ab5; stroke-width: 3; stroke-dasharray: 7 6; }
+    </style>
+  </defs>
+
+  <text x="250" y="38" text-anchor="middle" class="heading">A flat density</text>
+  <line x1="65" y1="310" x2="450" y2="310" class="axis"/>
+  <line x1="95" y1="330" x2="95" y2="75" class="axis"/>
+  <path d="M125 310 L125 135 L395 135 L395 310 Z" fill="url(#flat-fill)"/>
+  <path d="M125 310 L125 135 L395 135 L395 310" class="curve-flat"/>
+  <line x1="260" y1="110" x2="260" y2="382" class="center"/>
+  <path d="M260 310 L226 390 L294 390 Z" class="balance"/>
+  <text x="260" y="424" text-anchor="middle" class="label">expected value</text>
+  <text x="260" y="451" text-anchor="middle" class="small">the midpoint balances the area</text>
+  <text x="56" y="92" text-anchor="middle" class="small" transform="rotate(-90 56 92)">density</text>
+
+  <text x="750" y="38" text-anchor="middle" class="heading">A decreasing density</text>
+  <line x1="555" y1="310" x2="955" y2="310" class="axis"/>
+  <line x1="595" y1="330" x2="595" y2="75" class="axis"/>
+  <path d="M595 310 L595 92 C625 135 660 182 700 220 C755 267 830 297 935 306 L935 310 Z" fill="url(#skew-fill)"/>
+  <path d="M595 92 C625 135 660 182 700 220 C755 267 830 297 935 306" class="curve-skew"/>
+  <line x1="692" y1="110" x2="692" y2="382" class="center"/>
+  <path d="M692 310 L658 390 L726 390 Z" class="balance"/>
+  <text x="692" y="424" text-anchor="middle" class="label">expected value</text>
+  <text x="760" y="451" text-anchor="middle" class="small">the tail pulls the balance point to the right</text>
+  <text x="546" y="92" text-anchor="middle" class="small" transform="rotate(-90 546 92)">density</text>
+</svg>

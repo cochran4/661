@@ -11,3 +11,7 @@ filters:
 ## Clinical trials as our exemplar {.unnumbered}
 
 {{< include _exercises/02-clinical-trials.qmd >}}
+
+## Probability review {.unnumbered}
+
+{{< include _exercises/03-probability-review.qmd >}}

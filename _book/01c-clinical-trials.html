@@ -174,6 +174,17 @@ window.Quarto = {
     </ul>
   </li>
   <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-construction" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Construction</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-construction">    
+        <li>
+    <a class="dropdown-item" href="./02a-structural-equation-models.html">
+ <span class="dropdown-text">Structural equation models tell a story</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
     <a class="nav-link dropdown-toggle" href="#" id="nav-menu-back-matter" role="link" data-bs-toggle="dropdown" aria-expanded="false">
  <span class="menu-text">Back matter</span>
     </a>
@@ -258,8 +269,20 @@ window.Quarto = {
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-      <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text">Construction</span></span>
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Construction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02a-structural-equation-models.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Structural equation models tell a story</span></a>
+  </div>
+</li>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
@@ -353,7 +376,7 @@ Specify, as precisely as possible, who was studied, the treatment, the comparato
 </details>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/prototrial-whi-paperback.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<p><img src="images/01c-prototrial-whi-paperback.png" class="img-fluid figure-img" style="width:80.0%"></p>
 <figcaption>Six women from three age groups assigned to hormone therapy or placebo, with coronary heart disease recorded afterward.</figcaption>
 </figure>
 </div>
@@ -517,7 +540,7 @@ E[Y\mid A=1]-E[Y\mid A=0].
 <p>This thought experiment can feel abstract, perhaps more like science fiction than science. Imagine a multiverse with two parallel universes containing the same woman. In one universe, we give her hormone therapy (<span class="math inline">\(a=1\)</span>), shown as the red pill. In the other, we give her placebo (<span class="math inline">\(a=0\)</span>), shown as the blue pill. Only one universe is observed in the real world, but the thought experiment asks us to consider both and ask what her outcome would be in each one.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/potential-outcomes-whi-paperback-v3.png" class="img-fluid figure-img" style="width:82.0%"></p>
+<p><img src="images/01c-potential-outcomes-whi-paperback-v3.png" class="img-fluid figure-img" style="width:82.0%"></p>
 <figcaption>A common path splits into two parallel universes containing the same woman. In one universe, she is assigned estrogen plus progestin; in the other, she is assigned placebo. Her outcome in each universe is unknown.</figcaption>
 </figure>
 </div>
@@ -896,7 +919,7 @@ E[Y(1)]-E[Y(0)]
 <p>We say that a causal estimand is <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A causal estimand is identified when it can be written entirely in terms of observed variables and their probability model." tabindex="0">identified</span> when it can be written entirely in terms of observed variables and their probability model. Here, we have identified the average treatment effect by expressing the comparison between our two imagined universes as a comparison between the observed WHI treatment groups.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/causal-identification-path.svg" class="img-fluid figure-img" style="width:75.0%"></p>
+<p><img src="images/01c-causal-identification-path.svg" class="img-fluid figure-img" style="width:75.0%"></p>
 <figcaption>Identification expresses a causal estimand as a statistical estimand that can be learned from observed data.</figcaption>
 </figure>
 </div>
