@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Structural equation models tell a story – Causal inference (and other things)</title>
+<title>Exercises – Causal inference (and other things)</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,26 +26,7 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -55,7 +36,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./glossary.html" rel="next">
-<link href="./01e-exercises.html" rel="prev">
+<link href="./02b-structural-causal-models.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -65,7 +46,7 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-b6552f9b9f0ad2669b0838e76bd5447a.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-b11080be3932e93f2b6be06380d8ecd9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -172,7 +153,7 @@ window.Quarto = {
  <span class="dropdown-text">Probability gives us a formal language</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./01e-exercises.html">
+    <a class="dropdown-item" href="./01-exercises.html">
  <span class="dropdown-text">Exercises</span></a>
   </li>  
     </ul>
@@ -183,8 +164,16 @@ window.Quarto = {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-construction">    
         <li>
-    <a class="dropdown-item" href="./02a-structural-equation-models.html">
- <span class="dropdown-text">Structural equation models tell a story</span></a>
+    <a class="dropdown-item" href="./02a-assignments-and-generating-data.html">
+ <span class="dropdown-text">A list of assignments</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02b-structural-causal-models.html">
+ <span class="dropdown-text">Structural causal models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
   </li>  
     </ul>
   </li>
@@ -214,7 +203,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-structural-equation-models.html">Construction</a></li><li class="breadcrumb-item"><a href="./02a-structural-equation-models.html"><span class="chapter-title">Structural equation models tell a story</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments-and-generating-data.html">Construction</a></li><li class="breadcrumb-item"><a href="./02-exercises.html"><span class="chapter-title">Exercises</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -267,7 +256,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01e-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  <a href="./01-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
   </div>
 </li>
       </ul>
@@ -283,7 +272,17 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02a-structural-equation-models.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Structural equation models tell a story</span></a>
+  <a href="./02a-assignments-and-generating-data.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">A list of assignments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02b-structural-causal-models.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Structural causal models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-exercises.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Exercises</span></a>
   </div>
 </li>
       </ul>
@@ -338,9 +337,9 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-structural-equation-models.html">Construction</a></li><li class="breadcrumb-item"><a href="./02a-structural-equation-models.html"><span class="chapter-title">Structural equation models tell a story</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments-and-generating-data.html">Construction</a></li><li class="breadcrumb-item"><a href="./02-exercises.html"><span class="chapter-title">Exercises</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Structural equation models tell a story</span></h1>
+<h1 class="title"><span class="chapter-title">Exercises</span></h1>
 </div>
 
 
@@ -357,207 +356,134 @@ window.Quarto = {
 </header>
 
 
-<p>We begin construction by telling a story about how the world generated our data. The story proceeds in an order. First, the world gives us one variable. Then it gives us another, possibly using variables it has already generated. A structural equation model makes this sequence explicit.</p>
-<section id="the-world-gives-us-x-then-y" class="level2">
-<h2 class="anchored" data-anchor-id="the-world-gives-us-x-then-y">The world gives us <span class="math inline">\(X\)</span>, then <span class="math inline">\(Y\)</span></h2>
-<p>Start with two random variables, <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. The world first generates <span class="math inline">\(X\)</span>. For now, we do not care how. Once <span class="math inline">\(X\)</span> has taken a value, the world generates <span class="math inline">\(Y\)</span> using a probability model that can depend on <span class="math inline">\(X\)</span>:</p>
-<p><span class="math display">\[
-X\sim P_X,
-\qquad
-Y\mid X=x\sim P_{Y\mid X=x}.
-\]</span></p>
-<p>This notation gives us a recipe for sampling one observation:</p>
-<ol type="1">
-<li>Draw a value <span class="math inline">\(x\)</span> from the distribution of <span class="math inline">\(X\)</span>.</li>
-<li>Having observed <span class="math inline">\(X=x\)</span>, draw a value <span class="math inline">\(y\)</span> from the conditional distribution of <span class="math inline">\(Y\)</span> given <span class="math inline">\(X=x\)</span>.</li>
-</ol>
-<p>The sequence matters. The rule that generates <span class="math inline">\(Y\)</span> is allowed to use <span class="math inline">\(X\)</span> because <span class="math inline">\(X\)</span> has already been generated. In this story, the rule that generates <span class="math inline">\(X\)</span> cannot use <span class="math inline">\(Y\)</span>, because <span class="math inline">\(Y\)</span> does not yet exist.</p>
-<p>Together, these two steps specify a joint probability model. We can express the same idea through the factorization</p>
-<p><span class="math display">\[
-P(X=x,Y=y)=P(X=x)P(Y=y\mid X=x)
-\]</span></p>
-<p>when <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are discrete. The sequential story and the joint distribution are two descriptions of the same probability model.</p>
-<details class="lesson-question">
-<summary>
-Suppose <span class="math inline">\(X\sim\operatorname{Bernoulli}(0.4)\)</span> and <span class="math inline">\(Y\mid X=x\sim\operatorname{Bernoulli}(0.1+0.6x)\)</span>. The world has generated <span class="math inline">\(X=1\)</span>. What happens next?
-</summary>
-<p>The world draws <span class="math inline">\(Y\)</span> from a <span class="math inline">\(\operatorname{Bernoulli}(0.7)\)</span> distribution, because</p>
-<p><span class="math display">\[
-0.1+0.6(1)=0.7.
-\]</span></p>
-<p>Thus, the next step produces <span class="math inline">\(Y=1\)</span> with probability <span class="math inline">\(0.7\)</span> and <span class="math inline">\(Y=0\)</span> with probability <span class="math inline">\(0.3\)</span>.</p>
-</details>
-<details class="lesson-question">
-<summary>
-Using the same model, what changes if the world instead generates <span class="math inline">\(X=0\)</span>?
-</summary>
-<p>The sequence of steps does not change, but the distribution used in the second step does. The world draws <span class="math inline">\(Y\)</span> from a <span class="math inline">\(\operatorname{Bernoulli}(0.1)\)</span> distribution.</p>
-</details>
-<details class="lesson-question">
-<summary>
-Suppose <span class="math inline">\(X\sim\operatorname{Normal}(0,1)\)</span> and <span class="math inline">\(Y\mid X=x\sim\operatorname{Normal}(2+x,4)\)</span>. If the first step produces <span class="math inline">\(X=-1\)</span>, what distribution is used in the second step?
-</summary>
-<p>The world draws <span class="math inline">\(Y\)</span> from</p>
-<p><span class="math display">\[
-\operatorname{Normal}(2+(-1),4)=\operatorname{Normal}(1,4).
-\]</span></p>
-</details>
-<p>These exercises may look simple, but the habit is essential: stop at a particular point in the data-generating sequence, identify what has already happened, and use that information to determine the next step.</p>
-</section>
-<section id="regression-models-describe-the-next-step" class="level2">
-<h2 class="anchored" data-anchor-id="regression-models-describe-the-next-step">Regression models describe the next step</h2>
-<div class="example-intro">
-<p><span class="example-label">Case study: Right heart catheterization</span></p>
-<p>Between 1989 and 1994, the Study to Understand Prognoses and Preferences for Outcomes and Risks of Treatments (SUPPORT) followed critically ill adults receiving care in five teaching hospitals in the United States. In 1996, Connors and colleagues used data from 5,735 of these patients to study right heart catheterization (RHC), a procedure used to measure cardiac function. They asked whether receiving an RHC during the first 24 hours of intensive care was associated with survival, length of stay, intensity of care, and cost <span class="citation" data-cites="connors1996">(<a href="references.html#ref-connors1996" role="doc-biblioref">Connors et al. 1996</a>)</span>.</p>
-<p>The data are available through the <a href="https://hbiostat.org/data/">Vanderbilt University Department of Biostatistics dataset repository</a>. In the row labeled <strong>Right heart catheterization dataset</strong>, the CSV file is linked under the <strong>ASCII</strong> column. The repository also provides a <a href="https://hbiostat.org/data/repo/rhc">description of the study and dataset</a>, a <a href="https://hbiostat.org/data/repo/rhc.csv">direct link to the CSV file</a>, and <a href="https://hbiostat.org/data/repo/crhc">documentation for the variables and their coding</a>. One row in the dataset represents one critically ill patient. We will introduce the variables as we need them.</p>
-<p><em>Data obtained from the Vanderbilt University Department of Biostatistics dataset repository.</em></p>
-</div>
-<p>A regression function describes the conditional mean used in the second step:</p>
-<p><span class="math display">\[
-\mu(x):=E[Y\mid X=x].
-\]</span></p>
-<p>If we also observe a variable <span class="math inline">\(A\)</span> before <span class="math inline">\(Y\)</span>, we might instead propose a function <span class="math inline">\(\mu(X,A;\theta)\)</span>, specified by unknown parameters <span class="math inline">\(\theta\)</span>, such that</p>
-<p><span class="math display">\[
-E[Y\mid X,A]=\mu(X,A;\theta).
-\]</span></p>
-<p>Data can be used to estimate <span class="math inline">\(\theta\)</span>, producing <span class="math inline">\(\widehat\theta\)</span> and an estimated conditional mean <span class="math inline">\(\mu(X,A;\widehat\theta)\)</span>.</p>
-<p>A conditional-mean model does not generally specify the entire conditional distribution of <span class="math inline">\(Y\)</span>. To sample <span class="math inline">\(Y\)</span>, the world also needs to know how values vary around that mean. For a binary <span class="math inline">\(Y\)</span>, however, its conditional mean is its conditional probability of equaling 1 and therefore determines its conditional Bernoulli distribution.</p>
-<p>The <em>art</em> of regression includes deciding:</p>
+<section id="a-list-of-assignments" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="a-list-of-assignments">A list of assignments</h2>
+<section id="telling-a-story" class="level3">
+<h3 class="anchored" data-anchor-id="telling-a-story">1. Telling a story</h3>
+<p>A study records three variables for each patient.</p>
 <ul>
-<li>what form <span class="math inline">\(\mu\)</span> should take; and</li>
-<li>how to estimate <span class="math inline">\(\theta\)</span>.</li>
+<li>Whether the patient has severe symptoms upon arriving at an emergency department</li>
+<li>Whether the patient receives diagnostic imaging</li>
+<li>Whether the patient is admitted to the hospital</li>
 </ul>
-<section id="linear-regression" class="level3">
-<h3 class="anchored" data-anchor-id="linear-regression">Linear regression</h3>
-<p>In linear regression, we choose a form for <span class="math inline">\(\mu(X,A;\theta)\)</span> that is linear in its parameters <span class="math inline">\(\theta\)</span>. For example, we might choose</p>
-<p><span class="math display">\[
-\mu(X,A;\theta):=\theta^{\mathsf T}
-\begin{bmatrix}
-1\\X\\A
-\end{bmatrix},
-\]</span></p>
-<p>or include an interaction:</p>
-<p><span class="math display">\[
-\mu(X,A;\theta):=\theta^{\mathsf T}
-\begin{bmatrix}
-1\\X\\A\\XA
-\end{bmatrix}.
-\]</span></p>
-<p>Ordinary least squares estimates <span class="math inline">\(\theta\)</span> by minimizing squared error.</p>
-</section>
-<section id="logistic-regression" class="level3">
-<h3 class="anchored" data-anchor-id="logistic-regression">Logistic regression</h3>
-<p>When <span class="math inline">\(Y\)</span> is binary, <span class="math inline">\(E[Y\mid X,A]\)</span> lies in <span class="math inline">\([0,1]\)</span>. Logistic regression respects this restriction by modeling the logit of the conditional mean as a linear function. The logit function is</p>
-<p><span class="math display">\[
-\operatorname{logit}(p):=\log\left(\frac{p}{1-p}\right),
-\]</span></p>
-<p>and its inverse is</p>
-<p><span class="math display">\[
-\operatorname{logit}^{-1}(u):=\frac{1}{1+\exp(-u)}.
-\]</span></p>
-<p>For example, we might specify</p>
-<p><span class="math display">\[
-E[Y\mid X,A]
-=\operatorname{logit}^{-1}
-\left(
-\theta^{\mathsf T}
-\begin{bmatrix}
-1\\X\\A
-\end{bmatrix}
-\right).
-\]</span></p>
-<p>Once <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span> have been generated, this model supplies the probability used to generate the binary variable <span class="math inline">\(Y\)</span>.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="RHC regression examples placeholder">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>RHC regression examples placeholder
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Using the RHC dataset:</p>
-<ul>
-<li>identify binary, categorical, count, and continuous random variables;</li>
-<li>discuss the possible values and plausible distributions of selected variables;</li>
-<li>use pairs of variables to illustrate joint probabilities;</li>
-<li>compute and interpret expectations, including the expectation of a binary random variable as a probability;</li>
-<li>build linear and logistic regression models;</li>
-<li>describe each regression model as a function;</li>
-<li>interpret conditional means and probabilities as best guesses based on patient information;</li>
-<li>interpret the fitted coefficients mathematically and scientifically;</li>
-<li>manipulate each fitted function to predict means or probabilities;</li>
-<li>use the fitted models to illustrate linearity, taking out what is known, the law of iterated expectation, and the law of total probability;</li>
-<li>contrast variables that might be independent with variables likely to share information, noting that RHC was not randomized; and</li>
-<li>generate predictions for everyone in the dataset.</li>
-</ul>
-</div>
+<p>Tell a story for how the world might generate these three variables. Write your story as a list. At each step, say which variable is generated and which other variables, if any, are used to generate it.</p>
+<div class="response-space">
+
 </div>
 </section>
-<section id="using-fitted-response-models" class="level3">
-<h3 class="anchored" data-anchor-id="using-fitted-response-models">Using fitted response models</h3>
-<p>Once we have <span class="math inline">\(\widehat\theta\)</span>, we can evaluate <span class="math inline">\(\mu(X,a;\widehat\theta)\)</span> for each person in the dataset and compute its empirical expectation:</p>
+<section id="generating-one-observation" class="level3">
+<h3 class="anchored" data-anchor-id="generating-one-observation">2. Generating one observation</h3>
+<p>Suppose the variables in the emergency-department study are generated according to the assignments</p>
 <p><span class="math display">\[
-E_N[\mu(X,a;\widehat\theta)].
+X\leftarrow\operatorname{Bernoulli}(0.30),
 \]</span></p>
-<div class="callout callout-style-default callout-note callout-titled" title="Concrete example placeholder">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Concrete example placeholder
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>Use the RHC dataset to calculate predictions for everyone, first using their observed values and then after setting a selected predictor to the same value for everyone. Average and interpret the predictions without giving them a causal interpretation.</p>
-</div>
+<p><span class="math display">\[
+A\leftarrow\operatorname{Bernoulli}(0.15+0.65X),
+\]</span></p>
+<p><span class="math display">\[
+Y\leftarrow\operatorname{Bernoulli}(0.05+0.35X+0.15A).
+\]</span></p>
+<p>Here, <span class="math inline">\(X\)</span> indicates severe symptoms, <span class="math inline">\(A\)</span> indicates diagnostic imaging, and <span class="math inline">\(Y\)</span> indicates hospital admission. Write code that carries out these assignments and generates one observation <span class="math inline">\((X,A,Y)\)</span>. You may use R or another programming language. Explain why the lines of code must be run in the order you chose.</p>
+<div class="response-space">
+
 </div>
 </section>
-</section>
-<section id="from-a-sequence-to-structural-assignments" class="level2">
-<h2 class="anchored" data-anchor-id="from-a-sequence-to-structural-assignments">From a sequence to structural assignments</h2>
-<p>We now make the mechanisms behind the sequence explicit. Introduce variables <span class="math inline">\(U_X\)</span> and <span class="math inline">\(U_Y\)</span> that contain whatever additional inputs the world uses when generating <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. We write</p>
-<p><span class="math display">\[
-X:=f_X(U_X),
-\qquad
-Y:=f_Y(X,U_Y).
-\]</span></p>
-<p>These are <strong>assignments</strong>, not ordinary algebraic equations. Read them from left to right:</p>
-<ol type="1">
-<li>Generate <span class="math inline">\(U_X\)</span>, then assign <span class="math inline">\(X\)</span> the value <span class="math inline">\(f_X(U_X)\)</span>.</li>
-<li>Generate <span class="math inline">\(U_Y\)</span>, then assign <span class="math inline">\(Y\)</span> the value <span class="math inline">\(f_Y(X,U_Y)\)</span> using the value of <span class="math inline">\(X\)</span> produced in the first step.</li>
+<section id="finding-topological-orders" class="level3">
+<h3 class="anchored" data-anchor-id="finding-topological-orders">3. Finding topological orders</h3>
+<p>For each collection of assignments, find a topological order if one exists and determine whether it is unique. The order in which the assignments are displayed is not intended to be an order for generating the variables.</p>
+<ol type="a">
+<li></li>
 </ol>
-<p>The second assignment records the direction in the story: <span class="math inline">\(X\)</span> can help determine <span class="math inline">\(Y\)</span>. It does not say that we should rearrange the expression and use <span class="math inline">\(Y\)</span> to generate <span class="math inline">\(X\)</span>.</p>
-<p>For the binary example above, let <span class="math inline">\(U_X\)</span> and <span class="math inline">\(U_Y\)</span> be independent uniform random variables on <span class="math inline">\((0,1)\)</span> and define</p>
 <p><span class="math display">\[
-X:=1_{\{U_X\leq0.4\}},
-\qquad
-Y:=1_{\{U_Y\leq0.1+0.6X\}}.
+Y\leftarrow\operatorname{Normal}(90+3X+2A,16),
 \]</span></p>
-<p>These assignments reproduce the earlier sequential model: <span class="math inline">\(X\)</span> equals 1 with probability <span class="math inline">\(0.4\)</span>, and after <span class="math inline">\(X\)</span> is generated, the probability that <span class="math inline">\(Y=1\)</span> is <span class="math inline">\(0.1+0.6X\)</span>.</p>
-<details class="lesson-question">
-<summary>
-Follow the assignments when <span class="math inline">\(U_X=0.3\)</span> and <span class="math inline">\(U_Y=0.5\)</span>. What values do <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> take?
-</summary>
-<p>Because <span class="math inline">\(0.3\leq0.4\)</span>, the first assignment gives <span class="math inline">\(X=1\)</span>. The second threshold is therefore <span class="math inline">\(0.1+0.6(1)=0.7\)</span>. Because <span class="math inline">\(0.5\leq0.7\)</span>, the second assignment gives <span class="math inline">\(Y=1\)</span>.</p>
-</details>
-<details class="lesson-question">
-<summary>
-Keep <span class="math inline">\(U_X=0.3\)</span> but change <span class="math inline">\(U_Y\)</span> to <span class="math inline">\(0.8\)</span>. What changes?
-</summary>
-<p>The first assignment still gives <span class="math inline">\(X=1\)</span>. The threshold for <span class="math inline">\(Y\)</span> remains <span class="math inline">\(0.7\)</span>, but now <span class="math inline">\(0.8&gt;0.7\)</span>, so the second assignment gives <span class="math inline">\(Y=0\)</span>.</p>
-</details>
-<p>This simple model establishes the basic skill we will use throughout Construction: read a data-generating story in sequence and determine what each assignment produces from the information available at that point.</p>
-<p>In the next section, we will specify this construction more generally to obtain a nonparametric structural equation model (NPSEM). We will then use the structure of those assignments to draw causal graphs.</p>
+<p><span class="math display">\[
+W\leftarrow\operatorname{Poisson}(3),
+\]</span></p>
+<p><span class="math display">\[
+A\leftarrow\operatorname{Binomial}\{4,\operatorname{expit}(-1+0.2X+0.3W)\},
+\]</span></p>
+<p><span class="math display">\[
+X\leftarrow\operatorname{Exponential}(1).
+\]</span></p>
+<ol start="2" type="a">
+<li></li>
+</ol>
+<p><span class="math display">\[
+A\leftarrow\operatorname{Poisson}\{\exp(0.1X+0.2W)\},
+\]</span></p>
+<p><span class="math display">\[
+X\leftarrow\operatorname{Normal}(Y,1),
+\]</span></p>
+<p><span class="math display">\[
+W\leftarrow\operatorname{Bernoulli}(0.4),
+\]</span></p>
+<p><span class="math display">\[
+Y\leftarrow\operatorname{Normal}(5+A,4).
+\]</span></p>
+<ol start="3" type="a">
+<li></li>
+</ol>
+<p><span class="math display">\[
+W\leftarrow\operatorname{Normal}(2+X,1),
+\]</span></p>
+<p><span class="math display">\[
+Y\leftarrow\operatorname{Normal}(10+W+A,9),
+\]</span></p>
+<p><span class="math display">\[
+A\leftarrow\operatorname{Poisson}\{\exp(0.1W)\},
+\]</span></p>
+<p><span class="math display">\[
+X\leftarrow\operatorname{Bernoulli}(0.5).
+\]</span></p>
+<div class="response-space">
+
+</div>
+</section>
+<section id="decomposing-a-joint-probability" class="level3">
+<h3 class="anchored" data-anchor-id="decomposing-a-joint-probability">4. Decomposing a joint probability</h3>
+<p>Suppose <span class="math inline">\(X\)</span> indicates whether a patient has severe asthma at baseline, <span class="math inline">\(Z\)</span> indicates whether the patient’s insurance covers a controller medication, <span class="math inline">\(A\)</span> indicates whether the patient uses the controller medication, and <span class="math inline">\(Y\)</span> is the number of asthma exacerbations during the following year. Consider the assignments</p>
+<p><span class="math display">\[
+X\leftarrow\operatorname{Bernoulli}(0.5),
+\]</span></p>
+<p><span class="math display">\[
+Z\leftarrow\operatorname{Bernoulli}(0.4),
+\]</span></p>
+<p><span class="math display">\[
+A\leftarrow\operatorname{Bernoulli}(0.2+0.2X+0.2Z),
+\]</span></p>
+<p><span class="math display">\[
+Y\leftarrow\operatorname{Poisson}(2+X-A).
+\]</span></p>
+<ol type="a">
+<li>Use the assignments to find</li>
+</ol>
+<p><span class="math display">\[
+E[A\mid X,Z]
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+E[Y\mid X,A].
+\]</span></p>
+<ol start="2" type="a">
+<li>Use the assignments to decompose</li>
+</ol>
+<p><span class="math display">\[
+P(X=x,Z=z,A=a,Y=y).
+\]</span></p>
+<p>For each factor, explain how the corresponding assignment tells you which variables belong after the conditioning bar.</p>
+<ol start="3" type="a">
+<li>Use your decomposition to calculate</li>
+</ol>
+<p><span class="math display">\[
+P(X=1,Z=0,A=1,Y=2).
+\]</span></p>
+<div class="response-space">
+
+</div>
 
 
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
-<div id="ref-connors1996" class="csl-entry" role="listitem">
-Connors, Jr., Alfred F., Theodore Speroff, Neal V. Dawson, et al. 1996. <span>“The Effectiveness of Right Heart Catheterization in the Initial Care of Critically Ill Patients.”</span> <em>JAMA</em> 276 (11): 889–97. <a href="https://doi.org/10.1001/jama.1996.03540110043030">https://doi.org/10.1001/jama.1996.03540110043030</a>.
-</div>
-</div>
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -973,8 +899,8 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./01e-exercises.html" class="pagination-link" aria-label="Exercises">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Exercises</span></span>
+      <a href="./02b-structural-causal-models.html" class="pagination-link" aria-label="Structural causal models">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Structural causal models</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

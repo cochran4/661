@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Why probability is not enough – Causal inference (and other things)</title>
+<title>Structural causal models – Causal inference (and other things)</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -54,8 +54,8 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./01c-clinical-trials.html" rel="next">
-<link href="./01a-being-a-detective.html" rel="prev">
+<link href="./02-exercises.html" rel="next">
+<link href="./02a-assignments-and-generating-data.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -222,7 +222,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01a-being-a-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./01b-why-probability-is-not-enough.html"><span class="chapter-title">Why probability is not enough</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments-and-generating-data.html">Construction</a></li><li class="breadcrumb-item"><a href="./02b-structural-causal-models.html"><span class="chapter-title">Structural causal models</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -260,7 +260,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01b-why-probability-is-not-enough.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Why probability is not enough</span></a>
+  <a href="./01b-why-probability-is-not-enough.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Why probability is not enough</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -296,7 +296,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02b-structural-causal-models.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Structural causal models</span></a>
+  <a href="./02b-structural-causal-models.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Structural causal models</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -356,9 +356,9 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01a-being-a-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./01b-why-probability-is-not-enough.html"><span class="chapter-title">Why probability is not enough</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments-and-generating-data.html">Construction</a></li><li class="breadcrumb-item"><a href="./02b-structural-causal-models.html"><span class="chapter-title">Structural causal models</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Why probability is not enough</span></h1>
+<h1 class="title"><span class="chapter-title">Structural causal models</span></h1>
 </div>
 
 
@@ -375,167 +375,70 @@ window.Quarto = {
 </header>
 
 
-<p>Suppose we want to understand the relationship between coffee and anxiety. Focus on one person, and let <span class="math inline">\(X\)</span> represent the number of cups of coffee a person drinks each day. Let <span class="math inline">\(Y\)</span> be that person’s score on an anxiety scale, with higher values meaning more severe symptoms. We collect data on coffee consumption and anxiety from several people, and then fit a regression model:</p>
-<p><span class="math display">\[Y = \alpha + \beta X + \varepsilon.\]</span></p>
-<p>Here, <span class="math inline">\(\alpha\)</span> is the intercept, <span class="math inline">\(\beta\)</span> is the slope, and <span class="math inline">\(\varepsilon\)</span> is an error with mean zero within each level of <span class="math inline">\(X\)</span>.</p>
-<details class="lesson-question technical-proof">
-<summary>
-Optional technical note: Where are the person subscripts?
-</summary>
-<p>Suppose our sample contains <span class="math inline">\(n\)</span> people. For person <span class="math inline">\(j\)</span>, let <span class="math inline">\((X_j,Y_j)\)</span> denote the pair of random variables. Once that person is observed, the realized values are written in lowercase as <span class="math inline">\((x_j,y_j)\)</span>. Thus, the observed dataset is</p>
+<p>So far, we have specified everything. We gave each variable a name, stated exactly which distribution was assigned to it, and supplied every number needed to generate data. For example, we assigned <span class="math inline">\(X\)</span> a <span class="math inline">\(\operatorname{Bernoulli}(0.4)\)</span> random variable and assigned <span class="math inline">\(Y\)</span> a Bernoulli random variable with probability <span class="math inline">\(0.1+0.3X\)</span>.</p>
+<p>We usually do not know the world’s assignments this precisely. We may believe that <span class="math inline">\(X\)</span> is used to create <span class="math inline">\(Y\)</span> without knowing the exact rule the world uses. We need notation that retains what we are willing to say about the structure while leaving the unknown parts unspecified. We write</p>
 <p><span class="math display">\[
-(x_1,y_1),\ldots,(x_n,y_n).
+X\leftarrow f_X(U_X)
 \]</span></p>
-<p>Under the usual independent and identically distributed—or <strong>i.i.d.</strong>—sampling model, the random pairs</p>
+<p>and</p>
 <p><span class="math display">\[
-(X_1,Y_1),\ldots,(X_n,Y_n)
+Y\leftarrow f_Y(X,U_Y).
 \]</span></p>
-<p>are independent copies of the same pair of random variables <span class="math inline">\((X,Y)\)</span>.</p>
-<p>Because the same model applies to each person, we usually write <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> when discussing the generic probability model and reserve <span class="math inline">\(X_j\)</span> and <span class="math inline">\(Y_j\)</span> for occasions when a person-specific random variable matters. Lowercase <span class="math inline">\(x_j\)</span> and <span class="math inline">\(y_j\)</span> always refer to the values that were actually observed for person <span class="math inline">\(j\)</span>. This lets us drop unnecessary subscripts from the probability model without confusing random variables with their realizations.</p>
-<p>The simplification is not appropriate when observations do not follow a common distribution, such as when a single patient contributes multiple observations, patients clustered within hospitals, or people connected through households or social networks. In those settings, the indices and the dependence structure must be represented explicitly.</p>
-</details>
-<details class="lesson-question">
-<summary>
-How should we interpret <span class="math inline">\(\beta\)</span>?
-</summary>
-<p>The coefficient <span class="math inline">\(\beta\)</span> is the expected difference in anxiety score associated with drinking one additional cup of coffee per day. If <span class="math inline">\(\beta=2\)</span>, then people who drink one additional cup of coffee per day have an expected anxiety score that is two points higher.</p>
-</details>
-<p>A regression model is useful. It summarizes the pattern in our data. It can help us predict anxiety scores for people who drink different amounts of coffee. But notice the care in the wording: an additional cup of coffee is <em>associated with</em> a <span class="math inline">\(\beta\)</span> difference in average anxiety. We did not say that drinking another cup <em>causes</em> anxiety to increase by two points.</p>
-<p>Why are we so cautious? For one thing, we could fit another regression with the variables reversed:</p>
-<p><span class="math display">\[X = \alpha' + \beta'Y + \varepsilon'.\]</span></p>
-<p>Now anxiety is being used to predict coffee consumption. Here, <span class="math inline">\(\alpha'\)</span> is the intercept, <span class="math inline">\(\beta'\)</span> is the slope, and <span class="math inline">\(\varepsilon'\)</span> has mean zero within each level of <span class="math inline">\(Y\)</span>.</p>
-<details class="lesson-question">
-<summary>
-Suppose <span class="math inline">\(\alpha'=1\)</span> and <span class="math inline">\(\beta'=0.25\)</span>. How should we interpret <span class="math inline">\(\beta'\)</span>?
-</summary>
-<p>The slope <span class="math inline">\(\beta'=0.25\)</span> says that a one-point higher anxiety score is associated with an expected difference of 0.25 additional cups of coffee per day. It does not say that increasing anxiety by one point would cause someone to drink 0.25 additional cups.</p>
-</details>
-<p>Both regressions can describe the association. They may also invite opposite causal stories. When coffee is regressed onto anxiety, you can imagine coffee increasing a person’s anxiety. When anxiety is regressed onto coffee, you imagine people drinking more coffee because anxiety interferes with sleep and leaves them tired the next day. The data do not label one variable as the cause and the other as the effect.</p>
-<p>This is not merely a quirk of linear regression. The following general fact states the idea more precisely.</p>
-<div class="proposition-box">
-<p><strong>A general fact.</strong> For any joint distribution of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, we can draw a sample from <span class="math inline">\((X,Y)\)</span> in two ways:</p>
-<ol type="1">
-<li>Draw <span class="math inline">\(X\)</span> first. Independently draw a uniform random number <span class="math inline">\(U\)</span>, and then use <span class="math inline">\(X\)</span> and <span class="math inline">\(U\)</span> to specify <span class="math inline">\(Y\)</span>.</li>
-<li>Draw <span class="math inline">\(Y\)</span> first. Independently draw a uniform random number <span class="math inline">\(U\)</span>, and then use <span class="math inline">\(Y\)</span> and <span class="math inline">\(U\)</span> to specify <span class="math inline">\(X\)</span>.</li>
-</ol>
+<p>The first assignment says that some rule <span class="math inline">\(f_X\)</span> uses an additional input <span class="math inline">\(U_X\)</span> to generate <span class="math inline">\(X\)</span>. The second says that some rule <span class="math inline">\(f_Y\)</span> uses <span class="math inline">\(X\)</span> and an additional input <span class="math inline">\(U_Y\)</span> to generate <span class="math inline">\(Y\)</span>. We have left the rules unspecified, but we have not said nothing. In particular, we have said that <span class="math inline">\(X\)</span> is an input to the assignment for <span class="math inline">\(Y\)</span>.</p>
+<p>The same idea extends to any number of variables.</p>
+<div class="definition-box">
+<p><strong>Structural causal model.</strong> Suppose the variables we want to describe are collected in <span class="math inline">\(\mathbf V=(V_1,\ldots,V_K)\)</span>. A structural causal model consists of the variables <span class="math inline">\(\mathbf V\)</span>, additional inputs <span class="math inline">\(\mathbf U=(U_1,\ldots,U_K)\)</span>, one structural assignment for each variable,</p>
+<p><span class="math display">\[
+V_j\leftarrow f_j(\operatorname{pa}_j,U_j),
+\qquad j=1,\ldots,K.
+\]</span></p>
+<p>and a joint probability distribution for the additional inputs <span class="math inline">\(\mathbf U\)</span>.</p>
+<p>The variables in <span class="math inline">\(\operatorname{pa}_j\)</span> are the other variables used as inputs to the assignment for <span class="math inline">\(V_j\)</span>. We call them the <strong>parents</strong> of <span class="math inline">\(V_j\)</span>. The input <span class="math inline">\(U_j\)</span> contains whatever else the world uses to generate <span class="math inline">\(V_j\)</span>. The function <span class="math inline">\(f_j\)</span> tells us how these inputs are combined.</p>
+<p>We restrict attention to structural causal models whose assignments admit a topological order.</p>
 </div>
-<p>From the data on <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> alone, we cannot tell whether the data came from the first sampling strategy or the second. We therefore need information beyond the data to determine which causal direction, if either, is correct.</p>
-<details class="lesson-question technical-proof">
-<summary>
-Optional: Why does the uniform random number work?
-</summary>
-<p>For real-valued <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, we can choose a rule that assigns a conditional distribution of <span class="math inline">\(Y\)</span> to each value of <span class="math inline">\(X\)</span>. After drawing <span class="math inline">\(X\)</span>, use the conditional distribution assigned to the value that was drawn. A uniform random number <span class="math inline">\(U\)</span> chooses a percentile from that distribution. For example, <span class="math inline">\(U=0.25\)</span> selects its 25th percentile and <span class="math inline">\(U=0.90\)</span> selects its 90th percentile.</p>
-<p>Repeating this procedure, first drawing <span class="math inline">\(X\)</span>, then drawing an independent <span class="math inline">\(U\)</span>, and finally selecting the corresponding conditional percentile of <span class="math inline">\(Y\)</span>, reproduces the joint distribution of <span class="math inline">\((X,Y)\)</span>.</p>
-<p>We can reverse the procedure: draw <span class="math inline">\(Y\)</span>, independently draw <span class="math inline">\(U\)</span>, and use it to select a percentile from the distribution of <span class="math inline">\(X\)</span> conditional on that value of <span class="math inline">\(Y\)</span>. This reproduces the same joint distribution in the opposite order.</p>
-</details>
-<p>The picture below summarizes the problem as a snake eating its tail. A probability model can describe <span class="math inline">\(Y\)</span> using <span class="math inline">\(X\)</span>, and it can describe <span class="math inline">\(X\)</span> using <span class="math inline">\(Y\)</span>. If we interpreted both descriptions causally, we would conclude that <span class="math inline">\(X\)</span> causes <span class="math inline">\(Y\)</span> and that <span class="math inline">\(Y\)</span> causes <span class="math inline">\(X\)</span>. The circular picture is not meant to propose a plausible causal mechanism. It shows why the probability model alone cannot tell us which causal arrow, if either, is appropriate.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/01b-probability-mechanisms.svg" class="img-fluid figure-img" style="width:70.0%"></p>
-<figcaption>The “snake eating its tail”: using both statistical directions as causal explanations creates a circular story in which X causes Y and Y causes X.</figcaption>
-</figure>
-</div>
-<div class="key-takeaway">
-<p><span class="takeaway-label">Main point</span></p>
-<p><strong>The joint distribution of the observed variables does not, by itself, determine how those variables are causally related.</strong></p>
-</div>
-<p>At first, this ambiguity may not seem especially troubling. Perhaps the data cannot tell us whether <span class="math inline">\(X\)</span> causes <span class="math inline">\(Y\)</span> or <span class="math inline">\(Y\)</span> causes <span class="math inline">\(X\)</span>, but we might still conclude that one must cause the other.</p>
-<p>We have already seen why that conclusion does not follow. In the smoking and lung cancer example, a confounder could, in principle, explain the entire association. The association alone could not distinguish among three possibilities: smoking causes lung cancer, lung cancer causes smoking, or a third variable causes both.</p>
-<p>The following case studies show how consequential this problem can be. In the first, researchers identified a confounder that provided a compelling explanation for an apparent association. In the second, accounting for a confounder did more than explain the association: it reversed its direction.</p>
-<div class="section-break" aria-hidden="true">
-<span class="acorn-mark"></span>
-</div>
-<section id="night-lights-and-childhood-myopia" class="level2">
-<h2 class="anchored" data-anchor-id="night-lights-and-childhood-myopia">Night lights and childhood myopia</h2>
+<p>For example, the fully specified two-variable clinic model can be recovered by taking independent random variables <span class="math inline">\(U_X,U_Y\sim\operatorname{Uniform}(0,1)\)</span> and specifying the functions as</p>
+<p><span class="math display">\[
+X\leftarrow1_{\{U_X\leq0.4\}},
+\]</span></p>
+<p><span class="math display">\[
+Y\leftarrow1_{\{U_Y\leq0.1+0.3X\}}.
+\]</span></p>
+<p>The first assignment produces the required <span class="math inline">\(\operatorname{Bernoulli}(0.4)\)</span> variable. The second produces a Bernoulli variable whose probability is <span class="math inline">\(0.1+0.3X\)</span>.</p>
+<p>This example specifies the functions completely. We could instead restrict them to a particular family indexed by a limited collection of unknown parameters. That gives us a <strong>parametric structural causal model</strong>. A linear or logistic regression model can provide one such parametric assignment.</p>
+<p>With simulated data, we know the assignments because we chose them. With observed data, the problem runs in the other direction. We observe the data and try to propose a plausible story for how the variables were generated. The right heart catheterization study gives us a concrete setting in which to do this.</p>
 <div class="example-intro">
-<p><span class="example-label">Example 1</span></p>
-<p>In May 1999, <em>Nature</em> published a short report by Graham Quinn and colleagues on night-time lighting and childhood myopia <span class="citation" data-cites="quinn_myopia_1999">(<a href="references.html#ref-quinn_myopia_1999" role="doc-biblioref">Quinn et al. 1999</a>)</span>. The researchers asked the parents of children seen in a pediatric ophthalmology clinic about the lighting conditions in which their children had slept during their first two years of life. They reported a strong association: children exposed to more ambient light at night were more likely to develop myopia.</p>
-<p>The study included 479 children. The reported prevalence of myopia was lowest among children who slept in darkness, higher among children who slept with a night light, and highest among children who slept with room lighting. The pattern suggested that greater exposure to light at night was associated with a greater probability of myopia.</p>
+<p><span class="example-label">Case study: Right heart catheterization</span></p>
+<p>Between 1989 and 1994, the Study to Understand Prognoses and Preferences for Outcomes and Risks of Treatments followed critically ill adults receiving care in five teaching hospitals in the United States. In 1996, Connors and colleagues used data from 5,735 of these patients to study right heart catheterization, a procedure used to measure cardiac function <span class="citation" data-cites="connors1996">(<a href="references.html#ref-connors1996" role="doc-biblioref">Connors et al. 1996</a>)</span>.</p>
+<p>The data are available through the <a href="https://hbiostat.org/data/">Vanderbilt University Department of Biostatistics dataset repository</a>. The repository provides a <a href="https://hbiostat.org/data/repo/rhc">description of the study and dataset</a>, a <a href="https://hbiostat.org/data/repo/rhc.csv">direct link to the CSV file</a>, and <a href="https://hbiostat.org/data/repo/crhc">documentation for the variables and their coding</a>. We will use these data to propose regression models for particular assignments and compare the patterns those models generate with the patterns in the observed data.</p>
 </div>
-<p>The result attracted attention because it suggested a simple environmental cause of myopia. Let <span class="math inline">\(X\)</span> indicate the nighttime lighting condition and let <span class="math inline">\(Y\)</span> indicate whether the child develops myopia. It is easy to tell a causal story in which exposure to light at night affects the development of the eye.</p>
-<details class="lesson-question">
-<summary>
-What do you think might confound the relationship between night-light use and childhood myopia? Why?
-</summary>
-<p>Parental myopia could confound the relationship. Parents with myopia may be more likely to use a night-light in their child’s room, and their children may inherit a greater risk of developing myopia. Parental myopia could therefore help explain both the exposure and the outcome.</p>
-<p>In March 2000, however, <em>Nature</em> published a response from Jane Gwiazda and colleagues <span class="citation" data-cites="gwiazda_myopia_2000">(<a href="references.html#ref-gwiazda_myopia_2000" role="doc-biblioref">Gwiazda et al. 2000</a>)</span>. They were unable to confirm the original association. They also found that myopic parents were more likely to use night-time lighting for their children, providing evidence for the confounding explanation above.</p>
-</details>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/01b-nightlight-common-cause.svg" class="img-fluid figure-img" style="width:60.0%"></p>
-<figcaption>Parental myopia as a common cause of night-light use and childhood myopia.</figcaption>
-</figure>
+<p>Or we can make the larger leap above. We can assert that the functions exist and state which inputs they use without choosing a particular functional form. This gives us a <strong>nonparametric structural causal model</strong>. Nonparametric does not mean assumption-free. The model still says which variables are inputs to each assignment, that the assignments have a topological order, and how the additional inputs are related. It leaves the particular forms of the functions unrestricted.</p>
+<p>When the additional inputs <span class="math inline">\(U_1,\ldots,U_K\)</span> are mutually independent, the model is called a <strong>nonparametric structural equation model with independent errors</strong>, or NPSEM-IE. This is the general structural causal model we will use to construct graphs and potential outcomes in the sections that follow.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note on our starting point">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<p>Parental myopia could be a common cause of the exposure and outcome. As we saw in Data Detective, this is what we call a confounder. Confounding can create an association even when the exposure does not cause the outcome.</p>
-<p>Sometimes a common cause does something even more surprising: it can reverse the apparent direction of an association.</p>
-</section>
-<section id="kidney-stone-treatments" class="level2">
-<h2 class="anchored" data-anchor-id="kidney-stone-treatments">Kidney-stone treatments</h2>
-<div class="example-intro">
-<p><span class="example-label">Example 2</span></p>
-<p>Our second case study begins in a London hospital during a period when the treatment of kidney stones was changing. From 1972 through 1980, patients in the study were treated with open surgery. From 1980 through 1985, physicians increasingly used a less invasive procedure called percutaneous nephrolithotomy. We will call it the <strong>percutaneous procedure</strong>. In 1986, C. R. Charig and colleagues published a historical comparison of these and other kidney-stone treatments <span class="citation" data-cites="charig_renal_1986">(<a href="references.html#ref-charig_renal_1986" role="doc-biblioref">Charig et al. 1986</a>)</span>.</p>
-<p>In the overall comparison, the percutaneous procedure had a higher observed success rate than open surgery.</p>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical note on our starting point
 </div>
-<p>Eight years later, Steven Julious and Mark Mullee revisited these data <span class="citation" data-cites="julious_confounding_1994">(<a href="references.html#ref-julious_confounding_1994" role="doc-biblioref">Julious and Mullee 1994</a>)</span>. They pointed out that kidney stones vary in size and that stone size was related both to treatment and to the chance of success. When they compared patients with similarly sized stones, the pattern reversed.</p>
-<p>Within both the small-stone and large-stone groups, open surgery had a slightly higher observed success rate. The direction of the association was therefore the opposite of the overall comparison.</p>
-<p>Open surgery was used much more often for difficult, large stones, while the percutaneous procedure was used much more often for easier, small stones. Combining the two stone sizes therefore compares treatment groups with very different mixtures of patients. Once we compare patients with similarly sized stones, open surgery has the higher observed success rate in both groups.</p>
-<details class="lesson-question">
-<summary>
-Based on these results, which treatment would you recommend?
-</summary>
-<p>If successful stone removal were our only consideration, the comparisons within kidney-stone size would favor open surgery. These comparisons are more informative than the overall comparison because stone size influenced treatment choice and was also related to treatment success.</p>
-<p>A clinical recommendation would require more than these success rates. The percutaneous procedure is less invasive, and clinicians would also consider complications, recovery time, cost, other characteristics of the stone, and the patient’s preferences. Moreover, these data came from a historical comparison rather than a randomized trial.</p>
-</details>
-</section>
-<section id="simpsons-paradox" class="level2">
-<h2 class="anchored" data-anchor-id="simpsons-paradox">Simpson’s paradox</h2>
-<p>We have already seen that an association or regression can invite a causal interpretation that the data alone cannot support. It can mislead us in another way: even the <em>direction</em> of an association can depend on how we group the data. <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A reversal in which the direction of an association in the combined data is opposite to its direction within groups defined by a third variable." tabindex="0">Simpson’s paradox</span> occurs when the direction of an association in the combined data is opposite to its direction within groups defined by a third variable. In the kidney-stone example, the overall comparison favored the percutaneous procedure, while the comparisons within both stone sizes favored open surgery.</p>
-<div class="example-intro">
-<p><span class="example-label">Example 3: Graduate admissions at Berkeley</span></p>
-<p>A classic example comes from graduate admissions at the University of California, Berkeley. In 1973, women were less likely than men to be admitted when all departments were combined. Viewed one way, the association appeared to show an admissions process that favored men. Once department was taken into account, however, the association went slightly in the other direction: it appeared to favor women. Women were more likely to apply to departments with lower admission rates for everyone <span class="citation" data-cites="bickel_sex_bias_1975">(<a href="references.html#ref-bickel_sex_bias_1975" role="doc-biblioref">Bickel et al. 1975</a>)</span>.</p>
-<p>The third variable—department—therefore matters greatly. Yet this example also warns us not to treat stratification as an automatic causal solution. Department choice may itself reflect earlier social and educational forces, so the departmental comparisons answer a narrower question than the overall comparison.</p>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<p>Simpson’s paradox is not limited to binary exposures and outcomes. The same reversal can occur when <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are continuous. In the picture below, color indicates membership in a third group. Within every color, the points move downward as <span class="math inline">\(X\)</span> increases, showing a negative association between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>. If we ignore the colors and combine all the points, the dark arrow moves upward, showing a positive association.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/01b-simpsons-paradox.svg" class="img-fluid figure-img" style="width:70.0%"></p>
-<figcaption>Each colored group has a negative association between X and Y, while the combined data have a positive association.</figcaption>
-</figure>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>There are several formal languages for causality. They are often logically equivalent for the problems we consider, but they can differ in where they begin, which assumptions they make most visible, the notation they use, and the range of problems they were built to handle.</p>
+<p>The potential-outcomes framework begins with variables such as <span class="math inline">\(Y(a)\)</span>. Someone who has worked with potential outcomes for a long time may have no trouble stating assumptions directly in this language without first describing how the data came about or drawing a graph. If that works for you, by all means do it.</p>
+<p>I have gotten stuck doing that. On several occasions, I did not get to the “aha!” until I first described how I thought the world had created the data. Once I wrote down that process and drew the corresponding graph, I could see the assumptions I was making. I could then translate those assumptions into potential-outcome language.</p>
+<p>We begin with Pearl’s NPSEM-IE and the graph it generates. Richardson and Robins show how potential outcomes can be constructed from these assignments and represented in graphs. We are closest in spirit to this approach. We use the structural model and its graph as a transparent place to hold our assumptions, and we use potential outcomes as a flexible language for expressing our causal questions.</p>
 </div>
-</section>
-<section id="something-more-than-statistics" class="level2">
-<h2 class="anchored" data-anchor-id="something-more-than-statistics">Something more than statistics</h2>
-<p>Statistical inference uses observed data to learn about a probability model. From data, we can infer means and probabilities. We can also infer measures of association, such as risk differences, relative risks, odds ratios, and correlations. These quantities tell us how variables are distributed and how they are related.</p>
-<p>Causal inference aims at a different target. We want to answer causal questions, such as: How much might an exposure cause an outcome to occur or change? A probability model alone cannot answer this question. It can tell us how the exposure and outcome occur together, but it cannot tell us how the outcome would change if the exposure changed.</p>
-<p>To answer causal questions, we need to say more than what is contained in the joint distribution of the variables. One important part of this “more” is directionality. We specify which variables can cause which other variables. A <strong>causal model</strong> makes this directionality explicit by describing each variable in terms of its direct causes. Because it adds causal structure to a probability model, a causal model subsumes a probability model.</p>
-<p>The bottom of the figure represents statistical inference. We use observed data to learn about a probability model. The top represents causal inference. We use data to learn about a causal model. This lets us infer quantities such as how much an exposure causes an outcome to change.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/01b-causal-model-roadmap.svg" class="img-fluid figure-img" style="width:68.0%"></p>
-<figcaption>Statistical inference connects observational data to a probability model, while causal inference can also combine data with a causal model and information about interventions.</figcaption>
-</figure>
 </div>
-<p><strong>How do we add this directionality? What, more precisely, is a causal model?</strong></p>
+</div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
-<div id="ref-bickel_sex_bias_1975" class="csl-entry" role="listitem">
-Bickel, Peter J., Eugene A. Hammel, and J. W. O’Connell. 1975. <span>“Sex Bias in Graduate Admissions: Data from Berkeley.”</span> <em>Science</em> 187 (4175): 398–404. <a href="https://doi.org/10.1126/science.187.4175.398">https://doi.org/10.1126/science.187.4175.398</a>.
-</div>
-<div id="ref-charig_renal_1986" class="csl-entry" role="listitem">
-Charig, C. R., D. R. Webb, S. R. Payne, and J. E. Wickham. 1986. <span>“Comparison of Treatment of Renal Calculi by Open Surgery, Percutaneous Nephrolithotomy, and Extracorporeal Shockwave Lithotripsy.”</span> <em>British Medical Journal (Clinical Research Edition)</em> 292 (6524): 879–82. <a href="https://doi.org/10.1136/bmj.292.6524.879">https://doi.org/10.1136/bmj.292.6524.879</a>.
-</div>
-<div id="ref-gwiazda_myopia_2000" class="csl-entry" role="listitem">
-Gwiazda, Jane, Edward Ong, Richard Held, and Frank Thorn. 2000. <span>“Myopia and Ambient Night-Time Lighting.”</span> <em>Nature</em> 404 (6774): 144. <a href="https://doi.org/10.1038/35004663">https://doi.org/10.1038/35004663</a>.
-</div>
-<div id="ref-julious_confounding_1994" class="csl-entry" role="listitem">
-Julious, Steven A., and Mark A. Mullee. 1994. <span>“Confounding and Simpson’s Paradox.”</span> <em>BMJ</em> 309 (6967): 1480–81. <a href="https://doi.org/10.1136/bmj.309.6967.1480">https://doi.org/10.1136/bmj.309.6967.1480</a>.
-</div>
-<div id="ref-quinn_myopia_1999" class="csl-entry" role="listitem">
-Quinn, Graham E., Chai H. Shin, Maureen G. Maguire, and Richard A. Stone. 1999. <span>“Myopia and Ambient Lighting at Night.”</span> <em>Nature</em> 399 (6732): 113–14. <a href="https://doi.org/10.1038/20094">https://doi.org/10.1038/20094</a>.
+<div id="ref-connors1996" class="csl-entry" role="listitem">
+Connors, Jr., Alfred F., Theodore Speroff, Neal V. Dawson, et al. 1996. <span>“The Effectiveness of Right Heart Catheterization in the Initial Care of Critically Ill Patients.”</span> <em>JAMA</em> 276 (11): 889–97. <a href="https://doi.org/10.1001/jama.1996.03540110043030">https://doi.org/10.1001/jama.1996.03540110043030</a>.
 </div>
 </div>
-</section>
 
 </main> <!-- /main -->
 <script>
@@ -950,13 +853,13 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./01a-being-a-detective.html" class="pagination-link" aria-label="Being a detective with data">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Being a detective with data</span></span>
+      <a href="./02a-assignments-and-generating-data.html" class="pagination-link" aria-label="A list of assignments">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">A list of assignments</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./01c-clinical-trials.html" class="pagination-link" aria-label="Clinical trials as our exemplar">
-        <span class="nav-page-text"><span class="chapter-title">Clinical trials as our exemplar</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./02-exercises.html" class="pagination-link" aria-label="Exercises">
+        <span class="nav-page-text"><span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
