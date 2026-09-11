@@ -6,9 +6,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Amy Cochran">
 
-<title>Causal inference (and other things)</title>
+<title>Exercises – Causal inference (and other things)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,7 +29,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./00-syllabus.html" rel="next">
+<link href="./glossary.html" rel="next">
+<link href="./02b-structural-causal-models.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -69,6 +69,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -169,7 +198,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-title">index.html</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments-and-generating-data.html">Construction</a></li><li class="breadcrumb-item"><a href="./02-exercises.html"><span class="chapter-title">Exercises</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -183,7 +212,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">index.html</span></a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">index.html</span></a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -248,7 +277,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  <a href="./02-exercises.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Exercises</span></a>
   </div>
 </li>
       </ul>
@@ -303,21 +332,15 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments-and-generating-data.html">Construction</a></li><li class="breadcrumb-item"><a href="./02-exercises.html"><span class="chapter-title">Exercises</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Causal inference (and other things)</h1>
+<h1 class="title"><span class="chapter-title">Exercises</span></h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Author</div>
-    <div class="quarto-title-meta-contents">
-             <p>Amy Cochran </p>
-          </div>
-  </div>
     
   
     
@@ -328,27 +351,135 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><img src="images/index-squirrel.png" class="img-fluid" style="width:100.0%" alt="Abstract composition of a squirrel as a graph in forest greens"></p>
-<p>Course materials for <em>Causal Inference, Surveys, and Missing Data</em> (PHS/BMI 661). The course develops practical tools for reasoning about cause and effect from observational data and extends them to missing data and complex surveys.</p>
+<section id="a-list-of-assignments" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="a-list-of-assignments">A list of assignments</h2>
+<section id="telling-a-story" class="level3">
+<h3 class="anchored" data-anchor-id="telling-a-story">1. Telling a story</h3>
+<p>A study records three variables for each patient.</p>
 <ul>
-<li>See the <a href="./00-syllabus.html">syllabus</a> for policies and the course schedule.</li>
-<li>Find course notes in the menu bar.</li>
+<li>Whether the patient has severe symptoms upon arriving at an emergency department</li>
+<li>Whether the patient receives diagnostic imaging</li>
+<li>Whether the patient is admitted to the hospital</li>
 </ul>
-<div class="callout callout-style-default callout-note callout-titled" title="About these notes">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
+<p>Tell a story for how the world might generate these three variables. Write your story as a list. At each step, say which variable is generated and which other variables, if any, are used to generate it.</p>
+<div class="response-space">
+
 </div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>About these notes
+</section>
+<section id="generating-one-observation" class="level3">
+<h3 class="anchored" data-anchor-id="generating-one-observation">2. Generating one observation</h3>
+<p>Suppose the variables in the emergency-department study are generated according to the assignments</p>
+<p><span class="math display">\[
+X\leftarrow\operatorname{Bernoulli}(0.30),
+\]</span></p>
+<p><span class="math display">\[
+A\leftarrow\operatorname{Bernoulli}(0.15+0.65X),
+\]</span></p>
+<p><span class="math display">\[
+Y\leftarrow\operatorname{Bernoulli}(0.05+0.35X+0.15A).
+\]</span></p>
+<p>Here, <span class="math inline">\(X\)</span> indicates severe symptoms, <span class="math inline">\(A\)</span> indicates diagnostic imaging, and <span class="math inline">\(Y\)</span> indicates hospital admission. Write code that carries out these assignments and generates one observation <span class="math inline">\((X,A,Y)\)</span>. You may use R or another programming language. Explain why the lines of code must be run in the order you chose.</p>
+<div class="response-space">
+
 </div>
+</section>
+<section id="finding-topological-orders" class="level3">
+<h3 class="anchored" data-anchor-id="finding-topological-orders">3. Finding topological orders</h3>
+<p>For each collection of assignments, find a topological order if one exists and determine whether it is unique. The order in which the assignments are displayed is not intended to be an order for generating the variables.</p>
+<ol type="a">
+<li></li>
+</ol>
+<p><span class="math display">\[
+Y\leftarrow\operatorname{Normal}(90+3X+2A,16),
+\]</span></p>
+<p><span class="math display">\[
+W\leftarrow\operatorname{Poisson}(3),
+\]</span></p>
+<p><span class="math display">\[
+A\leftarrow\operatorname{Binomial}\{4,\operatorname{expit}(-1+0.2X+0.3W)\},
+\]</span></p>
+<p><span class="math display">\[
+X\leftarrow\operatorname{Exponential}(1).
+\]</span></p>
+<ol start="2" type="a">
+<li></li>
+</ol>
+<p><span class="math display">\[
+A\leftarrow\operatorname{Poisson}\{\exp(0.1X+0.2W)\},
+\]</span></p>
+<p><span class="math display">\[
+X\leftarrow\operatorname{Normal}(Y,1),
+\]</span></p>
+<p><span class="math display">\[
+W\leftarrow\operatorname{Bernoulli}(0.4),
+\]</span></p>
+<p><span class="math display">\[
+Y\leftarrow\operatorname{Normal}(5+A,4).
+\]</span></p>
+<ol start="3" type="a">
+<li></li>
+</ol>
+<p><span class="math display">\[
+W\leftarrow\operatorname{Normal}(2+X,1),
+\]</span></p>
+<p><span class="math display">\[
+Y\leftarrow\operatorname{Normal}(10+W+A,9),
+\]</span></p>
+<p><span class="math display">\[
+A\leftarrow\operatorname{Poisson}\{\exp(0.1W)\},
+\]</span></p>
+<p><span class="math display">\[
+X\leftarrow\operatorname{Bernoulli}(0.5).
+\]</span></p>
+<div class="response-space">
+
 </div>
-<div class="callout-body-container callout-body">
-<p>These notes began as materials for another course aimed at a mathematical audience and have since been adapted for an epidemiology audience. I used OpenAI Codex to assist with parts of that process, including translating and reorganizing explanations, checking claims against the literature, designing and editing figures, and editing prose and course materials. Because AI-assisted work can contain errors, I review and revise the material and take full responsibility for its content, including any mistakes that remain.</p>
-</div>
+</section>
+<section id="decomposing-a-joint-probability" class="level3">
+<h3 class="anchored" data-anchor-id="decomposing-a-joint-probability">4. Decomposing a joint probability</h3>
+<p>Suppose <span class="math inline">\(X\)</span> indicates whether a patient has severe asthma at baseline, <span class="math inline">\(Z\)</span> indicates whether the patient’s insurance covers a controller medication, <span class="math inline">\(A\)</span> indicates whether the patient uses the controller medication, and <span class="math inline">\(Y\)</span> is the number of asthma exacerbations during the following year. Consider the assignments</p>
+<p><span class="math display">\[
+X\leftarrow\operatorname{Bernoulli}(0.5),
+\]</span></p>
+<p><span class="math display">\[
+Z\leftarrow\operatorname{Bernoulli}(0.4),
+\]</span></p>
+<p><span class="math display">\[
+A\leftarrow\operatorname{Bernoulli}(0.2+0.2X+0.2Z),
+\]</span></p>
+<p><span class="math display">\[
+Y\leftarrow\operatorname{Poisson}(2+X-A).
+\]</span></p>
+<ol type="a">
+<li>Use the assignments to find</li>
+</ol>
+<p><span class="math display">\[
+E[A\mid X,Z]
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+E[Y\mid X,A].
+\]</span></p>
+<ol start="2" type="a">
+<li>Use the assignments to decompose</li>
+</ol>
+<p><span class="math display">\[
+P(X=x,Z=z,A=a,Y=y).
+\]</span></p>
+<p>For each factor, explain how the corresponding assignment tells you which variables belong after the conditioning bar.</p>
+<ol start="3" type="a">
+<li>Use your decomposition to calculate</li>
+</ol>
+<p><span class="math display">\[
+P(X=1,Z=0,A=1,Y=2).
+\]</span></p>
+<div class="response-space">
+
 </div>
 
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script>
@@ -763,10 +894,13 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./02b-structural-causal-models.html" class="pagination-link" aria-label="Structural causal models">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Structural causal models</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./00-syllabus.html" class="pagination-link" aria-label="Syllabus">
-        <span class="nav-page-text"><span class="chapter-title">Syllabus</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./glossary.html" class="pagination-link" aria-label="Glossary">
+        <span class="nav-page-text"><span class="chapter-title">Glossary</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

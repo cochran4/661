@@ -149,7 +149,7 @@ A clinical recommendation would require more than these success rates. The percu
 
 ## Simpson's paradox
 
-We have already seen that an association or regression can invite a causal interpretation that the data alone cannot support. It can mislead us in another way: even the *direction* of an association can depend on how we group the data. [Simpson's paradox]{.glossary-term data-bs-toggle="tooltip" data-bs-title="A reversal in which the direction of an association in the combined data is opposite to its direction within groups defined by a third variable." tabindex="0"} occurs when the direction of an association in the combined data is opposite to its direction within groups defined by a third variable. In the kidney-stone example, the overall comparison favored the percutaneous procedure, while the comparisons within both stone sizes favored open surgery.
+We have already seen that an association or regression can invite a causal interpretation that the data alone cannot support. It can mislead us in another way: even the *direction* of an association can depend on how we group the data. [Simpson's paradox]{.glossary-term data-glossary="Simpson's paradox"} occurs when the direction of an association in the combined data is opposite to its direction within groups defined by a third variable. In the kidney-stone example, the overall comparison favored the percutaneous procedure, while the comparisons within both stone sizes favored open surgery.
 
 ::: {.example-intro}
 <span class="example-label">Example 3: Graduate admissions at Berkeley</span>

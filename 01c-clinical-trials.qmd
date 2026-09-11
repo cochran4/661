@@ -88,15 +88,15 @@ Because $Y$ is either 0 or 1, the average of $Y$ is also the proportion of parti
 
 The average outcome in the estrogen-plus-progestin group estimates $E[Y\mid A=1]$. This notation tells us to restrict attention to people assigned estrogen plus progestin, and then take the mean of their outcomes. Similarly, the average outcome in the placebo group estimates $E[Y\mid A=0]$. Because $Y$ is either 0 or 1, each of these means is also the probability of a coronary heart disease event in that treatment group.
 
-For both treatment-group means to be defined, each treatment must have a positive probability of being assigned. If everyone received hormone therapy, there would be no placebo group, so $E[Y\mid A=0]$ would not be defined. The same problem would arise for $E[Y\mid A=1]$ if everyone received placebo. This property is called [positivity]{.glossary-term data-bs-toggle="tooltip" data-bs-title="Each treatment under study has a positive probability of being assigned." tabindex="0"}. In the WHI trial, randomization gave each participant a positive probability of assignment to hormone therapy and to placebo.
+For both treatment-group means to be defined, each treatment must have a positive probability of being assigned. If everyone received hormone therapy, there would be no placebo group, so $E[Y\mid A=0]$ would not be defined. The same problem would arise for $E[Y\mid A=1]$ if everyone received placebo. This property is called [positivity]{.glossary-term}. In the WHI trial, randomization gave each participant a positive probability of assignment to hormone therapy and to placebo.
 
-The difference between the two group averages estimates the [risk difference]{.glossary-term data-bs-toggle="tooltip" data-bs-title="The risk of an outcome under one exposure or treatment minus the risk under another." tabindex="0"}:
+The difference between the two group averages estimates the [risk difference]{.glossary-term}:
 
 $$
 E[Y\mid A=1]-E[Y\mid A=0].
 $$
 
-Our strategy is not so bad. Because we assume participants provide independent observations from the same probability model, the sample average in each treatment group is [unbiased]{.glossary-term data-bs-toggle="tooltip" data-bs-title="Under a probability model, an estimator is unbiased if its expected value equals the quantity it is intended to estimate." tabindex="0"} for the corresponding treatment-group mean.
+Our strategy is not so bad. Because we assume participants provide independent observations from the same probability model, the sample average in each treatment group is [unbiased]{.glossary-term data-glossary="Unbiased estimator"} for the corresponding treatment-group mean.
 
 This is statistical inference. We are using the observed data to learn about quantities in a probability model. We have not yet stated the causal quantity we want to learn. For that, we need a causal model.
 
@@ -122,7 +122,7 @@ Potential outcomes under treatment assignments that were not actually realized a
 
 ### Well-Definedness
 
-In mathematics, a definition is [well-defined]{.glossary-term data-bs-toggle="tooltip" data-bs-title="A definition is well-defined when each possible input determines one unambiguous object." tabindex="0"} when each possible input determines one unambiguous object. Here, the treatment value $a$ must describe a sufficiently precise change to our causal story that the potential outcome $Y(a)$ has one clear meaning.
+In mathematics, a definition is [well-defined]{.glossary-term data-glossary="Well-defined (mathematical sense)"} when each possible input determines one unambiguous object. Here, the treatment value $a$ must describe a sufficiently precise change to our causal story that the potential outcome $Y(a)$ has one clear meaning.
 
 ::: {.example-intro}
 <span class="example-label">Example 1: Which value of $x$?</span>
@@ -195,7 +195,7 @@ $$
 
 In the WHI example, knowing the individual treatment effect would tell us whether the patient should or should not take hormone replacement therapy. An individual treatment effect of one would tell me that hormone replacement therapy is **not** a good idea for the patient. They get coronary heart disease under therapy, but not if they take the placebo. An individual treatment effect of -1 tells me hormone replacement therapy is a good idea. They get coronary heart disease under placebo, but not if they take hormone replacement therapy.
 
-Calculating this effect requires both potential outcomes, but the other potential outcome is missing. This is called the [fundamental problem of causal inference]{.glossary-term data-bs-toggle="tooltip" data-bs-title="For each person, we observe the potential outcome under the treatment received but not the potential outcome under the other treatment." tabindex="0"}.
+Calculating this effect requires both potential outcomes, but the other potential outcome is missing. This is called the [fundamental problem of causal inference]{.glossary-term}.
 
 Return to the six participants shown above. Complete the table as much as possible. Use the observed treatment and outcome to fill in the potential outcome that we observe. Enter a question mark for the potential outcome that we cannot determine.
 
@@ -250,9 +250,9 @@ $$
 
 positive, negative, or zero?
 
-This difference is the [average treatment effect (ATE)]{.glossary-term data-bs-toggle="tooltip" data-bs-title="The difference between the average potential outcome under one treatment and the average potential outcome under another treatment." tabindex="0"}. For the WHI study, the ATE is the difference between the probability of coronary heart disease if everyone receives hormone therapy and the probability if everyone receives placebo. A positive value would mean that hormone therapy increases risk, a negative value would mean that it decreases risk, and a value of zero would mean that the risks are the same.
+This difference is the [average treatment effect (ATE)]{.glossary-term}. For the WHI study, the ATE is the difference between the probability of coronary heart disease if everyone receives hormone therapy and the probability if everyone receives placebo. A positive value would mean that hormone therapy increases risk, a negative value would mean that it decreases risk, and a value of zero would mean that the risks are the same.
 
-A [causal estimand]{.glossary-term data-bs-toggle="tooltip" data-bs-title="A probabilistic quantity involving potential outcomes that we want to estimate." tabindex="0"} is a probabilistic quantity involving potential outcomes that we want to estimate. The ATE is our causal estimand for the WHI study.
+A [causal estimand]{.glossary-term} is a probabilistic quantity involving potential outcomes that we want to estimate. The ATE is our causal estimand for the WHI study.
 
 We have now completed construction. We described how the data came about, used that story to define the potential outcomes, and stated the causal question as a comparison between them. The remaining problem is that the potential outcomes are partly missing.
 
@@ -309,7 +309,7 @@ E[Y(1)]-E[Y(0)]
 =E[Y\mid A=1]-E[Y\mid A=0].
 $$
 
-We say that a causal estimand is [identified]{.glossary-term data-bs-toggle="tooltip" data-bs-title="A causal estimand is identified when it can be written entirely in terms of observed variables and their probability model." tabindex="0"} when it can be written entirely in terms of observed variables and their probability model. Here, we have identified the average treatment effect by expressing the comparison between our two imagined universes as a comparison between the observed WHI treatment groups.
+We say that a causal estimand is [identified]{.glossary-term} when it can be written entirely in terms of observed variables and their probability model. Here, we have identified the average treatment effect by expressing the comparison between our two imagined universes as a comparison between the observed WHI treatment groups.
 
 ![Identification expresses a causal estimand as a statistical estimand that can be learned from observed data.](images/01c-causal-identification-path.svg){width="75%" fig-align="center"}
 

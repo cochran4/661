@@ -6,12 +6,12 @@ filters:
 
 ## Being a detective with data {.unnumbered}
 
-{{< include _exercises/01-being-a-detective.qmd >}}
+{{< include _exercises/01a-being-a-detective.qmd >}}
 
 ## Clinical trials as our exemplar {.unnumbered}
 
-{{< include _exercises/02-clinical-trials.qmd >}}
+{{< include _exercises/01c-clinical-trials.qmd >}}
 
 ## Probability review {.unnumbered}
 
-{{< include _exercises/03-probability-review.qmd >}}
+{{< include _exercises/01d-probability-review.qmd >}}

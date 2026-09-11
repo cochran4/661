@@ -322,6 +322,10 @@ details.lesson-question > :not(summary) {
   margin-right: 1rem;
 }
 
+details.lesson-question > table {
+  width: calc(100% - 2rem);
+}
+
 details.lesson-question > :last-child {
   margin-bottom: 1rem;
 }

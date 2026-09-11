@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Exercises – Causal inference (and other things)</title>
+<title>Structural causal models – Causal inference (and other things)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -49,8 +49,8 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./02a-structural-equation-models.html" rel="next">
-<link href="./01d-probability.html" rel="prev">
+<link href="./02-exercises.html" rel="next">
+<link href="./02a-assignments-and-generating-data.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -61,7 +61,7 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-045a0d54034e564cbfcd7805100d8819.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-3cdca04efcdf222d40c140bc6f47f337.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -168,7 +168,7 @@ window.Quarto = {
  <span class="dropdown-text">Probability gives us a formal language</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./01e-exercises.html">
+    <a class="dropdown-item" href="./01-exercises.html">
  <span class="dropdown-text">Exercises</span></a>
   </li>  
     </ul>
@@ -179,8 +179,16 @@ window.Quarto = {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-construction">    
         <li>
-    <a class="dropdown-item" href="./02a-structural-equation-models.html">
- <span class="dropdown-text">Structural equation models tell a story</span></a>
+    <a class="dropdown-item" href="./02a-assignments-and-generating-data.html">
+ <span class="dropdown-text">A list of assignments</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02b-structural-causal-models.html">
+ <span class="dropdown-text">Structural causal models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
   </li>  
     </ul>
   </li>
@@ -210,7 +218,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01a-being-a-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./01e-exercises.html"><span class="chapter-title">Exercises</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments-and-generating-data.html">Construction</a></li><li class="breadcrumb-item"><a href="./02b-structural-causal-models.html"><span class="chapter-title">Structural causal models</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -263,7 +271,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01e-exercises.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Exercises</span></a>
+  <a href="./01-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
   </div>
 </li>
       </ul>
@@ -279,7 +287,17 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02a-structural-equation-models.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Structural equation models tell a story</span></a>
+  <a href="./02a-assignments-and-generating-data.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">A list of assignments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02b-structural-causal-models.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Structural causal models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
   </div>
 </li>
       </ul>
@@ -334,9 +352,9 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01a-being-a-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./01e-exercises.html"><span class="chapter-title">Exercises</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments-and-generating-data.html">Construction</a></li><li class="breadcrumb-item"><a href="./02b-structural-causal-models.html"><span class="chapter-title">Structural causal models</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Exercises</span></h1>
+<h1 class="title"><span class="chapter-title">Structural causal models</span></h1>
 </div>
 
 
@@ -353,505 +371,70 @@ window.Quarto = {
 </header>
 
 
-<section id="being-a-detective-with-data" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="being-a-detective-with-data">Being a detective with data</h2>
-<section id="an-association-in-the-news" class="level3">
-<h3 class="anchored" data-anchor-id="an-association-in-the-news">1. An association in the news</h3>
-<p>Find a recent news story that describes an association from an observational study.</p>
-<ol type="a">
-<li>Identify the <strong>exposure or treatment</strong>.</li>
-<li>Identify the <strong>outcome</strong>.</li>
-<li>Does the headline or story suggest that the exposure causes the outcome? Identify the specific language that suggests (or does not suggest) a causal claim.</li>
-<li>Do you think the association could be causal? Explain why or why not. Consider the timing of the exposure and outcome, the size and pattern of the association, the plausibility of a causal mechanism, and reasonable alternative explanations.</li>
-<li>Identify at least one possible confounder, and explain how it might affect both the exposure and the outcome.</li>
-<li>Determine whether the possible confounder was measured in the study. You may need to consult the original study.</li>
-</ol>
-<div class="response-space">
-
-</div>
-</section>
-<section id="night-lights-and-childhood-myopia" class="level3">
-<h3 class="anchored" data-anchor-id="night-lights-and-childhood-myopia">2. Night lights and childhood myopia</h3>
-<p>Quinn and colleagues studied 479 children seen in a pediatric ophthalmology clinic. Parents reported the lighting conditions in which their children slept during the first two years of life. The table combines the myopia and high-myopia categories reported by the investigators <span class="citation" data-cites="quinn_myopia_1999">(<a href="references.html#ref-quinn_myopia_1999" role="doc-biblioref">Quinn et al. 1999</a>)</span>.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Nighttime lighting</th>
-<th style="text-align: right;">Myopia</th>
-<th style="text-align: right;">No myopia</th>
-<th style="text-align: right;">Total</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Darkness</td>
-<td style="text-align: right;">17</td>
-<td style="text-align: right;">155</td>
-<td style="text-align: right;">172</td>
-</tr>
-<tr class="even">
-<td>Night light</td>
-<td style="text-align: right;">79</td>
-<td style="text-align: right;">153</td>
-<td style="text-align: right;">232</td>
-</tr>
-<tr class="odd">
-<td>Room light</td>
-<td style="text-align: right;">41</td>
-<td style="text-align: right;">34</td>
-<td style="text-align: right;">75</td>
-</tr>
-<tr class="even">
-<td><strong>Total</strong></td>
-<td style="text-align: right;"><strong>137</strong></td>
-<td style="text-align: right;"><strong>342</strong></td>
-<td style="text-align: right;"><strong>479</strong></td>
-</tr>
-</tbody>
-</table>
-<p class="source-note">
-Source: Quinn et al.&nbsp;(1999). The table combines the myopia and high-myopia categories reported by the investigators <span class="citation" data-cites="quinn_myopia_1999">(<a href="references.html#ref-quinn_myopia_1999" role="doc-biblioref">Quinn et al. 1999</a>)</span>.
-</p>
-<ol type="a">
-<li>Compute the risk of myopia in each lighting group.</li>
-<li>Using darkness as the reference group, calculate:
-<ul>
-<li>the relative risk of myopia comparing a night light with darkness;</li>
-<li>the relative risk of myopia comparing room light with darkness.</li>
-</ul></li>
-<li>Identify a possible confounder and explain how it might affect both nighttime lighting and childhood myopia.</li>
-<li>Apply the Cornfield condition separately to both comparisons. If the entire association were due to your proposed confounder, at minimum, how much more prevalent would the confounder need to be:
-<ul>
-<li>among children who slept with a night light than among children who slept in darkness?</li>
-<li>among children who slept with room lighting than among children who slept in darkness?</li>
-</ul></li>
-</ol>
-<div class="response-space">
-
-</div>
-</section>
-<section id="kidney-stone-treatment-and-success" class="level3">
-<h3 class="anchored" data-anchor-id="kidney-stone-treatment-and-success">3. Kidney-stone treatment and success</h3>
-<p>Charig and colleagues compared open surgery with percutaneous nephrolithotomy for treating kidney stones <span class="citation" data-cites="charig_renal_1986">(<a href="references.html#ref-charig_renal_1986" role="doc-biblioref">Charig et al. 1986</a>)</span>. We will refer to the latter as the <strong>percutaneous procedure</strong>. Julious and Mullee later highlighted how the results differed by stone size <span class="citation" data-cites="julious_confounding_1994">(<a href="references.html#ref-julious_confounding_1994" role="doc-biblioref">Julious and Mullee 1994</a>)</span>.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Stone size</th>
-<th>Treatment</th>
-<th style="text-align: right;">Successful treatments</th>
-<th style="text-align: right;">Total patients</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Small</td>
-<td>Open surgery</td>
-<td style="text-align: right;">81</td>
-<td style="text-align: right;">87</td>
-</tr>
-<tr class="even">
-<td>Small</td>
-<td>Percutaneous procedure</td>
-<td style="text-align: right;">234</td>
-<td style="text-align: right;">270</td>
-</tr>
-<tr class="odd">
-<td>Large</td>
-<td>Open surgery</td>
-<td style="text-align: right;">192</td>
-<td style="text-align: right;">263</td>
-</tr>
-<tr class="even">
-<td>Large</td>
-<td>Percutaneous procedure</td>
-<td style="text-align: right;">55</td>
-<td style="text-align: right;">80</td>
-</tr>
-<tr class="odd">
-<td><strong>All stones</strong></td>
-<td><strong>Open surgery</strong></td>
-<td style="text-align: right;"><strong>273</strong></td>
-<td style="text-align: right;"><strong>350</strong></td>
-</tr>
-<tr class="even">
-<td><strong>All stones</strong></td>
-<td><strong>Percutaneous procedure</strong></td>
-<td style="text-align: right;"><strong>289</strong></td>
-<td style="text-align: right;"><strong>350</strong></td>
-</tr>
-</tbody>
-</table>
-<p class="source-note">
-Source: Charig et al.&nbsp;(1986); the comparison by stone size was subsequently highlighted by Julious and Mullee (1994) <span class="citation" data-cites="charig_renal_1986 julious_confounding_1994">(<a href="references.html#ref-charig_renal_1986" role="doc-biblioref">Charig et al. 1986</a>; <a href="references.html#ref-julious_confounding_1994" role="doc-biblioref">Julious and Mullee 1994</a>)</span>.
-</p>
-<ol type="a">
-<li>Compute the overall relative risk comparing open surgery with the percutaneous procedure.</li>
-<li>Compute the relative risk comparing open surgery with the percutaneous procedure separately for:
-<ul>
-<li>small stones;</li>
-<li>large stones.</li>
-</ul></li>
-<li>Compare the overall and stone-size-specific results. What changes, and why?</li>
-<li>Even within stone-size groups, other confounding may remain. Name one possible unmeasured confounder. Apply the Cornfield condition to determine how much more prevalent it would need to be among open-surgery patients to explain away the observed association entirely for:
-<ul>
-<li>small stones;</li>
-<li>large stones.</li>
-</ul></li>
-<li>Are those Cornfield thresholds alone enough to conclude that the within-size associations are causal? Why or why not?</li>
-</ol>
-<div class="response-space">
-
-</div>
-</section>
-</section>
-<section id="clinical-trials-as-our-exemplar" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="clinical-trials-as-our-exemplar">Clinical trials as our exemplar</h2>
-<section id="are-these-interventions-well-defined" class="level3">
-<h3 class="anchored" data-anchor-id="are-these-interventions-well-defined">4. Are these interventions well-defined?</h3>
-<p>For each proposed trial below:</p>
-<ol type="a">
-<li>Identify the intervention and comparator.</li>
-<li>Explain what, if anything, threatens well-definedness of the potential outcomes.</li>
-<li>Decide whether the concern involves relevant versions of treatment, interference, or neither.</li>
-<li>Describe what you would add to the trial protocol—or to the definition of the intervention—to address the concern.</li>
-</ol>
-<p>The scenarios are hypothetical and do not present data from actual trials.</p>
-<section id="scenario-1" class="level4">
-<h4 class="anchored" data-anchor-id="scenario-1">Scenario 1</h4>
-<p>Adults with hypertension are randomized either to receive a bottle of a new medication or to receive usual care. No further instructions are provided.</p>
-</section>
-<section id="scenario-2" class="level4">
-<h4 class="anchored" data-anchor-id="scenario-2">Scenario 2</h4>
-<p>Adults admitted to the hospital with a particular infection are randomized either to initiate an antibiotic sometime during the next seven days or not to initiate it during the next seven days.</p>
-</section>
-<section id="scenario-3" class="level4">
-<h4 class="anchored" data-anchor-id="scenario-3">Scenario 3</h4>
-<p>People who smoke are randomized either to receive smoking-cessation counseling or to receive no counseling. Counselors at each clinic decide what to discuss, how many sessions to offer, and how to respond when a participant misses a session or continues smoking.</p>
-</section>
-<section id="scenario-4" class="level4">
-<h4 class="anchored" data-anchor-id="scenario-4">Scenario 4</h4>
-<p>Adults are individually randomized to receive a flu vaccine or no flu vaccine. The outcome is whether each participant develops influenza during the following winter. Some participants live in the same household or belong to the same social networks.</p>
-</section>
-<section id="scenario-5" class="level4">
-<h4 class="anchored" data-anchor-id="scenario-5">Scenario 5</h4>
-<p>Participants are randomized to receive the same medication, dose, schedule, and instructions. One clinic dispenses the medication in a white bottle and another uses a blue bottle.</p>
-<div class="response-space">
-
-</div>
-</section>
-</section>
-<section id="complete-the-potential-outcomes-table" class="level3">
-<h3 class="anchored" data-anchor-id="complete-the-potential-outcomes-table">5. Complete the potential-outcomes table</h3>
-<p>A city randomly assigns people seeking employment to one of two programs. Let <span class="math inline">\(A=1\)</span> denote assignment to an intensive job-training program and <span class="math inline">\(A=0\)</span> denote assignment to standard job-search materials. Let <span class="math inline">\(Y=1\)</span> if the person is employed six months later and <span class="math inline">\(Y=0\)</span> otherwise.</p>
-<ol type="a">
-<li>Describe <span class="math inline">\(Y(1)\)</span> and <span class="math inline">\(Y(0)\)</span> in the context of this trial.</li>
-<li>What should we assume about the interventions so that <span class="math inline">\(Y(1)\)</span> and <span class="math inline">\(Y(0)\)</span> are well-defined? Explain what that assumption means in this trial.</li>
-<li>Random assignment should make <span class="math inline">\(A\)</span> independent of <span class="math inline">\((Y(0),Y(1))\)</span>. Explain what this means in this trial.</li>
-<li>Interpret <span class="math inline">\(E[Y(1)-Y(0)]\)</span> in context.</li>
-<li>Use consistency to complete as much of the table as possible. Enter a question mark for any potential outcome that cannot be determined from the observed data.</li>
-</ol>
-<table class="compact-data-table potential-outcomes-table">
-<caption>
-Observed assignments and employment outcomes for five participants.
-</caption>
-<thead>
-<tr>
-<th scope="col">
-Person
-</th>
-<th scope="col">
-<span class="math inline">\(A\)</span>
-</th>
-<th scope="col">
-<span class="math inline">\(Y\)</span>
-</th>
-<th scope="col">
-<span class="math inline">\(Y(0)\)</span>
-</th>
-<th scope="col">
-<span class="math inline">\(Y(1)\)</span>
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-</tr>
-<tr>
-<td>
-2
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-</tr>
-<tr>
-<td>
-3
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-</tr>
-<tr>
-<td>
-4
-</td>
-<td>
-0
-</td>
-<td>
-1
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-</tr>
-<tr>
-<td>
-5
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="probability-review" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="probability-review">Probability review</h2>
-<section id="best-guesses-in-the-emergency-department" class="level3">
-<h3 class="anchored" data-anchor-id="best-guesses-in-the-emergency-department">6. Best guesses in the emergency department</h3>
-<p>In a hypothetical emergency department, each arriving patient could need up to three laboratory tests. Each test is independently needed with probability <span class="math inline">\(1/2\)</span>. Let <span class="math inline">\(X\)</span> be the number of tests the patient needs. Thus,</p>
+<p>So far, we have specified everything. We gave each variable a name, stated exactly which distribution was assigned to it, and supplied every number needed to generate data. For example, we assigned <span class="math inline">\(X\)</span> a <span class="math inline">\(\operatorname{Bernoulli}(0.4)\)</span> random variable and assigned <span class="math inline">\(Y\)</span> a Bernoulli random variable with probability <span class="math inline">\(0.1+0.3X\)</span>.</p>
+<p>We usually do not know the world’s assignments this precisely. We may believe that <span class="math inline">\(X\)</span> is used to create <span class="math inline">\(Y\)</span> without knowing the exact rule the world uses. We need notation that retains what we are willing to say about the structure while leaving the unknown parts unspecified. We write</p>
 <p><span class="math display">\[
-X\sim\operatorname{Binomial}(3,1/2).
+X\leftarrow f_X(U_X)
 \]</span></p>
-<p>In plain language, there are three opportunities for a test to be needed, each with probability <span class="math inline">\(1/2\)</span>, and <span class="math inline">\(X\)</span> counts how many are needed.</p>
-<p>For each needed test, the physician flips a fair coin and orders the test only if the coin lands heads. Let <span class="math inline">\(Y\)</span> be the number of needed tests that are actually ordered.</p>
-<ol type="a">
-<li>What is your best guess for <span class="math inline">\(Y\)</span> when you learn that <span class="math inline">\(X=0\)</span>?</li>
-<li>What is your best guess when <span class="math inline">\(X=1\)</span>, <span class="math inline">\(X=2\)</span>, and <span class="math inline">\(X=3\)</span>?</li>
-<li>Write the full random variable <span class="math inline">\(E[Y\mid X]\)</span> as a function of <span class="math inline">\(X\)</span>.</li>
-</ol>
-<div class="response-space">
-
-</div>
-</section>
-<section id="recovering-the-overall-mean" class="level3">
-<h3 class="anchored" data-anchor-id="recovering-the-overall-mean">7. Recovering the overall mean</h3>
-<p>Let <span class="math inline">\(X\)</span> describe the urgency assigned to a patient arriving at a community clinic. The possible values are <span class="math inline">\(0\)</span>, <span class="math inline">\(1\)</span>, and <span class="math inline">\(2\)</span>, with probabilities</p>
+<p>and</p>
 <p><span class="math display">\[
-P(X=0)=0.5,\qquad P(X=1)=0.3,\qquad P(X=2)=0.2.
+Y\leftarrow f_Y(X,U_Y).
 \]</span></p>
-<p>Let <span class="math inline">\(Y\)</span> be the number of follow-up visits the patient makes during the next month. Suppose</p>
+<p>The first assignment says that some rule <span class="math inline">\(f_X\)</span> uses an additional input <span class="math inline">\(U_X\)</span> to generate <span class="math inline">\(X\)</span>. The second says that some rule <span class="math inline">\(f_Y\)</span> uses <span class="math inline">\(X\)</span> and an additional input <span class="math inline">\(U_Y\)</span> to generate <span class="math inline">\(Y\)</span>. We have left the rules unspecified, but we have not said nothing. In particular, we have said that <span class="math inline">\(X\)</span> is an input to the assignment for <span class="math inline">\(Y\)</span>.</p>
+<p>The same idea extends to any number of variables.</p>
+<div class="definition-box">
+<p><strong>Structural causal model.</strong> Suppose the variables we want to describe are collected in <span class="math inline">\(\mathbf V=(V_1,\ldots,V_K)\)</span>. A structural causal model consists of the variables <span class="math inline">\(\mathbf V\)</span>, additional inputs <span class="math inline">\(\mathbf U=(U_1,\ldots,U_K)\)</span>, one structural assignment for each variable,</p>
 <p><span class="math display">\[
-E[Y\mid X]=1+2X.
+V_j\leftarrow f_j(\operatorname{pa}_j,U_j),
+\qquad j=1,\ldots,K.
 \]</span></p>
-<ol type="a">
-<li>Find the best guess for <span class="math inline">\(Y\)</span> at each value of <span class="math inline">\(X\)</span>.</li>
-<li>Use the law of iterated expectation to find <span class="math inline">\(E[Y]\)</span>.</li>
-</ol>
-<div class="response-space">
-
+<p>and a joint probability distribution for the additional inputs <span class="math inline">\(\mathbf U\)</span>.</p>
+<p>The variables in <span class="math inline">\(\operatorname{pa}_j\)</span> are the other variables used as inputs to the assignment for <span class="math inline">\(V_j\)</span>. We call them the <strong>parents</strong> of <span class="math inline">\(V_j\)</span>. The input <span class="math inline">\(U_j\)</span> contains whatever else the world uses to generate <span class="math inline">\(V_j\)</span>. The function <span class="math inline">\(f_j\)</span> tells us how these inputs are combined.</p>
+<p>We restrict attention to structural causal models whose assignments admit a topological order.</p>
 </div>
-</section>
-<section id="conditional-means-from-observed-data" class="level3">
-<h3 class="anchored" data-anchor-id="conditional-means-from-observed-data">8. Conditional means from observed data</h3>
-<p>A community health program records whether adults received help scheduling a cancer screening appointment. Let <span class="math inline">\(A=1\)</span> indicate that a person received scheduling help and <span class="math inline">\(A=0\)</span> indicate that they did not. Let <span class="math inline">\(X=1\)</span> indicate age 65 or older and <span class="math inline">\(X=0\)</span> indicate age 40 through 64. Let <span class="math inline">\(Y=1\)</span> indicate that screening was completed within three months and <span class="math inline">\(Y=0\)</span> otherwise.</p>
-<p>Imagine selecting one person at random from the observed dataset, with every person equally likely to be selected. The table gives the number of people with each combination of <span class="math inline">\(A\)</span>, <span class="math inline">\(X\)</span>, and <span class="math inline">\(Y\)</span>.</p>
-<table class="compact-data-table">
-<caption>
-Screening completion by scheduling help and age.
-</caption>
-<thead>
-<tr>
-<th scope="col">
-<span class="math inline">\(X\)</span>
-</th>
-<th scope="col">
-<span class="math inline">\(A\)</span>
-</th>
-<th scope="col">
-Completed screening<br><span class="math inline">\(Y=1\)</span>
-</th>
-<th scope="col">
-Did not complete screening<br><span class="math inline">\(Y=0\)</span>
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-18
-</td>
-<td>
-42
-</td>
-</tr>
-<tr>
-<td>
-0
-</td>
-<td>
-1
-</td>
-<td>
-32
-</td>
-<td>
-48
-</td>
-</tr>
-<tr>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-24
-</td>
-<td>
-36
-</td>
-</tr>
-<tr>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-45
-</td>
-<td>
-45
-</td>
-</tr>
-</tbody>
-</table>
-<ol type="a">
-<li>Find <span class="math inline">\(E[Y\mid A=1,X=0]\)</span> and explain what the quantity represents.</li>
-<li>Find <span class="math inline">\(E[Y\mid A=0,X=1]\)</span> and explain what the quantity represents.</li>
-</ol>
-<div class="response-space">
-
-</div>
-</section>
-<section id="binary-outcomes-and-linearity" class="level3">
-<h3 class="anchored" data-anchor-id="binary-outcomes-and-linearity">9. Binary outcomes and linearity</h3>
-<p>At an urgent-care clinic, let <span class="math inline">\(Y=1\)</span> indicate a positive COVID-19 test and let <span class="math inline">\(W=1\)</span> indicate a positive influenza test. Let</p>
+<p>For example, the fully specified two-variable clinic model can be recovered by taking independent random variables <span class="math inline">\(U_X,U_Y\sim\operatorname{Uniform}(0,1)\)</span> and specifying the functions as</p>
 <p><span class="math display">\[
-T=Y+W
+X\leftarrow1_{\{U_X\leq0.4\}},
 \]</span></p>
-<p>be the number of positive tests for a patient. Suppose</p>
 <p><span class="math display">\[
-P(Y=1)=0.12
-\qquad\text{and}\qquad
-P(W=1)=0.08.
+Y\leftarrow1_{\{U_Y\leq0.1+0.3X\}}.
 \]</span></p>
-<ol type="a">
-<li>Find <span class="math inline">\(E[Y]\)</span> and <span class="math inline">\(E[W]\)</span>.</li>
-<li>Find the expected number of positive tests, <span class="math inline">\(E[T]\)</span>.</li>
-</ol>
-<p>Now let <span class="math inline">\(X=1\)</span> indicate that the patient has a fever at arrival. Among patients with a fever, suppose</p>
-<p><span class="math display">\[
-P(Y=1\mid X=1)=0.30
-\qquad\text{and}\qquad
-P(W=1\mid X=1)=0.10.
-\]</span></p>
-<ol start="3" type="a">
-<li>Rewrite these two conditional probabilities as conditional means. Then, find <span class="math inline">\(E[T\mid X=1]\)</span>.</li>
-<li>Do we know if <span class="math inline">\(Y\)</span> and <span class="math inline">\(W\)</span> are independent? What about <span class="math inline">\(Y\)</span> and <span class="math inline">\(X\)</span>, or <span class="math inline">\(W\)</span> and <span class="math inline">\(X\)</span>?</li>
-</ol>
-<div class="response-space">
-
+<p>The first assignment produces the required <span class="math inline">\(\operatorname{Bernoulli}(0.4)\)</span> variable. The second produces a Bernoulli variable whose probability is <span class="math inline">\(0.1+0.3X\)</span>.</p>
+<p>This example specifies the functions completely. We could instead restrict them to a particular family indexed by a limited collection of unknown parameters. That gives us a <strong>parametric structural causal model</strong>. A linear or logistic regression model can provide one such parametric assignment.</p>
+<p>With simulated data, we know the assignments because we chose them. With observed data, the problem runs in the other direction. We observe the data and try to propose a plausible story for how the variables were generated. The right heart catheterization study gives us a concrete setting in which to do this.</p>
+<div class="example-intro">
+<p><span class="example-label">Case study: Right heart catheterization</span></p>
+<p>Between 1989 and 1994, the Study to Understand Prognoses and Preferences for Outcomes and Risks of Treatments followed critically ill adults receiving care in five teaching hospitals in the United States. In 1996, Connors and colleagues used data from 5,735 of these patients to study right heart catheterization, a procedure used to measure cardiac function <span class="citation" data-cites="connors1996">(<a href="references.html#ref-connors1996" role="doc-biblioref">Connors et al. 1996</a>)</span>.</p>
+<p>The data are available through the <a href="https://hbiostat.org/data/">Vanderbilt University Department of Biostatistics dataset repository</a>. The repository provides a <a href="https://hbiostat.org/data/repo/rhc">description of the study and dataset</a>, a <a href="https://hbiostat.org/data/repo/rhc.csv">direct link to the CSV file</a>, and <a href="https://hbiostat.org/data/repo/crhc">documentation for the variables and their coding</a>. We will use these data to propose regression models for particular assignments and compare the patterns those models generate with the patterns in the observed data.</p>
 </div>
-</section>
-<section id="drawing-a-conditional-mean" class="level3">
-<h3 class="anchored" data-anchor-id="drawing-a-conditional-mean">10. Drawing a conditional mean</h3>
-<p>The scatterplot shows independent and identically distributed observations of age <span class="math inline">\(X\)</span> and systolic blood pressure <span class="math inline">\(Y\)</span> from a hypothetical population.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/01e-probability-continuous-exercise.svg" class="img-fluid figure-img" style="width:78.0%"></p>
-<figcaption>Observed systolic blood pressure and age for a hypothetical sample.</figcaption>
-</figure>
+<p>Or we can make the larger leap above. We can assert that the functions exist and state which inputs they use without choosing a particular functional form. This gives us a <strong>nonparametric structural causal model</strong>. Nonparametric does not mean assumption-free. The model still says which variables are inputs to each assignment, that the assignments have a topological order, and how the additional inputs are related. It leaves the particular forms of the functions unrestricted.</p>
+<p>When the additional inputs <span class="math inline">\(U_1,\ldots,U_K\)</span> are mutually independent, the model is called a <strong>nonparametric structural equation model with independent errors</strong>, or NPSEM-IE. This is the general structural causal model we will use to construct graphs and potential outcomes in the sections that follow.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note on our starting point">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<ol type="a">
-<li>Draw a curve that represents your best estimate of <span class="math inline">\(E[Y\mid X]\)</span>.</li>
-<li>Would a straight line provide a reasonable model for the conditional mean? What other functional form might you consider?</li>
-</ol>
-<div class="response-space">
-
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical note on our starting point
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>There are several formal languages for causality. They are often logically equivalent for the problems we consider, but they can differ in where they begin, which assumptions they make most visible, the notation they use, and the range of problems they were built to handle.</p>
+<p>The potential-outcomes framework begins with variables such as <span class="math inline">\(Y(a)\)</span>. Someone who has worked with potential outcomes for a long time may have no trouble stating assumptions directly in this language without first describing how the data came about or drawing a graph. If that works for you, by all means do it.</p>
+<p>I have gotten stuck doing that. On several occasions, I did not get to the “aha!” until I first described how I thought the world had created the data. Once I wrote down that process and drew the corresponding graph, I could see the assumptions I was making. I could then translate those assumptions into potential-outcome language.</p>
+<p>We begin with Pearl’s NPSEM-IE and the graph it generates. Richardson and Robins show how potential outcomes can be constructed from these assignments and represented in graphs. We are closest in spirit to this approach. We use the structural model and its graph as a transparent place to hold our assumptions, and we use potential outcomes as a flexible language for expressing our causal questions.</p>
+</div>
+</div>
 </div>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
-<div id="ref-charig_renal_1986" class="csl-entry" role="listitem">
-Charig, C. R., D. R. Webb, S. R. Payne, and J. E. Wickham. 1986. <span>“Comparison of Treatment of Renal Calculi by Open Surgery, Percutaneous Nephrolithotomy, and Extracorporeal Shockwave Lithotripsy.”</span> <em>British Medical Journal (Clinical Research Edition)</em> 292 (6524): 879–82. <a href="https://doi.org/10.1136/bmj.292.6524.879">https://doi.org/10.1136/bmj.292.6524.879</a>.
-</div>
-<div id="ref-julious_confounding_1994" class="csl-entry" role="listitem">
-Julious, Steven A., and Mark A. Mullee. 1994. <span>“Confounding and Simpson’s Paradox.”</span> <em>BMJ</em> 309 (6967): 1480–81. <a href="https://doi.org/10.1136/bmj.309.6967.1480">https://doi.org/10.1136/bmj.309.6967.1480</a>.
-</div>
-<div id="ref-quinn_myopia_1999" class="csl-entry" role="listitem">
-Quinn, Graham E., Chai H. Shin, Maureen G. Maguire, and Richard A. Stone. 1999. <span>“Myopia and Ambient Lighting at Night.”</span> <em>Nature</em> 399 (6732): 113–14. <a href="https://doi.org/10.1038/20094">https://doi.org/10.1038/20094</a>.
+<div id="ref-connors1996" class="csl-entry" role="listitem">
+Connors, Jr., Alfred F., Theodore Speroff, Neal V. Dawson, Charles Thomas, Jr. Harrell Frank E., Douglas Wagner, Norman Desbiens, et al. 1996. <span>“The Effectiveness of Right Heart Catheterization in the Initial Care of Critically Ill Patients.”</span> <em>JAMA</em> 276 (11): 889–97. <a href="https://doi.org/10.1001/jama.1996.03540110043030">https://doi.org/10.1001/jama.1996.03540110043030</a>.
 </div>
 </div>
-</section>
-</section>
 
 </main> <!-- /main -->
 <script>
@@ -1266,13 +849,13 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./01d-probability.html" class="pagination-link" aria-label="Probability gives us a formal language">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Probability gives us a formal language</span></span>
+      <a href="./02a-assignments-and-generating-data.html" class="pagination-link" aria-label="A list of assignments">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">A list of assignments</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./02a-structural-equation-models.html" class="pagination-link" aria-label="Structural equation models tell a story">
-        <span class="nav-page-text"><span class="chapter-title">Structural equation models tell a story</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./02-exercises.html" class="pagination-link" aria-label="Exercises">
+        <span class="nav-page-text"><span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

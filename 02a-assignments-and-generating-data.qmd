@@ -1,0 +1,688 @@
+---
+title: "A list of assignments"
+---
+
+We all have some notion of what it means for one thing to cause another. The trouble is that those notions can be a little fuzzy. That makes it hard to talk to each other when we are not starting from the same place.
+
+One source of this fuzziness is that people have different ideas about what a cause must do. Some people think the outcome must never occur without the cause. Others think the cause must always be followed by the outcome. Still others reserve the word cause for whatever acts most directly on the outcome. Consider what these different notions imply about smoking and lung cancer. Lung cancer can occur in someone who never smoked, many people who smoke never develop lung cancer, and smoking produces cancer through intermediate changes in the body. Depending on which notion we use, any of these facts might lead someone to say that smoking does not cause lung cancer.
+
+A second source of fuzziness is that causal questions ask us to imagine something we cannot observe. We have to imagine what would happen if the same person received a different treatment, even though we can observe only the treatment the person actually received. In effect, we have to imagine a parallel universe or a metaverse. That can feel more like science fiction than science. Yet this imagined comparison is at the heart of the causal questions we want to ask.
+
+We need to bring this fuzziness into focus. More importantly, we need a framework precise enough that we know what one another mean when we make a causal claim.
+
+## Writing the story as assignments
+
+We begin by telling a story about how the world generated our data. For now, our story is simply a list describing how each variable gets its value and which other variables might be involved.
+
+This is not such a crazy idea. Whenever we try to explain a public-health problem, we already think about what happened, what happened next, and which conditions might have shaped what happened. Telling a good story can certainly be difficult. The world is complicated, and our story will inevitably leave things out. Still, putting the story into words gives us somewhere to start.
+
+Suppose our data contain a person's age, whether the person received an influenza vaccine, and whether the person developed influenza during the following season. We might tell the following story.
+
+1. First, the world gives us the person's age.
+2. Next, the person either receives the vaccine or does not. Age may help determine whether vaccination occurs because vaccine recommendations, access to care, and decisions about vaccination can differ by age.
+3. Finally, the person either develops influenza or does not. That result may depend on age and vaccination, together with exposures and other features we have not recorded.
+
+The list is important. Each step describes how one variable gets its value, and that value may depend on other variables in the list.
+
+<details class="lesson-question">
+<summary>A hypertension study records systolic blood pressure at a patient's first visit, whether medication is prescribed at that visit, and systolic blood pressure three months later. Tell a story for how the world generated these three variables. Your story should say what is generated at each step and which other variables might be used.</summary>
+
+First, the world gives us systolic blood pressure at the first visit. Next, the patient either receives a medication prescription or does not. The first blood-pressure measurement may help determine that decision. Finally, the world gives us systolic blood pressure three months later. The later measurement may depend on the first measurement and whether medication was prescribed, together with other factors we have not recorded.
+
+</details>
+
+We can make a story told in words more precise by writing each step as an assignment. An assignment tells us how one variable gets its value, possibly using the values of other variables.
+
+::: {.example-intro}
+<span class="example-label">Two-variable clinic model</span>
+
+Suppose $X$ records whether a patient is classified as high risk when arriving at a clinic and $Y$ records whether the patient is admitted to the hospital. We will say that the world first generates $X$ and then uses $X$ to generate $Y$. As an example, we might write
+
+$$
+X\leftarrow\operatorname{Bernoulli}(0.5)
+$$
+
+and
+
+$$
+Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X).
+$$
+
+The first assignment places a $\operatorname{Bernoulli}(0.5)$ random variable into $X$. The second places a Bernoulli random variable into $Y$ whose probability depends on $X$.
+:::
+
+We will be careful not to treat assignments as ordinary equations. An assignment is a procedure. We use a left arrow, $\leftarrow$, to write one. The procedure takes whatever appears on the right and places it into the variable on the left. For example, the assignment
+
+$$
+x\leftarrow4
+$$
+
+places the value four into $x$. Once $x$ is available, we can carry out the assignment
+
+$$
+x\leftarrow x+4.
+$$
+
+This procedure takes the current value of $x$, adds four, and places the result back into $x$. After the two assignments, $x$ has the value eight.
+
+An equation is something different. It is a statement about whether one thing on the left is the same thing on the right. It can be true or false. For example,
+
+$$
+2=4
+$$
+
+is false, whereas
+
+$$
+2+3=\frac{10}{2}
+$$
+
+is true.
+
+If we replace the assignment arrows in our earlier example with equal signs, we get the statements
+
+$$
+x=4
+\qquad\text{and}\qquad
+x=x+4.
+$$
+
+These statements cannot both be true. In fact, the second is false for every real value of $x$. The arrow and the equal sign do different jobs.
+
+::: {.example-intro}
+<span class="example-label">Three-variable clinic model</span>
+
+We can expand the clinic model by adding $A$, which indicates whether the patient receives intensive monitoring. Consider
+
+$$
+X\leftarrow\operatorname{Bernoulli}(0.5),
+$$
+
+$$
+A\leftarrow\operatorname{Bernoulli}(0.4+0.2X),
+$$
+
+$$
+Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X+0.2A).
+$$
+
+The probability of intensive monitoring depends on $X$. The probability of admission depends on both $X$ and $A$.
+:::
+
+Sometimes several variables play the same role in our story. Suppose, for example, that we record a patient's systolic blood pressure and cholesterol at the beginning of the study. Both are baseline characteristics. We may not care to place blood pressure before cholesterol in our story, or cholesterol before blood pressure. Instead, we can generate them together and collect them in
+
+$$
+\mathbf X=(X_{\text{blood pressure}},X_{\text{cholesterol}}).
+$$
+
+Here, $\mathbf X$ is not a single real-valued random variable. It is a random vector whose components are themselves random variables. For example, one line in our list could be
+
+$$
+\begin{pmatrix}
+X_{\text{blood pressure}}\\
+X_{\text{cholesterol}}
+\end{pmatrix}
+\leftarrow
+\operatorname{Normal}_2\left\{
+\begin{pmatrix}120\\200\end{pmatrix},
+\begin{pmatrix}225&225\\225&900\end{pmatrix}
+\right\}.
+$$
+
+This one assignment draws both baseline variables together. The off-diagonal values allow blood pressure and cholesterol to be related without placing either one before the other in our list. Later assignments can use either or both components of $\mathbf X$. Collecting them together lets the story reflect the common role they play without forcing an order between them.
+
+## Ordering the assignments
+
+A collection of assignments can often be read as the world's recipe for generating the data. This is much like writing code to simulate data ourselves, with each line of code telling us how to generate one variable. Consider again the three-variable clinic model in which $X$ is risk classification, $A$ is intensive monitoring, and $Y$ is hospital admission. If your professor asked you to write code that generates one observation from this model, each line of code would carry out one assignment.
+
+```r
+X <- rbinom(1, size = 1, prob = 0.5)
+A <- rbinom(1, size = 1, prob = 0.4 + 0.2 * X)
+Y <- rbinom(1, size = 1, prob = 0.3 + 0.2 * X + 0.2 * A)
+```
+
+The first line draws one realization from a $\operatorname{Bernoulli}(0.5)$ random variable and places that realized value into `X`. The second line uses the value in `X` to determine the Bernoulli random variable for $A$, draws one realization from it, and places that value into `A`. The third line does the same for $Y$, using the realized values in `X` and `A`. Running all three assignments once produces one row of data. Running them repeatedly produces an entire dataset.
+
+Now consider what happens when we place the same assignments in a different order.
+
+$$
+A\leftarrow\operatorname{Bernoulli}(0.4+0.2X),
+$$
+
+$$
+X\leftarrow\operatorname{Bernoulli}(0.5),
+$$
+
+$$
+Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X+0.2A).
+$$
+
+Code that follows this ordering would begin as follows.
+
+```r
+A <- rbinom(1, size = 1, prob = 0.4 + 0.2 * X)
+X <- rbinom(1, size = 1, prob = 0.5)
+Y <- rbinom(1, size = 1, prob = 0.3 + 0.2 * X + 0.2 * A)
+```
+
+<details class="lesson-question">
+<summary>Assume we begin with an empty R environment. Will this code run? If not, where does it break?</summary>
+
+It breaks on the first line. To draw the Bernoulli realization placed into `A`, R first tries to calculate its probability using `X`. No value has been placed into `X` yet.
+
+</details>
+
+The two pieces of code contain the same three assignments, but they do not tell the same story. The assignments appear in different orders. In everyday life, we may not care whether eggs appear at the top or bottom of a grocery list. When mathematicians talk about a list, they include the order of its items. Changing the order therefore changes the list of assignments and the story it tells.
+
+The order becomes especially important when we read the list as an algorithm. The first ordering can be carried out from top to bottom. The second cannot because it tries to use $X$ before a value has been placed into it. Some orderings allow us to work through all the assignments from top to bottom, while others do not.
+
+Being able to carry out every assignment top to bottom is such an important idea that we give it a definition:
+
+::: {.definition-box}
+[**Topological order**]{.glossary-term}. Consider a list of random variables, with one assignment for each variable. The list has a topological order when every variable used in an assignment appears earlier in the list.
+:::
+
+::: {.callout-important title="Assumption used throughout this book"}
+We assume that the assignments can be placed in at least one topological order. This assumption allows us to read the assignments as an algorithm for generating the variables.
+:::
+
+Return to the three-variable clinic model. Its assignments have exactly one topological order, $X,A,Y$. We must generate $X$ before $A$ because the assignment for $A$ uses $X$. We must then generate both $X$ and $A$ before $Y$ because the assignment for $Y$ uses them both.
+
+This example has a unique topological order, but that is not always the case. A collection of assignments can have one topological order, several topological orders, or no topological order at all.
+
+The following are three collections of assignments. For each collection, find a topological order if one exists and determine whether it is unique. The order in which the assignments are displayed is not intended to be an order for generating the variables.
+
+The assignments in **Collection A** are
+
+$$
+Y\leftarrow\operatorname{Normal}(100+5X+2A,25),
+$$
+
+$$
+X\leftarrow\operatorname{Poisson}(2),
+$$
+
+$$
+A\leftarrow\operatorname{Binomial}\{5,\operatorname{expit}(-1+0.2X+W)\},
+$$
+
+$$
+W\leftarrow\operatorname{Bernoulli}(0.3).
+$$
+
+The assignments in **Collection B** are
+
+$$
+W\leftarrow\operatorname{Exponential}(1),
+$$
+
+$$
+Y\leftarrow\operatorname{Normal}(A,1),
+$$
+
+$$
+X\leftarrow\operatorname{Normal}(Y,1),
+$$
+
+$$
+A\leftarrow\operatorname{Poisson}\{\exp(0.2X+0.1W)\}.
+$$
+
+The assignments in **Collection C** are
+
+$$
+A\leftarrow\operatorname{Normal}(1+W,1),
+$$
+
+$$
+Y\leftarrow\operatorname{Normal}(X+W+A,1),
+$$
+
+$$
+X\leftarrow\operatorname{Exponential}(1),
+$$
+
+$$
+W\leftarrow\operatorname{Poisson}(1+X).
+$$
+
+<details class="lesson-question">
+<summary>Check your answers.</summary>
+
+Collection A has two topological orders,
+
+$$
+X,W,A,Y
+\qquad\text{and}\qquad
+W,X,A,Y.
+$$
+
+Both $X$ and $W$ must appear before $A$, and $A$ must appear before $Y$. Nothing requires an order between $X$ and $W$.
+
+Collection B has no topological order. Generating $A$ requires $X$, generating $Y$ requires $A$, and generating $X$ requires $Y$. Each variable in this cycle would have to appear before another, but none can appear first.
+
+Collection C has the unique topological order
+
+$$
+X,W,A,Y.
+$$
+
+The assignment for $W$ uses $X$, the assignment for $A$ uses $W$, and the assignment for $Y$ uses $X$, $W$, and $A$. These relationships force every position in the ordering.
+
+</details>
+
+::: {.callout-note title="Technical note on models without a topological order" collapse="true"}
+Requiring a topological order is a restriction on the collection of assignments we consider. Some collections contain feedback or cycles and cannot be carried out by moving through the variables once in a topological order. Those models can be useful, but we will not consider them in this book. From this point forward, at least one topological order exists, and we are allowed to read the assignments as a top-to-bottom algorithm for generating the variables.
+:::
+
+## Generating a dataset
+
+The assignments can describe how one might generate samples of our random variables. Return to the two-variable clinic model. We begin by drawing a value from the $\operatorname{Bernoulli}(0.5)$ random variable assigned to $X$. Suppose this draw gives us $x=1$.
+
+That value tells us which Bernoulli random variable is assigned to $Y$.
+
+$$
+Y\leftarrow\operatorname{Bernoulli}\{0.3+0.2(1)\}
+=\operatorname{Bernoulli}(0.5).
+$$
+
+We then draw a value from this $\operatorname{Bernoulli}(0.5)$ random variable. Suppose the draw gives us $y=1$. One trip through the two assignments has generated the pair $(x,y)=(1,1)$.
+
+<details class="lesson-question">
+<summary>Suppose the first assignment instead gives us $x=0$. Which random variable do we draw from to generate $y$, and what pairs $(x,y)$ could we obtain?</summary>
+
+We substitute the realized value $x=0$ into the second assignment.
+
+$$
+Y\leftarrow\operatorname{Bernoulli}\{0.3+0.2(0)\}
+=\operatorname{Bernoulli}(0.3).
+$$
+
+We draw $y$ from a $\operatorname{Bernoulli}(0.3)$ random variable. The draw can give us $y=1$, producing $(x,y)=(0,1)$, or $y=0$, producing $(x,y)=(0,0)$.
+
+</details>
+
+Return again to the three-variable clinic model. Its three assignments generate one observation $(X,A,Y)$. Repeating them turns one observation into a dataset. For a sample of $n$ people, we write the variables in row $i$ as
+
+$$
+X_i,\qquad A_i,\qquad Y_i.
+$$
+
+For each person, we generate $X_i$, then $A_i$, and then $Y_i$. Repeating this process for $i=1,\ldots,n$ produces a dataset with $n$ rows.
+
+The following code follows the three assignments 10,000 times. Each trip through the list is independent of the others and produces a new row. The first 100 rows form one dataset, the first 1,000 rows form a larger dataset, and all 10,000 rows form a still larger dataset generated by the same assignments.
+
+```{r}
+#| label: generate-clinic-data
+#| output: false
+set.seed(661)
+n <- 10000
+
+X <- rbinom(n, size = 1, prob = 0.5)
+A <- rbinom(n, size = 1, prob = 0.4 + 0.2 * X)
+Y <- rbinom(n, size = 1, prob = 0.3 + 0.2 * X + 0.2 * A)
+
+clinic_data <- data.frame(X, A, Y)
+```
+
+Here are the first few rows. Each row records one trip through the assignments.
+
+```{r}
+#| echo: false
+#| tbl-cap: "The first six observations generated by the clinic assignments."
+knitr::kable(head(clinic_data))
+```
+
+Because $X$, $A$, and $Y$ are binary, each row must be one of eight possible combinations. We can count how often every combination occurs in the first 100 rows, the first 1,000 rows, and all 10,000 rows.
+
+```{r}
+#| echo: false
+#| tbl-cap: "Counts of every possible combination of X, A, and Y in two generated datasets."
+count_combinations <- function(data) {
+  as.data.frame(
+    table(
+      X = factor(data$X, levels = 0:1),
+      A = factor(data$A, levels = 0:1),
+      Y = factor(data$Y, levels = 0:1)
+    )
+  )$Freq
+}
+
+combination_counts <- expand.grid(X = 0:1, A = 0:1, Y = 0:1)
+combination_counts$`First 100 rows` <- count_combinations(clinic_data[1:100, ])
+combination_counts$`First 1,000 rows` <- count_combinations(clinic_data[1:1000, ])
+combination_counts$`All 10,000 rows` <- count_combinations(clinic_data)
+knitr::kable(combination_counts)
+```
+
+The assignments have now given us one person, 100 people, 1,000 people, and 10,000 people in exactly the same way. Next, we will use these generated datasets to help us think about the probabilities implied by the assignments.
+
+## Assignments determine the probability model
+
+So far, we have used the assignments to generate data. We can also use those data to develop a concrete sense of the probabilities implied by the assignments. In particular, we can ask about the probability of obtaining any one of the eight possible combinations of $X$, $A$, and $Y$.
+
+In the dataset with 100 people, the proportion of rows with a particular combination gives us a first guess for the probability of that combination. We can do the same with the datasets of 1,000 and 10,000 people. The table reports these guesses after rounding.
+
+```{r}
+#| echo: false
+#| tbl-cap: "Proportions used as guesses for the probabilities of the eight possible combinations."
+probability_guesses <- combination_counts[c("X", "A", "Y")]
+probability_guesses$`Guess from 100 rows` <-
+  round(combination_counts$`First 100 rows` / 100, 2)
+probability_guesses$`Guess from 1,000 rows` <-
+  round(combination_counts$`First 1,000 rows` / 1000, 3)
+probability_guesses$`Guess from 10,000 rows` <-
+  round(combination_counts$`All 10,000 rows` / 10000, 3)
+knitr::kable(probability_guesses)
+```
+
+The proportions give us a sense of how likely the different combinations are. But we do not need to rely on the generated data to know their probabilities. We can work through the three assignments one at a time.
+
+**The assignment for $X$.** Recall that the first assignment is
+
+$$
+X\leftarrow\operatorname{Bernoulli}(0.5).
+$$
+
+It tells us that $X$ equals one with probability $0.5$ and zero with probability $0.5$. We can write both possibilities at once as
+
+$$
+P(X=x)=0.5,
+\qquad x\in\{0,1\}.
+$$
+
+Because $X$ is binary, the probability that it equals one is also its expectation.
+
+$$
+E[X]=P(X=1)=0.5.
+$$
+
+**The assignment for $A$.** The second assignment is
+
+$$
+A\leftarrow\operatorname{Bernoulli}(0.4+0.2X).
+$$
+
+This assignment gives us the distribution of $A$ after we know $X$. Its probability of equaling one is
+
+$$
+P(A=1\mid X=x)=0.4+0.2x.
+$$
+
+Its probability of equaling zero is the remaining probability.
+
+$$
+P(A=0\mid X=x)=1-(0.4+0.2x)=0.6-0.2x.
+$$
+
+Because $A$ is binary, the first of these probabilities is also its conditional expectation.
+
+$$
+E[A\mid X]=P(A=1\mid X)=0.4+0.2X.
+$$
+
+**The assignment for $Y$.** The third assignment is
+
+$$
+Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X+0.2A).
+$$
+
+This assignment gives us the distribution of $Y$ after we know both $X$ and $A$. For any $x,a\in\{0,1\}$,
+
+$$
+P(Y=1\mid X=x,A=a)=0.3+0.2x+0.2a
+$$
+
+and
+
+$$
+P(Y=0\mid X=x,A=a)=0.7-0.2x-0.2a.
+$$
+
+Once again, the probability of one is also the conditional expectation.
+
+$$
+E[Y\mid X,A]=P(Y=1\mid X,A)=0.3+0.2X+0.2A.
+$$
+
+We can now use these three pieces to calculate the probability of a particular combination. Consider $X=1$, $A=1$, and $Y=1$. The assignments give us
+
+$$
+P(X=1)=0.5,
+$$
+
+$$
+P(A=1\mid X=1)=0.6,
+$$
+
+and
+
+$$
+P(Y=1\mid X=1,A=1)=0.7.
+$$
+
+Watch what happens when we multiply them.
+
+$$
+(0.5)(0.6)(0.7)=0.21.
+$$
+
+This product is exactly the probability of the combination we started with.
+
+$$
+P(X=1,A=1,Y=1)=0.21.
+$$
+
+As a second example, consider $X=0$, $A=0$, and $Y=1$. The assignments give us
+
+$$
+P(X=0)=0.5,
+$$
+
+$$
+P(A=0\mid X=0)=0.6,
+$$
+
+and
+
+$$
+P(Y=1\mid X=0,A=0)=0.3.
+$$
+
+Multiplying gives
+
+$$
+P(X=0,A=0,Y=1)
+=(0.5)(0.6)(0.3)
+=0.09.
+$$
+
+The proportions of rows with these combinations gave us concrete guesses for their probabilities. Following the assignments gives us their exact values.
+
+<details class="lesson-question">
+<summary>Use the assignments to calculate the exact probability of each of the eight possible combinations. How do your answers compare with the guesses from the generated datasets?</summary>
+
+| $X$ | $A$ | $Y$ | Exact probability |
+|---:|---:|---:|---:|
+| 0 | 0 | 0 | 0.21 |
+| 0 | 0 | 1 | 0.09 |
+| 0 | 1 | 0 | 0.10 |
+| 0 | 1 | 1 | 0.10 |
+| 1 | 0 | 0 | 0.10 |
+| 1 | 0 | 1 | 0.10 |
+| 1 | 1 | 0 | 0.09 |
+| 1 | 1 | 1 | 0.21 |
+
+The proportions from the generated datasets should be close to these probabilities. They will not match them exactly because the realized values change each time we generate a dataset. As we move from 100 to 1,000 to 10,000 rows, the proportions generally settle closer to the exact probabilities.
+
+</details>
+
+The same calculation works for every possible combination. It illustrates a general rule for working with a list of assignments.
+
+::: {.proposition-box}
+**Proposition.** Each assignment supplies the distribution of one variable conditional on the particular values of the variables used in that assignment. Following these conditional distributions in topological order determines the joint distribution of all the variables.
+:::
+
+::: {.callout-note title="Optional technical note on the general decomposition" collapse="true"}
+Take $K$ real-valued random variables $X_1,\ldots,X_K$ and a collection of assignments that has a topological order. Place the variables in one such order. Let $\mathbf P_j$ be the collection of variables used in the assignment for $X_j$, and let $\mathbf p_j$ be their realized values.
+
+We have already described a conditional distribution using the conditional expectation of an indicator. For fixed values $\mathbf p_j$, define
+
+$$
+F_{X_j\mid\mathbf P_j=\mathbf p_j}(t)
+:=
+E\left[
+1_{\{X_j\leq t\}}
+\mid
+\mathbf P_j=\mathbf p_j
+\right].
+$$
+
+This is the conditional cdf of $X_j$ given $\mathbf P_j=\mathbf p_j$. It is the conditional distribution supplied by the assignment for $X_j$.
+
+Let $\mathcal A_j$ be a subset of the possible values of $X_j$. Using the same Lebesgue--Stieltjes integration introduced in the probability review, the joint probability is
+
+$$
+\begin{aligned}
+&P(X_1\in\mathcal A_1,\ldots,X_K\in\mathcal A_K)\\
+&\quad=\int_{\mathcal A_1}dF_{X_1}(x_1)
+\int_{\mathcal A_2}
+dF_{X_2\mid\mathbf P_2=\mathbf p_2}(x_2)
+\cdots\\
+&\qquad\quad{}
+\int_{\mathcal A_K}
+dF_{X_K\mid\mathbf P_K=\mathbf p_K}(x_K).
+\end{aligned}
+$$
+
+At each step, $\mathbf p_j$ is formed from the values already encountered for the variables in $\mathbf P_j$. Each integral is therefore taken with respect to the conditional cdf supplied by the corresponding assignment. When a variable is discrete, its integral becomes a sum. When it has a density, its probability weight can be written as $dF(x)=f(x)\,dx$.
+
+In particular, when all the variables are discrete and we ask about one complete combination,
+
+$$
+\begin{aligned}
+&P(X_1=x_1,\ldots,X_K=x_K)\\
+&\qquad=\prod_{j=1}^K
+P(X_j=x_j\mid\mathbf P_j=\mathbf p_j).
+\end{aligned}
+$$
+
+The first collection $\mathbf P_1$ is empty, so its factor is simply $P(X_1=x_1)$.
+
+This construction can be generalized beyond real-valued random variables, including random vectors whose components are generated together.
+:::
+
+We do not need assignments merely to decompose a joint distribution. For any ordered collection of discrete random variables, the ordinary probability rules give
+
+$$
+\begin{aligned}
+&P(X_1=x_1,\ldots,X_K=x_K)\\
+&\qquad=P(X_1=x_1)
+\prod_{j=2}^K
+P(X_j=x_j\mid X_1=x_1,\ldots,X_{j-1}=x_{j-1}).
+\end{aligned}
+$$
+
+Each variable is conditioned on every variable placed before it. The assignments can make this decomposition simpler. They tell us that the factor for $X_j$ needs only the variables used in its assignment, rather than every preceding variable.
+
+Consider the following four assignments.
+
+$$
+X\leftarrow\operatorname{Bernoulli}(0.4),
+$$
+
+$$
+W\leftarrow\operatorname{Poisson}(2),
+$$
+
+$$
+A\leftarrow\operatorname{Bernoulli}(0.2+0.5X),
+$$
+
+$$
+Y\leftarrow\operatorname{Poisson}(1+W+A).
+$$
+
+<details class="lesson-question">
+<summary>How does the decomposition based on these assignments differ from the general decomposition obtained by placing the variables in the order $X,W,A,Y$?</summary>
+
+For particular values $x,w,a,y$, the general decomposition in the order $X,W,A,Y$ is
+
+$$
+\begin{aligned}
+&P(X=x,W=w,A=a,Y=y)\\
+&\qquad=P(X=x)
+P(W=w\mid X=x)
+P(A=a\mid X=x,W=w)\\
+&\qquad\quad{}
+P(Y=y\mid X=x,W=w,A=a).
+\end{aligned}
+$$
+
+The assignments give us the simpler decomposition
+
+$$
+\begin{aligned}
+&P(X=x,W=w,A=a,Y=y)\\
+&\qquad=P(X=x)P(W=w)
+P(A=a\mid X=x)
+P(Y=y\mid W=w,A=a).
+\end{aligned}
+$$
+
+The assignment for $W$ does not use $X$, so its factor does not condition on $X$. The assignment for $A$ uses $X$ but not $W$. The assignment for $Y$ uses $W$ and $A$ but not $X$.
+
+</details>
+
+The factorization is the probability version of the same procedure we used to generate a row of data. A complicated joint distribution is assembled from the simpler distributions supplied by the individual assignments.
+
+The same decomposition applies when not all the variables are discrete. Suppose $X$ indicates whether a patient is classified as high risk, $A$ indicates whether the patient receives intensive monitoring, and $Y$ is systolic blood pressure at a later visit. Consider the assignments
+
+$$
+X\leftarrow\operatorname{Bernoulli}(0.5),
+$$
+
+$$
+A\leftarrow\operatorname{Bernoulli}(0.4+0.2X),
+$$
+
+$$
+Y\leftarrow\operatorname{Normal}(120+10X-5A,100).
+$$
+
+The assignment for $Y$ tells us both its conditional mean and its entire conditional distribution. Its conditional mean is
+
+$$
+E[Y\mid X,A]=120+10X-5A.
+$$
+
+This should look familiar. It is a linear regression function for $Y$ given $X$ and $A$. The assignment says more than the regression function alone. It also specifies that the conditional distribution of $Y$ is normal with variance $100$.
+
+For example, consider the probability that $X=1$, $A=1$, and $Y$ lies between $120$ and $130$. We can decompose this joint probability as
+
+$$
+\begin{aligned}
+&P(X=1,A=1,120\leq Y\leq130)\\
+&\qquad=P(X=1)
+P(A=1\mid X=1)
+P(120\leq Y\leq130\mid X=1,A=1).
+\end{aligned}
+$$
+
+The first two assignments give us $0.5$ and $0.6$. When $X=1$ and $A=1$, the third assignment places a $\operatorname{Normal}(125,100)$ random variable into $Y$. Therefore,
+
+$$
+\begin{aligned}
+&P(X=1,A=1,120\leq Y\leq130)\\
+&\qquad=(0.5)(0.6)
+P\{120\leq\operatorname{Normal}(125,100)\leq130\}\\
+&\qquad\approx(0.5)(0.6)(0.383)\\
+&\qquad\approx0.115.
+\end{aligned}
+$$
+
+The outcome is continuous, so we ask for the probability that $Y$ falls in an interval rather than the probability that it equals one particular value. The decomposition otherwise follows the assignments in the same way.
+
+We need to be clear about where the causal claim enters. Writing down a list of assignments does not, by itself, make that list causal. Given the same joint distribution of $X$ and $Y$, we can generate $X$ first and then $Y$, or generate $Y$ first and then $X$. Both lists can reproduce exactly the same data. The causal claim enters when we choose one of these lists and say, “This is the one the world actually followed.” If we say that the world generated $X$ and then used $X$ to generate $Y$, we are making an assumption that cannot be learned from the joint distribution alone.
+
+So far, we have made two kinds of commitments. We have said which list of assignments the world followed, and we have specified every distribution and parameter in that list. We want to keep the first commitment without always requiring the second. In the next section, we retain our story about how the variables were generated while allowing the precise functions and distributions to remain unspecified.

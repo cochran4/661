@@ -1,0 +1,264 @@
+### 1. Telling a story
+
+A study records three variables for each patient.
+
+- Whether the patient has severe symptoms upon arriving at an emergency department
+- Whether the patient receives diagnostic imaging
+- Whether the patient is admitted to the hospital
+
+Tell a story for how the world might generate these three variables. Write your story as a list. At each step, say which variable is generated and which other variables, if any, are used to generate it.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+One possible story is
+
+1. First, the world gives us whether the patient has severe symptoms.
+2. Next, the world gives us whether the patient receives diagnostic imaging. The decision may depend on whether the patient has severe symptoms.
+3. Finally, the world gives us whether the patient is admitted. Admission may depend on the patient's symptoms and whether the patient received imaging.
+
+Other stories are possible. What matters is that the list states how each variable is generated and which other variables are used to generate it.
+:::
+
+### 2. Generating one observation
+
+Suppose the variables in the emergency-department study are generated according to the assignments
+
+$$
+X\leftarrow\operatorname{Bernoulli}(0.30),
+$$
+
+$$
+A\leftarrow\operatorname{Bernoulli}(0.15+0.65X),
+$$
+
+$$
+Y\leftarrow\operatorname{Bernoulli}(0.05+0.35X+0.15A).
+$$
+
+Here, $X$ indicates severe symptoms, $A$ indicates diagnostic imaging, and $Y$ indicates hospital admission. Write code that carries out these assignments and generates one observation $(X,A,Y)$. You may use R or another programming language. Explain why the lines of code must be run in the order you chose.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+In R, we could write
+
+```r
+X <- rbinom(1, size = 1, prob = 0.30)
+A <- rbinom(1, size = 1, prob = 0.15 + 0.65 * X)
+Y <- rbinom(1, size = 1, prob = 0.05 + 0.35 * X + 0.15 * A)
+```
+
+We generate $X$ first because its assignment does not use either of the other variables. We generate $A$ next because its assignment uses $X$. We generate $Y$ last because its assignment uses both $X$ and $A$.
+:::
+
+### 3. Finding topological orders
+
+For each collection of assignments, find a topological order if one exists and determine whether it is unique. The order in which the assignments are displayed is not intended to be an order for generating the variables.
+
+a.
+
+$$
+Y\leftarrow\operatorname{Normal}(90+3X+2A,16),
+$$
+
+$$
+W\leftarrow\operatorname{Poisson}(3),
+$$
+
+$$
+A\leftarrow\operatorname{Binomial}\{4,\operatorname{expit}(-1+0.2X+0.3W)\},
+$$
+
+$$
+X\leftarrow\operatorname{Exponential}(1).
+$$
+
+b.
+
+$$
+A\leftarrow\operatorname{Poisson}\{\exp(0.1X+0.2W)\},
+$$
+
+$$
+X\leftarrow\operatorname{Normal}(Y,1),
+$$
+
+$$
+W\leftarrow\operatorname{Bernoulli}(0.4),
+$$
+
+$$
+Y\leftarrow\operatorname{Normal}(5+A,4).
+$$
+
+c.
+
+$$
+W\leftarrow\operatorname{Normal}(2+X,1),
+$$
+
+$$
+Y\leftarrow\operatorname{Normal}(10+W+A,9),
+$$
+
+$$
+A\leftarrow\operatorname{Poisson}\{\exp(0.1W)\},
+$$
+
+$$
+X\leftarrow\operatorname{Bernoulli}(0.5).
+$$
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. There are two topological orders,
+
+$$
+X,W,A,Y
+\qquad\text{and}\qquad
+W,X,A,Y.
+$$
+
+Both $X$ and $W$ must appear before $A$, and $A$ must appear before $Y$. Nothing requires an order between $X$ and $W$.
+
+b. There is no topological order. The assignment for $A$ uses $X$, the assignment for $Y$ uses $A$, and the assignment for $X$ uses $Y$. These three assignments form a cycle.
+
+c. The unique topological order is
+
+$$
+X,W,A,Y.
+$$
+
+The assignment for $W$ uses $X$, the assignment for $A$ uses $W$, and the assignment for $Y$ uses both $W$ and $A$.
+:::
+
+### 4. Decomposing a joint probability
+
+Suppose $X$ indicates whether a patient has severe asthma at baseline, $Z$ indicates whether the patient's insurance covers a controller medication, $A$ indicates whether the patient uses the controller medication, and $Y$ is the number of asthma exacerbations during the following year. Consider the assignments
+
+$$
+X\leftarrow\operatorname{Bernoulli}(0.5),
+$$
+
+$$
+Z\leftarrow\operatorname{Bernoulli}(0.4),
+$$
+
+$$
+A\leftarrow\operatorname{Bernoulli}(0.2+0.2X+0.2Z),
+$$
+
+$$
+Y\leftarrow\operatorname{Poisson}(2+X-A).
+$$
+
+a. Use the assignments to find
+
+$$
+E[A\mid X,Z]
+$$
+
+and
+
+$$
+E[Y\mid X,A].
+$$
+
+b. Use the assignments to decompose
+
+$$
+P(X=x,Z=z,A=a,Y=y).
+$$
+
+For each factor, explain how the corresponding assignment tells you which variables belong after the conditioning bar.
+
+c. Use your decomposition to calculate
+
+$$
+P(X=1,Z=0,A=1,Y=2).
+$$
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. Because $A$ is binary, its conditional expectation is its conditional probability of equaling one. The assignment for $A$ gives
+
+$$
+E[A\mid X,Z]
+=P(A=1\mid X,Z)
+=0.2+0.2X+0.2Z.
+$$
+
+The mean of a Poisson random variable is its parameter. The assignment for $Y$ therefore gives
+
+$$
+E[Y\mid X,A]=2+X-A.
+$$
+
+b. The assignments give
+
+$$
+\begin{aligned}
+&P(X=x,Z=z,A=a,Y=y)\\
+&\quad=P(X=x)
+P(Z=z)
+P(A=a\mid X=x,Z=z)
+P(Y=y\mid X=x,A=a).
+\end{aligned}
+$$
+
+The assignment for $X$ does not use any of the other variables, so its factor is $P(X=x)$. The assignment for $Z$ also does not use another variable, so its factor is $P(Z=z)$. The assignment for $A$ uses $X$ and $Z$, so its factor conditions on both. The assignment for $Y$ uses $X$ and $A$, so its factor conditions on those two variables but not on $Z$.
+
+c. The assignments give
+
+$$
+P(X=1)=0.5
+$$
+
+and
+
+$$
+P(Z=0)=0.6.
+$$
+
+When $X=1$ and $Z=0$,
+
+$$
+P(A=1\mid X=1,Z=0)
+=0.2+0.2(1)+0.2(0)
+=0.4.
+$$
+
+When $X=1$ and $A=1$, the assignment for $Y$ becomes
+
+$$
+Y\leftarrow\operatorname{Poisson}(2).
+$$
+
+Therefore,
+
+$$
+P(Y=2\mid X=1,A=1)
+=\frac{e^{-2}2^2}{2!}.
+$$
+
+Putting the four pieces together gives
+
+$$
+\begin{aligned}
+&P(X=1,Z=0,A=1,Y=2)\\
+&\quad=(0.5)(0.6)(0.4)\frac{e^{-2}2^2}{2!}\\
+&\quad\approx0.0325.
+\end{aligned}
+$$
+:::

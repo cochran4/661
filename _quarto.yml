@@ -14,10 +14,12 @@ book:
         - 01b-why-probability-is-not-enough.qmd
         - 01c-clinical-trials.qmd
         - 01d-probability.qmd
-        - 01e-exercises.qmd
+        - 01-exercises.qmd
     - part: "Construction"
       chapters:
-        - 02a-structural-equation-models.qmd
+        - 02a-assignments-and-generating-data.qmd
+        - 02b-structural-causal-models.qmd
+        - 02-exercises.qmd
     - part: "Measured confounding"
       chapters: []
     - part: "Unmeasured confounding"
@@ -51,11 +53,15 @@ book:
           - text: "Probability gives us a formal language"
             file: 01d-probability.qmd
           - text: "Exercises"
-            file: 01e-exercises.qmd
+            file: 01-exercises.qmd
       - text: "Construction"
         menu:
-          - text: "Structural equation models tell a story"
-            file: 02a-structural-equation-models.qmd
+          - text: "A list of assignments"
+            file: 02a-assignments-and-generating-data.qmd
+          - text: "Structural causal models"
+            file: 02b-structural-causal-models.qmd
+          - text: "Exercises"
+            file: 02-exercises.qmd
       - text: "Back matter"
         menu:
           - text: "Glossary"
@@ -69,6 +75,9 @@ book:
 
 bibliography: references.bib
 link-citations: true
+
+filters:
+  - _filters/glossary-tooltips.lua
 
 format:
   html:

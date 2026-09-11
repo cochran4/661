@@ -1,0 +1,74 @@
+---
+title: "Structural causal models"
+---
+
+So far, we have specified everything. We gave each variable a name, stated exactly which distribution was assigned to it, and supplied every number needed to generate data. For example, we assigned $X$ a $\operatorname{Bernoulli}(0.4)$ random variable and assigned $Y$ a Bernoulli random variable with probability $0.1+0.3X$.
+
+We usually do not know the world's assignments this precisely. We may believe that $X$ is used to create $Y$ without knowing the exact rule the world uses. We need notation that retains what we are willing to say about the structure while leaving the unknown parts unspecified. We write
+
+$$
+X\leftarrow f_X(U_X)
+$$
+
+and
+
+$$
+Y\leftarrow f_Y(X,U_Y).
+$$
+
+The first assignment says that some rule $f_X$ uses an additional input $U_X$ to generate $X$. The second says that some rule $f_Y$ uses $X$ and an additional input $U_Y$ to generate $Y$. We have left the rules unspecified, but we have not said nothing. In particular, we have said that $X$ is an input to the assignment for $Y$.
+
+The same idea extends to any number of variables.
+
+::: {.definition-box}
+**Structural causal model.** Suppose the variables we want to describe are collected in $\mathbf V=(V_1,\ldots,V_K)$. A structural causal model consists of the variables $\mathbf V$, additional inputs $\mathbf U=(U_1,\ldots,U_K)$, one structural assignment for each variable,
+
+$$
+V_j\leftarrow f_j(\operatorname{pa}_j,U_j),
+\qquad j=1,\ldots,K.
+$$
+
+and a joint probability distribution for the additional inputs $\mathbf U$.
+
+The variables in $\operatorname{pa}_j$ are the other variables used as inputs to the assignment for $V_j$. We call them the **parents** of $V_j$. The input $U_j$ contains whatever else the world uses to generate $V_j$. The function $f_j$ tells us how these inputs are combined.
+
+We restrict attention to structural causal models whose assignments admit a topological order.
+:::
+
+For example, the fully specified two-variable clinic model can be recovered by taking independent random variables $U_X,U_Y\sim\operatorname{Uniform}(0,1)$ and specifying the functions as
+
+$$
+X\leftarrow1_{\{U_X\leq0.4\}},
+$$
+
+$$
+Y\leftarrow1_{\{U_Y\leq0.1+0.3X\}}.
+$$
+
+The first assignment produces the required $\operatorname{Bernoulli}(0.4)$ variable. The second produces a Bernoulli variable whose probability is $0.1+0.3X$.
+
+This example specifies the functions completely. We could instead restrict them to a particular family indexed by a limited collection of unknown parameters. That gives us a **parametric structural causal model**. A linear or logistic regression model can provide one such parametric assignment.
+
+With simulated data, we know the assignments because we chose them. With observed data, the problem runs in the other direction. We observe the data and try to propose a plausible story for how the variables were generated. The right heart catheterization study gives us a concrete setting in which to do this.
+
+::: {.example-intro}
+<span class="example-label">Case study: Right heart catheterization</span>
+
+Between 1989 and 1994, the Study to Understand Prognoses and Preferences for Outcomes and Risks of Treatments followed critically ill adults receiving care in five teaching hospitals in the United States. In 1996, Connors and colleagues used data from 5,735 of these patients to study right heart catheterization, a procedure used to measure cardiac function [@connors1996].
+
+The data are available through the [Vanderbilt University Department of Biostatistics dataset repository](https://hbiostat.org/data/). The repository provides a [description of the study and dataset](https://hbiostat.org/data/repo/rhc), a [direct link to the CSV file](https://hbiostat.org/data/repo/rhc.csv), and [documentation for the variables and their coding](https://hbiostat.org/data/repo/crhc). We will use these data to propose regression models for particular assignments and compare the patterns those models generate with the patterns in the observed data.
+:::
+
+Or we can make the larger leap above. We can assert that the functions exist and state which inputs they use without choosing a particular functional form. This gives us a **nonparametric structural causal model**. Nonparametric does not mean assumption-free. The model still says which variables are inputs to each assignment, that the assignments have a topological order, and how the additional inputs are related. It leaves the particular forms of the functions unrestricted.
+
+When the additional inputs $U_1,\ldots,U_K$ are mutually independent, the model is called a **nonparametric structural equation model with independent errors**, or NPSEM-IE. This is the general structural causal model we will use to construct graphs and potential outcomes in the sections that follow.
+
+::: {.callout-note title="Technical note on our starting point" collapse="true"}
+There are several formal languages for causality. They are often logically equivalent for the problems we consider, but they can differ in where they begin, which assumptions they make most visible, the notation they use, and the range of problems they were built to handle.
+
+The potential-outcomes framework begins with variables such as $Y(a)$. Someone who has worked with potential outcomes for a long time may have no trouble stating assumptions directly in this language without first describing how the data came about or drawing a graph. If that works for you, by all means do it.
+
+I have gotten stuck doing that. On several occasions, I did not get to the "aha!" until I first described how I thought the world had created the data. Once I wrote down that process and drew the corresponding graph, I could see the assumptions I was making. I could then translate those assumptions into potential-outcome language.
+
+We begin with Pearl's NPSEM-IE and the graph it generates. Richardson and Robins show how potential outcomes can be constructed from these assignments and represented in graphs. We are closest in spirit to this approach. We use the structural model and its graph as a transparent place to hold our assumptions, and we use potential outcomes as a flexible language for expressing our causal questions.
+:::

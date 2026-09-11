@@ -66,6 +66,10 @@ The risk of an outcome among exposed people divided by the risk among unexposed 
 
 A reversal in which the direction of an association in the combined data is opposite to its direction within groups defined by a third variable.
 
+**Topological order**
+
+An ordering of a list of random variables, with one assignment for each variable, in which every variable used in an assignment appears earlier in the list.
+
 **Unbiased estimator**
 
 An estimator whose expected value under a probability model equals the quantity it is intended to estimate.
