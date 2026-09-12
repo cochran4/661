@@ -10,19 +10,35 @@ A second source of fuzziness is that causal questions ask us to imagine somethin
 
 We need to bring this fuzziness into focus. More importantly, we need a framework precise enough that we know what one another mean when we make a causal claim.
 
+<div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
+
 ## Writing the story as assignments
 
 We begin by telling a story about how the world generated our data. For now, our story is simply a list describing how each variable gets its value and which other variables might be involved.
 
 This is not such a crazy idea. Whenever we try to explain a public-health problem, we already think about what happened, what happened next, and which conditions might have shaped what happened. Telling a good story can certainly be difficult. The world is complicated, and our story will inevitably leave things out. Still, putting the story into words gives us somewhere to start.
 
-Suppose our data contain a person's age, whether the person received an influenza vaccine, and whether the person developed influenza during the following season. We might tell the following story.
+::: {.example-intro}
+<span class="example-label">Wildfire-smoke and asthma model</span>
 
-1. First, the world gives us the person's age.
-2. Next, the person either receives the vaccine or does not. Age may help determine whether vaccination occurs because vaccine recommendations, access to care, and decisions about vaccination can differ by age.
-3. Finally, the person either develops influenza or does not. That result may depend on age and vaccination, together with exposures and other features we have not recorded.
+Suppose our data record whether a person's area experiences unhealthy wildfire-smoke levels, whether the person stays indoors during the period of unhealthy air, and whether the person experiences an asthma exacerbation later that day. Let $X$ indicate whether the person's area experiences unhealthy wildfire-smoke levels, let $A$ indicate whether the person stays indoors during the period of unhealthy air, and let $Y$ indicate whether the person experiences an asthma exacerbation later that day.
+:::
 
-The list is important. Each step describes how one variable gets its value, and that value may depend on other variables in the list.
+We might tell the following story.
+
+1. First, the world generates whether the person's area experiences unhealthy wildfire-smoke levels.
+2. Next, the person either stays indoors during the period of unhealthy air or does not. This may depend on the smoke level, together with work, housing, caregiving responsibilities, and other circumstances we have not recorded.
+3. Finally, the person either experiences an asthma exacerbation or does not. This may depend on the smoke level and whether the person stayed indoors, together with other factors we have not recorded.
+
+The word *list* is important. In everyday life, we may not care whether eggs appear at the top or bottom of a grocery list. In mathematics, the order is part of the list. Our story therefore says not only how the variables get their values, but also the order in which that happens. If we change the order, we change the story.
+
+Sometimes several variables play the same role in our story. Suppose we record whether a person's area experiences unhealthy wildfire-smoke levels and whether it experiences extreme heat that day. Both are environmental conditions that are present before the person decides whether to stay indoors. We may not care to place smoke before heat in our story, or heat before smoke. We can instead collect them in the random vector
+
+$$
+\mathbf X=(X_{\text{smoke}},X_{\text{heat}})
+$$
+
+and place them together at one point in our story. One item in our list could simply say that the world gives us the environmental conditions in the person's area. Later items could use either or both components of $\mathbf X$. Collecting variables in this way lets the story reflect the common role they play without forcing an order between them.
 
 <details class="lesson-question">
 <summary>A hypertension study records systolic blood pressure at a patient's first visit, whether medication is prescribed at that visit, and systolic blood pressure three months later. Tell a story for how the world generated these three variables. Your story should say what is generated at each step and which other variables might be used.</summary>
@@ -33,25 +49,7 @@ First, the world gives us systolic blood pressure at the first visit. Next, the 
 
 We can make a story told in words more precise by writing each step as an assignment. An assignment tells us how one variable gets its value, possibly using the values of other variables.
 
-::: {.example-intro}
-<span class="example-label">Two-variable clinic model</span>
-
-Suppose $X$ records whether a patient is classified as high risk when arriving at a clinic and $Y$ records whether the patient is admitted to the hospital. We will say that the world first generates $X$ and then uses $X$ to generate $Y$. As an example, we might write
-
-$$
-X\leftarrow\operatorname{Bernoulli}(0.5)
-$$
-
-and
-
-$$
-Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X).
-$$
-
-The first assignment places a $\operatorname{Bernoulli}(0.5)$ random variable into $X$. The second places a Bernoulli random variable into $Y$ whose probability depends on $X$.
-:::
-
-We will be careful not to treat assignments as ordinary equations. An assignment is a procedure. We use a left arrow, $\leftarrow$, to write one. The procedure takes whatever appears on the right and places it into the variable on the left. For example, the assignment
+We will be careful not to treat assignments as ordinary equations. An assignment is a procedure. We use a left arrow, $\leftarrow$, to be very clear about this point. The procedure takes whatever appears on the right and places it into the variable on the left. For example, the assignment
 
 $$
 x\leftarrow4
@@ -89,10 +87,7 @@ $$
 
 These statements cannot both be true. In fact, the second is false for every real value of $x$. The arrow and the equal sign do different jobs.
 
-::: {.example-intro}
-<span class="example-label">Three-variable clinic model</span>
-
-We can expand the clinic model by adding $A$, which indicates whether the patient receives intensive monitoring. Consider
+Return to the wildfire-smoke and asthma model. We write its assignments as
 
 $$
 X\leftarrow\operatorname{Bernoulli}(0.5),
@@ -103,42 +98,21 @@ A\leftarrow\operatorname{Bernoulli}(0.4+0.2X),
 $$
 
 $$
-Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X+0.2A).
+Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X-0.1A).
 $$
 
-The probability of intensive monitoring depends on $X$. The probability of admission depends on both $X$ and $A$.
-:::
+The probability of unhealthy smoke is $0.5$. The probability of staying indoors is $0.4$ without unhealthy smoke and $0.6$ with unhealthy smoke. The probability of an asthma exacerbation increases with unhealthy smoke and decreases when the person stays indoors. These probabilities are invented for our example rather than estimated from a particular study.
 
-Sometimes several variables play the same role in our story. Suppose, for example, that we record a patient's systolic blood pressure and cholesterol at the beginning of the study. Both are baseline characteristics. We may not care to place blood pressure before cholesterol in our story, or cholesterol before blood pressure. Instead, we can generate them together and collect them in
-
-$$
-\mathbf X=(X_{\text{blood pressure}},X_{\text{cholesterol}}).
-$$
-
-Here, $\mathbf X$ is not a single real-valued random variable. It is a random vector whose components are themselves random variables. For example, one line in our list could be
-
-$$
-\begin{pmatrix}
-X_{\text{blood pressure}}\\
-X_{\text{cholesterol}}
-\end{pmatrix}
-\leftarrow
-\operatorname{Normal}_2\left\{
-\begin{pmatrix}120\\200\end{pmatrix},
-\begin{pmatrix}225&225\\225&900\end{pmatrix}
-\right\}.
-$$
-
-This one assignment draws both baseline variables together. The off-diagonal values allow blood pressure and cholesterol to be related without placing either one before the other in our list. Later assignments can use either or both components of $\mathbf X$. Collecting them together lets the story reflect the common role they play without forcing an order between them.
+<div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
 
 ## Ordering the assignments
 
-A collection of assignments can often be read as the world's recipe for generating the data. This is much like writing code to simulate data ourselves, with each line of code telling us how to generate one variable. Consider again the three-variable clinic model in which $X$ is risk classification, $A$ is intensive monitoring, and $Y$ is hospital admission. If your professor asked you to write code that generates one observation from this model, each line of code would carry out one assignment.
+A collection of assignments can often be read as the world's recipe for generating the data. This is much like writing code to simulate data ourselves, with each line of code telling us how to generate one variable. Consider again the wildfire-smoke and asthma model. If your professor asked you to write code that generates one observation from this model, each line of code would carry out one assignment.
 
 ```r
 X <- rbinom(1, size = 1, prob = 0.5)
 A <- rbinom(1, size = 1, prob = 0.4 + 0.2 * X)
-Y <- rbinom(1, size = 1, prob = 0.3 + 0.2 * X + 0.2 * A)
+Y <- rbinom(1, size = 1, prob = 0.3 + 0.2 * X - 0.1 * A)
 ```
 
 The first line draws one realization from a $\operatorname{Bernoulli}(0.5)$ random variable and places that realized value into `X`. The second line uses the value in `X` to determine the Bernoulli random variable for $A$, draws one realization from it, and places that value into `A`. The third line does the same for $Y$, using the realized values in `X` and `A`. Running all three assignments once produces one row of data. Running them repeatedly produces an entire dataset.
@@ -154,7 +128,7 @@ X\leftarrow\operatorname{Bernoulli}(0.5),
 $$
 
 $$
-Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X+0.2A).
+Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X-0.1A).
 $$
 
 Code that follows this ordering would begin as follows.
@@ -162,7 +136,7 @@ Code that follows this ordering would begin as follows.
 ```r
 A <- rbinom(1, size = 1, prob = 0.4 + 0.2 * X)
 X <- rbinom(1, size = 1, prob = 0.5)
-Y <- rbinom(1, size = 1, prob = 0.3 + 0.2 * X + 0.2 * A)
+Y <- rbinom(1, size = 1, prob = 0.3 + 0.2 * X - 0.1 * A)
 ```
 
 <details class="lesson-question">
@@ -172,9 +146,7 @@ It breaks on the first line. To draw the Bernoulli realization placed into `A`, 
 
 </details>
 
-The two pieces of code contain the same three assignments, but they do not tell the same story. The assignments appear in different orders. In everyday life, we may not care whether eggs appear at the top or bottom of a grocery list. When mathematicians talk about a list, they include the order of its items. Changing the order therefore changes the list of assignments and the story it tells.
-
-The order becomes especially important when we read the list as an algorithm. The first ordering can be carried out from top to bottom. The second cannot because it tries to use $X$ before a value has been placed into it. Some orderings allow us to work through all the assignments from top to bottom, while others do not.
+This is where the order already built into our story becomes especially important. The first ordering can be carried out from top to bottom. The second cannot because it tries to use $X$ before a value has been placed into it. Some orderings allow us to work through all the assignments from top to bottom, while others do not.
 
 Being able to carry out every assignment top to bottom is such an important idea that we give it a definition:
 
@@ -186,7 +158,7 @@ Being able to carry out every assignment top to bottom is such an important idea
 We assume that the assignments can be placed in at least one topological order. This assumption allows us to read the assignments as an algorithm for generating the variables.
 :::
 
-Return to the three-variable clinic model. Its assignments have exactly one topological order, $X,A,Y$. We must generate $X$ before $A$ because the assignment for $A$ uses $X$. We must then generate both $X$ and $A$ before $Y$ because the assignment for $Y$ uses them both.
+Return to the wildfire-smoke and asthma model. Its assignments have exactly one topological order, $X,A,Y$. We must generate $X$ before $A$ because the assignment for $A$ uses $X$. We must then generate both $X$ and $A$ before $Y$ because the assignment for $Y$ uses them both.
 
 This example has a unique topological order, but that is not always the case. A collection of assignments can have one topological order, several topological orders, or no topological order at all.
 
@@ -275,34 +247,41 @@ The assignment for $W$ uses $X$, the assignment for $A$ uses $W$, and the assign
 Requiring a topological order is a restriction on the collection of assignments we consider. Some collections contain feedback or cycles and cannot be carried out by moving through the variables once in a topological order. Those models can be useful, but we will not consider them in this book. From this point forward, at least one topological order exists, and we are allowed to read the assignments as a top-to-bottom algorithm for generating the variables.
 :::
 
+<div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
+
 ## Generating a dataset
 
-The assignments can describe how one might generate samples of our random variables. Return to the two-variable clinic model. We begin by drawing a value from the $\operatorname{Bernoulli}(0.5)$ random variable assigned to $X$. Suppose this draw gives us $x=1$.
-
-That value tells us which Bernoulli random variable is assigned to $Y$.
+The assignments can describe how one might generate samples of our random variables. Return to the wildfire-smoke and asthma model. We first draw from the $\operatorname{Bernoulli}(0.5)$ random variable assigned to $X$. Suppose this draw gives us $x=1$. The next assignment becomes
 
 $$
-Y\leftarrow\operatorname{Bernoulli}\{0.3+0.2(1)\}
-=\operatorname{Bernoulli}(0.5).
+A\leftarrow\operatorname{Bernoulli}\{0.4+0.2(1)\}
+=\operatorname{Bernoulli}(0.6).
 $$
 
-We then draw a value from this $\operatorname{Bernoulli}(0.5)$ random variable. Suppose the draw gives us $y=1$. One trip through the two assignments has generated the pair $(x,y)=(1,1)$.
+Suppose this draw gives us $a=1$. The final assignment becomes
+
+$$
+Y\leftarrow\operatorname{Bernoulli}\{0.3+0.2(1)-0.1(1)\}
+=\operatorname{Bernoulli}(0.4).
+$$
+
+Suppose the last draw gives us $y=0$. One trip through the three assignments has generated the observation $(x,a,y)=(1,1,0)$.
 
 <details class="lesson-question">
-<summary>Suppose the first assignment instead gives us $x=0$. Which random variable do we draw from to generate $y$, and what pairs $(x,y)$ could we obtain?</summary>
+<summary>Suppose the first two assignments give us $x=0$ and $a=0$. Which random variable do we draw from to generate $y$, and what observations $(x,a,y)$ could we obtain?</summary>
 
-We substitute the realized value $x=0$ into the second assignment.
+We substitute the realized values $x=0$ and $a=0$ into the assignment for $Y$.
 
 $$
-Y\leftarrow\operatorname{Bernoulli}\{0.3+0.2(0)\}
+Y\leftarrow\operatorname{Bernoulli}\{0.3+0.2(0)-0.1(0)\}
 =\operatorname{Bernoulli}(0.3).
 $$
 
-We draw $y$ from a $\operatorname{Bernoulli}(0.3)$ random variable. The draw can give us $y=1$, producing $(x,y)=(0,1)$, or $y=0$, producing $(x,y)=(0,0)$.
+We draw $y$ from a $\operatorname{Bernoulli}(0.3)$ random variable. The draw can give us $y=1$, producing $(x,a,y)=(0,0,1)$, or $y=0$, producing $(x,a,y)=(0,0,0)$.
 
 </details>
 
-Return again to the three-variable clinic model. Its three assignments generate one observation $(X,A,Y)$. Repeating them turns one observation into a dataset. For a sample of $n$ people, we write the variables in row $i$ as
+The three assignments generate one observation $(X,A,Y)$. Repeating them turns one observation into a dataset. For a sample of $n$ people, we write the variables in row $i$ as
 
 $$
 X_i,\qquad A_i,\qquad Y_i.
@@ -313,24 +292,24 @@ For each person, we generate $X_i$, then $A_i$, and then $Y_i$. Repeating this p
 The following code follows the three assignments 10,000 times. Each trip through the list is independent of the others and produces a new row. The first 100 rows form one dataset, the first 1,000 rows form a larger dataset, and all 10,000 rows form a still larger dataset generated by the same assignments.
 
 ```{r}
-#| label: generate-clinic-data
+#| label: generate-wildfire-data
 #| output: false
 set.seed(661)
 n <- 10000
 
 X <- rbinom(n, size = 1, prob = 0.5)
 A <- rbinom(n, size = 1, prob = 0.4 + 0.2 * X)
-Y <- rbinom(n, size = 1, prob = 0.3 + 0.2 * X + 0.2 * A)
+Y <- rbinom(n, size = 1, prob = 0.3 + 0.2 * X - 0.1 * A)
 
-clinic_data <- data.frame(X, A, Y)
+wildfire_data <- data.frame(X, A, Y)
 ```
 
 Here are the first few rows. Each row records one trip through the assignments.
 
 ```{r}
 #| echo: false
-#| tbl-cap: "The first six observations generated by the clinic assignments."
-knitr::kable(head(clinic_data))
+#| tbl-cap: "The first six observations generated by the wildfire-smoke and asthma assignments."
+knitr::kable(head(wildfire_data))
 ```
 
 Because $X$, $A$, and $Y$ are binary, each row must be one of eight possible combinations. We can count how often every combination occurs in the first 100 rows, the first 1,000 rows, and all 10,000 rows.
@@ -349,13 +328,15 @@ count_combinations <- function(data) {
 }
 
 combination_counts <- expand.grid(X = 0:1, A = 0:1, Y = 0:1)
-combination_counts$`First 100 rows` <- count_combinations(clinic_data[1:100, ])
-combination_counts$`First 1,000 rows` <- count_combinations(clinic_data[1:1000, ])
-combination_counts$`All 10,000 rows` <- count_combinations(clinic_data)
+combination_counts$`First 100 rows` <- count_combinations(wildfire_data[1:100, ])
+combination_counts$`First 1,000 rows` <- count_combinations(wildfire_data[1:1000, ])
+combination_counts$`All 10,000 rows` <- count_combinations(wildfire_data)
 knitr::kable(combination_counts)
 ```
 
 The assignments have now given us one person, 100 people, 1,000 people, and 10,000 people in exactly the same way. Next, we will use these generated datasets to help us think about the probabilities implied by the assignments.
+
+<div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
 
 ## Assignments determine the probability model
 
@@ -397,6 +378,8 @@ $$
 E[X]=P(X=1)=0.5.
 $$
 
+In our story, this is the probability that the person's area experiences unhealthy wildfire-smoke levels.
+
 **The assignment for $A$.** The second assignment is
 
 $$
@@ -421,29 +404,33 @@ $$
 E[A\mid X]=P(A=1\mid X)=0.4+0.2X.
 $$
 
+In our story, this is the probability that the person stays indoors, given whether the person's area experiences unhealthy smoke.
+
 **The assignment for $Y$.** The third assignment is
 
 $$
-Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X+0.2A).
+Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X-0.1A).
 $$
 
 This assignment gives us the distribution of $Y$ after we know both $X$ and $A$. For any $x,a\in\{0,1\}$,
 
 $$
-P(Y=1\mid X=x,A=a)=0.3+0.2x+0.2a
+P(Y=1\mid X=x,A=a)=0.3+0.2x-0.1a
 $$
 
 and
 
 $$
-P(Y=0\mid X=x,A=a)=0.7-0.2x-0.2a.
+P(Y=0\mid X=x,A=a)=0.7-0.2x+0.1a.
 $$
 
 Once again, the probability of one is also the conditional expectation.
 
 $$
-E[Y\mid X,A]=P(Y=1\mid X,A)=0.3+0.2X+0.2A.
+E[Y\mid X,A]=P(Y=1\mid X,A)=0.3+0.2X-0.1A.
 $$
+
+In our story, this is the probability of an asthma exacerbation, given the smoke level and whether the person stays indoors.
 
 We can now use these three pieces to calculate the probability of a particular combination. Consider $X=1$, $A=1$, and $Y=1$. The assignments give us
 
@@ -458,19 +445,19 @@ $$
 and
 
 $$
-P(Y=1\mid X=1,A=1)=0.7.
+P(Y=1\mid X=1,A=1)=0.4.
 $$
 
 Watch what happens when we multiply them.
 
 $$
-(0.5)(0.6)(0.7)=0.21.
+(0.5)(0.6)(0.4)=0.12.
 $$
 
 This product is exactly the probability of the combination we started with.
 
 $$
-P(X=1,A=1,Y=1)=0.21.
+P(X=1,A=1,Y=1)=0.12.
 $$
 
 As a second example, consider $X=0$, $A=0$, and $Y=1$. The assignments give us
@@ -506,12 +493,12 @@ The proportions of rows with these combinations gave us concrete guesses for the
 |---:|---:|---:|---:|
 | 0 | 0 | 0 | 0.21 |
 | 0 | 0 | 1 | 0.09 |
-| 0 | 1 | 0 | 0.10 |
-| 0 | 1 | 1 | 0.10 |
+| 0 | 1 | 0 | 0.16 |
+| 0 | 1 | 1 | 0.04 |
 | 1 | 0 | 0 | 0.10 |
 | 1 | 0 | 1 | 0.10 |
-| 1 | 1 | 0 | 0.09 |
-| 1 | 1 | 1 | 0.21 |
+| 1 | 1 | 0 | 0.18 |
+| 1 | 1 | 1 | 0.12 |
 
 The proportions from the generated datasets should be close to these probabilities. They will not match them exactly because the realized values change each time we generate a dataset. As we move from 100 to 1,000 to 10,000 rows, the proportions generally settle closer to the exact probabilities.
 
@@ -636,7 +623,7 @@ The assignment for $W$ does not use $X$, so its factor does not condition on $X$
 
 The factorization is the probability version of the same procedure we used to generate a row of data. A complicated joint distribution is assembled from the simpler distributions supplied by the individual assignments.
 
-The same decomposition applies when not all the variables are discrete. Suppose $X$ indicates whether a patient is classified as high risk, $A$ indicates whether the patient receives intensive monitoring, and $Y$ is systolic blood pressure at a later visit. Consider the assignments
+The same decomposition applies when not all the variables are discrete. Return to the wildfire-smoke and asthma model, but now let $Y$ be the person's peak expiratory flow later that day rather than an indicator of an asthma exacerbation. Consider the assignments
 
 $$
 X\leftarrow\operatorname{Bernoulli}(0.5),
@@ -647,41 +634,43 @@ A\leftarrow\operatorname{Bernoulli}(0.4+0.2X),
 $$
 
 $$
-Y\leftarrow\operatorname{Normal}(120+10X-5A,100).
+Y\leftarrow\operatorname{Normal}(400-50X+20A,900).
 $$
 
 The assignment for $Y$ tells us both its conditional mean and its entire conditional distribution. Its conditional mean is
 
 $$
-E[Y\mid X,A]=120+10X-5A.
+E[Y\mid X,A]=400-50X+20A.
 $$
 
 This should look familiar. It is a linear regression function for $Y$ given $X$ and $A$. The assignment says more than the regression function alone. It also specifies that the conditional distribution of $Y$ is normal with variance $100$.
 
-For example, consider the probability that $X=1$, $A=1$, and $Y$ lies between $120$ and $130$. We can decompose this joint probability as
+For example, consider the probability that $X=1$, $A=1$, and $Y$ lies between $340$ and $400$. We can decompose this joint probability as
 
 $$
 \begin{aligned}
-&P(X=1,A=1,120\leq Y\leq130)\\
+&P(X=1,A=1,340\leq Y\leq400)\\
 &\qquad=P(X=1)
 P(A=1\mid X=1)
-P(120\leq Y\leq130\mid X=1,A=1).
+P(340\leq Y\leq400\mid X=1,A=1).
 \end{aligned}
 $$
 
-The first two assignments give us $0.5$ and $0.6$. When $X=1$ and $A=1$, the third assignment places a $\operatorname{Normal}(125,100)$ random variable into $Y$. Therefore,
+The first two assignments give us $0.5$ and $0.6$. When $X=1$ and $A=1$, the third assignment places a $\operatorname{Normal}(370,900)$ random variable into $Y$. Therefore,
 
 $$
 \begin{aligned}
-&P(X=1,A=1,120\leq Y\leq130)\\
+&P(X=1,A=1,340\leq Y\leq400)\\
 &\qquad=(0.5)(0.6)
-P\{120\leq\operatorname{Normal}(125,100)\leq130\}\\
-&\qquad\approx(0.5)(0.6)(0.383)\\
-&\qquad\approx0.115.
+P\{340\leq\operatorname{Normal}(370,900)\leq400\}\\
+&\qquad\approx(0.5)(0.6)(0.683)\\
+&\qquad\approx0.205.
 \end{aligned}
 $$
 
 The outcome is continuous, so we ask for the probability that $Y$ falls in an interval rather than the probability that it equals one particular value. The decomposition otherwise follows the assignments in the same way.
+
+<div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
 
 We need to be clear about where the causal claim enters. Writing down a list of assignments does not, by itself, make that list causal. Given the same joint distribution of $X$ and $Y$, we can generate $X$ first and then $Y$, or generate $Y$ first and then $X$. Both lists can reproduce exactly the same data. The causal claim enters when we choose one of these lists and say, “This is the one the world actually followed.” If we say that the world generated $X$ and then used $X$ to generate $Y$, we are making an assumption that cannot be learned from the joint distribution alone.
 

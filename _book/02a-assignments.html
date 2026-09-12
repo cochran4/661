@@ -194,7 +194,7 @@ window.Quarto = {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-construction">    
         <li>
-    <a class="dropdown-item" href="./02a-assignments-and-generating-data.html">
+    <a class="dropdown-item" href="./02a-assignments.html">
  <span class="dropdown-text">A list of assignments</span></a>
   </li>  
         <li>
@@ -233,7 +233,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments-and-generating-data.html">Construction</a></li><li class="breadcrumb-item"><a href="./02a-assignments-and-generating-data.html"><span class="chapter-title">A list of assignments</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments.html">Construction</a></li><li class="breadcrumb-item"><a href="./02a-assignments.html"><span class="chapter-title">A list of assignments</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -302,7 +302,7 @@ window.Quarto = {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02a-assignments-and-generating-data.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">A list of assignments</span></a>
+  <a href="./02a-assignments.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">A list of assignments</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -367,7 +367,7 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments-and-generating-data.html">Construction</a></li><li class="breadcrumb-item"><a href="./02a-assignments-and-generating-data.html"><span class="chapter-title">A list of assignments</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments.html">Construction</a></li><li class="breadcrumb-item"><a href="./02a-assignments.html"><span class="chapter-title">A list of assignments</span></a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title"><span class="chapter-title">A list of assignments</span></h1>
 </div>
@@ -390,17 +390,29 @@ window.Quarto = {
 <p>One source of this fuzziness is that people have different ideas about what a cause must do. Some people think the outcome must never occur without the cause. Others think the cause must always be followed by the outcome. Still others reserve the word cause for whatever acts most directly on the outcome. Consider what these different notions imply about smoking and lung cancer. Lung cancer can occur in someone who never smoked, many people who smoke never develop lung cancer, and smoking produces cancer through intermediate changes in the body. Depending on which notion we use, any of these facts might lead someone to say that smoking does not cause lung cancer.</p>
 <p>A second source of fuzziness is that causal questions ask us to imagine something we cannot observe. We have to imagine what would happen if the same person received a different treatment, even though we can observe only the treatment the person actually received. In effect, we have to imagine a parallel universe or a metaverse. That can feel more like science fiction than science. Yet this imagined comparison is at the heart of the causal questions we want to ask.</p>
 <p>We need to bring this fuzziness into focus. More importantly, we need a framework precise enough that we know what one another mean when we make a causal claim.</p>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
+</div>
 <section id="writing-the-story-as-assignments" class="level2">
 <h2 class="anchored" data-anchor-id="writing-the-story-as-assignments">Writing the story as assignments</h2>
 <p>We begin by telling a story about how the world generated our data. For now, our story is simply a list describing how each variable gets its value and which other variables might be involved.</p>
 <p>This is not such a crazy idea. Whenever we try to explain a public-health problem, we already think about what happened, what happened next, and which conditions might have shaped what happened. Telling a good story can certainly be difficult. The world is complicated, and our story will inevitably leave things out. Still, putting the story into words gives us somewhere to start.</p>
-<p>Suppose our data contain a person’s age, whether the person received an influenza vaccine, and whether the person developed influenza during the following season. We might tell the following story.</p>
+<div class="example-intro">
+<p><span class="example-label">Wildfire-smoke and asthma model</span></p>
+<p>Suppose our data record whether a person’s area experiences unhealthy wildfire-smoke levels, whether the person stays indoors during the period of unhealthy air, and whether the person experiences an asthma exacerbation later that day. Let <span class="math inline">\(X\)</span> indicate whether the person’s area experiences unhealthy wildfire-smoke levels, let <span class="math inline">\(A\)</span> indicate whether the person stays indoors during the period of unhealthy air, and let <span class="math inline">\(Y\)</span> indicate whether the person experiences an asthma exacerbation later that day.</p>
+</div>
+<p>We might tell the following story.</p>
 <ol type="1">
-<li>First, the world gives us the person’s age.</li>
-<li>Next, the person either receives the vaccine or does not. Age may help determine whether vaccination occurs because vaccine recommendations, access to care, and decisions about vaccination can differ by age.</li>
-<li>Finally, the person either develops influenza or does not. That result may depend on age and vaccination, together with exposures and other features we have not recorded.</li>
+<li>First, the world generates whether the person’s area experiences unhealthy wildfire-smoke levels.</li>
+<li>Next, the person either stays indoors during the period of unhealthy air or does not. This may depend on the smoke level, together with work, housing, caregiving responsibilities, and other circumstances we have not recorded.</li>
+<li>Finally, the person either experiences an asthma exacerbation or does not. This may depend on the smoke level and whether the person stayed indoors, together with other factors we have not recorded.</li>
 </ol>
-<p>The list is important. Each step describes how one variable gets its value, and that value may depend on other variables in the list.</p>
+<p>The word <em>list</em> is important. In everyday life, we may not care whether eggs appear at the top or bottom of a grocery list. In mathematics, the order is part of the list. Our story therefore says not only how the variables get their values, but also the order in which that happens. If we change the order, we change the story.</p>
+<p>Sometimes several variables play the same role in our story. Suppose we record whether a person’s area experiences unhealthy wildfire-smoke levels and whether it experiences extreme heat that day. Both are environmental conditions that are present before the person decides whether to stay indoors. We may not care to place smoke before heat in our story, or heat before smoke. We can instead collect them in the random vector</p>
+<p><span class="math display">\[
+\mathbf X=(X_{\text{smoke}},X_{\text{heat}})
+\]</span></p>
+<p>and place them together at one point in our story. One item in our list could simply say that the world gives us the environmental conditions in the person’s area. Later items could use either or both components of <span class="math inline">\(\mathbf X\)</span>. Collecting variables in this way lets the story reflect the common role they play without forcing an order between them.</p>
 <details class="lesson-question">
 <summary>
 A hypertension study records systolic blood pressure at a patient’s first visit, whether medication is prescribed at that visit, and systolic blood pressure three months later. Tell a story for how the world generated these three variables. Your story should say what is generated at each step and which other variables might be used.
@@ -408,19 +420,7 @@ A hypertension study records systolic blood pressure at a patient’s first visi
 <p>First, the world gives us systolic blood pressure at the first visit. Next, the patient either receives a medication prescription or does not. The first blood-pressure measurement may help determine that decision. Finally, the world gives us systolic blood pressure three months later. The later measurement may depend on the first measurement and whether medication was prescribed, together with other factors we have not recorded.</p>
 </details>
 <p>We can make a story told in words more precise by writing each step as an assignment. An assignment tells us how one variable gets its value, possibly using the values of other variables.</p>
-<div class="example-intro">
-<p><span class="example-label">Two-variable clinic model</span></p>
-<p>Suppose <span class="math inline">\(X\)</span> records whether a patient is classified as high risk when arriving at a clinic and <span class="math inline">\(Y\)</span> records whether the patient is admitted to the hospital. We will say that the world first generates <span class="math inline">\(X\)</span> and then uses <span class="math inline">\(X\)</span> to generate <span class="math inline">\(Y\)</span>. As an example, we might write</p>
-<p><span class="math display">\[
-X\leftarrow\operatorname{Bernoulli}(0.5)
-\]</span></p>
-<p>and</p>
-<p><span class="math display">\[
-Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X).
-\]</span></p>
-<p>The first assignment places a <span class="math inline">\(\operatorname{Bernoulli}(0.5)\)</span> random variable into <span class="math inline">\(X\)</span>. The second places a Bernoulli random variable into <span class="math inline">\(Y\)</span> whose probability depends on <span class="math inline">\(X\)</span>.</p>
-</div>
-<p>We will be careful not to treat assignments as ordinary equations. An assignment is a procedure. We use a left arrow, <span class="math inline">\(\leftarrow\)</span>, to write one. The procedure takes whatever appears on the right and places it into the variable on the left. For example, the assignment</p>
+<p>We will be careful not to treat assignments as ordinary equations. An assignment is a procedure. We use a left arrow, <span class="math inline">\(\leftarrow\)</span>, to be very clear about this point. The procedure takes whatever appears on the right and places it into the variable on the left. For example, the assignment</p>
 <p><span class="math display">\[
 x\leftarrow4
 \]</span></p>
@@ -445,9 +445,7 @@ x=4
 x=x+4.
 \]</span></p>
 <p>These statements cannot both be true. In fact, the second is false for every real value of <span class="math inline">\(x\)</span>. The arrow and the equal sign do different jobs.</p>
-<div class="example-intro">
-<p><span class="example-label">Three-variable clinic model</span></p>
-<p>We can expand the clinic model by adding <span class="math inline">\(A\)</span>, which indicates whether the patient receives intensive monitoring. Consider</p>
+<p>Return to the wildfire-smoke and asthma model. We write its assignments as</p>
 <p><span class="math display">\[
 X\leftarrow\operatorname{Bernoulli}(0.5),
 \]</span></p>
@@ -455,34 +453,19 @@ X\leftarrow\operatorname{Bernoulli}(0.5),
 A\leftarrow\operatorname{Bernoulli}(0.4+0.2X),
 \]</span></p>
 <p><span class="math display">\[
-Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X+0.2A).
+Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X-0.1A).
 \]</span></p>
-<p>The probability of intensive monitoring depends on <span class="math inline">\(X\)</span>. The probability of admission depends on both <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span>.</p>
+<p>The probability of unhealthy smoke is <span class="math inline">\(0.5\)</span>. The probability of staying indoors is <span class="math inline">\(0.4\)</span> without unhealthy smoke and <span class="math inline">\(0.6\)</span> with unhealthy smoke. The probability of an asthma exacerbation increases with unhealthy smoke and decreases when the person stays indoors. These probabilities are invented for our example rather than estimated from a particular study.</p>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
 </div>
-<p>Sometimes several variables play the same role in our story. Suppose, for example, that we record a patient’s systolic blood pressure and cholesterol at the beginning of the study. Both are baseline characteristics. We may not care to place blood pressure before cholesterol in our story, or cholesterol before blood pressure. Instead, we can generate them together and collect them in</p>
-<p><span class="math display">\[
-\mathbf X=(X_{\text{blood pressure}},X_{\text{cholesterol}}).
-\]</span></p>
-<p>Here, <span class="math inline">\(\mathbf X\)</span> is not a single real-valued random variable. It is a random vector whose components are themselves random variables. For example, one line in our list could be</p>
-<p><span class="math display">\[
-\begin{pmatrix}
-X_{\text{blood pressure}}\\
-X_{\text{cholesterol}}
-\end{pmatrix}
-\leftarrow
-\operatorname{Normal}_2\left\{
-\begin{pmatrix}120\\200\end{pmatrix},
-\begin{pmatrix}225&amp;225\\225&amp;900\end{pmatrix}
-\right\}.
-\]</span></p>
-<p>This one assignment draws both baseline variables together. The off-diagonal values allow blood pressure and cholesterol to be related without placing either one before the other in our list. Later assignments can use either or both components of <span class="math inline">\(\mathbf X\)</span>. Collecting them together lets the story reflect the common role they play without forcing an order between them.</p>
 </section>
 <section id="ordering-the-assignments" class="level2">
 <h2 class="anchored" data-anchor-id="ordering-the-assignments">Ordering the assignments</h2>
-<p>A collection of assignments can often be read as the world’s recipe for generating the data. This is much like writing code to simulate data ourselves, with each line of code telling us how to generate one variable. Consider again the three-variable clinic model in which <span class="math inline">\(X\)</span> is risk classification, <span class="math inline">\(A\)</span> is intensive monitoring, and <span class="math inline">\(Y\)</span> is hospital admission. If your professor asked you to write code that generates one observation from this model, each line of code would carry out one assignment.</p>
+<p>A collection of assignments can often be read as the world’s recipe for generating the data. This is much like writing code to simulate data ourselves, with each line of code telling us how to generate one variable. Consider again the wildfire-smoke and asthma model. If your professor asked you to write code that generates one observation from this model, each line of code would carry out one assignment.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.4</span> <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> X)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.3</span> <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> X <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> A)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.3</span> <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> X <span class="sc">-</span> <span class="fl">0.1</span> <span class="sc">*</span> A)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The first line draws one realization from a <span class="math inline">\(\operatorname{Bernoulli}(0.5)\)</span> random variable and places that realized value into <code>X</code>. The second line uses the value in <code>X</code> to determine the Bernoulli random variable for <span class="math inline">\(A\)</span>, draws one realization from it, and places that value into <code>A</code>. The third line does the same for <span class="math inline">\(Y\)</span>, using the realized values in <code>X</code> and <code>A</code>. Running all three assignments once produces one row of data. Running them repeatedly produces an entire dataset.</p>
 <p>Now consider what happens when we place the same assignments in a different order.</p>
 <p><span class="math display">\[
@@ -492,20 +475,19 @@ A\leftarrow\operatorname{Bernoulli}(0.4+0.2X),
 X\leftarrow\operatorname{Bernoulli}(0.5),
 \]</span></p>
 <p><span class="math display">\[
-Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X+0.2A).
+Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X-0.1A).
 \]</span></p>
 <p>Code that follows this ordering would begin as follows.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.4</span> <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> X)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.3</span> <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> X <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> A)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.3</span> <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> X <span class="sc">-</span> <span class="fl">0.1</span> <span class="sc">*</span> A)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <details class="lesson-question">
 <summary>
 Assume we begin with an empty R environment. Will this code run? If not, where does it break?
 </summary>
 <p>It breaks on the first line. To draw the Bernoulli realization placed into <code>A</code>, R first tries to calculate its probability using <code>X</code>. No value has been placed into <code>X</code> yet.</p>
 </details>
-<p>The two pieces of code contain the same three assignments, but they do not tell the same story. The assignments appear in different orders. In everyday life, we may not care whether eggs appear at the top or bottom of a grocery list. When mathematicians talk about a list, they include the order of its items. Changing the order therefore changes the list of assignments and the story it tells.</p>
-<p>The order becomes especially important when we read the list as an algorithm. The first ordering can be carried out from top to bottom. The second cannot because it tries to use <span class="math inline">\(X\)</span> before a value has been placed into it. Some orderings allow us to work through all the assignments from top to bottom, while others do not.</p>
+<p>This is where the order already built into our story becomes especially important. The first ordering can be carried out from top to bottom. The second cannot because it tries to use <span class="math inline">\(X\)</span> before a value has been placed into it. Some orderings allow us to work through all the assignments from top to bottom, while others do not.</p>
 <p>Being able to carry out every assignment top to bottom is such an important idea that we give it a definition:</p>
 <div class="definition-box">
 <p><span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="An ordering of a list of random variables, with one assignment for each variable, in which every variable used in an assignment appears earlier in the list." tabindex="0"><strong>Topological order</strong></span>. Consider a list of random variables, with one assignment for each variable. The list has a topological order when every variable used in an assignment appears earlier in the list.</p>
@@ -523,7 +505,7 @@ Assume we begin with an empty R environment. Will this code run? If not, where d
 <p>We assume that the assignments can be placed in at least one topological order. This assumption allows us to read the assignments as an algorithm for generating the variables.</p>
 </div>
 </div>
-<p>Return to the three-variable clinic model. Its assignments have exactly one topological order, <span class="math inline">\(X,A,Y\)</span>. We must generate <span class="math inline">\(X\)</span> before <span class="math inline">\(A\)</span> because the assignment for <span class="math inline">\(A\)</span> uses <span class="math inline">\(X\)</span>. We must then generate both <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span> before <span class="math inline">\(Y\)</span> because the assignment for <span class="math inline">\(Y\)</span> uses them both.</p>
+<p>Return to the wildfire-smoke and asthma model. Its assignments have exactly one topological order, <span class="math inline">\(X,A,Y\)</span>. We must generate <span class="math inline">\(X\)</span> before <span class="math inline">\(A\)</span> because the assignment for <span class="math inline">\(A\)</span> uses <span class="math inline">\(X\)</span>. We must then generate both <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span> before <span class="math inline">\(Y\)</span> because the assignment for <span class="math inline">\(Y\)</span> uses them both.</p>
 <p>This example has a unique topological order, but that is not always the case. A collection of assignments can have one topological order, several topological orders, or no topological order at all.</p>
 <p>The following are three collections of assignments. For each collection, find a topological order if one exists and determine whether it is unique. The order in which the assignments are displayed is not intended to be an order for generating the variables.</p>
 <p>The assignments in <strong>Collection A</strong> are</p>
@@ -599,28 +581,35 @@ X,W,A,Y.
 </div>
 </div>
 </div>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
+</div>
 </section>
 <section id="generating-a-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="generating-a-dataset">Generating a dataset</h2>
-<p>The assignments can describe how one might generate samples of our random variables. Return to the two-variable clinic model. We begin by drawing a value from the <span class="math inline">\(\operatorname{Bernoulli}(0.5)\)</span> random variable assigned to <span class="math inline">\(X\)</span>. Suppose this draw gives us <span class="math inline">\(x=1\)</span>.</p>
-<p>That value tells us which Bernoulli random variable is assigned to <span class="math inline">\(Y\)</span>.</p>
+<p>The assignments can describe how one might generate samples of our random variables. Return to the wildfire-smoke and asthma model. We first draw from the <span class="math inline">\(\operatorname{Bernoulli}(0.5)\)</span> random variable assigned to <span class="math inline">\(X\)</span>. Suppose this draw gives us <span class="math inline">\(x=1\)</span>. The next assignment becomes</p>
 <p><span class="math display">\[
-Y\leftarrow\operatorname{Bernoulli}\{0.3+0.2(1)\}
-=\operatorname{Bernoulli}(0.5).
+A\leftarrow\operatorname{Bernoulli}\{0.4+0.2(1)\}
+=\operatorname{Bernoulli}(0.6).
 \]</span></p>
-<p>We then draw a value from this <span class="math inline">\(\operatorname{Bernoulli}(0.5)\)</span> random variable. Suppose the draw gives us <span class="math inline">\(y=1\)</span>. One trip through the two assignments has generated the pair <span class="math inline">\((x,y)=(1,1)\)</span>.</p>
+<p>Suppose this draw gives us <span class="math inline">\(a=1\)</span>. The final assignment becomes</p>
+<p><span class="math display">\[
+Y\leftarrow\operatorname{Bernoulli}\{0.3+0.2(1)-0.1(1)\}
+=\operatorname{Bernoulli}(0.4).
+\]</span></p>
+<p>Suppose the last draw gives us <span class="math inline">\(y=0\)</span>. One trip through the three assignments has generated the observation <span class="math inline">\((x,a,y)=(1,1,0)\)</span>.</p>
 <details class="lesson-question">
 <summary>
-Suppose the first assignment instead gives us <span class="math inline">\(x=0\)</span>. Which random variable do we draw from to generate <span class="math inline">\(y\)</span>, and what pairs <span class="math inline">\((x,y)\)</span> could we obtain?
+Suppose the first two assignments give us <span class="math inline">\(x=0\)</span> and <span class="math inline">\(a=0\)</span>. Which random variable do we draw from to generate <span class="math inline">\(y\)</span>, and what observations <span class="math inline">\((x,a,y)\)</span> could we obtain?
 </summary>
-<p>We substitute the realized value <span class="math inline">\(x=0\)</span> into the second assignment.</p>
+<p>We substitute the realized values <span class="math inline">\(x=0\)</span> and <span class="math inline">\(a=0\)</span> into the assignment for <span class="math inline">\(Y\)</span>.</p>
 <p><span class="math display">\[
-Y\leftarrow\operatorname{Bernoulli}\{0.3+0.2(0)\}
+Y\leftarrow\operatorname{Bernoulli}\{0.3+0.2(0)-0.1(0)\}
 =\operatorname{Bernoulli}(0.3).
 \]</span></p>
-<p>We draw <span class="math inline">\(y\)</span> from a <span class="math inline">\(\operatorname{Bernoulli}(0.3)\)</span> random variable. The draw can give us <span class="math inline">\(y=1\)</span>, producing <span class="math inline">\((x,y)=(0,1)\)</span>, or <span class="math inline">\(y=0\)</span>, producing <span class="math inline">\((x,y)=(0,0)\)</span>.</p>
+<p>We draw <span class="math inline">\(y\)</span> from a <span class="math inline">\(\operatorname{Bernoulli}(0.3)\)</span> random variable. The draw can give us <span class="math inline">\(y=1\)</span>, producing <span class="math inline">\((x,a,y)=(0,0,1)\)</span>, or <span class="math inline">\(y=0\)</span>, producing <span class="math inline">\((x,a,y)=(0,0,0)\)</span>.</p>
 </details>
-<p>Return again to the three-variable clinic model. Its three assignments generate one observation <span class="math inline">\((X,A,Y)\)</span>. Repeating them turns one observation into a dataset. For a sample of <span class="math inline">\(n\)</span> people, we write the variables in row <span class="math inline">\(i\)</span> as</p>
+<p>The three assignments generate one observation <span class="math inline">\((X,A,Y)\)</span>. Repeating them turns one observation into a dataset. For a sample of <span class="math inline">\(n\)</span> people, we write the variables in row <span class="math inline">\(i\)</span> as</p>
 <p><span class="math display">\[
 X_i,\qquad A_i,\qquad Y_i.
 \]</span></p>
@@ -632,15 +621,15 @@ X_i,\qquad A_i,\qquad Y_i.
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>X <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.5</span>)</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.4</span> <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> X)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.3</span> <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> X <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> A)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.3</span> <span class="sc">+</span> <span class="fl">0.2</span> <span class="sc">*</span> X <span class="sc">-</span> <span class="fl">0.1</span> <span class="sc">*</span> A)</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>clinic_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(X, A, Y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>wildfire_data <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(X, A, Y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Here are the first few rows. Each row records one trip through the assignments.</p>
-<div class="cell" data-tbl-cap="The first six observations generated by the clinic assignments.">
+<div class="cell" data-tbl-cap="The first six observations generated by the wildfire-smoke and asthma assignments.">
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
-<caption>The first six observations generated by the clinic assignments.</caption>
+<caption>The first six observations generated by the wildfire-smoke and asthma assignments.</caption>
 <thead>
 <tr class="header">
 <th style="text-align: right;">X</th>
@@ -657,12 +646,12 @@ X_i,\qquad A_i,\qquad Y_i.
 <tr class="even">
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1</td>
@@ -672,12 +661,12 @@ X_i,\qquad A_i,\qquad Y_i.
 <tr class="odd">
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
 </tr>
 </tbody>
 </table>
@@ -719,17 +708,17 @@ X_i,\qquad A_i,\qquad Y_i.
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">11</td>
-<td style="text-align: right;">97</td>
-<td style="text-align: right;">984</td>
+<td style="text-align: right;">13</td>
+<td style="text-align: right;">161</td>
+<td style="text-align: right;">1609</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">9</td>
-<td style="text-align: right;">80</td>
-<td style="text-align: right;">880</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">179</td>
+<td style="text-align: right;">1838</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">0</td>
@@ -751,23 +740,26 @@ X_i,\qquad A_i,\qquad Y_i.
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">99</td>
-<td style="text-align: right;">1014</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">35</td>
+<td style="text-align: right;">389</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">27</td>
-<td style="text-align: right;">217</td>
-<td style="text-align: right;">2140</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">118</td>
+<td style="text-align: right;">1182</td>
 </tr>
 </tbody>
 </table>
 </div>
 </div>
 <p>The assignments have now given us one person, 100 people, 1,000 people, and 10,000 people in exactly the same way. Next, we will use these generated datasets to help us think about the probabilities implied by the assignments.</p>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
+</div>
 </section>
 <section id="assignments-determine-the-probability-model" class="level2">
 <h2 class="anchored" data-anchor-id="assignments-determine-the-probability-model">Assignments determine the probability model</h2>
@@ -816,17 +808,17 @@ X_i,\qquad A_i,\qquad Y_i.
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0.11</td>
-<td style="text-align: right;">0.097</td>
-<td style="text-align: right;">0.098</td>
+<td style="text-align: right;">0.13</td>
+<td style="text-align: right;">0.161</td>
+<td style="text-align: right;">0.161</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0.09</td>
-<td style="text-align: right;">0.080</td>
-<td style="text-align: right;">0.088</td>
+<td style="text-align: right;">0.22</td>
+<td style="text-align: right;">0.179</td>
+<td style="text-align: right;">0.184</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">0</td>
@@ -848,17 +840,17 @@ X_i,\qquad A_i,\qquad Y_i.
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">0.06</td>
-<td style="text-align: right;">0.099</td>
-<td style="text-align: right;">0.101</td>
+<td style="text-align: right;">0.04</td>
+<td style="text-align: right;">0.035</td>
+<td style="text-align: right;">0.039</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">0.27</td>
-<td style="text-align: right;">0.217</td>
-<td style="text-align: right;">0.214</td>
+<td style="text-align: right;">0.14</td>
+<td style="text-align: right;">0.118</td>
+<td style="text-align: right;">0.118</td>
 </tr>
 </tbody>
 </table>
@@ -878,6 +870,7 @@ P(X=x)=0.5,
 <p><span class="math display">\[
 E[X]=P(X=1)=0.5.
 \]</span></p>
+<p>In our story, this is the probability that the person’s area experiences unhealthy wildfire-smoke levels.</p>
 <p><strong>The assignment for <span class="math inline">\(A\)</span>.</strong> The second assignment is</p>
 <p><span class="math display">\[
 A\leftarrow\operatorname{Bernoulli}(0.4+0.2X).
@@ -894,22 +887,24 @@ P(A=0\mid X=x)=1-(0.4+0.2x)=0.6-0.2x.
 <p><span class="math display">\[
 E[A\mid X]=P(A=1\mid X)=0.4+0.2X.
 \]</span></p>
+<p>In our story, this is the probability that the person stays indoors, given whether the person’s area experiences unhealthy smoke.</p>
 <p><strong>The assignment for <span class="math inline">\(Y\)</span>.</strong> The third assignment is</p>
 <p><span class="math display">\[
-Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X+0.2A).
+Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X-0.1A).
 \]</span></p>
 <p>This assignment gives us the distribution of <span class="math inline">\(Y\)</span> after we know both <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span>. For any <span class="math inline">\(x,a\in\{0,1\}\)</span>,</p>
 <p><span class="math display">\[
-P(Y=1\mid X=x,A=a)=0.3+0.2x+0.2a
+P(Y=1\mid X=x,A=a)=0.3+0.2x-0.1a
 \]</span></p>
 <p>and</p>
 <p><span class="math display">\[
-P(Y=0\mid X=x,A=a)=0.7-0.2x-0.2a.
+P(Y=0\mid X=x,A=a)=0.7-0.2x+0.1a.
 \]</span></p>
 <p>Once again, the probability of one is also the conditional expectation.</p>
 <p><span class="math display">\[
-E[Y\mid X,A]=P(Y=1\mid X,A)=0.3+0.2X+0.2A.
+E[Y\mid X,A]=P(Y=1\mid X,A)=0.3+0.2X-0.1A.
 \]</span></p>
+<p>In our story, this is the probability of an asthma exacerbation, given the smoke level and whether the person stays indoors.</p>
 <p>We can now use these three pieces to calculate the probability of a particular combination. Consider <span class="math inline">\(X=1\)</span>, <span class="math inline">\(A=1\)</span>, and <span class="math inline">\(Y=1\)</span>. The assignments give us</p>
 <p><span class="math display">\[
 P(X=1)=0.5,
@@ -919,15 +914,15 @@ P(A=1\mid X=1)=0.6,
 \]</span></p>
 <p>and</p>
 <p><span class="math display">\[
-P(Y=1\mid X=1,A=1)=0.7.
+P(Y=1\mid X=1,A=1)=0.4.
 \]</span></p>
 <p>Watch what happens when we multiply them.</p>
 <p><span class="math display">\[
-(0.5)(0.6)(0.7)=0.21.
+(0.5)(0.6)(0.4)=0.12.
 \]</span></p>
 <p>This product is exactly the probability of the combination we started with.</p>
 <p><span class="math display">\[
-P(X=1,A=1,Y=1)=0.21.
+P(X=1,A=1,Y=1)=0.12.
 \]</span></p>
 <p>As a second example, consider <span class="math inline">\(X=0\)</span>, <span class="math inline">\(A=0\)</span>, and <span class="math inline">\(Y=1\)</span>. The assignments give us</p>
 <p><span class="math display">\[
@@ -977,13 +972,13 @@ Use the assignments to calculate the exact probability of each of the eight poss
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0.10</td>
+<td style="text-align: right;">0.16</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">0.10</td>
+<td style="text-align: right;">0.04</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1</td>
@@ -1001,13 +996,13 @@ Use the assignments to calculate the exact probability of each of the eight poss
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0.09</td>
+<td style="text-align: right;">0.18</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">0.21</td>
+<td style="text-align: right;">0.12</td>
 </tr>
 </tbody>
 </table>
@@ -1118,7 +1113,7 @@ P(Y=y\mid W=w,A=a).
 <p>The assignment for <span class="math inline">\(W\)</span> does not use <span class="math inline">\(X\)</span>, so its factor does not condition on <span class="math inline">\(X\)</span>. The assignment for <span class="math inline">\(A\)</span> uses <span class="math inline">\(X\)</span> but not <span class="math inline">\(W\)</span>. The assignment for <span class="math inline">\(Y\)</span> uses <span class="math inline">\(W\)</span> and <span class="math inline">\(A\)</span> but not <span class="math inline">\(X\)</span>.</p>
 </details>
 <p>The factorization is the probability version of the same procedure we used to generate a row of data. A complicated joint distribution is assembled from the simpler distributions supplied by the individual assignments.</p>
-<p>The same decomposition applies when not all the variables are discrete. Suppose <span class="math inline">\(X\)</span> indicates whether a patient is classified as high risk, <span class="math inline">\(A\)</span> indicates whether the patient receives intensive monitoring, and <span class="math inline">\(Y\)</span> is systolic blood pressure at a later visit. Consider the assignments</p>
+<p>The same decomposition applies when not all the variables are discrete. Return to the wildfire-smoke and asthma model, but now let <span class="math inline">\(Y\)</span> be the person’s peak expiratory flow later that day rather than an indicator of an asthma exacerbation. Consider the assignments</p>
 <p><span class="math display">\[
 X\leftarrow\operatorname{Bernoulli}(0.5),
 \]</span></p>
@@ -1126,33 +1121,36 @@ X\leftarrow\operatorname{Bernoulli}(0.5),
 A\leftarrow\operatorname{Bernoulli}(0.4+0.2X),
 \]</span></p>
 <p><span class="math display">\[
-Y\leftarrow\operatorname{Normal}(120+10X-5A,100).
+Y\leftarrow\operatorname{Normal}(400-50X+20A,900).
 \]</span></p>
 <p>The assignment for <span class="math inline">\(Y\)</span> tells us both its conditional mean and its entire conditional distribution. Its conditional mean is</p>
 <p><span class="math display">\[
-E[Y\mid X,A]=120+10X-5A.
+E[Y\mid X,A]=400-50X+20A.
 \]</span></p>
 <p>This should look familiar. It is a linear regression function for <span class="math inline">\(Y\)</span> given <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span>. The assignment says more than the regression function alone. It also specifies that the conditional distribution of <span class="math inline">\(Y\)</span> is normal with variance <span class="math inline">\(100\)</span>.</p>
-<p>For example, consider the probability that <span class="math inline">\(X=1\)</span>, <span class="math inline">\(A=1\)</span>, and <span class="math inline">\(Y\)</span> lies between <span class="math inline">\(120\)</span> and <span class="math inline">\(130\)</span>. We can decompose this joint probability as</p>
+<p>For example, consider the probability that <span class="math inline">\(X=1\)</span>, <span class="math inline">\(A=1\)</span>, and <span class="math inline">\(Y\)</span> lies between <span class="math inline">\(340\)</span> and <span class="math inline">\(400\)</span>. We can decompose this joint probability as</p>
 <p><span class="math display">\[
 \begin{aligned}
-&amp;P(X=1,A=1,120\leq Y\leq130)\\
+&amp;P(X=1,A=1,340\leq Y\leq400)\\
 &amp;\qquad=P(X=1)
 P(A=1\mid X=1)
-P(120\leq Y\leq130\mid X=1,A=1).
+P(340\leq Y\leq400\mid X=1,A=1).
 \end{aligned}
 \]</span></p>
-<p>The first two assignments give us <span class="math inline">\(0.5\)</span> and <span class="math inline">\(0.6\)</span>. When <span class="math inline">\(X=1\)</span> and <span class="math inline">\(A=1\)</span>, the third assignment places a <span class="math inline">\(\operatorname{Normal}(125,100)\)</span> random variable into <span class="math inline">\(Y\)</span>. Therefore,</p>
+<p>The first two assignments give us <span class="math inline">\(0.5\)</span> and <span class="math inline">\(0.6\)</span>. When <span class="math inline">\(X=1\)</span> and <span class="math inline">\(A=1\)</span>, the third assignment places a <span class="math inline">\(\operatorname{Normal}(370,900)\)</span> random variable into <span class="math inline">\(Y\)</span>. Therefore,</p>
 <p><span class="math display">\[
 \begin{aligned}
-&amp;P(X=1,A=1,120\leq Y\leq130)\\
+&amp;P(X=1,A=1,340\leq Y\leq400)\\
 &amp;\qquad=(0.5)(0.6)
-P\{120\leq\operatorname{Normal}(125,100)\leq130\}\\
-&amp;\qquad\approx(0.5)(0.6)(0.383)\\
-&amp;\qquad\approx0.115.
+P\{340\leq\operatorname{Normal}(370,900)\leq400\}\\
+&amp;\qquad\approx(0.5)(0.6)(0.683)\\
+&amp;\qquad\approx0.205.
 \end{aligned}
 \]</span></p>
 <p>The outcome is continuous, so we ask for the probability that <span class="math inline">\(Y\)</span> falls in an interval rather than the probability that it equals one particular value. The decomposition otherwise follows the assignments in the same way.</p>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
+</div>
 <p>We need to be clear about where the causal claim enters. Writing down a list of assignments does not, by itself, make that list causal. Given the same joint distribution of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, we can generate <span class="math inline">\(X\)</span> first and then <span class="math inline">\(Y\)</span>, or generate <span class="math inline">\(Y\)</span> first and then <span class="math inline">\(X\)</span>. Both lists can reproduce exactly the same data. The causal claim enters when we choose one of these lists and say, “This is the one the world actually followed.” If we say that the world generated <span class="math inline">\(X\)</span> and then used <span class="math inline">\(X\)</span> to generate <span class="math inline">\(Y\)</span>, we are making an assumption that cannot be learned from the joint distribution alone.</p>
 <p>So far, we have made two kinds of commitments. We have said which list of assignments the world followed, and we have specified every distribution and parameter in that list. We want to keep the first commitment without always requiring the second. In the next section, we retain our story about how the variables were generated while allowing the precise functions and distributions to remain unspecified.</p>
 

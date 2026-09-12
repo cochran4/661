@@ -17,7 +17,7 @@ book:
         - 01-exercises.qmd
     - part: "Construction"
       chapters:
-        - 02a-assignments-and-generating-data.qmd
+        - 02a-assignments.qmd
         - 02b-structural-causal-models.qmd
         - 02-exercises.qmd
     - part: "Measured confounding"
@@ -57,7 +57,7 @@ book:
       - text: "Construction"
         menu:
           - text: "A list of assignments"
-            file: 02a-assignments-and-generating-data.qmd
+            file: 02a-assignments.qmd
           - text: "Structural causal models"
             file: 02b-structural-causal-models.qmd
           - text: "Exercises"
