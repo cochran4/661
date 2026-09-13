@@ -434,7 +434,9 @@ A\leftarrow\operatorname{Bernoulli}(0.4+0.2X),
 <p><span class="math display">\[
 Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X-0.1A).
 \]</span></p>
-<p>An assignment tells us how one variable gets its value, possibly using the values of other variables. We will be careful not to treat assignments as ordinary equations. An assignment is a procedure. We use a left arrow, <span class="math inline">\(\leftarrow\)</span>, to be very clear about this point. The procedure takes whatever appears on the right and places it into the variable on the left. For example, the assignment</p>
+<p>An assignment tells us how one variable gets its value, possibly using the values of other variables.</p>
+<p>The first assignment places a <span class="math inline">\(\operatorname{Bernoulli}(0.5)\)</span> random variable into <span class="math inline">\(X\)</span>. The second places a Bernoulli random variable into <span class="math inline">\(A\)</span> whose probability is <span class="math inline">\(0.4\)</span> without unhealthy smoke and <span class="math inline">\(0.6\)</span> with unhealthy smoke. The third places a Bernoulli random variable into <span class="math inline">\(Y\)</span> whose probability increases with unhealthy smoke and decreases when the person stays indoors. These probabilities are invented for our example rather than estimated from a particular study.</p>
+<p>We will be careful not to treat assignments as ordinary equations. An assignment is a procedure. We use a left arrow, <span class="math inline">\(\leftarrow\)</span>, to be very clear about this point. The procedure takes whatever appears on the right and places it into the variable on the left. For example, the assignment</p>
 <p><span class="math display">\[
 x\leftarrow4
 \]</span></p>
@@ -459,7 +461,6 @@ x=4
 x=x+4.
 \]</span></p>
 <p>These statements cannot both be true. In fact, the second is false for every real value of <span class="math inline">\(x\)</span>. The arrow and the equal sign do different jobs.</p>
-<p>The first assignment places a <span class="math inline">\(\operatorname{Bernoulli}(0.5)\)</span> random variable into <span class="math inline">\(X\)</span>. The second places a Bernoulli random variable into <span class="math inline">\(A\)</span> whose probability is <span class="math inline">\(0.4\)</span> without unhealthy smoke and <span class="math inline">\(0.6\)</span> with unhealthy smoke. The third places a Bernoulli random variable into <span class="math inline">\(Y\)</span> whose probability increases with unhealthy smoke and decreases when the person stays indoors. These probabilities are invented for our example rather than estimated from a particular study.</p>
 <div class="section-break" aria-hidden="true">
 <span class="acorn-mark"></span>
 </div>
@@ -1014,7 +1015,7 @@ Use the assignments to calculate the exact probability of each of the eight poss
 </details>
 <p>The same calculation works for every possible combination. It illustrates a general rule for working with a list of assignments.</p>
 <div class="proposition-box">
-<p><strong>Proposition.</strong> Each assignment supplies the distribution of one variable conditional on the particular values of the variables used in that assignment. Following these conditional distributions in topological order determines the joint distribution of all the variables.</p>
+<p><strong>Proposition.</strong> A topologically ordered list of assignments determines the joint distribution of its variables. Each assignment supplies the distribution of one variable given the variables it uses. Together, these distributions determine how all the variables are distributed jointly.</p>
 </div>
 <div class="callout callout-style-default callout-note callout-titled" title="Optional technical note on the general decomposition">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
