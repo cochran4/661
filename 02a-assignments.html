@@ -520,7 +520,7 @@ Y\leftarrow\operatorname{Normal}(100+5X+2A,25),
 X\leftarrow\operatorname{Poisson}(2),
 \]</span></p>
 <p><span class="math display">\[
-A\leftarrow\operatorname{Binomial}\{5,\operatorname{expit}(-1+0.2X+W)\},
+A\leftarrow\operatorname{Binomial}\{5,\operatorname{logit}^{-1}(-1+0.2X+W)\},
 \]</span></p>
 <p><span class="math display">\[
 W\leftarrow\operatorname{Bernoulli}(0.3).
