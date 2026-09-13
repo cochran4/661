@@ -424,8 +424,17 @@ A hypertension study records systolic blood pressure at a patient’s first visi
 </summary>
 <p>First, the world gives us systolic blood pressure at the first visit. Next, the patient either receives a medication prescription or does not. The first blood-pressure measurement may help determine that decision. Finally, the world gives us systolic blood pressure three months later. The later measurement may depend on the first measurement and whether medication was prescribed, together with other factors we have not recorded.</p>
 </details>
-<p>We can make a story told in words more precise by writing each step as an assignment. An assignment tells us how one variable gets its value, possibly using the values of other variables.</p>
-<p>We will be careful not to treat assignments as ordinary equations. An assignment is a procedure. We use a left arrow, <span class="math inline">\(\leftarrow\)</span>, to be very clear about this point. The procedure takes whatever appears on the right and places it into the variable on the left. For example, the assignment</p>
+<p>We can now write the story for the wildfire-smoke and asthma model as a list of assignments.</p>
+<p><span class="math display">\[
+X\leftarrow\operatorname{Bernoulli}(0.5),
+\]</span></p>
+<p><span class="math display">\[
+A\leftarrow\operatorname{Bernoulli}(0.4+0.2X),
+\]</span></p>
+<p><span class="math display">\[
+Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X-0.1A).
+\]</span></p>
+<p>An assignment tells us how one variable gets its value, possibly using the values of other variables. We will be careful not to treat assignments as ordinary equations. An assignment is a procedure. We use a left arrow, <span class="math inline">\(\leftarrow\)</span>, to be very clear about this point. The procedure takes whatever appears on the right and places it into the variable on the left. For example, the assignment</p>
 <p><span class="math display">\[
 x\leftarrow4
 \]</span></p>
@@ -450,21 +459,6 @@ x=4
 x=x+4.
 \]</span></p>
 <p>These statements cannot both be true. In fact, the second is false for every real value of <span class="math inline">\(x\)</span>. The arrow and the equal sign do different jobs.</p>
-<p>The thing on the right of an assignment can also be a random variable. For example,</p>
-<p><span class="math display">\[
-X\leftarrow\operatorname{Bernoulli}(p)
-\]</span></p>
-<p>places a <span class="math inline">\(\operatorname{Bernoulli}(p)\)</span> random variable into <span class="math inline">\(X\)</span>. The assignment does not say that a particular realized value <span class="math inline">\(x\)</span> is zero or one. We obtain that realized value only when we draw from the random variable.</p>
-<p>We can now write the story for the wildfire-smoke and asthma model as a list of assignments.</p>
-<p><span class="math display">\[
-X\leftarrow\operatorname{Bernoulli}(0.5),
-\]</span></p>
-<p><span class="math display">\[
-A\leftarrow\operatorname{Bernoulli}(0.4+0.2X),
-\]</span></p>
-<p><span class="math display">\[
-Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X-0.1A).
-\]</span></p>
 <p>The first assignment places a <span class="math inline">\(\operatorname{Bernoulli}(0.5)\)</span> random variable into <span class="math inline">\(X\)</span>. The second places a Bernoulli random variable into <span class="math inline">\(A\)</span> whose probability is <span class="math inline">\(0.4\)</span> without unhealthy smoke and <span class="math inline">\(0.6\)</span> with unhealthy smoke. The third places a Bernoulli random variable into <span class="math inline">\(Y\)</span> whose probability increases with unhealthy smoke and decreases when the person stays indoors. These probabilities are invented for our example rather than estimated from a particular study.</p>
 <div class="section-break" aria-hidden="true">
 <span class="acorn-mark"></span>
