@@ -173,7 +173,7 @@ X\leftarrow\operatorname{Poisson}(2),
 $$
 
 $$
-A\leftarrow\operatorname{Binomial}\{5,\operatorname{expit}(-1+0.2X+W)\},
+A\leftarrow\operatorname{Binomial}\{5,\operatorname{logit}^{-1}(-1+0.2X+W)\},
 $$
 
 $$

@@ -329,7 +329,7 @@ $$
 \operatorname{logit}\{P(Y=1\mid X)\}=\alpha+\beta X.
 $$
 
-The coefficient $\alpha$ is the log odds for the unexposed group. The coefficient $\beta$ is the log odds ratio comparing the exposed and unexposed groups, so $\exp(\beta)$ is the odds ratio. The predicted probabilities are $\operatorname{expit}(\alpha)$ when $X=0$ and $\operatorname{expit}(\alpha+\beta)$ when $X=1$. In conditional-expectation notation, $\alpha=\operatorname{logit}\{E[Y\mid X=0]\}$ and $\alpha+\beta=\operatorname{logit}\{E[Y\mid X=1]\}$.
+The coefficient $\alpha$ is the log odds for the unexposed group. The coefficient $\beta$ is the log odds ratio comparing the exposed and unexposed groups, so $\exp(\beta)$ is the odds ratio. The predicted probabilities are $\operatorname{logit}^{-1}(\alpha)$ when $X=0$ and $\operatorname{logit}^{-1}(\alpha+\beta)$ when $X=1$. In conditional-expectation notation, $\alpha=\operatorname{logit}\{E[Y\mid X=0]\}$ and $\alpha+\beta=\operatorname{logit}\{E[Y\mid X=1]\}$.
 
 Now suppose the outcome $Y$ is continuous. It might be systolic blood pressure. If $X$ is binary, a simple linear regression can be written
 

@@ -396,7 +396,7 @@ Y\leftarrow\operatorname{Normal}(90+3X+2A,16),
 W\leftarrow\operatorname{Poisson}(3),
 \]</span></p>
 <p><span class="math display">\[
-A\leftarrow\operatorname{Binomial}\{4,\operatorname{expit}(-1+0.2X+0.3W)\},
+A\leftarrow\operatorname{Binomial}\{4,\operatorname{logit}^{-1}(-1+0.2X+0.3W)\},
 \]</span></p>
 <p><span class="math display">\[
 X\leftarrow\operatorname{Exponential}(1).
