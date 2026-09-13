@@ -47,9 +47,21 @@ First, the world gives us systolic blood pressure at the first visit. Next, the 
 
 </details>
 
-We can make a story told in words more precise by writing each step as an assignment. An assignment tells us how one variable gets its value, possibly using the values of other variables.
+We can now write the story for the wildfire-smoke and asthma model as a list of assignments.
 
-We will be careful not to treat assignments as ordinary equations. An assignment is a procedure. We use a left arrow, $\leftarrow$, to be very clear about this point. The procedure takes whatever appears on the right and places it into the variable on the left. For example, the assignment
+$$
+X\leftarrow\operatorname{Bernoulli}(0.5),
+$$
+
+$$
+A\leftarrow\operatorname{Bernoulli}(0.4+0.2X),
+$$
+
+$$
+Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X-0.1A).
+$$
+
+An assignment tells us how one variable gets its value, possibly using the values of other variables. We will be careful not to treat assignments as ordinary equations. An assignment is a procedure. We use a left arrow, $\leftarrow$, to be very clear about this point. The procedure takes whatever appears on the right and places it into the variable on the left. For example, the assignment
 
 $$
 x\leftarrow4
@@ -86,28 +98,6 @@ x=x+4.
 $$
 
 These statements cannot both be true. In fact, the second is false for every real value of $x$. The arrow and the equal sign do different jobs.
-
-The thing on the right of an assignment can also be a random variable. For example,
-
-$$
-X\leftarrow\operatorname{Bernoulli}(p)
-$$
-
-places a $\operatorname{Bernoulli}(p)$ random variable into $X$. The assignment does not say that a particular realized value $x$ is zero or one. We obtain that realized value only when we draw from the random variable.
-
-We can now write the story for the wildfire-smoke and asthma model as a list of assignments.
-
-$$
-X\leftarrow\operatorname{Bernoulli}(0.5),
-$$
-
-$$
-A\leftarrow\operatorname{Bernoulli}(0.4+0.2X),
-$$
-
-$$
-Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X-0.1A).
-$$
 
 The first assignment places a $\operatorname{Bernoulli}(0.5)$ random variable into $X$. The second places a Bernoulli random variable into $A$ whose probability is $0.4$ without unhealthy smoke and $0.6$ with unhealthy smoke. The third places a Bernoulli random variable into $Y$ whose probability increases with unhealthy smoke and decreases when the person stays indoors. These probabilities are invented for our example rather than estimated from a particular study.
 
