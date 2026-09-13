@@ -510,7 +510,7 @@ The proportions from the generated datasets should be close to these probabiliti
 The same calculation works for every possible combination. It illustrates a general rule for working with a list of assignments.
 
 ::: {.proposition-box}
-**Proposition.** Each assignment supplies the distribution of one variable conditional on the particular values of the variables used in that assignment. Following these conditional distributions in topological order determines the joint distribution of all the variables.
+**Proposition.** A topologically ordered list of assignments determines the joint distribution of its variables. Each assignment supplies the distribution of one variable given the variables it uses. Together, these distributions determine how all the variables are distributed jointly.
 :::
 
 ::: {.callout-note title="Optional technical note on the general decomposition" collapse="true"}
