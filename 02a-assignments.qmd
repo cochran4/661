@@ -87,7 +87,15 @@ $$
 
 These statements cannot both be true. In fact, the second is false for every real value of $x$. The arrow and the equal sign do different jobs.
 
-Return to the wildfire-smoke and asthma model. We write its assignments as
+The thing on the right of an assignment can also be a random variable. For example,
+
+$$
+X\leftarrow\operatorname{Bernoulli}(p)
+$$
+
+places a $\operatorname{Bernoulli}(p)$ random variable into $X$. The assignment does not say that a particular realized value $x$ is zero or one. We obtain that realized value only when we draw from the random variable.
+
+We can now write the story for the wildfire-smoke and asthma model as a list of assignments.
 
 $$
 X\leftarrow\operatorname{Bernoulli}(0.5),
@@ -101,7 +109,7 @@ $$
 Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X-0.1A).
 $$
 
-The probability of unhealthy smoke is $0.5$. The probability of staying indoors is $0.4$ without unhealthy smoke and $0.6$ with unhealthy smoke. The probability of an asthma exacerbation increases with unhealthy smoke and decreases when the person stays indoors. These probabilities are invented for our example rather than estimated from a particular study.
+The first assignment places a $\operatorname{Bernoulli}(0.5)$ random variable into $X$. The second places a Bernoulli random variable into $A$ whose probability is $0.4$ without unhealthy smoke and $0.6$ with unhealthy smoke. The third places a Bernoulli random variable into $Y$ whose probability increases with unhealthy smoke and decreases when the person stays indoors. These probabilities are invented for our example rather than estimated from a particular study.
 
 <div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
 
