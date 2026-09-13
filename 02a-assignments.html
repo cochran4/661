@@ -450,7 +450,12 @@ x=4
 x=x+4.
 \]</span></p>
 <p>These statements cannot both be true. In fact, the second is false for every real value of <span class="math inline">\(x\)</span>. The arrow and the equal sign do different jobs.</p>
-<p>Return to the wildfire-smoke and asthma model. We write its assignments as</p>
+<p>The thing on the right of an assignment can also be a random variable. For example,</p>
+<p><span class="math display">\[
+X\leftarrow\operatorname{Bernoulli}(p)
+\]</span></p>
+<p>places a <span class="math inline">\(\operatorname{Bernoulli}(p)\)</span> random variable into <span class="math inline">\(X\)</span>. The assignment does not say that a particular realized value <span class="math inline">\(x\)</span> is zero or one. We obtain that realized value only when we draw from the random variable.</p>
+<p>We can now write the story for the wildfire-smoke and asthma model as a list of assignments.</p>
 <p><span class="math display">\[
 X\leftarrow\operatorname{Bernoulli}(0.5),
 \]</span></p>
@@ -460,7 +465,7 @@ A\leftarrow\operatorname{Bernoulli}(0.4+0.2X),
 <p><span class="math display">\[
 Y\leftarrow\operatorname{Bernoulli}(0.3+0.2X-0.1A).
 \]</span></p>
-<p>The probability of unhealthy smoke is <span class="math inline">\(0.5\)</span>. The probability of staying indoors is <span class="math inline">\(0.4\)</span> without unhealthy smoke and <span class="math inline">\(0.6\)</span> with unhealthy smoke. The probability of an asthma exacerbation increases with unhealthy smoke and decreases when the person stays indoors. These probabilities are invented for our example rather than estimated from a particular study.</p>
+<p>The first assignment places a <span class="math inline">\(\operatorname{Bernoulli}(0.5)\)</span> random variable into <span class="math inline">\(X\)</span>. The second places a Bernoulli random variable into <span class="math inline">\(A\)</span> whose probability is <span class="math inline">\(0.4\)</span> without unhealthy smoke and <span class="math inline">\(0.6\)</span> with unhealthy smoke. The third places a Bernoulli random variable into <span class="math inline">\(Y\)</span> whose probability increases with unhealthy smoke and decreases when the person stays indoors. These probabilities are invented for our example rather than estimated from a particular study.</p>
 <div class="section-break" aria-hidden="true">
 <span class="acorn-mark"></span>
 </div>
