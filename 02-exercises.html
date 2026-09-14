@@ -46,7 +46,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-b11080be3932e93f2b6be06380d8ecd9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-12ca529a1c26fb8dee66fe492e8a00b7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -478,6 +478,87 @@ P(X=x,Z=z,A=a,Y=y).
 <p><span class="math display">\[
 P(X=1,Z=0,A=1,Y=2).
 \]</span></p>
+<div class="response-space">
+
+</div>
+</section>
+</section>
+<section id="structural-causal-models" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="structural-causal-models">Structural causal models</h2>
+<section id="writing-structural-causal-models" class="level3">
+<h3 class="anchored" data-anchor-id="writing-structural-causal-models">Writing structural causal models</h3>
+<p>Write an SCM for each of the following stories. State the parents of each variable and state what must be true of the noise terms.</p>
+<p><strong>Wildfire smoke.</strong> Let <span class="math inline">\(X\)</span> indicate unhealthy wildfire smoke, let <span class="math inline">\(A\)</span> indicate whether a person stays indoors, and let <span class="math inline">\(Y\)</span> indicate an asthma exacerbation. Staying indoors may depend on the smoke, and the outcome may depend on both the smoke and staying indoors.</p>
+<p><strong>Appointment-reminder trial.</strong> Suppose investigators randomly assign patients to receive an appointment reminder. Let <span class="math inline">\(X\)</span> collect baseline characteristics, let <span class="math inline">\(A\)</span> indicate randomized assignment to the reminder, let <span class="math inline">\(M\)</span> indicate whether the patient attends the appointment, and let <span class="math inline">\(Y\)</span> indicate whether blood pressure is measured at that appointment. Baseline characteristics may affect attendance and whether blood pressure is measured. The reminder may affect attendance. In this story, the reminder can affect whether blood pressure is measured only through attendance.</p>
+<div class="response-space">
+
+</div>
+</section>
+<section id="following-an-scm-for-one-realization" class="level3">
+<h3 class="anchored" data-anchor-id="following-an-scm-for-one-realization">Following an SCM for one realization</h3>
+<p>Consider the SCM</p>
+<p><span class="math display">\[
+X\leftarrow\epsilon_X,
+\]</span></p>
+<p><span class="math display">\[
+A\leftarrow
+\begin{cases}
+1, &amp; \epsilon_A\leq 0.25+0.5X,\\
+0, &amp; \epsilon_A&gt;0.25+0.5X,
+\end{cases}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+Y\leftarrow X+2A+\epsilon_Y.
+\]</span></p>
+<p>Suppose the noise variables have the realized values</p>
+<p><span class="math display">\[
+\epsilon_X=0.2,
+\qquad
+\epsilon_A=0.3,
+\qquad
+\epsilon_Y=0.4.
+\]</span></p>
+<ol type="a">
+<li><p>Follow the assignments in order. What values are placed into <span class="math inline">\(X\)</span>, <span class="math inline">\(A\)</span>, and <span class="math inline">\(Y\)</span>?</p></li>
+<li><p>Using the same values of <span class="math inline">\(X\)</span> and <span class="math inline">\(\epsilon_Y\)</span>, define two new random variables</p></li>
+</ol>
+<p><span class="math display">\[
+Y_1=X+2(1)+\epsilon_Y
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+Y_0=X+2(0)+\epsilon_Y.
+\]</span></p>
+<p>What values do <span class="math inline">\(Y_1\)</span> and <span class="math inline">\(Y_0\)</span> take for this realization?</p>
+<ol start="3" type="a">
+<li>Compare <span class="math inline">\(Y\)</span>, <span class="math inline">\(Y_1\)</span>, and <span class="math inline">\(Y_0\)</span>. Which of the two new variables equals <span class="math inline">\(Y\)</span>? Why? What is the difference <span class="math inline">\(Y_1-Y_0\)</span>?</li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="what-follows-probabilistically" class="level3">
+<h3 class="anchored" data-anchor-id="what-follows-probabilistically">What follows probabilistically</h3>
+<p>Return to the wildfire-smoke and appointment-reminder SCMs. Use the ordered local Markov property to answer the following questions.</p>
+<ul>
+<li>Does the wildfire-smoke SCM say that <span class="math inline">\(A\)</span> and <span class="math inline">\(X\)</span> are independent? Explain what the model allows instead.</li>
+<li>In the appointment-reminder trial, why are <span class="math inline">\(A\)</span> and <span class="math inline">\(X\)</span> independent? Interpret this independence in the context of the trial.</li>
+<li>Does the appointment-reminder SCM say that <span class="math inline">\(A\)</span> and <span class="math inline">\(M\)</span> are independent?</li>
+<li>What conditional independence does the appointment-reminder SCM give us for <span class="math inline">\(Y\)</span> and <span class="math inline">\(A\)</span>? Interpret it in context. What does it tell us about the role of attendance?</li>
+</ul>
+<div class="response-space">
+
+</div>
+</section>
+<section id="where-might-these-scms-be-wrong" class="level3">
+<h3 class="anchored" data-anchor-id="where-might-these-scms-be-wrong">Where might these SCMs be wrong?</h3>
+<p>Return to the SCMs you wrote for the wildfire-smoke story and the appointment-reminder trial. We emphasized two ways that an SCM can be wrong.</p>
+<ul>
+<li>The assignment function for a variable may be missing an important parent.</li>
+<li>The noise variables may not be independent because some shared input is hiding inside more than one of them.</li>
+</ul>
+<p>For each SCM, give one concrete example of each problem. Be as specific as possible about the variable involved, which assignments would use it, and how you would revise the SCM.</p>
 <div class="response-space">
 
 </div>

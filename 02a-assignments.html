@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-b11080be3932e93f2b6be06380d8ecd9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-12ca529a1c26fb8dee66fe492e8a00b7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -394,7 +394,10 @@ window.Quarto = {
 <p>We all have some notion of what it means for one thing to cause another. The trouble is that those notions can be a little fuzzy. That makes it hard to talk to each other when we are not starting from the same place.</p>
 <p>One source of this fuzziness is that people have different ideas about what a cause must do. Some people think the outcome must never occur without the cause. Others think the cause must always be followed by the outcome. Still others reserve the word cause for whatever acts most directly on the outcome. Consider what these different notions imply about smoking and lung cancer. Lung cancer can occur in someone who never smoked, many people who smoke never develop lung cancer, and smoking produces cancer through intermediate changes in the body. Depending on which notion we use, any of these facts might lead someone to say that smoking does not cause lung cancer.</p>
 <p>A second source of fuzziness is that causal questions ask us to imagine something we cannot observe. We have to imagine what would happen if the same person received a different treatment, even though we can observe only the treatment the person actually received. In effect, we have to imagine a parallel universe or a metaverse. That can feel more like science fiction than science. Yet this imagined comparison is at the heart of the causal questions we want to ask.</p>
-<p>We need to bring this fuzziness into focus. More importantly, we need a framework precise enough that we know what one another mean when we make a causal claim.</p>
+<p>We need to bring this fuzziness into focus. More importantly, we need a framework precise enough that we know what one another mean when we make a causal claim. And probabilty is not enough. We saw in the opening chapter that the joint distribution can arise in different ways (<span class="math inline">\(Y\)</span> from <span class="math inline">\(X\)</span> or <span class="math inline">\(X\)</span> from <span class="math inline">\(Y\)</span>).</p>
+<div class="main-point">
+<p>No amount of data can tell us which story the world followed. At some point, we have to put a ring on one of them and commit. That commitment is what lets us move beyond probability and statistics and into causal territory.</p>
+</div>
 <div class="section-break" aria-hidden="true">
 <span class="acorn-mark"></span>
 </div>
@@ -415,9 +418,9 @@ window.Quarto = {
 <p>The word <em>list</em> is important. In everyday life, we may not care whether eggs appear at the top or bottom of a grocery list. In mathematics, the order is part of the list. Our story therefore says not only how the variables get their values, but also the order in which that happens. If we change the order, we change the story.</p>
 <p>Sometimes several variables play the same role in our story. Suppose we record whether a person’s area experiences unhealthy wildfire-smoke levels and whether it experiences extreme heat that day. Both are environmental conditions that are present before the person decides whether to stay indoors. We may not care to place smoke before heat in our story, or heat before smoke. We can instead collect them in the random vector</p>
 <p><span class="math display">\[
-\mathbf X=(X_{\text{smoke}},X_{\text{heat}})
+X=(X_{\text{smoke}},X_{\text{heat}})
 \]</span></p>
-<p>and place them together at one point in our story. One item in our list could simply say that the world gives us the environmental conditions in the person’s area. Later items could use either or both components of <span class="math inline">\(\mathbf X\)</span>. Collecting variables in this way lets the story reflect the common role they play without forcing an order between them.</p>
+<p>and place them together at one point in our story. One item in our list could simply say that the world gives us the environmental conditions in the person’s area. Later items could use either or both components of <span class="math inline">\(X\)</span>. Collecting variables in this way lets the story reflect the common role they play without forcing an order between them.</p>
 <details class="lesson-question">
 <summary>
 A hypertension study records systolic blood pressure at a patient’s first visit, whether medication is prescribed at that visit, and systolic blood pressure three months later. Tell a story for how the world generated these three variables. Your story should say what is generated at each step and which other variables might be used.
@@ -1029,41 +1032,41 @@ Use the assignments to calculate the exact probability of each of the eight poss
 </div>
 <div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Take <span class="math inline">\(K\)</span> real-valued random variables <span class="math inline">\(X_1,\ldots,X_K\)</span> and a collection of assignments that has a topological order. Place the variables in one such order. Let <span class="math inline">\(\mathbf P_j\)</span> be the collection of variables used in the assignment for <span class="math inline">\(X_j\)</span>, and let <span class="math inline">\(\mathbf p_j\)</span> be their realized values.</p>
-<p>We have already described a conditional distribution using the conditional expectation of an indicator. For fixed values <span class="math inline">\(\mathbf p_j\)</span>, define</p>
+<p>Take <span class="math inline">\(K\)</span> real-valued random variables <span class="math inline">\(X_1,\ldots,X_K\)</span> and a collection of assignments that has a topological order. Place the variables in one such order. Let <span class="math inline">\(P_j\)</span> be the collection of variables used in the assignment for <span class="math inline">\(X_j\)</span>, and let <span class="math inline">\(p_j\)</span> be their realized values.</p>
+<p>We have already described a conditional distribution using the conditional expectation of an indicator. For fixed values <span class="math inline">\(p_j\)</span>, define</p>
 <p><span class="math display">\[
-F_{X_j\mid\mathbf P_j=\mathbf p_j}(t)
+F_{X_j\mid P_j=p_j}(t)
 :=
 E\left[
 1_{\{X_j\leq t\}}
 \mid
-\mathbf P_j=\mathbf p_j
+P_j=p_j
 \right].
 \]</span></p>
-<p>This is the conditional cdf of <span class="math inline">\(X_j\)</span> given <span class="math inline">\(\mathbf P_j=\mathbf p_j\)</span>. It is the conditional distribution supplied by the assignment for <span class="math inline">\(X_j\)</span>.</p>
+<p>This is the conditional cdf of <span class="math inline">\(X_j\)</span> given <span class="math inline">\(P_j=p_j\)</span>. It is the conditional distribution supplied by the assignment for <span class="math inline">\(X_j\)</span>.</p>
 <p>Let <span class="math inline">\(\mathcal A_j\)</span> be a subset of the possible values of <span class="math inline">\(X_j\)</span>. Using the same Lebesgue–Stieltjes integration introduced in the probability review, the joint probability is</p>
 <p><span class="math display">\[
 \begin{aligned}
 &amp;P(X_1\in\mathcal A_1,\ldots,X_K\in\mathcal A_K)\\
 &amp;\quad=\int_{\mathcal A_1}dF_{X_1}(x_1)
 \int_{\mathcal A_2}
-dF_{X_2\mid\mathbf P_2=\mathbf p_2}(x_2)
+dF_{X_2\mid P_2=p_2}(x_2)
 \cdots\\
 &amp;\qquad\quad{}
 \int_{\mathcal A_K}
-dF_{X_K\mid\mathbf P_K=\mathbf p_K}(x_K).
+dF_{X_K\mid P_K=p_K}(x_K).
 \end{aligned}
 \]</span></p>
-<p>At each step, <span class="math inline">\(\mathbf p_j\)</span> is formed from the values already encountered for the variables in <span class="math inline">\(\mathbf P_j\)</span>. Each integral is therefore taken with respect to the conditional cdf supplied by the corresponding assignment. When a variable is discrete, its integral becomes a sum. When it has a density, its probability weight can be written as <span class="math inline">\(dF(x)=f(x)\,dx\)</span>.</p>
+<p>At each step, <span class="math inline">\(p_j\)</span> is formed from the values already encountered for the variables in <span class="math inline">\(P_j\)</span>. Each integral is therefore taken with respect to the conditional cdf supplied by the corresponding assignment. When a variable is discrete, its integral becomes a sum. When it has a density, its probability weight can be written as <span class="math inline">\(dF(x)=f(x)\,dx\)</span>.</p>
 <p>In particular, when all the variables are discrete and we ask about one complete combination,</p>
 <p><span class="math display">\[
 \begin{aligned}
 &amp;P(X_1=x_1,\ldots,X_K=x_K)\\
 &amp;\qquad=\prod_{j=1}^K
-P(X_j=x_j\mid\mathbf P_j=\mathbf p_j).
+P(X_j=x_j\mid P_j=p_j).
 \end{aligned}
 \]</span></p>
-<p>The first collection <span class="math inline">\(\mathbf P_1\)</span> is empty, so its factor is simply <span class="math inline">\(P(X_1=x_1)\)</span>.</p>
+<p>The first collection <span class="math inline">\(P_1\)</span> is empty, so its factor is simply <span class="math inline">\(P(X_1=x_1)\)</span>.</p>
 <p>This construction can be generalized beyond real-valued random variables, including random vectors whose components are generated together.</p>
 </div>
 </div>
@@ -1117,7 +1120,9 @@ P(Y=y\mid W=w,A=a).
 \]</span></p>
 <p>The assignment for <span class="math inline">\(W\)</span> does not use <span class="math inline">\(X\)</span>, so its factor does not condition on <span class="math inline">\(X\)</span>. The assignment for <span class="math inline">\(A\)</span> uses <span class="math inline">\(X\)</span> but not <span class="math inline">\(W\)</span>. The assignment for <span class="math inline">\(Y\)</span> uses <span class="math inline">\(W\)</span> and <span class="math inline">\(A\)</span> but not <span class="math inline">\(X\)</span>.</p>
 </details>
+<div class="main-point">
 <p>The factorization is the probability version of the same procedure we used to generate a row of data. A complicated joint distribution is assembled from the simpler distributions supplied by the individual assignments.</p>
+</div>
 <p>The same decomposition applies when not all the variables are discrete. Return to the wildfire-smoke and asthma model, but now let <span class="math inline">\(Y\)</span> be the person’s peak expiratory flow later that day rather than an indicator of an asthma exacerbation. Consider the assignments</p>
 <p><span class="math display">\[
 X\leftarrow\operatorname{Bernoulli}(0.5),
@@ -1153,11 +1158,6 @@ P\{340\leq\operatorname{Normal}(370,900)\leq400\}\\
 \end{aligned}
 \]</span></p>
 <p>The outcome is continuous, so we ask for the probability that <span class="math inline">\(Y\)</span> falls in an interval rather than the probability that it equals one particular value. The decomposition otherwise follows the assignments in the same way.</p>
-<div class="section-break" aria-hidden="true">
-<span class="acorn-mark"></span>
-</div>
-<p>We need to be clear about where the causal claim enters. Writing down a list of assignments does not, by itself, make that list causal. Given the same joint distribution of <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, we can generate <span class="math inline">\(X\)</span> first and then <span class="math inline">\(Y\)</span>, or generate <span class="math inline">\(Y\)</span> first and then <span class="math inline">\(X\)</span>. Both lists can reproduce exactly the same data. The causal claim enters when we choose one of these lists and say, “This is the one the world actually followed.” If we say that the world generated <span class="math inline">\(X\)</span> and then used <span class="math inline">\(X\)</span> to generate <span class="math inline">\(Y\)</span>, we are making an assumption that cannot be learned from the joint distribution alone.</p>
-<p>So far, we have made two kinds of commitments. We have said which list of assignments the world followed, and we have specified every distribution and parameter in that list. We want to keep the first commitment without always requiring the second. In the next section, we retain our story about how the variables were generated while allowing the precise functions and distributions to remain unspecified.</p>
 
 
 </section>
