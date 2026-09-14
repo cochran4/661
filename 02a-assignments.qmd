@@ -8,7 +8,11 @@ One source of this fuzziness is that people have different ideas about what a ca
 
 A second source of fuzziness is that causal questions ask us to imagine something we cannot observe. We have to imagine what would happen if the same person received a different treatment, even though we can observe only the treatment the person actually received. In effect, we have to imagine a parallel universe or a metaverse. That can feel more like science fiction than science. Yet this imagined comparison is at the heart of the causal questions we want to ask.
 
-We need to bring this fuzziness into focus. More importantly, we need a framework precise enough that we know what one another mean when we make a causal claim.
+We need to bring this fuzziness into focus. More importantly, we need a framework precise enough that we know what one another mean when we make a causal claim. And probabilty is not enough. We saw in the opening chapter that the joint distribution can arise in different ways ($Y$ from $X$ or $X$ from $Y$).
+
+::: {.main-point}
+No amount of data can tell us which story the world followed. At some point, we have to put a ring on one of them and commit. That commitment is what lets us move beyond probability and statistics and into causal territory.
+:::
 
 <div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
 
@@ -35,10 +39,10 @@ The word *list* is important. In everyday life, we may not care whether eggs app
 Sometimes several variables play the same role in our story. Suppose we record whether a person's area experiences unhealthy wildfire-smoke levels and whether it experiences extreme heat that day. Both are environmental conditions that are present before the person decides whether to stay indoors. We may not care to place smoke before heat in our story, or heat before smoke. We can instead collect them in the random vector
 
 $$
-\mathbf X=(X_{\text{smoke}},X_{\text{heat}})
+X=(X_{\text{smoke}},X_{\text{heat}})
 $$
 
-and place them together at one point in our story. One item in our list could simply say that the world gives us the environmental conditions in the person's area. Later items could use either or both components of $\mathbf X$. Collecting variables in this way lets the story reflect the common role they play without forcing an order between them.
+and place them together at one point in our story. One item in our list could simply say that the world gives us the environmental conditions in the person's area. Later items could use either or both components of $X$. Collecting variables in this way lets the story reflect the common role they play without forcing an order between them.
 
 <details class="lesson-question">
 <summary>A hypertension study records systolic blood pressure at a patient's first visit, whether medication is prescribed at that visit, and systolic blood pressure three months later. Tell a story for how the world generated these three variables. Your story should say what is generated at each step and which other variables might be used.</summary>
@@ -514,21 +518,21 @@ The same calculation works for every possible combination. It illustrates a gene
 :::
 
 ::: {.callout-note title="Optional technical note on the general decomposition" collapse="true"}
-Take $K$ real-valued random variables $X_1,\ldots,X_K$ and a collection of assignments that has a topological order. Place the variables in one such order. Let $\mathbf P_j$ be the collection of variables used in the assignment for $X_j$, and let $\mathbf p_j$ be their realized values.
+Take $K$ real-valued random variables $X_1,\ldots,X_K$ and a collection of assignments that has a topological order. Place the variables in one such order. Let $P_j$ be the collection of variables used in the assignment for $X_j$, and let $p_j$ be their realized values.
 
-We have already described a conditional distribution using the conditional expectation of an indicator. For fixed values $\mathbf p_j$, define
+We have already described a conditional distribution using the conditional expectation of an indicator. For fixed values $p_j$, define
 
 $$
-F_{X_j\mid\mathbf P_j=\mathbf p_j}(t)
+F_{X_j\mid P_j=p_j}(t)
 :=
 E\left[
 1_{\{X_j\leq t\}}
 \mid
-\mathbf P_j=\mathbf p_j
+P_j=p_j
 \right].
 $$
 
-This is the conditional cdf of $X_j$ given $\mathbf P_j=\mathbf p_j$. It is the conditional distribution supplied by the assignment for $X_j$.
+This is the conditional cdf of $X_j$ given $P_j=p_j$. It is the conditional distribution supplied by the assignment for $X_j$.
 
 Let $\mathcal A_j$ be a subset of the possible values of $X_j$. Using the same Lebesgue--Stieltjes integration introduced in the probability review, the joint probability is
 
@@ -537,15 +541,15 @@ $$
 &P(X_1\in\mathcal A_1,\ldots,X_K\in\mathcal A_K)\\
 &\quad=\int_{\mathcal A_1}dF_{X_1}(x_1)
 \int_{\mathcal A_2}
-dF_{X_2\mid\mathbf P_2=\mathbf p_2}(x_2)
+dF_{X_2\mid P_2=p_2}(x_2)
 \cdots\\
 &\qquad\quad{}
 \int_{\mathcal A_K}
-dF_{X_K\mid\mathbf P_K=\mathbf p_K}(x_K).
+dF_{X_K\mid P_K=p_K}(x_K).
 \end{aligned}
 $$
 
-At each step, $\mathbf p_j$ is formed from the values already encountered for the variables in $\mathbf P_j$. Each integral is therefore taken with respect to the conditional cdf supplied by the corresponding assignment. When a variable is discrete, its integral becomes a sum. When it has a density, its probability weight can be written as $dF(x)=f(x)\,dx$.
+At each step, $p_j$ is formed from the values already encountered for the variables in $P_j$. Each integral is therefore taken with respect to the conditional cdf supplied by the corresponding assignment. When a variable is discrete, its integral becomes a sum. When it has a density, its probability weight can be written as $dF(x)=f(x)\,dx$.
 
 In particular, when all the variables are discrete and we ask about one complete combination,
 
@@ -553,11 +557,11 @@ $$
 \begin{aligned}
 &P(X_1=x_1,\ldots,X_K=x_K)\\
 &\qquad=\prod_{j=1}^K
-P(X_j=x_j\mid\mathbf P_j=\mathbf p_j).
+P(X_j=x_j\mid P_j=p_j).
 \end{aligned}
 $$
 
-The first collection $\mathbf P_1$ is empty, so its factor is simply $P(X_1=x_1)$.
+The first collection $P_1$ is empty, so its factor is simply $P(X_1=x_1)$.
 
 This construction can be generalized beyond real-valued random variables, including random vectors whose components are generated together.
 :::
@@ -624,7 +628,9 @@ The assignment for $W$ does not use $X$, so its factor does not condition on $X$
 
 </details>
 
+::: {.main-point}
 The factorization is the probability version of the same procedure we used to generate a row of data. A complicated joint distribution is assembled from the simpler distributions supplied by the individual assignments.
+:::
 
 The same decomposition applies when not all the variables are discrete. Return to the wildfire-smoke and asthma model, but now let $Y$ be the person's peak expiratory flow later that day rather than an indicator of an asthma exacerbation. Consider the assignments
 
@@ -672,9 +678,3 @@ P\{340\leq\operatorname{Normal}(370,900)\leq400\}\\
 $$
 
 The outcome is continuous, so we ask for the probability that $Y$ falls in an interval rather than the probability that it equals one particular value. The decomposition otherwise follows the assignments in the same way.
-
-<div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
-
-We need to be clear about where the causal claim enters. Writing down a list of assignments does not, by itself, make that list causal. Given the same joint distribution of $X$ and $Y$, we can generate $X$ first and then $Y$, or generate $Y$ first and then $X$. Both lists can reproduce exactly the same data. The causal claim enters when we choose one of these lists and say, “This is the one the world actually followed.” If we say that the world generated $X$ and then used $X$ to generate $Y$, we are making an assumption that cannot be learned from the joint distribution alone.
-
-So far, we have made two kinds of commitments. We have said which list of assignments the world followed, and we have specified every distribution and parameter in that list. We want to keep the first commitment without always requiring the second. In the next section, we retain our story about how the variables were generated while allowing the precise functions and distributions to remain unspecified.

@@ -241,6 +241,36 @@ p { margin: 0.85rem 0; }
   text-transform: uppercase;
 }
 
+/* Sparse, plain-language conclusions readers should carry forward */
+.main-point {
+  position: relative;
+  max-width: var(--text-max);
+  margin: var(--block-margin);
+  padding: 0.9rem 1.1rem 0.9rem 3.15rem;
+  color: var(--c-ink);
+  background: var(--c-wash);
+  border: 1px solid var(--c-line);
+  border-left: 4px solid var(--c-primary);
+  border-radius: var(--radius);
+  font-size: 1.04em;
+}
+
+.main-point::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 1rem;
+  width: 1.25rem;
+  height: 1.55rem;
+  background: url("images/acorn-divider.svg") center / contain no-repeat;
+  transform: translateY(-50%);
+}
+
+.main-point p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 .example-label {
   display: inline-block;
   margin-top: 1.6rem;

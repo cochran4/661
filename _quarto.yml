@@ -79,6 +79,9 @@ link-citations: true
 filters:
   - _filters/glossary-tooltips.lua
 
+crossref:
+  chapters: false
+
 format:
   html:
     theme:

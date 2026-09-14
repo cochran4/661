@@ -195,7 +195,9 @@ $$
 
 In the WHI example, knowing the individual treatment effect would tell us whether the patient should or should not take hormone replacement therapy. An individual treatment effect of one would tell me that hormone replacement therapy is **not** a good idea for the patient. They get coronary heart disease under therapy, but not if they take the placebo. An individual treatment effect of -1 tells me hormone replacement therapy is a good idea. They get coronary heart disease under placebo, but not if they take hormone replacement therapy.
 
+::: {.main-point}
 Calculating this effect requires both potential outcomes, but the other potential outcome is missing. This is called the [fundamental problem of causal inference]{.glossary-term}.
+:::
 
 Return to the six participants shown above. Complete the table as much as possible. Use the observed treatment and outcome to fill in the potential outcome that we observe. Enter a question mark for the potential outcome that we cannot determine.
 
@@ -313,10 +315,8 @@ We say that a causal estimand is [identified]{.glossary-term} when it can be wri
 
 ![Identification expresses a causal estimand as a statistical estimand that can be learned from observed data.](images/01c-causal-identification-path.svg){width="75%" fig-align="center"}
 
-::: {.key-takeaway}
-<span class="takeaway-label">The critical step</span>
-
-**Randomization lets us replace the average outcomes in the two imagined universes with the average outcomes in the two observed WHI treatment groups.**
+::: {.main-point}
+Randomization lets us replace the average outcomes in the two imagined universes with the average outcomes in the two observed WHI treatment groups.
 :::
 
 <details class="lesson-question technical-proof">

@@ -46,6 +46,10 @@ A study that examines naturally occurring exposures or treatments rather than as
 
 The event, condition, or response that the exposure might affect.
 
+**Parent**
+
+Another variable used as an input to a variable's assignment function.
+
 **Positivity**
 
 Each treatment under study has a positive probability of being assigned.
@@ -65,6 +69,10 @@ The risk of an outcome among exposed people divided by the risk among unexposed 
 **Simpson's paradox**
 
 A reversal in which the direction of an association in the combined data is opposite to its direction within groups defined by a third variable.
+
+**Structural causal model (SCM)**
+
+A model that defines each variable through an assignment function of its parents and a noise variable, with the noise variables independent as an entire collection.
 
 **Topological order**
 

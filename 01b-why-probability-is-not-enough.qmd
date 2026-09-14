@@ -81,10 +81,8 @@ The picture below summarizes the problem as a snake eating its tail. A probabili
 
 ![The “snake eating its tail”: using both statistical directions as causal explanations creates a circular story in which X causes Y and Y causes X.](images/01b-probability-mechanisms.svg){width="70%" fig-align="center"}
 
-::: {.key-takeaway}
-<span class="takeaway-label">Main point</span>
-
-**The joint distribution of the observed variables does not, by itself, determine how those variables are causally related.**
+::: {.main-point}
+The joint distribution of the observed variables does not, by itself, determine how those variables are causally related.
 :::
 
 At first, this ambiguity may not seem especially troubling. Perhaps the data cannot tell us whether $X$ causes $Y$ or $Y$ causes $X$, but we might still conclude that one must cause the other.
@@ -175,4 +173,6 @@ The bottom of the figure represents statistical inference. We use observed data 
 
 ![Statistical inference connects observational data to a probability model, while causal inference can also combine data with a causal model and information about interventions.](images/01b-causal-model-roadmap.svg){width="68%" fig-align="center"}
 
-**How do we add this directionality? What, more precisely, is a causal model?**
+::: {.main-point}
+How do we add this directionality? What, more precisely, is a causal model?
+:::

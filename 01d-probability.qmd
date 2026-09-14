@@ -216,7 +216,9 @@ E[Y\mid X]
 =\underset{g(X)}{\operatorname{argmin}}\;E\left[(Y-g(X))^2\right].
 $$
 
+::: {.main-point}
 In this sense, $E[Y\mid X]$ is our best guess for $Y$ using the information in $X$.
+:::
 
 For example, suppose $Y$ is a person's systolic blood pressure. If we know nothing about the person, our best single guess is the overall mean blood pressure, $E[Y]$. Now suppose we learn the person's age $X$. The conditional expectation $E[Y\mid X]$ allows our guess to change with the age we observe. If we observe that the person is 30, its value is the mean blood pressure among 30-year-olds, written $E[Y\mid X=30]$. If the person is 70, its value is the mean among 70-year-olds, written $E[Y\mid X=70]$. Thus, a conditional mean is a best guess that uses the information we have observed.
 
@@ -461,7 +463,9 @@ $$
 Y(a)\mathrel{\perp\!\!\!\perp}A\mid X.
 $$
 
+::: {.main-point}
 The phrase "given $X$" matters. We are not claiming that treatment assignment and the potential outcome share no information at all. We are claiming that treatment assignment provides no extra information about the potential outcome beyond the information already contained in $X$.
+:::
 
 Here is a simpler example where conditional independence follows directly from how the experiment works. Suppose we randomly select one of two coins. Coin 1 lands heads with probability $1/4$, while Coin 2 lands heads with probability $3/4$. We then flip the selected coin twice. Let $Z$ identify the coin, let $X=1$ indicate heads on the first flip, and let $Y=1$ indicate heads on the second flip.
 
@@ -636,7 +640,9 @@ $$
 =E[\widehat\theta]-\theta.
 $$
 
+::: {.main-point}
 Bias will be especially important for causal inference. In an observational study, an association between treatment and outcome can be a biased estimator of a causal effect. Collecting more observations makes that association more precisely estimated, but it does not by itself turn the association into the causal effect. A very precise answer to the wrong question is still the wrong answer.
+:::
 
 **Variability.** Two unbiased estimators can differ in how much they vary from sample to sample. We prefer an estimator with less variability because it will usually land closer to the estimand. The variance $\operatorname{Var}(\widehat\theta)$ describes this sampling variability. For the sample mean, the variance $\operatorname{Var}(Y)/n$ shows why larger samples give us more precise estimates.
 

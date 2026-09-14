@@ -7,3 +7,7 @@ filters:
 ## A list of assignments {.unnumbered}
 
 {{< include _exercises/02a-assignments-and-generating-data.qmd >}}
+
+## Structural causal models {.unnumbered}
+
+{{< include _exercises/02b-structural-causal-models.qmd >}}

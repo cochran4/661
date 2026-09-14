@@ -41,7 +41,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-3cdca04efcdf222d40c140bc6f47f337.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-6f1477c1ffb8692f3d9a2ae751e48ac3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -544,7 +544,9 @@ E[Y]=\underset{c\in\mathbb R}{\operatorname{argmin}}\;E[(Y-c)^2].
 E[Y\mid X]
 =\underset{g(X)}{\operatorname{argmin}}\;E\left[(Y-g(X))^2\right].
 \]</span></p>
+<div class="main-point">
 <p>In this sense, <span class="math inline">\(E[Y\mid X]\)</span> is our best guess for <span class="math inline">\(Y\)</span> using the information in <span class="math inline">\(X\)</span>.</p>
+</div>
 <p>For example, suppose <span class="math inline">\(Y\)</span> is a person’s systolic blood pressure. If we know nothing about the person, our best single guess is the overall mean blood pressure, <span class="math inline">\(E[Y]\)</span>. Now suppose we learn the person’s age <span class="math inline">\(X\)</span>. The conditional expectation <span class="math inline">\(E[Y\mid X]\)</span> allows our guess to change with the age we observe. If we observe that the person is 30, its value is the mean blood pressure among 30-year-olds, written <span class="math inline">\(E[Y\mid X=30]\)</span>. If the person is 70, its value is the mean among 70-year-olds, written <span class="math inline">\(E[Y\mid X=70]\)</span>. Thus, a conditional mean is a best guess that uses the information we have observed.</p>
 <details class="lesson-question">
 <summary>
@@ -741,7 +743,9 @@ E[Y(1)\mid A=1]=E[Y(1)].
 <p><span class="math display">\[
 Y(a)\mathrel{\perp\!\!\!\perp}A\mid X.
 \]</span></p>
+<div class="main-point">
 <p>The phrase “given <span class="math inline">\(X\)</span>” matters. We are not claiming that treatment assignment and the potential outcome share no information at all. We are claiming that treatment assignment provides no extra information about the potential outcome beyond the information already contained in <span class="math inline">\(X\)</span>.</p>
+</div>
 <p>Here is a simpler example where conditional independence follows directly from how the experiment works. Suppose we randomly select one of two coins. Coin 1 lands heads with probability <span class="math inline">\(1/4\)</span>, while Coin 2 lands heads with probability <span class="math inline">\(3/4\)</span>. We then flip the selected coin twice. Let <span class="math inline">\(Z\)</span> identify the coin, let <span class="math inline">\(X=1\)</span> indicate heads on the first flip, and let <span class="math inline">\(Y=1\)</span> indicate heads on the second flip.</p>
 <p>If we do not know which coin was selected, the first flip provides information about the second. Both coins are equally likely to be selected, so</p>
 <p><span class="math display">\[
@@ -871,7 +875,9 @@ E[\widehat\theta]=\theta.
 \operatorname{Bias}(\widehat\theta)
 =E[\widehat\theta]-\theta.
 \]</span></p>
+<div class="main-point">
 <p>Bias will be especially important for causal inference. In an observational study, an association between treatment and outcome can be a biased estimator of a causal effect. Collecting more observations makes that association more precisely estimated, but it does not by itself turn the association into the causal effect. A very precise answer to the wrong question is still the wrong answer.</p>
+</div>
 <p><strong>Variability.</strong> Two unbiased estimators can differ in how much they vary from sample to sample. We prefer an estimator with less variability because it will usually land closer to the estimand. The variance <span class="math inline">\(\operatorname{Var}(\widehat\theta)\)</span> describes this sampling variability. For the sample mean, the variance <span class="math inline">\(\operatorname{Var}(Y)/n\)</span> shows why larger samples give us more precise estimates.</p>
 <p><strong>Mean squared error.</strong> Bias and variability can be considered together through mean squared error.</p>
 <p><span class="math display">\[

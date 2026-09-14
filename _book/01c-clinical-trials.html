@@ -61,7 +61,7 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-3cdca04efcdf222d40c140bc6f47f337.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-6f1477c1ffb8692f3d9a2ae751e48ac3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -615,7 +615,9 @@ Optional technical note: SUTVA
 Y(1)-Y(0).
 \]</span></p>
 <p>In the WHI example, knowing the individual treatment effect would tell us whether the patient should or should not take hormone replacement therapy. An individual treatment effect of one would tell me that hormone replacement therapy is <strong>not</strong> a good idea for the patient. They get coronary heart disease under therapy, but not if they take the placebo. An individual treatment effect of -1 tells me hormone replacement therapy is a good idea. They get coronary heart disease under placebo, but not if they take hormone replacement therapy.</p>
+<div class="main-point">
 <p>Calculating this effect requires both potential outcomes, but the other potential outcome is missing. This is called the <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="For each person, we observe the potential outcome under the treatment received but not the potential outcome under the other treatment. We therefore cannot observe both potential outcomes for the same person." tabindex="0">fundamental problem of causal inference</span>.</p>
+</div>
 <p>Return to the six participants shown above. Complete the table as much as possible. Use the observed treatment and outcome to fill in the potential outcome that we observe. Enter a question mark for the potential outcome that we cannot determine.</p>
 <table class="compact-data-table potential-outcomes-table">
 <caption>
@@ -941,9 +943,8 @@ E[Y(1)]-E[Y(0)]
 <figcaption>Identification expresses a causal estimand as a statistical estimand that can be learned from observed data.</figcaption>
 </figure>
 </div>
-<div class="key-takeaway">
-<p><span class="takeaway-label">The critical step</span></p>
-<p><strong>Randomization lets us replace the average outcomes in the two imagined universes with the average outcomes in the two observed WHI treatment groups.</strong></p>
+<div class="main-point">
+<p>Randomization lets us replace the average outcomes in the two imagined universes with the average outcomes in the two observed WHI treatment groups.</p>
 </div>
 <details class="lesson-question technical-proof">
 <summary>
