@@ -4,6 +4,8 @@ title: "A list of assignments"
 
 ![](images/02a-squirrel-commitment-v2.png){width=40% fig-align="center" fig-alt="A paperback-style pen-and-ink squirrel in a checked hat and waistcoat doing a Single Ladies dance pose, holding up a sparkling ring and pointing to it."}
 
+## Introduction
+
 We all have some notion of what it means for one thing to cause another. The trouble is that those notions can be a little fuzzy. That makes it hard to talk to each other when we are not starting from the same place.
 
 One source of this fuzziness is that people have different ideas about what a cause must do. Some people think the outcome must never occur without the cause. Others think the cause must always be followed by the outcome. Still others reserve the word cause for whatever acts most directly on the outcome. Consider what these different notions imply about smoking and lung cancer. Lung cancer can occur in someone who never smoked, many people who smoke never develop lung cancer, and smoking produces cancer through intermediate changes in the body. Depending on which notion we use, any of these facts might lead someone to say that smoking does not cause lung cancer.

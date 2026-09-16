@@ -4,6 +4,8 @@ title: "Structural causal models"
 
 ![](images/02b-squirrels-model-fit.png){width=75% fig-align="center" fig-alt="Two squirrels in checked hats: one struggles to button a suit that is much too tight; the other looks relaxed and confident in a roomy, baggy suit."}
 
+## Introduction
+
 In the previous section, we committed to a story about how the world generated our variables. To make that story concrete, we also specified every distribution, function, parameter, and number needed to generate data.
 
 But these are two different commitments. We may be willing to say which variables the world used to generate which others without pretending that we know exactly how the world did it. How much of the story do we actually need to specify?

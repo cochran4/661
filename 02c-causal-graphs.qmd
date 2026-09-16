@@ -15,9 +15,43 @@ Some of you may have seen causal graphs before and wondered why we have waited t
 
 <div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
 
-## SCMs and causal graphs
+## Building a graph from an SCM
 
-To get a graph from an SCM, draw one node for each variable in our story. A **node** is simply a point in the drawing, labeled with the variable's name. Then draw an arrow from each parent to the variable whose assignment uses it. An arrow is also called a **directed edge**. Thus, we draw $X\to Y$ exactly when $X$ is a parent of $Y$.
+Each SCM gives us a graph. Let's make things interesting with five variables. Suppose our story concerns a student deciding whether to drink coffee the evening before an exam. Let $S$ be stress before that decision, $C$ be coffee consumption that evening, $H$ be hours spent studying afterward, $L$ be sleep that night, and $Y$ be the exam score the next morning.
+
+We tell the following story through an SCM:
+
+$$
+\begin{aligned}
+S&\leftarrow f_S(\epsilon_S),\\
+C&\leftarrow f_C(S,\epsilon_C),\\
+H&\leftarrow f_H(S,C,\epsilon_H),\\
+L&\leftarrow f_L(S,C,H,\epsilon_L),\\
+Y&\leftarrow f_Y(S,H,L,\epsilon_Y),
+\end{aligned}
+$$
+
+with independent noise terms. In this story, stress may affect coffee consumption, studying, sleep, and the exam score. Coffee may affect studying and sleep. Studying may affect sleep and the exam score, and sleep may affect the exam score. These are the relationships we are choosing for this example.
+
+**First, put the nodes down.** Draw one circle for each random variable in our story, with the variable's name in the middle. Each labeled circle is a **node**. We have five variables, so we draw five circles.
+
+![](images/02c-coffee-nodes.svg){width=600 fig-align="center" fig-alt="Five circles with centered labels S, C, H, L, and Y, with no arrows."}
+
+**Next, put an arrow down.** Look at the assignment for $C$:
+
+$$
+C\leftarrow f_C(S,\epsilon_C).
+$$
+
+Stress $S$ is a parent of coffee consumption $C$, so draw an arrow from the circle labeled $S$ to the circle labeled $C$. An arrow is also called a **directed edge**. Its direction matters: the arrow points into the variable whose assignment uses the parent.
+
+![](images/02c-coffee-first-arrow.svg){width=600 fig-align="center" fig-alt="The same five labeled circles, now with one arrow from S to C."}
+
+**Now do this for every parent in every assignment.** The assignment for $H$ gives us arrows from $S$ and $C$ into $H$. The assignment for $L$ gives us arrows from $S$, $C$, and $H$ into $L$. The assignment for $Y$ gives us arrows from $S$, $H$, and $L$ into $Y$. No arrows point into $S$ because its assignment has no parents.
+
+![](images/02c-coffee-complete.svg){width=600 fig-align="center" fig-alt="The completed graph on the same five labeled circles: S points to C, H, L, and Y; C points to H and L; H points to L and Y; and L points to Y."}
+
+The rule is simple: draw an arrow from each parent to the variable whose assignment uses it. Thus, we draw $X\to Y$ exactly when $X$ is a parent of $Y$.
 
 Now we can explain our choice of the word **parents**. It was not chosen on a whim. In graph terminology, a parent of a node is a node with an arrow pointing into it. The parents in our assignments become the parents in our graph.
 
@@ -25,7 +59,7 @@ We leave the noise terms out of these drawings. They are still part of the SCM, 
 
 Recall that our assignments have a topological order: we can put the variables in an order so that every parent comes before the variable it helps generate. This means that following arrows can never bring us back to the node where we started. Such a route would be a directed cycle. Our graphs have directed edges and no directed cycles, so they are called **directed acyclic graphs**, or **DAGs**. We call the DAG obtained from an SCM its **causal graph**.
 
-Let's work through the RHC example. Let $X$ be mean blood pressure, $A$ indicate receipt of RHC, and $Y$ indicate death within 30 days. Our SCM is
+Now try the RHC example. Let $X$ be mean blood pressure, $A$ indicate receipt of RHC, and $Y$ indicate death within 30 days. Our SCM is
 
 $$
 \begin{aligned}
@@ -35,9 +69,16 @@ Y&\leftarrow f_Y(X,A,\epsilon_Y),
 \end{aligned}
 $$
 
-with independent noise terms. We draw three nodes, labeled $X$, $A$, and $Y$. The assignment for $X$ has no parents, so no arrows point into $X$. The assignment for $A$ uses $X$, so we draw $X\to A$. The assignment for $Y$ uses both $X$ and $A$, so we draw $X\to Y$ and $A\to Y$.
+with independent noise terms.
+
+<details class="lesson-question">
+<summary>Draw the causal graph for the RHC SCM.</summary>
+
+We draw three nodes, labeled $X$, $A$, and $Y$. The assignment for $X$ has no parents, so no arrows point into $X$. The assignment for $A$ uses $X$, so we draw $X\to A$. The assignment for $Y$ uses both $X$ and $A$, so we draw $X\to Y$ and $A\to Y$.
 
 ![The RHC causal graph, with arrows from X to A, X to Y, and A to Y.](images/02c-rhc.svg){width=440 fig-alt="Three nodes labeled X, A, and Y. Arrows run from X to A, X to Y, and A to Y."}
+
+</details>
 
 Now try this for the WHI trial. Here $X$ collects baseline characteristics, $A$ is randomized assignment to hormone therapy or placebo, and $Y$ indicates a coronary heart disease event. The SCM is
 

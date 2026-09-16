@@ -374,13 +374,47 @@ window.Quarto = {
 <span class="acorn-mark"></span>
 </div>
 </section>
-<section id="scms-and-causal-graphs" class="level2">
-<h2 class="anchored" data-anchor-id="scms-and-causal-graphs">SCMs and causal graphs</h2>
-<p>To get a graph from an SCM, draw one node for each variable in our story. A <strong>node</strong> is simply a point in the drawing, labeled with the variable’s name. Then draw an arrow from each parent to the variable whose assignment uses it. An arrow is also called a <strong>directed edge</strong>. Thus, we draw <span class="math inline">\(X\to Y\)</span> exactly when <span class="math inline">\(X\)</span> is a parent of <span class="math inline">\(Y\)</span>.</p>
+<section id="building-a-graph-from-an-scm" class="level2">
+<h2 class="anchored" data-anchor-id="building-a-graph-from-an-scm">Building a graph from an SCM</h2>
+<p>Each SCM gives us a graph. Let’s make things interesting with five variables. Suppose our story concerns a student deciding whether to drink coffee the evening before an exam. Let <span class="math inline">\(S\)</span> be stress before that decision, <span class="math inline">\(C\)</span> be coffee consumption that evening, <span class="math inline">\(H\)</span> be hours spent studying afterward, <span class="math inline">\(L\)</span> be sleep that night, and <span class="math inline">\(Y\)</span> be the exam score the next morning.</p>
+<p>We tell the following story through an SCM:</p>
+<p><span class="math display">\[
+\begin{aligned}
+S&amp;\leftarrow f_S(\epsilon_S),\\
+C&amp;\leftarrow f_C(S,\epsilon_C),\\
+H&amp;\leftarrow f_H(S,C,\epsilon_H),\\
+L&amp;\leftarrow f_L(S,C,H,\epsilon_L),\\
+Y&amp;\leftarrow f_Y(S,H,L,\epsilon_Y),
+\end{aligned}
+\]</span></p>
+<p>with independent noise terms. In this story, stress may affect coffee consumption, studying, sleep, and the exam score. Coffee may affect studying and sleep. Studying may affect sleep and the exam score, and sleep may affect the exam score. These are the relationships we are choosing for this example.</p>
+<p><strong>First, put the nodes down.</strong> Draw one circle for each random variable in our story, with the variable’s name in the middle. Each labeled circle is a <strong>node</strong>. We have five variables, so we draw five circles.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02c-coffee-nodes.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Five circles with centered labels S, C, H, L, and Y, with no arrows." width="600"></p>
+</figure>
+</div>
+<p><strong>Next, put an arrow down.</strong> Look at the assignment for <span class="math inline">\(C\)</span>:</p>
+<p><span class="math display">\[
+C\leftarrow f_C(S,\epsilon_C).
+\]</span></p>
+<p>Stress <span class="math inline">\(S\)</span> is a parent of coffee consumption <span class="math inline">\(C\)</span>, so draw an arrow from the circle labeled <span class="math inline">\(S\)</span> to the circle labeled <span class="math inline">\(C\)</span>. An arrow is also called a <strong>directed edge</strong>. Its direction matters: the arrow points into the variable whose assignment uses the parent.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02c-coffee-first-arrow.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="The same five labeled circles, now with one arrow from S to C." width="600"></p>
+</figure>
+</div>
+<p><strong>Now do this for every parent in every assignment.</strong> The assignment for <span class="math inline">\(H\)</span> gives us arrows from <span class="math inline">\(S\)</span> and <span class="math inline">\(C\)</span> into <span class="math inline">\(H\)</span>. The assignment for <span class="math inline">\(L\)</span> gives us arrows from <span class="math inline">\(S\)</span>, <span class="math inline">\(C\)</span>, and <span class="math inline">\(H\)</span> into <span class="math inline">\(L\)</span>. The assignment for <span class="math inline">\(Y\)</span> gives us arrows from <span class="math inline">\(S\)</span>, <span class="math inline">\(H\)</span>, and <span class="math inline">\(L\)</span> into <span class="math inline">\(Y\)</span>. No arrows point into <span class="math inline">\(S\)</span> because its assignment has no parents.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02c-coffee-complete.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="The completed graph on the same five labeled circles: S points to C, H, L, and Y; C points to H and L; H points to L and Y; and L points to Y." width="600"></p>
+</figure>
+</div>
+<p>The rule is simple: draw an arrow from each parent to the variable whose assignment uses it. Thus, we draw <span class="math inline">\(X\to Y\)</span> exactly when <span class="math inline">\(X\)</span> is a parent of <span class="math inline">\(Y\)</span>.</p>
 <p>Now we can explain our choice of the word <strong>parents</strong>. It was not chosen on a whim. In graph terminology, a parent of a node is a node with an arrow pointing into it. The parents in our assignments become the parents in our graph.</p>
 <p>We leave the noise terms out of these drawings. They are still part of the SCM, and we still require them to be independent as an entire collection.</p>
 <p>Recall that our assignments have a topological order: we can put the variables in an order so that every parent comes before the variable it helps generate. This means that following arrows can never bring us back to the node where we started. Such a route would be a directed cycle. Our graphs have directed edges and no directed cycles, so they are called <strong>directed acyclic graphs</strong>, or <strong>DAGs</strong>. We call the DAG obtained from an SCM its <strong>causal graph</strong>.</p>
-<p>Let’s work through the RHC example. Let <span class="math inline">\(X\)</span> be mean blood pressure, <span class="math inline">\(A\)</span> indicate receipt of RHC, and <span class="math inline">\(Y\)</span> indicate death within 30 days. Our SCM is</p>
+<p>Now try the RHC example. Let <span class="math inline">\(X\)</span> be mean blood pressure, <span class="math inline">\(A\)</span> indicate receipt of RHC, and <span class="math inline">\(Y\)</span> indicate death within 30 days. Our SCM is</p>
 <p><span class="math display">\[
 \begin{aligned}
 X&amp;\leftarrow f_X(\epsilon_X),\\
@@ -388,13 +422,19 @@ A&amp;\leftarrow f_A(X,\epsilon_A),\\
 Y&amp;\leftarrow f_Y(X,A,\epsilon_Y),
 \end{aligned}
 \]</span></p>
-<p>with independent noise terms. We draw three nodes, labeled <span class="math inline">\(X\)</span>, <span class="math inline">\(A\)</span>, and <span class="math inline">\(Y\)</span>. The assignment for <span class="math inline">\(X\)</span> has no parents, so no arrows point into <span class="math inline">\(X\)</span>. The assignment for <span class="math inline">\(A\)</span> uses <span class="math inline">\(X\)</span>, so we draw <span class="math inline">\(X\to A\)</span>. The assignment for <span class="math inline">\(Y\)</span> uses both <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span>, so we draw <span class="math inline">\(X\to Y\)</span> and <span class="math inline">\(A\to Y\)</span>.</p>
+<p>with independent noise terms.</p>
+<details class="lesson-question">
+<summary>
+Draw the causal graph for the RHC SCM.
+</summary>
+<p>We draw three nodes, labeled <span class="math inline">\(X\)</span>, <span class="math inline">\(A\)</span>, and <span class="math inline">\(Y\)</span>. The assignment for <span class="math inline">\(X\)</span> has no parents, so no arrows point into <span class="math inline">\(X\)</span>. The assignment for <span class="math inline">\(A\)</span> uses <span class="math inline">\(X\)</span>, so we draw <span class="math inline">\(X\to A\)</span>. The assignment for <span class="math inline">\(Y\)</span> uses both <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span>, so we draw <span class="math inline">\(X\to Y\)</span> and <span class="math inline">\(A\to Y\)</span>.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/02c-rhc.svg" class="img-fluid figure-img" alt="Three nodes labeled X, A, and Y. Arrows run from X to A, X to Y, and A to Y." width="440"></p>
 <figcaption>The RHC causal graph, with arrows from X to A, X to Y, and A to Y.</figcaption>
 </figure>
 </div>
+</details>
 <p>Now try this for the WHI trial. Here <span class="math inline">\(X\)</span> collects baseline characteristics, <span class="math inline">\(A\)</span> is randomized assignment to hormone therapy or placebo, and <span class="math inline">\(Y\)</span> indicates a coronary heart disease event. The SCM is</p>
 <p><span class="math display">\[
 \begin{aligned}
