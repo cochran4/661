@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 260" width="600" height="260">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#315C43"/></marker></defs>
+<line x1="83.6627547044635" y1="63.06684819470347" x2="252.55120454282235" y2="120.64245609414398" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="83.6627547044635" y1="196.93315180529655" x2="252.55120454282235" y2="139.35754390585603" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="303.8619994508757" y1="122.54312517160133" x2="492.32008063698413" y2="63.64997480094246" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="303.8619994508757" y1="137.45687482839867" x2="492.32008063698413" y2="196.35002519905754" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<circle cx="60" cy="55" r="23" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="60" y="55" dy=".35em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">A</text>
+<circle cx="60" cy="205" r="23" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="60" y="205" dy=".35em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">B</text>
+<circle cx="280" cy="130" r="23" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="280" y="130" dy=".35em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">C</text>
+<circle cx="520" cy="55" r="23" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="520" y="55" dy=".35em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">D</text>
+<circle cx="520" cy="205" r="23" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="520" y="205" dy=".35em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">E</text>
+</svg>

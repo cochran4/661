@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 260" width="600" height="260">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#315C43"/></marker></defs>
+<line x1="71.92031021678298" y1="117.9791847198287" x2="179.57244014853174" y2="58.94414572499872" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="230.0" y1="45.0" x2="371.0" y2="45.0" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="387.5258888783264" y1="66.66556142185422" x2="319.46996890114144" y2="184.8679487506491" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="292.0424570976664" y1="188.62005421114955" x2="220.03074976670698" y2="69.80073711506653" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="421.7505546462153" y1="57.325314299522006" x2="524.7693566103902" y2="115.70263541255447" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<circle cx="50" cy="130" r="23" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="50" y="130" dy=".35em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">A</text>
+<circle cx="205" cy="45" r="23" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="205" y="45" dy=".35em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">B</text>
+<circle cx="400" cy="45" r="23" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="400" y="45" dy=".35em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">C</text>
+<circle cx="305" cy="210" r="23" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="305" y="210" dy=".35em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">D</text>
+<circle cx="550" cy="130" r="23" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="550" y="130" dy=".35em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">E</text>
+</svg>
