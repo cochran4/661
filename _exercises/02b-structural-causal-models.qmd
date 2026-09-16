@@ -1,4 +1,4 @@
-### Writing structural causal models
+### 5. Writing structural causal models
 
 Write an SCM for each of the following stories. State the parents of each variable and state what must be true of the noise terms.
 
@@ -39,7 +39,7 @@ Thus, $\operatorname{Pa}_X=\operatorname{Pa}_A=\varnothing$, $\operatorname{Pa}_
 In both SCMs, the noise terms are independent in the sense required by the definition of an SCM.
 :::
 
-### Following an SCM for one realization
+### 6. Following an SCM for one realization
 
 Consider the SCM
 
@@ -125,7 +125,7 @@ Y_1-Y_0=2.
 $$
 :::
 
-### What follows probabilistically
+### 7. What follows probabilistically
 
 Return to the wildfire-smoke and appointment-reminder SCMs. Use the ordered local Markov property to answer the following questions.
 
@@ -160,7 +160,7 @@ $$
 Among patients with the same baseline characteristics and attendance status, knowing whether a patient was assigned the reminder provides no additional information about whether blood pressure was measured. In this story, any relationship between the reminder and blood-pressure measurement must travel through attendance. Attendance is a pure mediator of the reminder's effect on whether blood pressure is measured.
 :::
 
-### Where might these SCMs be wrong?
+### 8. Where might these SCMs be wrong?
 
 Return to the SCMs you wrote for the wildfire-smoke story and the appointment-reminder trial. We emphasized two ways that an SCM can be wrong.
 

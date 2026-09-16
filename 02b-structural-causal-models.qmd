@@ -2,9 +2,13 @@
 title: "Structural causal models"
 ---
 
+![](images/02b-squirrels-model-fit.png){width=75% fig-align="center" fig-alt="Two squirrels in checked hats: one struggles to button a suit that is much too tight; the other looks relaxed and confident in a roomy, baggy suit."}
+
 In the previous section, we committed to a story about how the world generated our variables. To make that story concrete, we also specified every distribution, function, parameter, and number needed to generate data.
 
 But these are two different commitments. We may be willing to say which variables the world used to generate which others without pretending that we know exactly how the world did it. How much of the story do we actually need to specify?
+
+Like the squirrels above, we can give ourselves more room. **Leaving the assignment functions unspecified lets us keep the causal story without squeezing it into a particular functional form.** We still commit to the parents and independent noise; we leave room for how those inputs generate each variable.
 
 This problem becomes hard to ignore when we work with data from the world. We observe the data and try to tell a plausible story for how the world generated them. The right heart catheterization study gives us a concrete example.
 
@@ -125,8 +129,9 @@ par(old_par)
 ```
 
 ::: {.main-point}
-Even with well-chosen parameters, the model form itself can be wrong.
+**Even with well-chosen parameters, the model form itself can be wrong.**
 :::
+
 
 <details class="lesson-question">
 <summary>The fitted normal distribution still does not describe the observed distribution of mean blood pressure very well. What could we change about the assignment for $X$?</summary>

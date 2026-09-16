@@ -49,7 +49,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./02-exercises.html" rel="next">
+<link href="./02c-causal-graphs.html" rel="next">
 <link href="./02a-assignments.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -187,6 +187,10 @@ window.Quarto = {
  <span class="dropdown-text">Structural causal models</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./02c-causal-graphs.html">
+ <span class="dropdown-text">Causal graphs</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./02-exercises.html">
  <span class="dropdown-text">Exercises</span></a>
   </li>  
@@ -297,6 +301,11 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./02c-causal-graphs.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Causal graphs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./02-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
   </div>
 </li>
@@ -371,8 +380,14 @@ window.Quarto = {
 </header>
 
 
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02b-squirrels-model-fit.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" alt="Two squirrels in checked hats: one struggles to button a suit that is much too tight; the other looks relaxed and confident in a roomy, baggy suit."></p>
+</figure>
+</div>
 <p>In the previous section, we committed to a story about how the world generated our variables. To make that story concrete, we also specified every distribution, function, parameter, and number needed to generate data.</p>
 <p>But these are two different commitments. We may be willing to say which variables the world used to generate which others without pretending that we know exactly how the world did it. How much of the story do we actually need to specify?</p>
+<p>Like the squirrels above, we can give ourselves more room. <strong>Leaving the assignment functions unspecified lets us keep the causal story without squeezing it into a particular functional form.</strong> We still commit to the parents and independent noise; we leave room for how those inputs generate each variable.</p>
 <p>This problem becomes hard to ignore when we work with data from the world. We observe the data and try to tell a plausible story for how the world generated them. The right heart catheterization study gives us a concrete example.</p>
 <div class="example-intro">
 <p><span class="example-label">Case study: Right heart catheterization</span></p>
@@ -439,7 +454,7 @@ Figure&nbsp;2: Observed features of the RHC data compared with models whose para
 </div>
 </div>
 <div class="main-point">
-<p>Even with well-chosen parameters, the model form itself can be wrong.</p>
+<p><strong>Even with well-chosen parameters, the model form itself can be wrong.</strong></p>
 </div>
 <details class="lesson-question">
 <summary>
@@ -1212,8 +1227,8 @@ document.addEventListener("DOMContentLoaded", () => {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./02-exercises.html" class="pagination-link" aria-label="Exercises">
-        <span class="nav-page-text"><span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./02c-causal-graphs.html" class="pagination-link" aria-label="Causal graphs">
+        <span class="nav-page-text"><span class="chapter-title">Causal graphs</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

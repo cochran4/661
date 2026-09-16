@@ -19,6 +19,7 @@ book:
       chapters:
         - 02a-assignments.qmd
         - 02b-structural-causal-models.qmd
+        - 02c-causal-graphs.qmd
         - 02-exercises.qmd
     - part: "Measured confounding"
       chapters: []
@@ -60,6 +61,8 @@ book:
             file: 02a-assignments.qmd
           - text: "Structural causal models"
             file: 02b-structural-causal-models.qmd
+          - text: "Causal graphs"
+            file: 02c-causal-graphs.qmd
           - text: "Exercises"
             file: 02-exercises.qmd
       - text: "Back matter"
