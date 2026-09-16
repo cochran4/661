@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Syllabus – Causal inference (and other things)</title>
+<title>Causal graphs – Causal inference (and other things)</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -35,8 +35,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./01a-being-a-detective.html" rel="next">
-<link href="./index.html" rel="prev">
+<link href="./02-exercises.html" rel="next">
+<link href="./02b-structural-causal-models.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -74,6 +74,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -178,7 +207,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./00-syllabus.html"><span class="chapter-title">Syllabus</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments.html">Construction</a></li><li class="breadcrumb-item"><a href="./02c-causal-graphs.html"><span class="chapter-title">Causal graphs</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -197,7 +226,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./00-syllabus.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Syllabus</span></a>
+  <a href="./00-syllabus.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Syllabus</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -257,7 +286,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02c-causal-graphs.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Causal graphs</span></a>
+  <a href="./02c-causal-graphs.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Causal graphs</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -317,9 +346,9 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments.html">Construction</a></li><li class="breadcrumb-item"><a href="./02c-causal-graphs.html"><span class="chapter-title">Causal graphs</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Syllabus</span></h1>
+<h1 class="title"><span class="chapter-title">Causal graphs</span></h1>
 </div>
 
 
@@ -336,437 +365,131 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><strong>Causal Inference, Surveys, and Missing Data for Population Health</strong></p>
-<p>BMI/POP HLTH 661</p>
-<p>Fall 2026</p>
-<div class="section-break" aria-hidden="true">
-<span class="acorn-mark"></span>
-</div>
-<section id="course-information" class="level2">
-<h2 class="anchored" data-anchor-id="course-information">Course Information</h2>
-<section id="course-logistics" class="level3">
-<h3 class="anchored" data-anchor-id="course-logistics">Course Logistics</h3>
-<section id="classroom-and-meeting-times" class="level4">
-<h4 class="anchored" data-anchor-id="classroom-and-meeting-times">Classroom and Meeting Times</h4>
-<p>Days/Time: Tue/Thu 4:00–5:15 PM<br>
-Location: 726 WARF</p>
-</section>
-<section id="instructor" class="level4">
-<h4 class="anchored" data-anchor-id="instructor">Instructor</h4>
-<p>Amy Cochran<br>
-Email: cochran4@math.wisc.edu<br>
-Office hours: TBD, 685 WARF</p>
-</section>
-<section id="credit-hours" class="level4">
-<h4 class="anchored" data-anchor-id="credit-hours">Credit Hours</h4>
-<p>3 credits</p>
-<p><strong>UW–Madison credit hour policy.</strong> The credit standard for this course is met by an expectation of a total of <strong>135 hours</strong> (at least 45 hours per credit) of student engagement with course learning activities. This includes regularly scheduled instructor–student meeting times (75-minute blocks on Tuesday and Thursday), reading, problem sets, and other work described in this syllabus.</p>
-</section>
-<section id="requisites" class="level4">
-<h4 class="anchored" data-anchor-id="requisites">Requisites</h4>
-<p>POP HLTH/B M I 552, F&amp;W ECOL/STAT 572 (or HORT 572 prior to Spring 2025), SOC/C&amp;E SOC 361, or ED PSYCH 761</p>
-</section>
-<section id="course-attributes" class="level4">
-<h4 class="anchored" data-anchor-id="course-attributes">Course Attributes</h4>
-<p>Graduate level</p>
-</section>
-<section id="instructional-mode" class="level4">
-<h4 class="anchored" data-anchor-id="instructional-mode">Instructional Mode</h4>
-<p>Face to face</p>
-</section>
-</section>
-<section id="course-descriptions" class="level3">
-<h3 class="anchored" data-anchor-id="course-descriptions">Course Descriptions</h3>
-<section id="official-description" class="level4">
-<h4 class="anchored" data-anchor-id="official-description">Official Description</h4>
-<p>Overview of modern statistical methods for dealing with “incomplete” data, including the design and analysis of complex surveys, the analysis of missing data, and causal inference.</p>
-</section>
-<section id="instructor-description" class="level4">
-<h4 class="anchored" data-anchor-id="instructor-description">Instructor Description</h4>
-<p>This course builds a foundation for making causal claims from observational data. We want to move past associations — <em>this thing is related to that thing</em> — and actually say that one thing <strong>causes</strong> another. Does vaping give you cancer? Is intermittent fasting bad for your heart? Can I eat eggs every morning? People are acting on these questions regardless (vaping, skipping breakfast, eating eggs), and the science they rely on should meet them with honest answers rather than a shrug about causation.</p>
-<p>Making those claims is hard. Without randomization, there are always at least two explanations for any pattern we see, and ruling them out requires both the right tools and honest accounting of their limits. We build those tools from the ground up: causal models and graphs, potential outcomes and causal effects, measured and unmeasured confounding, and sensitivity analysis. We also extend them to practical complications like missing data and complex survey designs.</p>
-<p>Those tools are learned by using them. We write code in R, analyze real data in class, and the final project involves emulating a target trial from observational data.</p>
-</section>
-</section>
-<section id="course-materials" class="level3">
-<h3 class="anchored" data-anchor-id="course-materials">Course Materials</h3>
-<p>The course draws on several resource texts:</p>
-<ul>
-<li><a href="https://miguelhernan.org/whatifbook"><em>Causal Inference: What If</em></a> by Hernán and Robins</li>
-<li><a href="https://stefvanbuuren.name/fimd/"><em>Flexible Imputation of Missing Data</em></a> by van Buuren</li>
-<li><a href="https://tidy-survey-r.github.io/tidy-survey-book/"><em>Exploring Complex Survey Data Analysis Using R</em></a> by Zimmer, Powell, and Velásquez</li>
-</ul>
-<p>Additional notes and materials will be provided throughout the semester that build on and extend these texts.</p>
-<div class="section-break" aria-hidden="true">
-<span class="acorn-mark"></span>
-</div>
-</section>
-</section>
-<section id="course-format-and-expectations" class="level2">
-<h2 class="anchored" data-anchor-id="course-format-and-expectations">Course Format and Expectations</h2>
-<section id="assessment-and-grading" class="level3">
-<h3 class="anchored" data-anchor-id="assessment-and-grading">Assessment and Grading</h3>
-<p>Your course work is weighted out of <strong>100 points</strong>:</p>
-<ul>
-<li><strong>Homework:</strong> 15 points</li>
-<li><strong>Quizzes:</strong> 35 points</li>
-<li><strong>Attendance:</strong> 15 points</li>
-<li><strong>Project:</strong> 35 points</li>
-</ul>
-<section id="guaranteed-grade-lines" class="level4">
-<h4 class="anchored" data-anchor-id="guaranteed-grade-lines">Guaranteed Grade Lines</h4>
-<p>A percentage score in the indicated range guarantees at least the letter grade next to it:</p>
-<ul>
-<li><strong>A:</strong> [93,100]</li>
-<li><strong>AB:</strong> [88,93)</li>
-<li><strong>B:</strong> [83, 88)</li>
-<li><strong>BC:</strong> [78, 83)</li>
-<li><strong>C:</strong> [63, 78)</li>
-<li><strong>D:</strong> [50, 63)</li>
-<li><strong>F:</strong> [0, 50]</li>
-</ul>
-<p>Grade lines may be lowered at the end.</p>
-</section>
-</section>
-<section id="devices" class="level3">
-<h3 class="anchored" data-anchor-id="devices">Devices</h3>
-<p>The class will be device-free: the use of laptops, tablets, and phones is prohibited except during class sessions when devices are used for specific learning activities. Students with approved accommodations through the McBurney Disability Resource Center may use devices as specified in their accommodations.</p>
-</section>
-<section id="attendance" class="level3">
-<h3 class="anchored" data-anchor-id="attendance">Attendance</h3>
-<p>Attendance is expected and graded. Full credit is earned with three or fewer unexcused absences. Each additional unexcused absence reduces the attendance grade by an equal share, calculated using the number of scheduled class meetings beyond the three allowed absences.</p>
-<p>Some absences can be anticipated and should be arranged with the instructor beforehand: conferences, academic travel, religious observances, or other scheduled commitments. Others arise unexpectedly: illness, family emergencies, or other extenuating circumstances. For these, let the instructor know as soon as you are able. All other absences are unexcused.</p>
-</section>
-<section id="class-meetings" class="level3">
-<h3 class="anchored" data-anchor-id="class-meetings">Class Meetings</h3>
-<p>Class meets in person starting promptly at 4:00 PM on Tuesdays and Thursdays. Each class follows the same structure: a short lecture, followed by pen-and-paper problems worked through in small groups, followed by a coding session in R. The instructor will move between groups during problem-solving and coding to ask and answer questions.</p>
-<p>This structure only works if you show up ready to engage. That means trying problems before asking for help, supporting peers, and bringing your laptop for the coding portion.</p>
-</section>
-<section id="homework" class="level3">
-<h3 class="anchored" data-anchor-id="homework">Homework</h3>
-<p>Homework assignments are due by 4:00 PM on September 17; October 1, 8, 22, and 29; November 5 and 19; and December 8. With the exception of the final assignment, which is due on Tuesday, these dates are Thursdays. Submit each assignment on Canvas as a single PDF before class. There are 8 assignments total.</p>
-<p>Homework is graded for completeness, not correctness. Mastery is assessed through quizzes and the project.</p>
-<ul>
-<li>No late assignments will be accepted.</li>
-<li>Collaboration on ideas is encouraged, but writing solutions together or copying another person’s work is not allowed.</li>
-<li>AI tools may be used to brainstorm, explore ideas, or improve writing clarity. You are fully responsible for the accuracy and integrity of what you submit.</li>
-<li>Neatness and clarity matter. Write one problem per page except for very short problems. Computations without explanation will not receive credit even if the answer is correct.</li>
-</ul>
-</section>
-<section id="quizzes" class="level3">
-<h3 class="anchored" data-anchor-id="quizzes">Quizzes</h3>
-<p>There are 8 short in-class quizzes, given on the same dates as homework: September 17; October 1, 8, 22, and 29; November 5 and 19; and December 8. The final quiz is on a Tuesday; all other quizzes are on Thursdays. Quizzes assess comprehension of recent material and will look similar to homework problems. The lowest quiz score will be dropped.</p>
-</section>
-<section id="project" class="level3">
-<h3 class="anchored" data-anchor-id="project">Project</h3>
-<p>The project is the central assessment of the course. Working individually, you will develop a complete protocol for a target trial emulation. The final submission has two parts: a written protocol and an analysis script that executes on a sandbox dataset. The protocol can be written in any format (e.g., Quarto, Word, or LaTeX). The project unfolds across six milestones:</p>
-<ul>
-<li><strong>Scientific gap:</strong> Thursday, September 10</li>
-<li><strong>Target trial table:</strong> Thursday, September 24</li>
-<li><strong>Construction:</strong> Thursday, October 15</li>
-<li><strong>Identification:</strong> Thursday, November 12</li>
-<li><strong>Estimation:</strong> Thursday, December 3</li>
-<li><strong>Final document:</strong> Tuesday, December 15</li>
-</ul>
-<p>More detail on each milestone will be provided on Canvas. You are welcome to use your own dataset or work with the dataset the instructor uses throughout the course.</p>
-</section>
-<section id="schedule-tentative" class="level3">
-<h3 class="anchored" data-anchor-id="schedule-tentative">Schedule (Tentative)</h3>
-<div class="schedule-table-wrap" role="region" aria-label="Scrollable course schedule" tabindex="0">
-<div id="tbl-course-schedule" class="course-schedule quarto-float quarto-figure quarto-figure-center anchored" data-tbl-colwidths="[8, 12, 8, 25, 47]">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-course-schedule-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;1: Tentative course schedule for Fall 2026.
-</figcaption>
-<div aria-describedby="tbl-course-schedule-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="course-schedule caption-top table">
-<colgroup>
-<col style="width: 8%">
-<col style="width: 12%">
-<col style="width: 8%">
-<col style="width: 25%">
-<col style="width: 47%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: right;">Week</th>
-<th>Date</th>
-<th>Day</th>
-<th>Section</th>
-<th>Topics</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">1</td>
-<td>Sep 3</td>
-<td>Th</td>
-<td>Motivation</td>
-<td>Cornfield conditions</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">2</td>
-<td>Sep 8</td>
-<td>Tu</td>
-<td></td>
-<td>Clinical trials</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">2</td>
-<td>Sep 10</td>
-<td>Th</td>
-<td>Review</td>
-<td>Probability and statistics review</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">3</td>
-<td>Sep 15</td>
-<td>Tu</td>
-<td>Construction</td>
-<td>Structural equation models (SEM)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">3</td>
-<td>Sep 17</td>
-<td>Th</td>
-<td></td>
-<td>Nonparametric SEM (NPSEM)</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">4</td>
-<td>Sep 22</td>
-<td>Tu</td>
-<td></td>
-<td>Causal graphs</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">4</td>
-<td>Sep 24</td>
-<td>Th</td>
-<td></td>
-<td>d-separation</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">5</td>
-<td>Sep 29</td>
-<td>Tu</td>
-<td></td>
-<td>Potential outcomes</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">5</td>
-<td>Oct 1</td>
-<td>Th</td>
-<td></td>
-<td>SWIGs</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">6</td>
-<td>Oct 6</td>
-<td>Tu</td>
-<td></td>
-<td>Causal effects</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">6</td>
-<td>Oct 8</td>
-<td>Th</td>
-<td>Measured confounding</td>
-<td>Outcome regression</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">7</td>
-<td>Oct 13</td>
-<td>Tu</td>
-<td></td>
-<td>Matching</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">7</td>
-<td>Oct 15</td>
-<td>Th</td>
-<td></td>
-<td>Propensity score</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">8</td>
-<td>Oct 20</td>
-<td>Tu</td>
-<td></td>
-<td>Inverse probability weighting</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">8</td>
-<td>Oct 22</td>
-<td>Th</td>
-<td></td>
-<td>Doubly robust methods</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">9</td>
-<td>Oct 27</td>
-<td>Tu</td>
-<td></td>
-<td>Flexible modeling methods</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">9</td>
-<td>Oct 29</td>
-<td>Th</td>
-<td>Unmeasured confounding</td>
-<td>Instrumental variables</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">10</td>
-<td>Nov 3</td>
-<td>Tu</td>
-<td></td>
-<td>Regression discontinuity</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">10</td>
-<td>Nov 5</td>
-<td>Th</td>
-<td></td>
-<td>Other strategies</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">11</td>
-<td>Nov 10</td>
-<td>Tu</td>
-<td>Sensitivity</td>
-<td>E-values</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">11</td>
-<td>Nov 12</td>
-<td>Th</td>
-<td></td>
-<td>Gamma / Rosenbaum sensitivity</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">12</td>
-<td>Nov 17</td>
-<td>Tu</td>
-<td>Missing data</td>
-<td>Missing data mechanisms</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">12</td>
-<td>Nov 19</td>
-<td>Th</td>
-<td></td>
-<td>Multiple imputation</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">13</td>
-<td>Nov 24</td>
-<td>Tu</td>
-<td></td>
-<td>Chained equations</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">13</td>
-<td>Nov 26</td>
-<td>Th</td>
-<td></td>
-<td><strong>Thanksgiving (no class)</strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">14</td>
-<td>Dec 1</td>
-<td>Tu</td>
-<td></td>
-<td>Missing not at random</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">14</td>
-<td>Dec 3</td>
-<td>Th</td>
-<td>Surveys</td>
-<td>Complex survey design</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">15</td>
-<td>Dec 8</td>
-<td>Tu</td>
-<td></td>
-<td>Weighting and variance estimation</td>
-</tr>
-</tbody>
-</table>
-</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02c-squirrel-chalkboard.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%" alt="The squirrel in its checked hat and waistcoat presents a chalkboard. On the left are assignments for X, A, and Y, their parent sets, and independent noise. On the right the same parent structure is shown by arrows from X to A, X to Y, and A to Y."></p>
 </figure>
 </div>
-</div>
-<!-- Useful resource https://bookdown.org/glorya_hu/MNAR-Guide/ -->
-<!--
-May need to skip below or update it
----
-
-## Learning outcomes by level
-
-| Level | Goals |
-|---|---|
-| **Knowledge** | Recall and state formal definitions of mathematical objects and their properties used in elementary linear algebra (e.g., dimension of a vector space; linear dependence of a set of vectors). |
-|  | Recall and state standard theorems used in elementary linear algebra (e.g., symmetric matrices are diagonalizable; linear operators with non-trivial kernel are not invertible). |
-| **Comprehension** | Use standard methods and tools of mathematical argument in the context of linear algebra (e.g., direct/indirect methods; examples/counterexamples; induction; first-order logic; set theory; quantifiers). |
-|  | Verify whether a mathematical construct has a particular property (e.g., a matrix is invertible; a set is a vector subspace; a vector is an eigenvector). |
-|  | Verify premises of standard theorems in elementary linear algebra in order to apply conclusions in longer arguments (e.g., a matrix has zero determinant ⇒ nullity larger than one). |
-|  | Prove or disprove statements related to definitions, properties, and theorems using techniques of mathematical argument. |
-|  | Convey formal mathematical arguments in English using appropriate mathematical terminology and notation. |
-| **Application** | Perform standard computations in linear algebra (e.g., rank of a matrix; determinant of a square matrix). |
--->
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Our SCMs are starting to feel cumbersome. We write an assignment for every variable, give each assignment a function, and then leave the details of those functions unspecified. What we keep emphasizing is which variables are parents of which others, together with the requirement that the remaining randomness be independent. Is there a more convenient way to represent this?</p>
+<p>There is. <strong>A graph gives us a shortcut for displaying this structure.</strong> It turns out that some things we want to say about random variables are much easier to see and say with a graph. We can keep track of the same parent relationships without writing out every assignment.</p>
+<p>Some of you may have seen causal graphs before and wondered why we have waited this long to introduce them. The delay was deliberate. Causal inference is about random variables and how the world generates them. We wanted to spend time with those random variables before taking shortcuts. Each variable in our story is a random variable. Its parents are random variables. The remaining randomness is also represented by a random variable. A graph will help us study them, but we should always be able to translate what we see in the graph back into a statement about those random variables.</p>
 <div class="section-break" aria-hidden="true">
 <span class="acorn-mark"></span>
 </div>
 </section>
-</section>
-<section id="official-uw-statements" class="level2">
-<h2 class="anchored" data-anchor-id="official-uw-statements">Official UW Statements</h2>
-<section id="accommodations-for-students-with-disabilities" class="level3">
-<h3 class="anchored" data-anchor-id="accommodations-for-students-with-disabilities">Accommodations for Students with Disabilities</h3>
-<p>The University of Wisconsin–Madison supports the right of all enrolled students to a full and equal educational opportunity. The Americans with Disabilities Act (ADA), Wisconsin State Statute (36.12), and UW–Madison policy (<a href="https://policy.wisc.edu/library/UW-855">UW-855</a>) require the university to provide reasonable accommodations to students with disabilities to access and participate in its academic programs and educational services. Faculty and students share responsibility in the accommodation process. Students are expected to inform faculty of their need for instructional accommodations during the beginning of the semester, or as soon as possible after being approved for accommodations. Faculty will work either directly with the student or in coordination with the <a href="https://mcburney.wisc.edu/">McBurney Disability Resource Center</a> to provide reasonable instructional and course-related accommodations. Disability information, including instructional accommodations as part of a student’s educational record, is confidential and protected under <a href="https://registrar.wisc.edu/ferpa/">FERPA</a>.</p>
-</section>
-<section id="teaching-learning-data-transparency-statement" class="level3">
-<h3 class="anchored" data-anchor-id="teaching-learning-data-transparency-statement">Teaching &amp; Learning Data Transparency Statement</h3>
-<p>The privacy and security of faculty, staff, and students’ personal information is a top priority for UW–Madison. The university carefully reviews and vets all campus-supported digital tools used for teaching and learning, including those that support <a href="https://teachlearn.wisc.edu/deep/">data empowered educational practices</a> and proctoring. View more information about <a href="https://teachlearn.wisc.edu/teaching-and-learning-data-transparency-statement/">teaching and learning data transparency</a> at UW–Madison.</p>
-</section>
-<section id="privacy-of-student-records-use-of-audio-recorded-lectures" class="level3">
-<h3 class="anchored" data-anchor-id="privacy-of-student-records-use-of-audio-recorded-lectures">Privacy of Student Records &amp; Use of Audio Recorded Lectures</h3>
-<p>Lecture materials and recordings for this course are protected intellectual property at UW–Madison. Students enrolled in this course may use the materials and recordings for their personal use related to participation in the course. Students may also take notes solely for their personal use. If a lecture is not already recorded, students are not authorized to record lectures without permission unless they are considered by the university to be a qualified student with a disability who has an approved accommodation that includes recording. Students may not copy or have lecture materials and recordings outside of class, including posting on internet sites or selling to commercial entities, with the exception of sharing copies of personal notes as a notetaker through the McBurney Disability Resource Center. Students are otherwise prohibited from providing or selling their personal notes to anyone else or being paid for taking notes by any person or commercial firm without the instructor’s express written permission. Unauthorized use of these copyrighted lecture materials and recordings constitutes copyright infringement and may be addressed under the university’s policies, UWS Chapters 14 and 17, governing student academic and non-academic misconduct. View <a href="https://registrar.wisc.edu/ferpa/">more information about FERPA</a>.</p>
-</section>
-<section id="course-evaluations" class="level3">
-<h3 class="anchored" data-anchor-id="course-evaluations">Course Evaluations</h3>
-<p>Students at the University of Wisconsin–Madison have the opportunity to evaluate their learning experiences and the courses they are enrolled in through course evaluations. Many instructors use a <a href="https://kb.wisc.edu/luwmad/81069">digital course evaluation tool</a> to collect feedback from students. Students typically receive notifications two weeks prior to the end of the semester requesting that they complete course evaluations. Student participation is an integral component of course development, and confidential feedback is important. UW–Madison strongly encourages student participation in course evaluations.</p>
-</section>
-<section id="students-rules-rights-responsibilities" class="level3">
-<h3 class="anchored" data-anchor-id="students-rules-rights-responsibilities">Students’ Rules, Rights &amp; Responsibilities</h3>
-<p>View more information about <a href="https://guide.wisc.edu/undergraduate/#rulesrightsandresponsibilitiestext">student rules, rights, and responsibilities</a>, such as student privacy rights, sharing of academic record information, academic integrity, and grievances.</p>
-</section>
-<section id="diversity-inclusion-statement" class="level3">
-<h3 class="anchored" data-anchor-id="diversity-inclusion-statement">Diversity &amp; Inclusion Statement</h3>
-<p>Diversity is a source of strength, creativity, and innovation for the University of Wisconsin–Madison. We value the contributions of each person and respect the profound ways their identity, culture, background, experience, status, abilities, and opinion enrich the university community. We commit ourselves to the pursuit of excellence in teaching, research, outreach, and diversity as inextricably linked goals. UW–Madison fulfills its public mission by creating a welcoming and inclusive community for people from every background – people who as students, faculty, and staff serve Wisconsin and the world. (Source: <a href="https://diversity.wisc.edu/institutional-statement-on-diversity/">Institutional Statement on Diversity</a>)</p>
-</section>
-<section id="student-health-well-being-basic-needs" class="level3">
-<h3 class="anchored" data-anchor-id="student-health-well-being-basic-needs">Student Health, Well-Being &amp; Basic Needs</h3>
-<p>Students often experience stressors outside the classroom that can impact their academic experience. These might include mental and physical health concerns; difficulty securing food, housing, and other basic needs; misuse of alcohol or other drugs; sexual or relationship violence; family challenges; and campus climate, among others. If you’re experiencing one or more of these challenges, you’re not alone and help is available. To learn more, visit <a href="https://students.wisc.edu/guides/get-help-now/">Get Help</a>.</p>
-</section>
-<section id="academic-integrity-statement" class="level3">
-<h3 class="anchored" data-anchor-id="academic-integrity-statement">Academic Integrity Statement</h3>
-<p>By virtue of enrollment, each student agrees to uphold the high academic standards of the University of Wisconsin–Madison. Academic misconduct is behavior that negatively impacts the integrity of the institution. Cheating, fabrication, plagiarism, unauthorized collaboration and helping others commit these previously listed acts are examples of misconduct that might result in disciplinary action. Examples of <a href="https://conduct.students.wisc.edu/academic-misconduct/">disciplinary sanctions</a> include, but are not limited to, failure on the assignment/course, written reprimand, disciplinary probation, suspension, or expulsion.</p>
-</section>
-<section id="ai-statement" class="level3">
-<h3 class="anchored" data-anchor-id="ai-statement">AI Statement</h3>
-<p>The use of artificial intelligence (AI) tools and applications, such as Copilot, Gemini, and others, is permitted in this course when it supports the course learning objectives. You are responsible for any information you submit based on an AI query. Ensure that you have permission before posting course content, including assignment or assessment prompts, and verify that AI-generated results do not contain misinformation or unethical content. Your use of AI tools must be documented and cited to conform to this course’s expectations. When you use AI on a submitted assignment, include a brief AI-use statement naming the tool and describing how you used it. You remain responsible for the correctness, clarity, and completeness of all submitted work.</p>
-</section>
-<section id="academic-calendar-religious-observances" class="level3">
-<h3 class="anchored" data-anchor-id="academic-calendar-religious-observances">Academic Calendar &amp; Religious Observances</h3>
-<p>View the full <a href="https://secfac.wisc.edu/academic-calendar">academic calendar</a> in addition to information about religious and election day observances. Students are responsible for notifying instructors within the first two weeks of classes about any need for flexibility due to <a href="https://policy.wisc.edu/library/UW-880">religious observances</a>.</p>
-<p>Establishment of the academic calendar for the University of Wisconsin–Madison falls within the authority of the faculty as set forth in <a href="https://policy.wisc.edu/library/UW-801">Faculty Policies and Procedures</a>. Construction of the academic calendar is subject to various rules and laws prescribed by the Board of Regents, the Faculty Senate, State of Wisconsin and the federal government. Find <a href="https://registrar.wisc.edu/dates/">additional dates and deadlines for students</a> on the Office of the Registrar website.</p>
+<section id="scms-and-causal-graphs" class="level2">
+<h2 class="anchored" data-anchor-id="scms-and-causal-graphs">SCMs and causal graphs</h2>
+<p>To get a graph from an SCM, draw one node for each variable in our story. A <strong>node</strong> is simply a point in the drawing, labeled with the variable’s name. Then draw an arrow from each parent to the variable whose assignment uses it. An arrow is also called a <strong>directed edge</strong>. Thus, we draw <span class="math inline">\(X\to Y\)</span> exactly when <span class="math inline">\(X\)</span> is a parent of <span class="math inline">\(Y\)</span>.</p>
+<p>Now we can explain our choice of the word <strong>parents</strong>. It was not chosen on a whim. In graph terminology, a parent of a node is a node with an arrow pointing into it. The parents in our assignments become the parents in our graph.</p>
+<p>We leave the noise terms out of these drawings. They are still part of the SCM, and we still require them to be independent as an entire collection.</p>
+<p>Recall that our assignments have a topological order: we can put the variables in an order so that every parent comes before the variable it helps generate. This means that following arrows can never bring us back to the node where we started. Such a route would be a directed cycle. Our graphs have directed edges and no directed cycles, so they are called <strong>directed acyclic graphs</strong>, or <strong>DAGs</strong>. We call the DAG obtained from an SCM its <strong>causal graph</strong>.</p>
+<p>Let’s work through the RHC example. Let <span class="math inline">\(X\)</span> be mean blood pressure, <span class="math inline">\(A\)</span> indicate receipt of RHC, and <span class="math inline">\(Y\)</span> indicate death within 30 days. Our SCM is</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow f_X(\epsilon_X),\\
+A&amp;\leftarrow f_A(X,\epsilon_A),\\
+Y&amp;\leftarrow f_Y(X,A,\epsilon_Y),
+\end{aligned}
+\]</span></p>
+<p>with independent noise terms. We draw three nodes, labeled <span class="math inline">\(X\)</span>, <span class="math inline">\(A\)</span>, and <span class="math inline">\(Y\)</span>. The assignment for <span class="math inline">\(X\)</span> has no parents, so no arrows point into <span class="math inline">\(X\)</span>. The assignment for <span class="math inline">\(A\)</span> uses <span class="math inline">\(X\)</span>, so we draw <span class="math inline">\(X\to A\)</span>. The assignment for <span class="math inline">\(Y\)</span> uses both <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span>, so we draw <span class="math inline">\(X\to Y\)</span> and <span class="math inline">\(A\to Y\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02c-rhc.svg" class="img-fluid figure-img" alt="Three nodes labeled X, A, and Y. Arrows run from X to A, X to Y, and A to Y." width="440"></p>
+<figcaption>The RHC causal graph, with arrows from X to A, X to Y, and A to Y.</figcaption>
+</figure>
+</div>
+<p>Now try this for the WHI trial. Here <span class="math inline">\(X\)</span> collects baseline characteristics, <span class="math inline">\(A\)</span> is randomized assignment to hormone therapy or placebo, and <span class="math inline">\(Y\)</span> indicates a coronary heart disease event. The SCM is</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow f_X(\epsilon_X),\\
+A&amp;\leftarrow f_A(\epsilon_A),\\
+Y&amp;\leftarrow f_Y(X,A,\epsilon_Y),
+\end{aligned}
+\]</span></p>
+<p>with independent noise terms.</p>
+<details class="lesson-question">
+<summary>
+Draw the causal graph for the WHI SCM. How does it differ from the RHC graph?
+</summary>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02c-whi.svg" class="img-fluid figure-img" alt="Nodes X and A each have an arrow pointing to Y. There is no arrow between X and A." width="440"></p>
+<figcaption>The WHI causal graph.</figcaption>
+</figure>
+</div>
+<p>Both <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span> are parents of <span class="math inline">\(Y\)</span>, so we draw <span class="math inline">\(X\to Y\)</span> and <span class="math inline">\(A\to Y\)</span>. Neither <span class="math inline">\(X\)</span> nor <span class="math inline">\(A\)</span> has any parents. Compared with the RHC graph, the arrow <span class="math inline">\(X\to A\)</span> is absent: the randomized treatment assignment does not use <span class="math inline">\(X\)</span>.</p>
+</details>
+<p>For a mediation example, return to the appointment-reminder story from the exercises. Let <span class="math inline">\(X\)</span> collect baseline characteristics, <span class="math inline">\(A\)</span> indicate randomized assignment to a reminder, <span class="math inline">\(M\)</span> indicate attendance, and <span class="math inline">\(Y\)</span> indicate whether blood pressure is measured at the appointment. The reminder can affect measurement only through attendance. We wrote</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow f_X(\epsilon_X),\\
+A&amp;\leftarrow f_A(\epsilon_A),\\
+M&amp;\leftarrow f_M(X,A,\epsilon_M),\\
+Y&amp;\leftarrow f_Y(X,M,\epsilon_Y),
+\end{aligned}
+\]</span></p>
+<p>with independent noise terms.</p>
+<details class="lesson-question">
+<summary>
+Draw the causal graph for the appointment-reminder SCM. Should there be an arrow from <span class="math inline">\(A\)</span> to <span class="math inline">\(Y\)</span>?
+</summary>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02c-mediation.svg" class="img-fluid figure-img" alt="Arrows run from X to M, X to Y, A to M, and M to Y. There is no arrow from A to Y." width="440"></p>
+<figcaption>The appointment-reminder causal graph.</figcaption>
+</figure>
+</div>
+<p>The parents of <span class="math inline">\(M\)</span> are <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span>, and the parents of <span class="math inline">\(Y\)</span> are <span class="math inline">\(X\)</span> and <span class="math inline">\(M\)</span>. This gives four arrows: <span class="math inline">\(X\to M\)</span>, <span class="math inline">\(A\to M\)</span>, <span class="math inline">\(X\to Y\)</span>, and <span class="math inline">\(M\to Y\)</span>.</p>
+<p>There is no arrow <span class="math inline">\(A\to Y\)</span> because <span class="math inline">\(A\)</span> is not an input to the assignment for <span class="math inline">\(Y\)</span>. We can follow arrows from <span class="math inline">\(A\)</span> through <span class="math inline">\(M\)</span> to <span class="math inline">\(Y\)</span>, but that does not make <span class="math inline">\(A\)</span> a parent of <span class="math inline">\(Y\)</span>. Attendance carries the reminder’s effect on whether blood pressure is measured.</p>
+</details>
+<p>We have defined a graph from an SCM. Can we go backward? If we know the graph, is there one unique SCM that gives us that graph?</p>
+<p>Yes, in the form we have been using, with the assignment functions and noise distributions left unspecified. The arrows tell us exactly which parents to put into each assignment. We give each variable its own noise term and require those noise terms to be independent. The graph does not tell us a formula for a function or a distribution for a noise term; those details were already left unspecified in our SCMs.</p>
+<div class="main-point">
+<p>The graph tells us exactly how to write the SCM’s assignments with unspecified functions. For each variable, use the variables with arrows pointing into it as its parents, add its noise term, and require all the noise terms to be independent.</p>
+</div>
+<p>For example, suppose we are given this graph:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02c-reverse-example.svg" class="img-fluid figure-img" alt="Arrows run from X to W, X to A, W to Y, and A to Y." width="440"></p>
+<figcaption>A causal graph to translate into an SCM.</figcaption>
+</figure>
+</div>
+<p>No arrows point into <span class="math inline">\(X\)</span>, so its assignment uses only its noise term. The arrow into <span class="math inline">\(W\)</span> comes from <span class="math inline">\(X\)</span>, and the arrow into <span class="math inline">\(A\)</span> also comes from <span class="math inline">\(X\)</span>. Finally, the arrows into <span class="math inline">\(Y\)</span> come from <span class="math inline">\(W\)</span> and <span class="math inline">\(A\)</span>. We therefore write</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow f_X(\epsilon_X),\\
+W&amp;\leftarrow f_W(X,\epsilon_W),\\
+A&amp;\leftarrow f_A(X,\epsilon_A),\\
+Y&amp;\leftarrow f_Y(W,A,\epsilon_Y),
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(\epsilon_X\)</span>, <span class="math inline">\(\epsilon_W\)</span>, <span class="math inline">\(\epsilon_A\)</span>, and <span class="math inline">\(\epsilon_Y\)</span> are independent. Notice that <span class="math inline">\(X\)</span> is not an input to the assignment for <span class="math inline">\(Y\)</span>: there is no arrow from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span>.</p>
+<p>Now try the same translation for this graph:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02c-reverse-practice.svg" class="img-fluid figure-img" alt="Arrows run from X to A, A to M, X to Y, and M to Y." width="440"></p>
+<figcaption>A causal graph for practice.</figcaption>
+</figure>
+</div>
+<details class="lesson-question">
+<summary>
+Write the SCM represented by this graph. Include the requirement on its noise terms.
+</summary>
+<p>We write</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow f_X(\epsilon_X),\\
+A&amp;\leftarrow f_A(X,\epsilon_A),\\
+M&amp;\leftarrow f_M(A,\epsilon_M),\\
+Y&amp;\leftarrow f_Y(X,M,\epsilon_Y),
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(\epsilon_X\)</span>, <span class="math inline">\(\epsilon_A\)</span>, <span class="math inline">\(\epsilon_M\)</span>, and <span class="math inline">\(\epsilon_Y\)</span> are independent. The parents of <span class="math inline">\(A\)</span> are <span class="math inline">\(\{X\}\)</span>, the parents of <span class="math inline">\(M\)</span> are <span class="math inline">\(\{A\}\)</span>, and the parents of <span class="math inline">\(Y\)</span> are <span class="math inline">\(\{X,M\}\)</span>. The variable <span class="math inline">\(X\)</span> has no parents. Each assignment comes directly from the arrows pointing into its node.</p>
+</details>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -1182,13 +905,13 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./index.html" class="pagination-link" aria-label="index.html">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">index.html</span></span>
+      <a href="./02b-structural-causal-models.html" class="pagination-link" aria-label="Structural causal models">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Structural causal models</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./01a-being-a-detective.html" class="pagination-link" aria-label="Being a detective with data">
-        <span class="nav-page-text"><span class="chapter-title">Being a detective with data</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./02-exercises.html" class="pagination-link" aria-label="Exercises">
+        <span class="nav-page-text"><span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

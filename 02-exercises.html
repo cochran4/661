@@ -36,7 +36,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./glossary.html" rel="next">
-<link href="./02b-structural-causal-models.html" rel="prev">
+<link href="./02c-causal-graphs.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -172,6 +172,10 @@ window.Quarto = {
  <span class="dropdown-text">Structural causal models</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./02c-causal-graphs.html">
+ <span class="dropdown-text">Causal graphs</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./02-exercises.html">
  <span class="dropdown-text">Exercises</span></a>
   </li>  
@@ -278,6 +282,11 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02b-structural-causal-models.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Structural causal models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02c-causal-graphs.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Causal graphs</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -486,7 +495,7 @@ P(X=1,Z=0,A=1,Y=2).
 <section id="structural-causal-models" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="structural-causal-models">Structural causal models</h2>
 <section id="writing-structural-causal-models" class="level3">
-<h3 class="anchored" data-anchor-id="writing-structural-causal-models">Writing structural causal models</h3>
+<h3 class="anchored" data-anchor-id="writing-structural-causal-models">5. Writing structural causal models</h3>
 <p>Write an SCM for each of the following stories. State the parents of each variable and state what must be true of the noise terms.</p>
 <p><strong>Wildfire smoke.</strong> Let <span class="math inline">\(X\)</span> indicate unhealthy wildfire smoke, let <span class="math inline">\(A\)</span> indicate whether a person stays indoors, and let <span class="math inline">\(Y\)</span> indicate an asthma exacerbation. Staying indoors may depend on the smoke, and the outcome may depend on both the smoke and staying indoors.</p>
 <p><strong>Appointment-reminder trial.</strong> Suppose investigators randomly assign patients to receive an appointment reminder. Let <span class="math inline">\(X\)</span> collect baseline characteristics, let <span class="math inline">\(A\)</span> indicate randomized assignment to the reminder, let <span class="math inline">\(M\)</span> indicate whether the patient attends the appointment, and let <span class="math inline">\(Y\)</span> indicate whether blood pressure is measured at that appointment. Baseline characteristics may affect attendance and whether blood pressure is measured. The reminder may affect attendance. In this story, the reminder can affect whether blood pressure is measured only through attendance.</p>
@@ -495,7 +504,7 @@ P(X=1,Z=0,A=1,Y=2).
 </div>
 </section>
 <section id="following-an-scm-for-one-realization" class="level3">
-<h3 class="anchored" data-anchor-id="following-an-scm-for-one-realization">Following an SCM for one realization</h3>
+<h3 class="anchored" data-anchor-id="following-an-scm-for-one-realization">6. Following an SCM for one realization</h3>
 <p>Consider the SCM</p>
 <p><span class="math display">\[
 X\leftarrow\epsilon_X,
@@ -539,7 +548,7 @@ Y_0=X+2(0)+\epsilon_Y.
 </div>
 </section>
 <section id="what-follows-probabilistically" class="level3">
-<h3 class="anchored" data-anchor-id="what-follows-probabilistically">What follows probabilistically</h3>
+<h3 class="anchored" data-anchor-id="what-follows-probabilistically">7. What follows probabilistically</h3>
 <p>Return to the wildfire-smoke and appointment-reminder SCMs. Use the ordered local Markov property to answer the following questions.</p>
 <ul>
 <li>Does the wildfire-smoke SCM say that <span class="math inline">\(A\)</span> and <span class="math inline">\(X\)</span> are independent? Explain what the model allows instead.</li>
@@ -552,7 +561,7 @@ Y_0=X+2(0)+\epsilon_Y.
 </div>
 </section>
 <section id="where-might-these-scms-be-wrong" class="level3">
-<h3 class="anchored" data-anchor-id="where-might-these-scms-be-wrong">Where might these SCMs be wrong?</h3>
+<h3 class="anchored" data-anchor-id="where-might-these-scms-be-wrong">8. Where might these SCMs be wrong?</h3>
 <p>Return to the SCMs you wrote for the wildfire-smoke story and the appointment-reminder trial. We emphasized two ways that an SCM can be wrong.</p>
 <ul>
 <li>The assignment function for a variable may be missing an important parent.</li>
@@ -980,8 +989,8 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./02b-structural-causal-models.html" class="pagination-link" aria-label="Structural causal models">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Structural causal models</span></span>
+      <a href="./02c-causal-graphs.html" class="pagination-link" aria-label="Causal graphs">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Causal graphs</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
