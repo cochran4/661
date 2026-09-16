@@ -389,6 +389,8 @@ window.Quarto = {
 <p><img src="images/02b-squirrels-model-fit.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:75.0%" alt="Two squirrels in checked hats: one struggles to button a suit that is much too tight; the other looks relaxed and confident in a roomy, baggy suit."></p>
 </figure>
 </div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>In the previous section, we committed to a story about how the world generated our variables. To make that story concrete, we also specified every distribution, function, parameter, and number needed to generate data.</p>
 <p>But these are two different commitments. We may be willing to say which variables the world used to generate which others without pretending that we know exactly how the world did it. How much of the story do we actually need to specify?</p>
 <p>Like the squirrels above, we can give ourselves more room. <strong>Leaving the assignment functions unspecified lets us keep the causal story without squeezing it into a particular functional form.</strong> We still commit to the parents and independent noise; we leave room for how those inputs generate each variable.</p>
@@ -406,6 +408,7 @@ window.Quarto = {
 <li>Finally, the patient either dies within 30 days or survives. The outcome <span class="math inline">\(Y\)</span> may depend on <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span>.</li>
 </ol>
 <p>Forgive us for keeping the story so simple. A serious analysis would consider many baseline characteristics, as the original study did, rather than blood pressure alone. For now, the simpler story lets us focus on how we turn a story into something formal.</p>
+</section>
 <section id="attempts-to-specify-everything" class="level2">
 <h2 class="anchored" data-anchor-id="attempts-to-specify-everything">Attempts to specify everything</h2>
 <p>Suppose we want to generate data from our story. We might begin with</p>
