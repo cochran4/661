@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Exercises – Causal inference (and other things)</title>
+<title>D-separation – Causal inference (and other things)</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,26 +26,7 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -54,8 +35,8 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./02a-assignments.html" rel="next">
-<link href="./01d-probability.html" rel="prev">
+<link href="./02-exercises.html" rel="next">
+<link href="./02c-causal-graphs.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -230,7 +211,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01a-being-a-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./01-exercises.html"><span class="chapter-title">Exercises</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments.html">Construction</a></li><li class="breadcrumb-item"><a href="./02d-d-separation.html"><span class="chapter-title">D-separation</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -283,7 +264,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./01-exercises.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Exercises</span></a>
+  <a href="./01-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
   </div>
 </li>
       </ul>
@@ -314,7 +295,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02d-d-separation.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">D-separation</span></a>
+  <a href="./02d-d-separation.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">D-separation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -374,9 +355,9 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01a-being-a-detective.html">Motivation</a></li><li class="breadcrumb-item"><a href="./01-exercises.html"><span class="chapter-title">Exercises</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments.html">Construction</a></li><li class="breadcrumb-item"><a href="./02d-d-separation.html"><span class="chapter-title">D-separation</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Exercises</span></h1>
+<h1 class="title"><span class="chapter-title">D-separation</span></h1>
 </div>
 
 
@@ -393,504 +374,270 @@ window.Quarto = {
 </header>
 
 
-<section id="being-a-detective-with-data" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="being-a-detective-with-data">Being a detective with data</h2>
-<section id="an-association-in-the-news" class="level3">
-<h3 class="anchored" data-anchor-id="an-association-in-the-news">1. An association in the news</h3>
-<p>Find a recent news story that describes an association from an observational study.</p>
-<ol type="a">
-<li>Identify the <strong>exposure or treatment</strong>.</li>
-<li>Identify the <strong>outcome</strong>.</li>
-<li>Does the headline or story suggest that the exposure causes the outcome? Identify the specific language that suggests (or does not suggest) a causal claim.</li>
-<li>Do you think the association could be causal? Explain why or why not. Consider the timing of the exposure and outcome, the size and pattern of the association, the plausibility of a causal mechanism, and reasonable alternative explanations.</li>
-<li>Identify at least one possible confounder, and explain how it might affect both the exposure and the outcome.</li>
-<li>Determine whether the possible confounder was measured in the study. You may need to consult the original study.</li>
-</ol>
-<div class="response-space">
-
-</div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>A causal graph records how random variables come about. We now ask what that structure tells us about association: when can learning one variable change what we know about another, and when does conditioning stop—or create—that flow of information?</p>
+<p>We begin with the smallest graphical building blocks. Then we string them into paths and develop <strong>d-separation</strong>, the graphical rule that lets us read conditional-independence statements from a causal graph.</p>
 </section>
-<section id="night-lights-and-childhood-myopia" class="level3">
-<h3 class="anchored" data-anchor-id="night-lights-and-childhood-myopia">2. Night lights and childhood myopia</h3>
-<p>Quinn and colleagues studied 479 children seen in a pediatric ophthalmology clinic. Parents reported the lighting conditions in which their children slept during the first two years of life. The table combines the myopia and high-myopia categories reported by the investigators <span class="citation" data-cites="quinn_myopia_1999">(<a href="references.html#ref-quinn_myopia_1999" role="doc-biblioref">Quinn et al. 1999</a>)</span>.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Nighttime lighting</th>
-<th style="text-align: right;">Myopia</th>
-<th style="text-align: right;">No myopia</th>
-<th style="text-align: right;">Total</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Darkness</td>
-<td style="text-align: right;">17</td>
-<td style="text-align: right;">155</td>
-<td style="text-align: right;">172</td>
-</tr>
-<tr class="even">
-<td>Night light</td>
-<td style="text-align: right;">79</td>
-<td style="text-align: right;">153</td>
-<td style="text-align: right;">232</td>
-</tr>
-<tr class="odd">
-<td>Room light</td>
-<td style="text-align: right;">41</td>
-<td style="text-align: right;">34</td>
-<td style="text-align: right;">75</td>
-</tr>
-<tr class="even">
-<td><strong>Total</strong></td>
-<td style="text-align: right;"><strong>137</strong></td>
-<td style="text-align: right;"><strong>342</strong></td>
-<td style="text-align: right;"><strong>479</strong></td>
-</tr>
-</tbody>
-</table>
-<p class="source-note">
-Source: Quinn et al.&nbsp;(1999). The table combines the myopia and high-myopia categories reported by the investigators <span class="citation" data-cites="quinn_myopia_1999">(<a href="references.html#ref-quinn_myopia_1999" role="doc-biblioref">Quinn et al. 1999</a>)</span>.
-</p>
-<ol type="a">
-<li>Compute the risk of myopia in each lighting group.</li>
-<li>Using darkness as the reference group, calculate:
-<ul>
-<li>the relative risk of myopia comparing a night light with darkness;</li>
-<li>the relative risk of myopia comparing room light with darkness.</li>
-</ul></li>
-<li>Identify a possible confounder and explain how it might affect both nighttime lighting and childhood myopia.</li>
-<li>Apply the Cornfield condition separately to both comparisons. If the entire association were due to your proposed confounder, at minimum, how much more prevalent would the confounder need to be:
-<ul>
-<li>among children who slept with a night light than among children who slept in darkness?</li>
-<li>among children who slept with room lighting than among children who slept in darkness?</li>
-</ul></li>
-</ol>
-<div class="response-space">
-
-</div>
-</section>
-<section id="kidney-stone-treatment-and-success" class="level3">
-<h3 class="anchored" data-anchor-id="kidney-stone-treatment-and-success">3. Kidney-stone treatment and success</h3>
-<p>Charig and colleagues compared open surgery with percutaneous nephrolithotomy for treating kidney stones <span class="citation" data-cites="charig_renal_1986">(<a href="references.html#ref-charig_renal_1986" role="doc-biblioref">Charig et al. 1986</a>)</span>. We will refer to the latter as the <strong>percutaneous procedure</strong>. Julious and Mullee later highlighted how the results differed by stone size <span class="citation" data-cites="julious_confounding_1994">(<a href="references.html#ref-julious_confounding_1994" role="doc-biblioref">Julious and Mullee 1994</a>)</span>.</p>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Stone size</th>
-<th>Treatment</th>
-<th style="text-align: right;">Successful treatments</th>
-<th style="text-align: right;">Total patients</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Small</td>
-<td>Open surgery</td>
-<td style="text-align: right;">81</td>
-<td style="text-align: right;">87</td>
-</tr>
-<tr class="even">
-<td>Small</td>
-<td>Percutaneous procedure</td>
-<td style="text-align: right;">234</td>
-<td style="text-align: right;">270</td>
-</tr>
-<tr class="odd">
-<td>Large</td>
-<td>Open surgery</td>
-<td style="text-align: right;">192</td>
-<td style="text-align: right;">263</td>
-</tr>
-<tr class="even">
-<td>Large</td>
-<td>Percutaneous procedure</td>
-<td style="text-align: right;">55</td>
-<td style="text-align: right;">80</td>
-</tr>
-<tr class="odd">
-<td><strong>All stones</strong></td>
-<td><strong>Open surgery</strong></td>
-<td style="text-align: right;"><strong>273</strong></td>
-<td style="text-align: right;"><strong>350</strong></td>
-</tr>
-<tr class="even">
-<td><strong>All stones</strong></td>
-<td><strong>Percutaneous procedure</strong></td>
-<td style="text-align: right;"><strong>289</strong></td>
-<td style="text-align: right;"><strong>350</strong></td>
-</tr>
-</tbody>
-</table>
-<p class="source-note">
-Source: Charig et al.&nbsp;(1986); the comparison by stone size was subsequently highlighted by Julious and Mullee (1994) <span class="citation" data-cites="charig_renal_1986 julious_confounding_1994">(<a href="references.html#ref-charig_renal_1986" role="doc-biblioref">Charig et al. 1986</a>; <a href="references.html#ref-julious_confounding_1994" role="doc-biblioref">Julious and Mullee 1994</a>)</span>.
-</p>
-<ol type="a">
-<li>Compute the overall relative risk comparing open surgery with the percutaneous procedure.</li>
-<li>Compute the relative risk comparing open surgery with the percutaneous procedure separately for:
-<ul>
-<li>small stones;</li>
-<li>large stones.</li>
-</ul></li>
-<li>Compare the overall and stone-size-specific results. What changes, and why?</li>
-<li>Even within stone-size groups, other confounding may remain. Name one possible unmeasured confounder. Apply the Cornfield condition to determine how much more prevalent it would need to be among open-surgery patients to explain away the observed association entirely for:
-<ul>
-<li>small stones;</li>
-<li>large stones.</li>
-</ul></li>
-<li>Are those Cornfield thresholds alone enough to conclude that the within-size associations are causal? Why or why not?</li>
-</ol>
-<div class="response-space">
-
-</div>
-</section>
-</section>
-<section id="clinical-trials-as-our-exemplar" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="clinical-trials-as-our-exemplar">Clinical trials as our exemplar</h2>
-<section id="are-these-interventions-well-defined" class="level3">
-<h3 class="anchored" data-anchor-id="are-these-interventions-well-defined">4. Are these interventions well-defined?</h3>
-<p>For each proposed trial below:</p>
-<ol type="a">
-<li>Identify the intervention and comparator.</li>
-<li>Explain what, if anything, threatens well-definedness of the potential outcomes.</li>
-<li>Decide whether the concern involves relevant versions of treatment, interference, or neither.</li>
-<li>Describe what you would add to the trial protocol—or to the definition of the intervention—to address the concern.</li>
-</ol>
-<p>The scenarios are hypothetical and do not present data from actual trials.</p>
-<section id="scenario-1" class="level4">
-<h4 class="anchored" data-anchor-id="scenario-1">Scenario 1</h4>
-<p>Adults with hypertension are randomized either to receive a bottle of a new medication or to receive usual care. No further instructions are provided.</p>
-</section>
-<section id="scenario-2" class="level4">
-<h4 class="anchored" data-anchor-id="scenario-2">Scenario 2</h4>
-<p>Adults admitted to the hospital with a particular infection are randomized either to initiate an antibiotic sometime during the next seven days or not to initiate it during the next seven days.</p>
-</section>
-<section id="scenario-3" class="level4">
-<h4 class="anchored" data-anchor-id="scenario-3">Scenario 3</h4>
-<p>People who smoke are randomized either to receive smoking-cessation counseling or to receive no counseling. Counselors at each clinic decide what to discuss, how many sessions to offer, and how to respond when a participant misses a session or continues smoking.</p>
-</section>
-<section id="scenario-4" class="level4">
-<h4 class="anchored" data-anchor-id="scenario-4">Scenario 4</h4>
-<p>Adults are individually randomized to receive a flu vaccine or no flu vaccine. The outcome is whether each participant develops influenza during the following winter. Some participants live in the same household or belong to the same social networks.</p>
-</section>
-<section id="scenario-5" class="level4">
-<h4 class="anchored" data-anchor-id="scenario-5">Scenario 5</h4>
-<p>Participants are randomized to receive the same medication, dose, schedule, and instructions. One clinic dispenses the medication in a white bottle and another uses a blue bottle.</p>
-<div class="response-space">
-
-</div>
-</section>
-</section>
-<section id="complete-the-potential-outcomes-table" class="level3">
-<h3 class="anchored" data-anchor-id="complete-the-potential-outcomes-table">5. Complete the potential-outcomes table</h3>
-<p>A city randomly assigns people seeking employment to one of two programs. Let <span class="math inline">\(A=1\)</span> denote assignment to an intensive job-training program and <span class="math inline">\(A=0\)</span> denote assignment to standard job-search materials. Let <span class="math inline">\(Y=1\)</span> if the person is employed six months later and <span class="math inline">\(Y=0\)</span> otherwise.</p>
-<ol type="a">
-<li>Describe <span class="math inline">\(Y(1)\)</span> and <span class="math inline">\(Y(0)\)</span> in the context of this trial.</li>
-<li>What should we assume about the interventions so that <span class="math inline">\(Y(1)\)</span> and <span class="math inline">\(Y(0)\)</span> are well-defined? Explain what that assumption means in this trial.</li>
-<li>Random assignment should make <span class="math inline">\(A\)</span> independent of <span class="math inline">\((Y(0),Y(1))\)</span>. Explain what this means in this trial.</li>
-<li>Interpret <span class="math inline">\(E[Y(1)-Y(0)]\)</span> in context.</li>
-<li>Use consistency to complete as much of the table as possible. Enter a question mark for any potential outcome that cannot be determined from the observed data.</li>
-</ol>
-<table class="compact-data-table potential-outcomes-table">
-<caption>
-Observed assignments and employment outcomes for five participants.
-</caption>
-<thead>
-<tr>
-<th scope="col">
-Person
-</th>
-<th scope="col">
-<span class="math inline">\(A\)</span>
-</th>
-<th scope="col">
-<span class="math inline">\(Y\)</span>
-</th>
-<th scope="col">
-<span class="math inline">\(Y(0)\)</span>
-</th>
-<th scope="col">
-<span class="math inline">\(Y(1)\)</span>
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-</tr>
-<tr>
-<td>
-2
-</td>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-</tr>
-<tr>
-<td>
-3
-</td>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-</tr>
-<tr>
-<td>
-4
-</td>
-<td>
-0
-</td>
-<td>
-1
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-</tr>
-<tr>
-<td>
-5
-</td>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-<td>
-<span aria-label="blank to be completed">_____</span>
-</td>
-</tr>
-</tbody>
-</table>
-</section>
-</section>
-<section id="probability-review" class="level2 unnumbered">
-<h2 class="unnumbered anchored" data-anchor-id="probability-review">Probability review</h2>
-<section id="best-guesses-in-the-emergency-department" class="level3">
-<h3 class="anchored" data-anchor-id="best-guesses-in-the-emergency-department">6. Best guesses in the emergency department</h3>
-<p>In a hypothetical emergency department, each arriving patient could need up to three laboratory tests. Each test is independently needed with probability <span class="math inline">\(1/2\)</span>. Let <span class="math inline">\(X\)</span> be the number of tests the patient needs. Thus,</p>
-<p><span class="math display">\[
-X\sim\operatorname{Binomial}(3,1/2).
-\]</span></p>
-<p>In plain language, there are three opportunities for a test to be needed, each with probability <span class="math inline">\(1/2\)</span>, and <span class="math inline">\(X\)</span> counts how many are needed.</p>
-<p>For each needed test, the physician flips a fair coin and orders the test only if the coin lands heads. Let <span class="math inline">\(Y\)</span> be the number of needed tests that are actually ordered.</p>
-<ol type="a">
-<li>What is your best guess for <span class="math inline">\(Y\)</span> when you learn that <span class="math inline">\(X=0\)</span>?</li>
-<li>What is your best guess when <span class="math inline">\(X=1\)</span>, <span class="math inline">\(X=2\)</span>, and <span class="math inline">\(X=3\)</span>?</li>
-<li>Write the full random variable <span class="math inline">\(E[Y\mid X]\)</span> as a function of <span class="math inline">\(X\)</span>.</li>
-</ol>
-<div class="response-space">
-
-</div>
-</section>
-<section id="recovering-the-overall-mean" class="level3">
-<h3 class="anchored" data-anchor-id="recovering-the-overall-mean">7. Recovering the overall mean</h3>
-<p>Let <span class="math inline">\(X\)</span> describe the urgency assigned to a patient arriving at a community clinic. The possible values are <span class="math inline">\(0\)</span>, <span class="math inline">\(1\)</span>, and <span class="math inline">\(2\)</span>, with probabilities</p>
-<p><span class="math display">\[
-P(X=0)=0.5,\qquad P(X=1)=0.3,\qquad P(X=2)=0.2.
-\]</span></p>
-<p>Let <span class="math inline">\(Y\)</span> be the number of follow-up visits the patient makes during the next month. Suppose</p>
-<p><span class="math display">\[
-E[Y\mid X]=1+2X.
-\]</span></p>
-<ol type="a">
-<li>Find the best guess for <span class="math inline">\(Y\)</span> at each value of <span class="math inline">\(X\)</span>.</li>
-<li>Use the law of iterated expectation to find <span class="math inline">\(E[Y]\)</span>.</li>
-</ol>
-<div class="response-space">
-
-</div>
-</section>
-<section id="conditional-means-from-observed-data" class="level3">
-<h3 class="anchored" data-anchor-id="conditional-means-from-observed-data">8. Conditional means from observed data</h3>
-<p>A community health program records whether adults received help scheduling a cancer screening appointment. Let <span class="math inline">\(A=1\)</span> indicate that a person received scheduling help and <span class="math inline">\(A=0\)</span> indicate that they did not. Let <span class="math inline">\(X=1\)</span> indicate age 65 or older and <span class="math inline">\(X=0\)</span> indicate age 40 through 64. Let <span class="math inline">\(Y=1\)</span> indicate that screening was completed within three months and <span class="math inline">\(Y=0\)</span> otherwise.</p>
-<p>Imagine selecting one person at random from the observed dataset, with every person equally likely to be selected. The table gives the number of people with each combination of <span class="math inline">\(A\)</span>, <span class="math inline">\(X\)</span>, and <span class="math inline">\(Y\)</span>.</p>
-<table class="compact-data-table">
-<caption>
-Screening completion by scheduling help and age.
-</caption>
-<thead>
-<tr>
-<th scope="col">
-<span class="math inline">\(X\)</span>
-</th>
-<th scope="col">
-<span class="math inline">\(A\)</span>
-</th>
-<th scope="col">
-Completed screening<br><span class="math inline">\(Y=1\)</span>
-</th>
-<th scope="col">
-Did not complete screening<br><span class="math inline">\(Y=0\)</span>
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-0
-</td>
-<td>
-0
-</td>
-<td>
-18
-</td>
-<td>
-42
-</td>
-</tr>
-<tr>
-<td>
-0
-</td>
-<td>
-1
-</td>
-<td>
-32
-</td>
-<td>
-48
-</td>
-</tr>
-<tr>
-<td>
-1
-</td>
-<td>
-0
-</td>
-<td>
-24
-</td>
-<td>
-36
-</td>
-</tr>
-<tr>
-<td>
-1
-</td>
-<td>
-1
-</td>
-<td>
-45
-</td>
-<td>
-45
-</td>
-</tr>
-</tbody>
-</table>
-<ol type="a">
-<li>Find <span class="math inline">\(E[Y\mid A=1,X=0]\)</span> and explain what the quantity represents.</li>
-<li>Find <span class="math inline">\(E[Y\mid A=0,X=1]\)</span> and explain what the quantity represents.</li>
-</ol>
-<div class="response-space">
-
-</div>
-</section>
-<section id="binary-outcomes-and-linearity" class="level3">
-<h3 class="anchored" data-anchor-id="binary-outcomes-and-linearity">9. Binary outcomes and linearity</h3>
-<p>At an urgent-care clinic, let <span class="math inline">\(Y=1\)</span> indicate a positive COVID-19 test and let <span class="math inline">\(W=1\)</span> indicate a positive influenza test. Let</p>
-<p><span class="math display">\[
-T=Y+W
-\]</span></p>
-<p>be the number of positive tests for a patient. Suppose</p>
-<p><span class="math display">\[
-P(Y=1)=0.12
-\qquad\text{and}\qquad
-P(W=1)=0.08.
-\]</span></p>
-<ol type="a">
-<li>Find <span class="math inline">\(E[Y]\)</span> and <span class="math inline">\(E[W]\)</span>.</li>
-<li>Find the expected number of positive tests, <span class="math inline">\(E[T]\)</span>.</li>
-</ol>
-<p>Now let <span class="math inline">\(X=1\)</span> indicate that the patient has a fever at arrival. Among patients with a fever, suppose</p>
-<p><span class="math display">\[
-P(Y=1\mid X=1)=0.30
-\qquad\text{and}\qquad
-P(W=1\mid X=1)=0.10.
-\]</span></p>
-<ol start="3" type="a">
-<li>Rewrite these two conditional probabilities as conditional means. Then, find <span class="math inline">\(E[T\mid X=1]\)</span>.</li>
-<li>Do we know if <span class="math inline">\(Y\)</span> and <span class="math inline">\(W\)</span> are independent? What about <span class="math inline">\(Y\)</span> and <span class="math inline">\(X\)</span>, or <span class="math inline">\(W\)</span> and <span class="math inline">\(X\)</span>?</li>
-</ol>
-<div class="response-space">
-
-</div>
-</section>
-<section id="drawing-a-conditional-mean" class="level3">
-<h3 class="anchored" data-anchor-id="drawing-a-conditional-mean">10. Drawing a conditional mean</h3>
-<p>The scatterplot shows independent and identically distributed observations of age <span class="math inline">\(X\)</span> and systolic blood pressure <span class="math inline">\(Y\)</span> from a hypothetical population.</p>
+<section id="chains-forks-and-colliders" class="level2">
+<h2 class="anchored" data-anchor-id="chains-forks-and-colliders">Chains, forks, and colliders</h2>
+<p>We now have a convenient picture of who generates whom. What can that picture tell us about which variables share information?</p>
+<p>Start small. An edge, a chain, a fork, and a collider are the building blocks we will use. For now, each drawing is the entire graph for its example. There are no additional paths hiding outside the picture. Whenever we say a structure <em>can transmit association</em>, we mean that it permits dependence between its endpoints. We are not saying that every choice of functions and noise distributions must produce dependence.</p>
+<p><strong>An edge can transmit association.</strong></p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/01e-probability-continuous-exercise.svg" class="img-fluid figure-img" style="width:78.0%"></p>
-<figcaption>Observed systolic blood pressure and age for a hypothetical sample.</figcaption>
+<p><img src="images/02c-edge.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A single directed edge from X to Y." width="600"></p>
 </figure>
 </div>
-<ol type="a">
-<li>Draw a curve that represents your best estimate of <span class="math inline">\(E[Y\mid X]\)</span>.</li>
-<li>Would a straight line provide a reasonable model for the conditional mean? What other functional form might you consider?</li>
-</ol>
-<div class="response-space">
-
+<p>If <span class="math inline">\(Y\)</span> uses <span class="math inline">\(X\)</span> in its assignment, learning <span class="math inline">\(X\)</span> can tell us something about <span class="math inline">\(Y\)</span>. For a concrete example, let the noise terms be independent fair coin flips, represented by <span class="math inline">\(\operatorname{Bernoulli}(1/2)\)</span> variables, and write</p>
+<p><span class="math display">\[
+X\leftarrow\epsilon_X,\qquad Y\leftarrow X+\epsilon_Y.
+\]</span></p>
+<p>If we learn that <span class="math inline">\(Y=0\)</span>, we know <span class="math inline">\(X=0\)</span>. Before learning <span class="math inline">\(Y\)</span>, either value of <span class="math inline">\(X\)</span> was equally likely. The two random variables share information.</p>
+<p><strong>A chain can transmit association through an intermediate variable.</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02c-chain.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A chain: X points to M, and M points to Y." width="600"></p>
+</figure>
 </div>
-
-
-<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
-<div id="ref-charig_renal_1986" class="csl-entry" role="listitem">
-Charig, C. R., D. R. Webb, S. R. Payne, and J. E. Wickham. 1986. <span>“Comparison of Treatment of Renal Calculi by Open Surgery, Percutaneous Nephrolithotomy, and Extracorporeal Shockwave Lithotripsy.”</span> <em>British Medical Journal (Clinical Research Edition)</em> 292 (6524): 879–82. <a href="https://doi.org/10.1136/bmj.292.6524.879">https://doi.org/10.1136/bmj.292.6524.879</a>.
+<p>Think of a reminder affecting attendance, which affects whether a measurement is collected. In a simplified story with just these three variables, information can travel from the reminder through attendance to measurement. A concrete SCM with this graph is</p>
+<p><span class="math display">\[
+X\leftarrow\epsilon_X,\qquad
+M\leftarrow X+\epsilon_M,\qquad
+Y\leftarrow M+\epsilon_Y,
+\]</span></p>
+<p>again with independent fair-coin noise terms. This numerical example illustrates the graph; its sums are not binary attendance indicators. Learning that <span class="math inline">\(Y=0\)</span> tells us that every term in the sum was zero, including <span class="math inline">\(X\)</span>.</p>
+<p>What happens if we already know <span class="math inline">\(M\)</span>? The assignment for <span class="math inline">\(Y\)</span> uses <span class="math inline">\(M\)</span> and fresh independent noise. Once <span class="math inline">\(M\)</span> is known, learning <span class="math inline">\(X\)</span> gives us no extra information about <span class="math inline">\(Y\)</span>:</p>
+<p><span class="math display">\[
+X\mathrel{\perp\!\!\!\perp}Y\mid M.
+\]</span></p>
+<p><strong>A fork can transmit association through a shared parent.</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02c-fork.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A fork: M points to both X and Y." width="600"></p>
+</figure>
 </div>
-<div id="ref-julious_confounding_1994" class="csl-entry" role="listitem">
-Julious, Steven A., and Mark A. Mullee. 1994. <span>“Confounding and Simpson’s Paradox.”</span> <em>BMJ</em> 309 (6967): 1480–81. <a href="https://doi.org/10.1136/bmj.309.6967.1480">https://doi.org/10.1136/bmj.309.6967.1480</a>.
+<p>For example, illness severity might affect both a treatment decision and an outcome. The treatment and outcome can share information because both use severity. Consider</p>
+<p><span class="math display">\[
+M\leftarrow\epsilon_M,\qquad
+X\leftarrow M+\epsilon_X,\qquad
+Y\leftarrow M+\epsilon_Y,
+\]</span></p>
+<p>with independent fair-coin noise terms. If <span class="math inline">\(Y=0\)</span>, then <span class="math inline">\(M=0\)</span>, which makes <span class="math inline">\(X=0\)</span> more likely than it was before we learned <span class="math inline">\(Y\)</span>. Association can travel along a path even when its arrows do not all point in the direction we are traveling.</p>
+<p>If we already know <span class="math inline">\(M\)</span>, however, the remaining randomness in <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> is independent. Once again,</p>
+<p><span class="math display">\[
+X\mathrel{\perp\!\!\!\perp}Y\mid M.
+\]</span></p>
+<details class="lesson-question">
+<summary>
+In the fair-coin fork example, find <span class="math inline">\(P(X=0)\)</span> and <span class="math inline">\(P(X=0\mid Y=0)\)</span>. What changes if we already know <span class="math inline">\(M=0\)</span>?
+</summary>
+<p>For <span class="math inline">\(X=0\)</span>, both <span class="math inline">\(M\)</span> and <span class="math inline">\(\epsilon_X\)</span> must be zero, so <span class="math inline">\(P(X=0)=1/4\)</span>. Learning <span class="math inline">\(Y=0\)</span> tells us <span class="math inline">\(M=0\)</span>, leaving only the independent coin flip <span class="math inline">\(\epsilon_X\)</span>, so <span class="math inline">\(P(X=0\mid Y=0)=1/2\)</span>.</p>
+<p>If we already know <span class="math inline">\(M=0\)</span>, then <span class="math inline">\(P(X=0\mid M=0)=1/2\)</span>. Learning <span class="math inline">\(Y=0\)</span> in addition does not change this probability. More generally, the conditional independence holds for either value of <span class="math inline">\(M\)</span>.</p>
+</details>
+<p><strong>A collider behaves differently.</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02c-collider.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A collider: X and Y both point to M." width="600"></p>
+</figure>
 </div>
-<div id="ref-quinn_myopia_1999" class="csl-entry" role="listitem">
-Quinn, Graham E., Chai H. Shin, Maureen G. Maguire, and Richard A. Stone. 1999. <span>“Myopia and Ambient Lighting at Night.”</span> <em>Nature</em> 399 (6732): 113–14. <a href="https://doi.org/10.1038/20094">https://doi.org/10.1038/20094</a>.
+<p>The arrows collide at <span class="math inline">\(M\)</span>. Here the endpoints are generated from separate independent noise terms. Their shared child does not by itself make them associated:</p>
+<p><span class="math display">\[
+X\mathrel{\perp\!\!\!\perp}Y.
+\]</span></p>
+<p>But learning the child’s value can change things. Imagine that two independent sources contribute to a total. If we learn the total and then learn that one contribution was large, we have learned something about how large the other contribution could have been.</p>
+<p>For a concrete example, write</p>
+<p><span class="math display">\[
+X\leftarrow\epsilon_X,\qquad
+Y\leftarrow\epsilon_Y,\qquad
+M\leftarrow X+Y+\epsilon_M,
+\]</span></p>
+<p>with independent fair-coin noise terms. Before learning <span class="math inline">\(M\)</span>, <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent. Among cases with <span class="math inline">\(M=1\)</span>, however, learning <span class="math inline">\(Y=1\)</span> forces <span class="math inline">\(X=0\)</span>. Knowing the total makes the two contributions informative about each other. This is an example of <strong>collider bias</strong>.</p>
+<details class="lesson-question">
+<summary>
+In the collider example, suppose <span class="math inline">\(M=1\)</span>. What are the possible values of <span class="math inline">\((X,Y,\epsilon_M)\)</span>? Find <span class="math inline">\(P(X=0\mid M=1)\)</span> and <span class="math inline">\(P(X=0\mid M=1,Y=1)\)</span>.
+</summary>
+<p>The possibilities are <span class="math inline">\((1,0,0)\)</span>, <span class="math inline">\((0,1,0)\)</span>, and <span class="math inline">\((0,0,1)\)</span>, each equally likely. Thus,</p>
+<p><span class="math display">\[
+P(X=0\mid M=1)=\frac23.
+\]</span></p>
+<p>If we also know <span class="math inline">\(Y=1\)</span>, only <span class="math inline">\((0,1,0)\)</span> remains, so</p>
+<p><span class="math display">\[
+P(X=0\mid M=1,Y=1)=1.
+\]</span></p>
+<p>Learning <span class="math inline">\(Y\)</span> changes what we know about <span class="math inline">\(X\)</span> once we condition on <span class="math inline">\(M\)</span>.</p>
+</details>
+<div class="main-point">
+<p>Chains and forks can transmit association; conditioning on the middle variable blocks that path. A collider blocks the path until we condition on the collider or, potentially, learn about it through one of its descendants.</p>
 </div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Structure</th>
+<th>Without conditioning</th>
+<th>Conditioning on the middle variable</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Chain: <span class="math inline">\(X\to M\to Y\)</span></td>
+<td><span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> can be associated</td>
+<td><span class="math inline">\(X\perp\!\!\!\perp Y\mid M\)</span></td>
+</tr>
+<tr class="even">
+<td>Fork: <span class="math inline">\(X\leftarrow M\to Y\)</span></td>
+<td><span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> can be associated</td>
+<td><span class="math inline">\(X\perp\!\!\!\perp Y\mid M\)</span></td>
+</tr>
+<tr class="odd">
+<td>Collider: <span class="math inline">\(X\to M\leftarrow Y\)</span></td>
+<td><span class="math inline">\(X\perp\!\!\!\perp Y\)</span></td>
+<td><span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> can be associated</td>
+</tr>
+</tbody>
+</table>
+<p>The table concerns each isolated three-variable graph. In a larger graph, another path might still connect the endpoints. We will need to consider all paths before concluding that two variables are independent.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: why the three structures imply these independences">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Optional technical note: why the three structures imply these independences
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>For the chain, write <span class="math inline">\(X=f_X(\epsilon_X)\)</span>, <span class="math inline">\(M=f_M(X,\epsilon_M)\)</span>, and <span class="math inline">\(Y=f_Y(M,\epsilon_Y)\)</span>. Independence of the noise terms makes <span class="math inline">\(\epsilon_Y\)</span> independent of <span class="math inline">\((X,M)\)</span>. For a bounded measurable function <span class="math inline">\(g\)</span>, define <span class="math inline">\(h(m)=E[g(f_Y(m,\epsilon_Y))]\)</span>. Then</p>
+<p><span class="math display">\[
+E[g(Y)\mid X,M]=h(M)=E[g(Y)\mid M],
+\]</span></p>
+<p>which gives <span class="math inline">\(Y\perp\!\!\!\perp X\mid M\)</span>.</p>
+<p>For the fork, <span class="math inline">\(M=f_M(\epsilon_M)\)</span>, <span class="math inline">\(X=f_X(M,\epsilon_X)\)</span>, and <span class="math inline">\(Y=f_Y(M,\epsilon_Y)\)</span>. Conditional on <span class="math inline">\(M\)</span>, the noise terms <span class="math inline">\(\epsilon_X\)</span> and <span class="math inline">\(\epsilon_Y\)</span> remain independent with their original distributions. Thus the conditional joint distribution of <span class="math inline">\(X,Y\)</span> factors into their conditional marginal distributions, giving <span class="math inline">\(X\perp\!\!\!\perp Y\mid M\)</span>.</p>
+<p>For the collider, <span class="math inline">\(X=f_X(\epsilon_X)\)</span> and <span class="math inline">\(Y=f_Y(\epsilon_Y)\)</span> are functions of independent noise terms, so <span class="math inline">\(X\perp\!\!\!\perp Y\)</span>. Conditioning on their shared child does not preserve this argument. The fair-coin example in the text demonstrates that conditional dependence is possible.</p>
+</div>
+</div>
+</div>
+<details class="lesson-question">
+<summary>
+Suppose independent preparation <span class="math inline">\(P\)</span> and independent exam-day luck <span class="math inline">\(L\)</span> both contribute to a score <span class="math inline">\(Y\)</span>, with graph <span class="math inline">\(P\to Y\leftarrow L\)</span>. Can preparation and luck become associated among students with the same score? How is this different from conditioning on the middle of a chain?
+</summary>
+<p>Yes. Score is a collider. Among students with a fixed score, learning that one student had especially good luck may change what we infer about that student’s preparation. The graph permits this association; a particular model determines whether and how it occurs. Conditioning on the middle of an isolated chain instead blocks the path between its endpoints.</p>
+</details>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
 </div>
 </section>
+<section id="from-building-blocks-to-paths" class="level2">
+<h2 class="anchored" data-anchor-id="from-building-blocks-to-paths">From building blocks to paths</h2>
+<p>Chains, forks, and colliders become useful when several of them are strung together. To study whether two variables can share information, we trace every path between their nodes.</p>
+<p>A <strong>path</strong> is a sequence of distinct nodes connected by edges. We may travel along an edge in either direction. A <strong>directed path</strong> is more restrictive: every arrow must point in the direction we travel.</p>
+<p>For example,</p>
+<p><span class="math display">\[
+X   o M o Y
+\]</span></p>
+<p>is a directed path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span>. The same edges also form a path from <span class="math inline">\(Y\)</span> to <span class="math inline">\(X\)</span>, but not a directed path in that direction. A path need not be directed to transmit association. The fork <span class="math inline">\(Xleftarrow M o Y\)</span> already showed us why.</p>
+<p>A longer path is made from the same three building blocks. At every node between its endpoints, look only at the two arrows belonging to that path:</p>
+<ul>
+<li>If the arrows meet head-to-tail, the node is in a chain.</li>
+<li>If both arrows leave the node, the node is in a fork.</li>
+<li>If both arrows point into the node, the node is a collider.</li>
+</ul>
+<p>Whether the entire path is open depends on these middle nodes and on which variables we condition on.</p>
+<div class="definition-box">
+<p><strong>Blocked and open paths.</strong> A path is <strong>blocked</strong> by a collection of variables <span class="math inline">\(Z\)</span> if it contains at least one of the following:</p>
+<ol type="1">
+<li>a chain or fork whose middle node is in <span class="math inline">\(Z\)</span>; or</li>
+<li>a collider such that neither the collider nor any of its descendants is in <span class="math inline">\(Z\)</span>.</li>
+</ol>
+<p>If neither condition occurs, the path is <strong>open</strong> given <span class="math inline">\(Z\)</span>.</p>
+</div>
+<p>This definition collects what we learned from the three-variable structures. Conditioning on the middle of a chain or fork blocks the path. A collider blocks the path by default, but conditioning on the collider opens it. Conditioning on a descendant of the collider can also reveal information about the collider and open the path.</p>
+<p>When we condition on nothing, take <span class="math inline">\(Z=
+arnothing\)</span>. Chains and forks remain open, while every collider blocks its path.</p>
+<details class="lesson-question">
+<summary>
+For each three-variable structure, is the path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span> open without conditioning? Is it open after conditioning on <span class="math inline">\(M\)</span>?
+</summary>
+<p>For the chain <span class="math inline">\(X    o M o Y\)</span> and the fork <span class="math inline">\(Xleftarrow M o Y\)</span>, the path is open without conditioning and blocked after conditioning on <span class="math inline">\(M\)</span>.</p>
+<p>For the collider <span class="math inline">\(X o Mleftarrow Y\)</span>, the path is blocked without conditioning and open after conditioning on <span class="math inline">\(M\)</span>.</p>
+</details>
+<p>One blocked path is not enough when the graph contains several paths. Information may still travel along another open route. We therefore need a statement about <strong>every</strong> path between two nodes.</p>
+<div class="definition-box">
+<p><strong>d-separation.</strong> Two collections of nodes <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are <strong>d-separated</strong> by a collection <span class="math inline">\(Z\)</span> if every path from a node in <span class="math inline">\(X\)</span> to a node in <span class="math inline">\(Y\)</span> is blocked by <span class="math inline">\(Z\)</span>. Otherwise, <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are <strong>d-connected</strong> given <span class="math inline">\(Z\)</span>.</p>
+</div>
+<p>The letter <em>d</em> reminds us that the directions of the arrows determine whether a middle node is a chain, fork, or collider. We may write</p>
+<p><span class="math display">\[
+(Xmathrel{perp!!!perp_d}Ymid Z)_G
+\]</span></p>
+<p>to say that <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are d-separated by <span class="math inline">\(Z\)</span> in graph <span class="math inline">\(G\)</span>. The subscript <span class="math inline">\(G\)</span> matters: d-separation is a statement about a graph, while ordinary conditional independence is a statement about random variables.</p>
+<p>Return to the graph in <a href="02c-causal-graphs.html#fig-translate-scm" class="quarto-xref">Figure&nbsp;<span>5</span></a>.</p>
+<p>There are two paths between <span class="math inline">\(W\)</span> and <span class="math inline">\(A\)</span>:</p>
+<p><span class="math display">\[
+W\leftarrow X\to A
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+W\to Y\leftarrow A.
+\]</span></p>
+<p>Without conditioning, the first path is open because <span class="math inline">\(X\)</span> is the middle of a fork. The second path is blocked because <span class="math inline">\(Y\)</span> is a collider. Because at least one path is open, <span class="math inline">\(W\)</span> and <span class="math inline">\(A\)</span> are d-connected.</p>
+<p>Now condition on <span class="math inline">\(X\)</span>. This blocks the fork. The path through <span class="math inline">\(Y\)</span> remains blocked by its collider. Every path is now blocked, so <span class="math inline">\(W\)</span> and <span class="math inline">\(A\)</span> are d-separated by <span class="math inline">\(X\)</span>.</p>
+<details class="lesson-question">
+<summary>
+What happens if we condition on both <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>? Are <span class="math inline">\(W\)</span> and <span class="math inline">\(A\)</span> d-separated?
+</summary>
+<p>No.&nbsp;Conditioning on <span class="math inline">\(X\)</span> blocks the fork <span class="math inline">\(W\leftarrow X\to A\)</span>, but conditioning on the collider <span class="math inline">\(Y\)</span> opens the path <span class="math inline">\(W\to Y\leftarrow A\)</span>. Because one path remains open, <span class="math inline">\(W\)</span> and <span class="math inline">\(A\)</span> are d-connected given <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>.</p>
+</details>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
+</div>
+</section>
+<section id="from-d-separation-to-independence" class="level2">
+<h2 class="anchored" data-anchor-id="from-d-separation-to-independence">From d-separation to independence</h2>
+<p>D-separation is powerful because it turns a graphical statement into a statement about random variables.</p>
+<div class="proposition-box">
+<p><strong>Global Markov property.</strong> If <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are d-separated by <span class="math inline">\(Z\)</span> in the causal graph of an SCM, then the corresponding random variables are conditionally independent:</p>
+<p><span class="math display">\[
+(Xmathrel{perp!!!perp_d}Ymid Z)_G
+quadLongrightarrowquad
+Xmathrel{perp!!!perp}Ymid Z.
+\]</span></p>
+</div>
+<p>The implication goes in one direction. If the graph says the paths are blocked, the SCM guarantees conditional independence. If two variables happen to be independent because particular effects cancel or an assignment ignores one of its displayed inputs, the graph need not reveal that extra independence.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: proof of the global Markov property">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Optional technical note: proof of the global Markov property
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>A full proof requires more probability and graph machinery than we need here. One route uses the factorization of the joint distribution implied by the SCM and shows that d-separation entails the corresponding conditional-independence factorization. This result is commonly called the global Markov property for directed acyclic graphs.</p>
+<p>The local Markov property from the previous section is a special case. The general result allows us to inspect every path between arbitrary collections of nodes rather than considering only one variable, its parents, and its nondescendants.</p>
+</div>
+</div>
+</div>
+<p>The practical recipe is:</p>
+<ol type="1">
+<li>List every path between the variables of interest.</li>
+<li>On each path, identify chains, forks, and colliders.</li>
+<li>Check whether the conditioning variables block or open that path.</li>
+<li>Conclude d-separation only if every path is blocked.</li>
+<li>Use the global Markov property to translate d-separation into conditional independence.</li>
+</ol>
+<p>This recipe lets us move from a potentially complicated picture to a precise statement about the random variables represented by its nodes.</p>
+
+
 </section>
 
 </main> <!-- /main -->
@@ -1306,13 +1053,13 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./01d-probability.html" class="pagination-link" aria-label="Probability gives us a formal language">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Probability gives us a formal language</span></span>
+      <a href="./02c-causal-graphs.html" class="pagination-link" aria-label="Causal graphs">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Causal graphs</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./02a-assignments.html" class="pagination-link" aria-label="A list of assignments">
-        <span class="nav-page-text"><span class="chapter-title">A list of assignments</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./02-exercises.html" class="pagination-link" aria-label="Exercises">
+        <span class="nav-page-text"><span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

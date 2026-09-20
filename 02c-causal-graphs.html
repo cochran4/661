@@ -35,7 +35,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./02-exercises.html" rel="next">
+<link href="./02d-d-separation.html" rel="next">
 <link href="./02b-structural-causal-models.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -176,6 +176,10 @@ window.Quarto = {
  <span class="dropdown-text">Causal graphs</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./02d-d-separation.html">
+ <span class="dropdown-text">d-separation</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./02-exercises.html">
  <span class="dropdown-text">Exercises</span></a>
   </li>  
@@ -291,6 +295,11 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./02d-d-separation.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">D-separation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./02-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
   </div>
 </li>
@@ -372,17 +381,20 @@ window.Quarto = {
 </div>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>Our SCMs are starting to feel cumbersome. We write an assignment for every variable, give each assignment a function, and then leave the details of those functions unspecified. What we keep emphasizing is which variables are parents of which others, together with the requirement that the remaining randomness be independent. Is there a more convenient way to represent this?</p>
-<p>There is. <strong>A graph gives us a shortcut for displaying this structure.</strong> It turns out that some things we want to say about random variables are much easier to see and say with a graph. We can keep track of the same parent relationships without writing out every assignment.</p>
-<p>Some of you may have seen causal graphs before and wondered why we have waited this long to introduce them. The delay was deliberate. Causal inference is about random variables and how the world generates them. We wanted to spend time with those random variables before taking shortcuts. Each variable in our story is a random variable. Its parents are random variables. The remaining randomness is also represented by a random variable. A graph will help us study them, but we should always be able to translate what we see in the graph back into a statement about those random variables.</p>
+<p>SCMs are pretty cumbersome. For every variable, we have to write down an assignment function, its parents, and a source of independent noise, and then most of those details end up unspecified anyway. Once you are comfortable with how SCMs work, though, you do not need to write out all that machinery every time. What really changes from one SCM to the next is which variables are in the system and which are parents of which. So is there a more convenient way to keep track of just that?</p>
+<p><em>There is.</em> A graph gives us a nice shortcut for describing our SCM. We draw a <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A labeled circle in a graph that represents a random variable." tabindex="0">node</span> for each variable and an arrow from each <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="Another variable used as an input to a variable's assignment function. In a causal graph, a parent has an arrow pointing directly to its child." tabindex="0">parent</span> to its <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="In a graph, a node is a child of another node when it receives an arrow directly from that node." tabindex="0">child</span>. The graph therefore keeps track of the part of the SCM that changes from one problem to the next, without making us write out the assignment functions and independent noise every time.</p>
+<p>Some of you may have seen causal graphs before and wondered why we waited this long to introduce them. The delay was deliberate. A graph is a convenient shortcut, but we wanted to understand what it is a shortcut for first. Causal inference is about random variables and how the world generates them. Each variable in our story is a random variable, its parents are random variables, and the remaining randomness is represented by a random variable too. The SCM made all of that explicit. The graph lets us suppress some of that machinery and focus on the relationships among the variables.</p>
+<p>That shortcut turns out to be useful for more than just saving us some writing. The graph will also help us reason about the random variables in our SCM. But as we start working with graphs, we should always be able to translate what we see in the graph back into a statement about those random variables.</p>
 <div class="section-break" aria-hidden="true">
 <span class="acorn-mark"></span>
 </div>
 </section>
 <section id="building-a-graph-from-an-scm" class="level2">
 <h2 class="anchored" data-anchor-id="building-a-graph-from-an-scm">Building a graph from an SCM</h2>
-<p>Each SCM gives us a graph. Let’s make things interesting with five variables. Suppose our story concerns a student deciding whether to drink coffee the evening before an exam. Let <span class="math inline">\(S\)</span> be stress before that decision, <span class="math inline">\(C\)</span> be coffee consumption that evening, <span class="math inline">\(H\)</span> be hours spent studying afterward, <span class="math inline">\(L\)</span> be sleep that night, and <span class="math inline">\(Y\)</span> be the exam score the next morning.</p>
-<p>We tell the following story through an SCM:</p>
+<div class="example-intro">
+<p><span class="example-label">Case study: Cramming for an exam. </span> Suppose our story concerns students deciding whether to drink coffee the evening before an exam. Let <span class="math inline">\(S\)</span> be stress before that decision, <span class="math inline">\(C\)</span> be coffee consumption that evening, <span class="math inline">\(H\)</span> be hours spent studying afterward, <span class="math inline">\(L\)</span> be sleep that night, and <span class="math inline">\(Y\)</span> be the exam score the next morning.</p>
+</div>
+<p>We tell the story through the following SCM:</p>
 <p><span class="math display">\[
 \begin{aligned}
 S&amp;\leftarrow f_S(\epsilon_S),\\
@@ -392,8 +404,8 @@ L&amp;\leftarrow f_L(S,C,H,\epsilon_L),\\
 Y&amp;\leftarrow f_Y(S,H,L,\epsilon_Y),
 \end{aligned}
 \]</span></p>
-<p>with independent noise terms. In this story, stress may affect coffee consumption, studying, sleep, and the exam score. Coffee may affect studying and sleep. Studying may affect sleep and the exam score, and sleep may affect the exam score. These are the relationships we are choosing for this example.</p>
-<p><strong>First, put the nodes down.</strong> Draw one circle for each random variable in our story, with the variable’s name in the middle. Each labeled circle is a <strong>node</strong>. We have five variables, so we draw five circles.</p>
+<p>with independent noise terms. In this story, stress may affect coffee consumption, studying, sleep, and the exam score. Coffee may affect studying and sleep. Studying may affect sleep and the exam score, and sleep may affect the exam score.</p>
+<p><strong>First, put the nodes down.</strong> Draw one circle for each random variable in our story, with the variable’s name in the middle. Each labeled circle is a <strong>node.</strong> We have five variables, so we draw five nodes.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/02c-coffee-nodes.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Five circles with centered labels S, C, H, L, and Y, with no arrows." width="600"></p>
@@ -403,24 +415,28 @@ Y&amp;\leftarrow f_Y(S,H,L,\epsilon_Y),
 <p><span class="math display">\[
 C\leftarrow f_C(S,\epsilon_C).
 \]</span></p>
-<p>Stress <span class="math inline">\(S\)</span> is a parent of coffee consumption <span class="math inline">\(C\)</span>, so draw an arrow from the circle labeled <span class="math inline">\(S\)</span> to the circle labeled <span class="math inline">\(C\)</span>. An arrow is also called a <strong>directed edge</strong>. Its direction matters: the arrow points into the variable whose assignment uses the parent.</p>
+<p>Stress <span class="math inline">\(S\)</span> is a parent of coffee consumption <span class="math inline">\(C\)</span>, so draw an arrow from the circle labeled <span class="math inline">\(S\)</span> to the circle labeled <span class="math inline">\(C\)</span>. An arrow is also called a <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A connection between two nodes with a direction, shown by an arrowhead. It is also called an arrow." tabindex="0"><strong>directed edge</strong></span>. Its direction matters: the arrow points into the variable whose assignment uses the parent.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/02c-coffee-first-arrow.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="The same five labeled circles, now with one arrow from S to C." width="600"></p>
 </figure>
 </div>
 <p><strong>Now do this for every parent in every assignment.</strong> The assignment for <span class="math inline">\(H\)</span> gives us arrows from <span class="math inline">\(S\)</span> and <span class="math inline">\(C\)</span> into <span class="math inline">\(H\)</span>. The assignment for <span class="math inline">\(L\)</span> gives us arrows from <span class="math inline">\(S\)</span>, <span class="math inline">\(C\)</span>, and <span class="math inline">\(H\)</span> into <span class="math inline">\(L\)</span>. The assignment for <span class="math inline">\(Y\)</span> gives us arrows from <span class="math inline">\(S\)</span>, <span class="math inline">\(H\)</span>, and <span class="math inline">\(L\)</span> into <span class="math inline">\(Y\)</span>. No arrows point into <span class="math inline">\(S\)</span> because its assignment has no parents.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/02c-coffee-complete.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="The completed graph on the same five labeled circles: S points to C, H, L, and Y; C points to H and L; H points to L and Y; and L points to Y." width="600"></p>
+<div id="fig-coffee" class="quarto-float quarto-figure quarto-figure-center anchored" alt="The completed graph on the same five labeled circles: S points to C, H, L, and Y; C points to H and L; H points to L and Y; and L points to Y." data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-coffee-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/02c-coffee-complete.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="The completed graph on the same five labeled circles: S points to C, H, L, and Y; C points to H and L; H points to L and Y; and L points to Y." width="600">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-coffee-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: The completed coffee-and-exam causal graph.
+</figcaption>
 </figure>
 </div>
-<p>The rule is simple: draw an arrow from each parent to the variable whose assignment uses it. Thus, we draw <span class="math inline">\(X\to Y\)</span> exactly when <span class="math inline">\(X\)</span> is a parent of <span class="math inline">\(Y\)</span>.</p>
+<p>We call this our <strong>causal graph</strong> for this SCM. A causal graph is a <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A collection of nodes joined only by directed edges." tabindex="0"><strong>directed graph</strong></span>: its nodes are connected by arrows, and every arrow has a direction. For another SCM, we do the same thing: put a node down for every random variable and draw an arrow from each parent to the variable whose assignment uses it. This gives us the general definition:</p>
 <div class="definition-box">
-<p><strong>Causal graph.</strong> Given an SCM with variables <span class="math inline">\(V_1,\ldots,V_K\)</span>, its causal graph has one node for each variable and an arrow <span class="math inline">\(V_i\to V_j\)</span> exactly when <span class="math inline">\(V_i\in\operatorname{Pa}_j\)</span>. We use the same label for a random variable and the node that represents it.</p>
+<p><strong>Causal graph.</strong> Given an SCM with variables <span class="math inline">\(V_1,\ldots,V_K\)</span>, its causal graph has one node for each variable and an arrow <span class="math inline">\(V_i\to V_j\)</span> exactly when <span class="math inline">\(V_i\)</span> is a parent of <span class="math inline">\(V_j\)</span>. We use the same label for a random variable and the node that represents it.</p>
 </div>
-<p>Now we can explain our choice of the word <strong>parents</strong>. It was not chosen on a whim. In graph terminology, a parent of a node is a node with an arrow pointing into it. The parents in our assignments become the parents in our graph.</p>
-<p>We leave the noise terms out of these drawings. They are still part of the SCM, and we still require them to be independent as an entire collection.</p>
+<p>This also explains our choice of the word <strong>parents.</strong> In a graph, a parent of a node is a node with an arrow pointing into it, and the parents in our assignments are exactly the parents in the graph.</p>
 <p>Now try the RHC example. Let <span class="math inline">\(X\)</span> be mean blood pressure, <span class="math inline">\(A\)</span> indicate receipt of RHC, and <span class="math inline">\(Y\)</span> indicate death within 30 days. Our SCM is</p>
 <p><span class="math display">\[
 \begin{aligned}
@@ -435,14 +451,18 @@ Y&amp;\leftarrow f_Y(X,A,\epsilon_Y),
 Draw the causal graph for the RHC SCM.
 </summary>
 <p>We draw three nodes, labeled <span class="math inline">\(X\)</span>, <span class="math inline">\(A\)</span>, and <span class="math inline">\(Y\)</span>. The assignment for <span class="math inline">\(X\)</span> has no parents, so no arrows point into <span class="math inline">\(X\)</span>. The assignment for <span class="math inline">\(A\)</span> uses <span class="math inline">\(X\)</span>, so we draw <span class="math inline">\(X\to A\)</span>. The assignment for <span class="math inline">\(Y\)</span> uses both <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span>, so we draw <span class="math inline">\(X\to Y\)</span> and <span class="math inline">\(A\to Y\)</span>.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/02c-rhc.svg" class="img-fluid figure-img" alt="Three nodes labeled X, A, and Y. Arrows run from X to A, X to Y, and A to Y." width="440"></p>
-<figcaption>The RHC causal graph, with arrows from X to A, X to Y, and A to Y.</figcaption>
+<div id="fig-rhc" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Three nodes labeled X, A, and Y. Arrows run from X to A, X to Y, and A to Y.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-rhc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/02c-rhc.svg" class="img-fluid figure-img" alt="Three nodes labeled X, A, and Y. Arrows run from X to A, X to Y, and A to Y." width="440">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-rhc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: The RHC causal graph.
+</figcaption>
 </figure>
 </div>
 </details>
-<p>Now try this for the WHI trial. Here <span class="math inline">\(X\)</span> collects baseline characteristics, <span class="math inline">\(A\)</span> is randomized assignment to hormone therapy or placebo, and <span class="math inline">\(Y\)</span> indicates a coronary heart disease event. The SCM is</p>
+<p>Also try this for the WHI trial. Here <span class="math inline">\(X\)</span> collects baseline characteristics, <span class="math inline">\(A\)</span> is randomized assignment to hormone therapy or placebo, and <span class="math inline">\(Y\)</span> indicates a coronary heart disease event. The SCM is</p>
 <p><span class="math display">\[
 \begin{aligned}
 X&amp;\leftarrow f_X(\epsilon_X),\\
@@ -453,17 +473,21 @@ Y&amp;\leftarrow f_Y(X,A,\epsilon_Y),
 <p>with independent noise terms.</p>
 <details class="lesson-question">
 <summary>
-Draw the causal graph for the WHI SCM. How does it differ from the RHC graph?
+Draw the causal graph for the WHI SCM. How does it differ from the RHC graph in <a href="#fig-rhc" class="quarto-xref">Figure&nbsp;<span>2</span></a>?
 </summary>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/02c-whi.svg" class="img-fluid figure-img" alt="Nodes X and A each have an arrow pointing to Y. There is no arrow between X and A." width="440"></p>
-<figcaption>The WHI causal graph.</figcaption>
+<div id="fig-whi" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Nodes X and A each have an arrow pointing to Y. There is no arrow between X and A.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-whi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/02c-whi.svg" class="img-fluid figure-img" alt="Nodes X and A each have an arrow pointing to Y. There is no arrow between X and A." width="440">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-whi-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: The WHI causal graph.
+</figcaption>
 </figure>
 </div>
-<p>Both <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span> are parents of <span class="math inline">\(Y\)</span>, so we draw <span class="math inline">\(X\to Y\)</span> and <span class="math inline">\(A\to Y\)</span>. Neither <span class="math inline">\(X\)</span> nor <span class="math inline">\(A\)</span> has any parents. Compared with the RHC graph, the arrow <span class="math inline">\(X\to A\)</span> is absent: the randomized treatment assignment does not use <span class="math inline">\(X\)</span>.</p>
+<p>Both <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span> are parents of <span class="math inline">\(Y\)</span>, so we draw <span class="math inline">\(X\to Y\)</span> and <span class="math inline">\(A\to Y\)</span>. Neither <span class="math inline">\(X\)</span> nor <span class="math inline">\(A\)</span> has any parents. Compared with the RHC graph in <a href="#fig-rhc" class="quarto-xref">Figure&nbsp;<span>2</span></a>, the arrow <span class="math inline">\(X\to A\)</span> is absent: the randomized treatment assignment does not use <span class="math inline">\(X\)</span>.</p>
 </details>
-<p>For a mediation example, return to the appointment-reminder story from the exercises. Let <span class="math inline">\(X\)</span> collect baseline characteristics, <span class="math inline">\(A\)</span> indicate randomized assignment to a reminder, <span class="math inline">\(M\)</span> indicate attendance, and <span class="math inline">\(Y\)</span> indicate whether blood pressure is measured at the appointment. The reminder can affect measurement only through attendance. We wrote</p>
+<p>For a mediation example, let <span class="math inline">\(X\)</span> collect baseline characteristics, <span class="math inline">\(A\)</span> indicate randomized assignment to a reminder, <span class="math inline">\(M\)</span> indicate attendance, and <span class="math inline">\(Y\)</span> indicate whether blood pressure is measured at the appointment. The reminder can affect measurement only through attendance. We suppose</p>
 <p><span class="math display">\[
 \begin{aligned}
 X&amp;\leftarrow f_X(\epsilon_X),\\
@@ -477,13 +501,17 @@ Y&amp;\leftarrow f_Y(X,M,\epsilon_Y),
 <summary>
 Draw the causal graph for the appointment-reminder SCM. Should there be an arrow from <span class="math inline">\(A\)</span> to <span class="math inline">\(Y\)</span>?
 </summary>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/02c-mediation.svg" class="img-fluid figure-img" alt="Arrows run from X to M, X to Y, A to M, and M to Y. There is no arrow from A to Y." width="440"></p>
-<figcaption>The appointment-reminder causal graph.</figcaption>
+<div id="fig-appointment-reminder" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Arrows run from X to M, X to Y, A to M, and M to Y. There is no arrow from A to Y.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-appointment-reminder-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/02c-mediation.svg" class="img-fluid figure-img" alt="Arrows run from X to M, X to Y, A to M, and M to Y. There is no arrow from A to Y." width="440">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-appointment-reminder-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: The appointment-reminder causal graph.
+</figcaption>
 </figure>
 </div>
-<p>The parents of <span class="math inline">\(M\)</span> are <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span>, and the parents of <span class="math inline">\(Y\)</span> are <span class="math inline">\(X\)</span> and <span class="math inline">\(M\)</span>. This gives four arrows: <span class="math inline">\(X\to M\)</span>, <span class="math inline">\(A\to M\)</span>, <span class="math inline">\(X\to Y\)</span>, and <span class="math inline">\(M\to Y\)</span>.</p>
+<p>In <a href="#fig-appointment-reminder" class="quarto-xref">Figure&nbsp;<span>4</span></a>, the parents of <span class="math inline">\(M\)</span> are <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span>, and the parents of <span class="math inline">\(Y\)</span> are <span class="math inline">\(X\)</span> and <span class="math inline">\(M\)</span>. This gives four arrows: <span class="math inline">\(X\to M\)</span>, <span class="math inline">\(A\to M\)</span>, <span class="math inline">\(X\to Y\)</span>, and <span class="math inline">\(M\to Y\)</span>.</p>
 <p>There is no arrow <span class="math inline">\(A\to Y\)</span> because <span class="math inline">\(A\)</span> is not an input to the assignment for <span class="math inline">\(Y\)</span>. We can follow arrows from <span class="math inline">\(A\)</span> through <span class="math inline">\(M\)</span> to <span class="math inline">\(Y\)</span>, but that does not make <span class="math inline">\(A\)</span> a parent of <span class="math inline">\(Y\)</span>. Attendance carries the reminder’s effect on whether blood pressure is measured.</p>
 </details>
 <div class="section-break" aria-hidden="true">
@@ -492,20 +520,19 @@ Draw the causal graph for the appointment-reminder SCM. Should there be an arrow
 </section>
 <section id="recovering-the-scm-from-a-graph" class="level2">
 <h2 class="anchored" data-anchor-id="recovering-the-scm-from-a-graph">Recovering the SCM from a graph</h2>
-<p>We have defined a graph from an SCM. Can we go backward? If we know the graph, is there one unique SCM that gives us that graph?</p>
-<p>Yes, in the form we have been using, with the assignment functions and noise distributions left unspecified. The arrows tell us exactly which parents to put into each assignment. We give each variable its own noise term and require those noise terms to be independent. The graph does not tell us a formula for a function or a distribution for a noise term; those details were already left unspecified in our SCMs.</p>
-<div class="main-point">
-<p>The graph tells us exactly how to write the SCM’s assignments with unspecified functions. For each variable, use the variables with arrows pointing into it as its parents, add its noise term, and require all the noise terms to be independent.</p>
+<p>We have built a graph from an SCM. Can we go backward? If we know the graph, is there a unique SCM that produces it?</p>
+<p>Yes, and it is easiest to see with an example. Suppose we are given this graph:</p>
+<div id="fig-translate-scm" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Arrows run from X to W, X to A, W to Y, and A to Y.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-translate-scm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/02c-reverse-example.svg" class="img-fluid figure-img" alt="Arrows run from X to W, X to A, W to Y, and A to Y." width="440">
 </div>
-<p><strong>That is what makes the graph powerful: anything we can learn from the SCM’s parent structure and independent noise assumption, with its functions and noise distributions left unspecified, we can learn from the graph.</strong> Particular formulas or noise distributions could tell us more, but we have not specified those in either representation.</p>
-<p>For example, suppose we are given this graph:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/02c-reverse-example.svg" class="img-fluid figure-img" alt="Arrows run from X to W, X to A, W to Y, and A to Y." width="440"></p>
-<figcaption>A causal graph to translate into an SCM.</figcaption>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-translate-scm-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: A causal graph to translate into an SCM.
+</figcaption>
 </figure>
 </div>
-<p>No arrows point into <span class="math inline">\(X\)</span>, so its assignment uses only its noise term. The arrow into <span class="math inline">\(W\)</span> comes from <span class="math inline">\(X\)</span>, and the arrow into <span class="math inline">\(A\)</span> also comes from <span class="math inline">\(X\)</span>. Finally, the arrows into <span class="math inline">\(Y\)</span> come from <span class="math inline">\(W\)</span> and <span class="math inline">\(A\)</span>. We therefore write</p>
+<p>In <a href="#fig-translate-scm" class="quarto-xref">Figure&nbsp;<span>5</span></a>, no arrows point into <span class="math inline">\(X\)</span>, so its assignment uses only its noise term. The arrows into <span class="math inline">\(W\)</span> and <span class="math inline">\(A\)</span> both come from <span class="math inline">\(X\)</span>. Finally, the arrows into <span class="math inline">\(Y\)</span> come from <span class="math inline">\(W\)</span> and <span class="math inline">\(A\)</span>. We therefore write</p>
 <p><span class="math display">\[
 \begin{aligned}
 X&amp;\leftarrow f_X(\epsilon_X),\\
@@ -514,17 +541,21 @@ A&amp;\leftarrow f_A(X,\epsilon_A),\\
 Y&amp;\leftarrow f_Y(W,A,\epsilon_Y),
 \end{aligned}
 \]</span></p>
-<p>where <span class="math inline">\(\epsilon_X\)</span>, <span class="math inline">\(\epsilon_W\)</span>, <span class="math inline">\(\epsilon_A\)</span>, and <span class="math inline">\(\epsilon_Y\)</span> are independent. Notice that <span class="math inline">\(X\)</span> is not an input to the assignment for <span class="math inline">\(Y\)</span>: there is no arrow from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span>.</p>
-<p>Now try the same translation for this graph:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/02c-reverse-practice.svg" class="img-fluid figure-img" alt="Arrows run from X to A, A to M, X to Y, and M to Y." width="440"></p>
-<figcaption>A causal graph for practice.</figcaption>
+<p>where <span class="math inline">\(\epsilon_X\)</span>, <span class="math inline">\(\epsilon_W\)</span>, <span class="math inline">\(\epsilon_A\)</span>, and <span class="math inline">\(\epsilon_Y\)</span> are independent. Notice that <span class="math inline">\(X\)</span> is not an input to the assignment for <span class="math inline">\(Y\)</span>, because there is no arrow from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span>.</p>
+<p>Now try the same translation yourself with this graph:</p>
+<div id="fig-translate-practice" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Arrows run from X to A, A to M, X to Y, and M to Y.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-translate-practice-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/02c-reverse-practice.svg" class="img-fluid figure-img" alt="Arrows run from X to A, A to M, X to Y, and M to Y." width="440">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-translate-practice-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: A causal graph for practice.
+</figcaption>
 </figure>
 </div>
 <details class="lesson-question">
 <summary>
-Write the SCM represented by this graph. Include the requirement on its noise terms.
+Write the SCM represented by <a href="#fig-translate-practice" class="quarto-xref">Figure&nbsp;<span>6</span></a>. Include the requirement on its noise terms.
 </summary>
 <p>We write</p>
 <p><span class="math display">\[
@@ -535,36 +566,17 @@ M&amp;\leftarrow f_M(A,\epsilon_M),\\
 Y&amp;\leftarrow f_Y(X,M,\epsilon_Y),
 \end{aligned}
 \]</span></p>
-<p>where <span class="math inline">\(\epsilon_X\)</span>, <span class="math inline">\(\epsilon_A\)</span>, <span class="math inline">\(\epsilon_M\)</span>, and <span class="math inline">\(\epsilon_Y\)</span> are independent. The parents of <span class="math inline">\(A\)</span> are <span class="math inline">\(\{X\}\)</span>, the parents of <span class="math inline">\(M\)</span> are <span class="math inline">\(\{A\}\)</span>, and the parents of <span class="math inline">\(Y\)</span> are <span class="math inline">\(\{X,M\}\)</span>. The variable <span class="math inline">\(X\)</span> has no parents. Each assignment comes directly from the arrows pointing into its node.</p>
+<p>where <span class="math inline">\(\epsilon_X\)</span>, <span class="math inline">\(\epsilon_A\)</span>, <span class="math inline">\(\epsilon_M\)</span>, and <span class="math inline">\(\epsilon_Y\)</span> are independent. The variable <span class="math inline">\(X\)</span> has no parents. The parents of <span class="math inline">\(A\)</span> are <span class="math inline">\(\{X\}\)</span>, the parents of <span class="math inline">\(M\)</span> are <span class="math inline">\(\{A\}\)</span>, and the parents of <span class="math inline">\(Y\)</span> are <span class="math inline">\(\{X,M\}\)</span>. Each assignment comes directly from the arrows pointing into its node.</p>
 </details>
-<div class="section-break" aria-hidden="true">
-<span class="acorn-mark"></span>
+<p>In both examples we did exactly the same thing. For each variable, we took the variables with arrows pointing into it as its parents, added its own noise term, and required all the noise terms to be independent. The graph doesn’t tell us the functions or the noise distributions, but our SCMs leave those unspecified anyway. So the answer to our question is yes: a graph gives us back an SCM, and an SCM gives us a graph.</p>
+<div class="main-point">
+<p>A graph and an SCM determine each other. That means we can study the SCM through its graph: we learn what a feature of the graph says about the SCM, and from then on we look for that feature directly in the picture.</p>
 </div>
 </section>
-<section id="graph-language-and-cycles" class="level2">
-<h2 class="anchored" data-anchor-id="graph-language-and-cycles">Graph language and cycles</h2>
-<p>Our causal graphs are <strong>directed</strong>: every edge has an arrow telling us which way it goes. We already know the word <em>parent</em>. If <span class="math inline">\(X\to Y\)</span>, then <span class="math inline">\(X\)</span> is a parent of <span class="math inline">\(Y\)</span>, and <span class="math inline">\(Y\)</span> is a <strong>child</strong> of <span class="math inline">\(X\)</span>. We need a little more language to talk about relationships that extend beyond one arrow.</p>
-<p>A <strong>path</strong> joins distinct nodes by edges, without requiring us to follow the arrows. A <strong>directed path</strong> follows every arrow in its direction. For example, in our coffee graph, <span class="math inline">\(C\to H\to Y\)</span> is a directed path from coffee consumption to the exam score.</p>
-<p>If there is a directed path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span>, we call <span class="math inline">\(X\)</span> an <strong>ancestor</strong> of <span class="math inline">\(Y\)</span> and <span class="math inline">\(Y\)</span> a <strong>descendant</strong> of <span class="math inline">\(X\)</span>. Parents are ancestors, but an ancestor need not be a parent. In this section, a node is not its own ancestor or descendant. A <strong>nondescendant</strong> of <span class="math inline">\(X\)</span> is any other node that is not a descendant of <span class="math inline">\(X\)</span>.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/02c-coffee-complete.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="The coffee graph: S points to C, H, L, and Y; C points to H and L; H points to L and Y; L points to Y." width="600"></p>
-</figure>
-</div>
-<details class="lesson-question">
-<summary>
-In the coffee graph, what are the parents and ancestors of <span class="math inline">\(Y\)</span>? What are the children and descendants of <span class="math inline">\(C\)</span>?
-</summary>
-<p>The parents of <span class="math inline">\(Y\)</span> are <span class="math inline">\(S,H,L\)</span>. Its ancestors are <span class="math inline">\(S,C,H,L\)</span>: coffee consumption is an ancestor through studying or sleep, even though it is not a parent of the exam score.</p>
-<p>The children of <span class="math inline">\(C\)</span> are <span class="math inline">\(H,L\)</span>. Its descendants are <span class="math inline">\(H,L,Y\)</span>.</p>
-</details>
-<p><strong>A directed cycle takes us back to where we started.</strong> We follow arrows through distinct nodes and then follow an arrow back to the starting node. Consider this graph:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/02c-cycle.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A directed cycle: X points to M, M points to Y, and Y points back to X." width="600"></p>
-</figure>
-</div>
-<p>Reading off its assignments gives</p>
+<section id="looking-for-cycles" class="level2">
+<h2 class="anchored" data-anchor-id="looking-for-cycles">Looking for cycles</h2>
+<p>Let’s put that idea to work. We want our SCMs to have a topological order, so that no assignment uses a variable before it has been assigned. Checking for one from the assignments means working through a list and tracing where each variable gets used.</p>
+<p>Take the following SCM, for example:</p>
 <p><span class="math display">\[
 \begin{aligned}
 X&amp;\leftarrow f_X(Y,\epsilon_X),\\
@@ -572,14 +584,20 @@ M&amp;\leftarrow f_M(X,\epsilon_M),\\
 Y&amp;\leftarrow f_Y(M,\epsilon_Y).
 \end{aligned}
 \]</span></p>
-<p>Try putting these assignments in a topological order. To generate <span class="math inline">\(X\)</span>, we need <span class="math inline">\(Y\)</span>. To generate <span class="math inline">\(Y\)</span>, we need <span class="math inline">\(M\)</span>. To generate <span class="math inline">\(M\)</span>, we need <span class="math inline">\(X\)</span>. There is no variable we can put first. These proposed assignments do not satisfy the topological-order assumption we have made for our SCMs. Writing down functions and noise terms alone does not make this a story we can generate one variable at a time.</p>
-<p>Now change just one arrow, replacing <span class="math inline">\(Y\to X\)</span> with <span class="math inline">\(X\to Y\)</span>:</p>
+<p>Try putting these assignments in a topological order. To generate <span class="math inline">\(X\)</span>, we need <span class="math inline">\(Y\)</span>. To generate <span class="math inline">\(Y\)</span>, we need <span class="math inline">\(M\)</span>. To generate <span class="math inline">\(M\)</span>, we need <span class="math inline">\(X\)</span>. No matter how we arrange the assignments, at least one assignment uses a variable before that variable has been assigned. This SCM does not have a topological order.</p>
+<p>Take a look at this SCM’s causal graph.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/02c-triangle-dag.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A triangle with X pointing to M and Y, and M pointing to Y. There is no directed cycle." width="600"></p>
+<p><img src="images/02c-cycle.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A directed cycle: X points to M, M points to Y, and Y points back to X." width="600"></p>
 </figure>
 </div>
-<p>This graph gives us</p>
+<p>What stands out in this graph? Follow the arrows. Start at <span class="math inline">\(X\)</span> and follow the arrow to <span class="math inline">\(M\)</span>. At <span class="math inline">\(M\)</span>, follow the arrow to <span class="math inline">\(Y\)</span>. Then follow the arrow back to <span class="math inline">\(X\)</span>. We started at <span class="math inline">\(X\)</span>, followed the arrows in their directions, and returned to where we started. Is this a coincidence?</p>
+<p>Not really. What we have found is a <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A sequence of arrows that can be followed in their directions and eventually returns to the node where it began." tabindex="0"><strong>directed cycle</strong></span>. Start at one node and follow an arrow in its direction. Continue following arrows in their directions. If we eventually return to the node where we started, the arrows we followed form a directed cycle. In this graph, the directed cycle is</p>
+<p><span class="math display">\[
+X\to M\to Y\to X.
+\]</span></p>
+<p>Think about what following these arrows says about an order. Each arrow takes us from a parent to a child, and every parent must appear before its child. Following the arrows therefore gives us a sequence: this variable must come before that variable, which must come before the next one. If the arrows eventually return to the first variable, they tell us that the first variable must also come after itself. That is a contradiction. An SCM whose graph contains a directed cycle cannot have a topological order.</p>
+<p>Now change the SCM slightly. Instead of <span class="math inline">\(Y\)</span> being a parent of <span class="math inline">\(X\)</span>, suppose <span class="math inline">\(X\)</span> is a parent of <span class="math inline">\(Y\)</span>. Our SCM is now</p>
 <p><span class="math display">\[
 \begin{aligned}
 X&amp;\leftarrow f_X(\epsilon_X),\\
@@ -587,11 +605,20 @@ M&amp;\leftarrow f_M(X,\epsilon_M),\\
 Y&amp;\leftarrow f_Y(X,M,\epsilon_Y).
 \end{aligned}
 \]</span></p>
-<p>We can generate the variables in the order <span class="math inline">\(X,M,Y\)</span>. The drawing still forms a triangle, but we cannot follow its arrows around the triangle. <strong>A loop in the drawing is not enough: the directions of the arrows must let us travel all the way around.</strong></p>
-<div class="proposition-box">
-<p><strong>Cycles and topological order.</strong> A finite collection of assignments admits a topological order if and only if its associated directed graph has no directed cycles.</p>
+<p>This SCM does have a topological order: <span class="math inline">\(X,M,Y\)</span>.</p>
+<p>Now return to its causal graph. We changed just one arrow, replacing <span class="math inline">\(Y\to X\)</span> with <span class="math inline">\(X\to Y\)</span>:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02c-triangle-dag.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A triangle with X pointing to M and Y, and M pointing to Y. There is no directed cycle." width="600"></p>
+</figure>
 </div>
-<p>One direction is easy to picture. In a topological order, every arrow moves forward. We cannot keep moving forward and return to our starting point. For the other direction, a graph without directed cycles always gives us a place to start: a node with no parents. Once we remove that node and its outgoing arrows, we can find the next place to start, and keep going.</p>
+<p>Can we find a directed cycle in this graph? The drawing still forms a triangle, but we cannot follow its arrows all the way around. <strong>A loop in the drawing is not enough: the directions of the arrows must let us travel all the way around.</strong> The directed cycle has disappeared at exactly the same time that a topological order has become possible.</p>
+<p>The general idea behind these two examples is this:</p>
+<div class="proposition-box">
+<p><strong>Cycles and topological order.</strong> An SCM admits a topological order if and only if its associated causal graph has no directed cycles.</p>
+</div>
+<p>One direction is quick. In a topological order, every arrow points from a variable earlier in the list to a variable later in the list. So each time we follow an arrow, we land somewhere later in the list than where we were. We can never move back up, which means we can never return to the node we started from. A directed cycle would have to do exactly that, so a graph with a topological order has no directed cycles.</p>
+<p>The other direction, that a graph with no directed cycles always has a topological order, is harder. We will use it without proving it here, and the argument is in the note below for anyone who wants to see it.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: proof of the topological-order equivalence">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -609,22 +636,31 @@ Y&amp;\leftarrow f_Y(X,M,\epsilon_Y).
 i_1&lt;i_2&lt;\cdots&lt;i_m&lt;i_1,
 \]</span></p>
 <p>which is impossible.</p>
-<p>Conversely, suppose the finite directed graph has no directed cycles. Start with an empty list. Repeatedly select a remaining node with no incoming edges from other remaining nodes, append it to the list, and remove that node and its outgoing edges. This procedure is Kahn’s algorithm.</p>
+<p>For the reverse direction, suppose the causal graph with a finite number of nodes has no directed cycles. Start with an empty list. Repeatedly select a remaining node with no incoming edges from other remaining nodes, append it to the list, and remove that node and its outgoing edges. This procedure is Kahn’s algorithm.</p>
 <p>Why can we always select a node? If a nonempty remaining graph had no such node, every remaining node would have a parent in that graph. Start anywhere and repeatedly follow an incoming edge backward. Because there are finitely many nodes, we must eventually revisit a node. The edges between repeated visits form a directed cycle, contradicting the assumption.</p>
 <p>The procedure therefore lists every node. If <span class="math inline">\(X\to Y\)</span>, then <span class="math inline">\(Y\)</span> cannot be selected until <span class="math inline">\(X\)</span> has been removed: otherwise it would still have that incoming edge. Thus <span class="math inline">\(X\)</span> appears before <span class="math inline">\(Y\)</span>. The list is a topological order of the graph and, by the definition of its edges, of the assignments.</p>
 </div>
 </div>
 </div>
-<p>A <strong>directed acyclic graph</strong>, or <strong>DAG</strong>, is a directed graph with no directed cycles. Our SCMs already assume a topological order. The proposition tells us exactly what that assumption looks like in a picture: <strong>their causal graphs are DAGs.</strong></p>
-<p>Let’s practice finding an order, or explaining why none exists.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/02c-order-practice.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A and B both point to C; C points to D and E." width="600"></p>
+<p>Here is the payoff.</p>
+<div class="main-point">
+<p>Want to know whether your SCM has a topological order? You do not need to comb through the assignments. Look for a directed cycle in its causal graph. If you find none, you’re done: a topological order exists.</p>
+</div>
+<p>Since we only work with SCMs that have a topological order, our causal graphs never contain a directed cycle. A graph with no directed cycles is called <em>acyclic</em>, so our causal graphs are <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A directed graph with no directed cycles." tabindex="0"><strong>directed acyclic graphs</strong></span>, or <strong>DAGs</strong>. If you have taken an epidemiology class, you may have seen this term before.</p>
+<p>Let’s practice.</p>
+<div id="fig-order-practice" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A and B both point to C; C points to D and E." data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-order-practice-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/02c-order-practice.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A and B both point to C; C points to D and E." width="600">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-order-practice-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: A graph for topological-order practice.
+</figcaption>
 </figure>
 </div>
 <details class="lesson-question">
 <summary>
-Find a topological order for this graph. Is it the only one? Write the corresponding assignments in your chosen order.
+Does the SCM corresponding to <a href="#fig-order-practice" class="quarto-xref">Figure&nbsp;<span>7</span></a> have a topological order? If so, give one.
 </summary>
 <p>One order is <span class="math inline">\(A,B,C,D,E\)</span>. In that order, the assignments are</p>
 <p><span class="math display">\[
@@ -638,31 +674,25 @@ E&amp;\leftarrow f_E(C,\epsilon_E),
 \]</span></p>
 <p>with independent noise terms. We could put <span class="math inline">\(B\)</span> before <span class="math inline">\(A\)</span>, or <span class="math inline">\(E\)</span> before <span class="math inline">\(D\)</span>, or both. There are four possible orders. Changing the order in these ways does not change the parent sets or the graph.</p>
 </details>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/02c-cycle-practice.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A points to B, B to C, C to D and E, and D back to B." width="600"></p>
+<div id="fig-cycle-practice" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A points to B, B to C, C to D and E, and D back to B." data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cycle-practice-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/02c-cycle-practice.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A points to B, B to C, C to D and E, and D back to B." width="600">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cycle-practice-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: A graph for directed-cycle practice.
+</figcaption>
 </figure>
 </div>
 <details class="lesson-question">
 <summary>
-We can put <span class="math inline">\(A\)</span> first. Does that mean this graph has a topological order?
+Does the SCM corresponding to <a href="#fig-cycle-practice" class="quarto-xref">Figure&nbsp;<span>8</span></a> have a topological order? If so, give one.
 </summary>
 <p>No.&nbsp;The graph contains the directed cycle <span class="math inline">\(B\to C\to D\to B\)</span>. After putting <span class="math inline">\(A\)</span> first, we still cannot order <span class="math inline">\(B,C,D\)</span>. Their proposed assignments require <span class="math inline">\(D\)</span> before <span class="math inline">\(B\)</span>, <span class="math inline">\(B\)</span> before <span class="math inline">\(C\)</span>, and <span class="math inline">\(C\)</span> before <span class="math inline">\(D\)</span>. Having one node with no parents does not guarantee that the entire graph can be ordered.</p>
 </details>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/02c-order-redrawn.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A and B are drawn on the right and point left toward C; C points left toward D and E. This has the same edges as the earlier acyclic example." width="600"></p>
-</figure>
-</div>
 <details class="lesson-question">
 <summary>
-The arrows now point to the left. Does <span class="math inline">\(A,B,C,D,E\)</span> still give a topological order?
-</summary>
-<p>Yes. This is the same graph as the first practice example, drawn differently. A topological order depends on which variables are parents, not on their positions on the page. Every parent still comes before its child in <span class="math inline">\(A,B,C,D,E\)</span>.</p>
-</details>
-<details class="lesson-question">
-<summary>
-Return to the coffee graph. Give a topological order. Would adding <span class="math inline">\(Y\to C\)</span> preserve the possibility of a topological order?
+Return to the coffee graph in <a href="#fig-coffee" class="quarto-xref">Figure&nbsp;<span>1</span></a>. Does its SCM have a topological order? Would adding <span class="math inline">\(Y\to C\)</span> preserve that possibility?
 </summary>
 <p>The order <span class="math inline">\(S,C,H,L,Y\)</span> works for the original graph. Adding <span class="math inline">\(Y\to C\)</span> creates the directed cycle <span class="math inline">\(C\to H\to Y\to C\)</span>, so the modified graph cannot have a topological order. The new assignment for <span class="math inline">\(C\)</span> would require the exam score before we could generate coffee consumption, even though generating that score already requires variables generated after coffee consumption.</p>
 </details>
@@ -670,251 +700,63 @@ Return to the coffee graph. Give a topological order. Would adding <span class="
 <span class="acorn-mark"></span>
 </div>
 </section>
-<section id="how-associations-transmit" class="level2">
-<h2 class="anchored" data-anchor-id="how-associations-transmit">How associations transmit</h2>
-<p>We now have a convenient picture of who generates whom. What can that picture tell us about which variables share information?</p>
-<p>Start small. An edge, a chain, a fork, and a collider are the building blocks we will use. For now, each drawing is the entire graph for its example. There are no additional paths hiding outside the picture. Whenever we say a structure <em>can transmit association</em>, we mean that it permits dependence between its endpoints. We are not saying that every choice of functions and noise distributions must produce dependence.</p>
-<p><strong>An edge can transmit association.</strong></p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/02c-edge.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A single directed edge from X to Y." width="600"></p>
-</figure>
-</div>
-<p>If <span class="math inline">\(Y\)</span> uses <span class="math inline">\(X\)</span> in its assignment, learning <span class="math inline">\(X\)</span> can tell us something about <span class="math inline">\(Y\)</span>. For a concrete example, let the noise terms be independent fair coin flips, represented by <span class="math inline">\(\operatorname{Bernoulli}(1/2)\)</span> variables, and write</p>
-<p><span class="math display">\[
-X\leftarrow\epsilon_X,\qquad Y\leftarrow X+\epsilon_Y.
-\]</span></p>
-<p>If we learn that <span class="math inline">\(Y=0\)</span>, we know <span class="math inline">\(X=0\)</span>. Before learning <span class="math inline">\(Y\)</span>, either value of <span class="math inline">\(X\)</span> was equally likely. The two random variables share information.</p>
-<p><strong>A chain can transmit association through an intermediate variable.</strong></p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/02c-chain.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A chain: X points to M, and M points to Y." width="600"></p>
-</figure>
-</div>
-<p>Think of a reminder affecting attendance, which affects whether a measurement is collected. In a simplified story with just these three variables, information can travel from the reminder through attendance to measurement. A concrete SCM with this graph is</p>
-<p><span class="math display">\[
-X\leftarrow\epsilon_X,\qquad
-M\leftarrow X+\epsilon_M,\qquad
-Y\leftarrow M+\epsilon_Y,
-\]</span></p>
-<p>again with independent fair-coin noise terms. This numerical example illustrates the graph; its sums are not binary attendance indicators. Learning that <span class="math inline">\(Y=0\)</span> tells us that every term in the sum was zero, including <span class="math inline">\(X\)</span>.</p>
-<p>What happens if we already know <span class="math inline">\(M\)</span>? The assignment for <span class="math inline">\(Y\)</span> uses <span class="math inline">\(M\)</span> and fresh independent noise. Once <span class="math inline">\(M\)</span> is known, learning <span class="math inline">\(X\)</span> gives us no extra information about <span class="math inline">\(Y\)</span>:</p>
-<p><span class="math display">\[
-X\mathrel{\perp\!\!\!\perp}Y\mid M.
-\]</span></p>
-<p><strong>A fork can transmit association through a shared parent.</strong></p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/02c-fork.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A fork: M points to both X and Y." width="600"></p>
-</figure>
-</div>
-<p>For example, illness severity might affect both a treatment decision and an outcome. The treatment and outcome can share information because both use severity. Consider</p>
-<p><span class="math display">\[
-M\leftarrow\epsilon_M,\qquad
-X\leftarrow M+\epsilon_X,\qquad
-Y\leftarrow M+\epsilon_Y,
-\]</span></p>
-<p>with independent fair-coin noise terms. If <span class="math inline">\(Y=0\)</span>, then <span class="math inline">\(M=0\)</span>, which makes <span class="math inline">\(X=0\)</span> more likely than it was before we learned <span class="math inline">\(Y\)</span>. Association can travel along a path even when its arrows do not all point in the direction we are traveling.</p>
-<p>If we already know <span class="math inline">\(M\)</span>, however, the remaining randomness in <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> is independent. Once again,</p>
-<p><span class="math display">\[
-X\mathrel{\perp\!\!\!\perp}Y\mid M.
-\]</span></p>
-<details class="lesson-question">
-<summary>
-In the fair-coin fork example, find <span class="math inline">\(P(X=0)\)</span> and <span class="math inline">\(P(X=0\mid Y=0)\)</span>. What changes if we already know <span class="math inline">\(M=0\)</span>?
-</summary>
-<p>For <span class="math inline">\(X=0\)</span>, both <span class="math inline">\(M\)</span> and <span class="math inline">\(\epsilon_X\)</span> must be zero, so <span class="math inline">\(P(X=0)=1/4\)</span>. Learning <span class="math inline">\(Y=0\)</span> tells us <span class="math inline">\(M=0\)</span>, leaving only the independent coin flip <span class="math inline">\(\epsilon_X\)</span>, so <span class="math inline">\(P(X=0\mid Y=0)=1/2\)</span>.</p>
-<p>If we already know <span class="math inline">\(M=0\)</span>, then <span class="math inline">\(P(X=0\mid M=0)=1/2\)</span>. Learning <span class="math inline">\(Y=0\)</span> in addition does not change this probability. More generally, the conditional independence holds for either value of <span class="math inline">\(M\)</span>.</p>
-</details>
-<p><strong>A collider behaves differently.</strong></p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/02c-collider.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A collider: X and Y both point to M." width="600"></p>
-</figure>
-</div>
-<p>The arrows collide at <span class="math inline">\(M\)</span>. Here the endpoints are generated from separate independent noise terms. Their shared child does not by itself make them associated:</p>
-<p><span class="math display">\[
-X\mathrel{\perp\!\!\!\perp}Y.
-\]</span></p>
-<p>But learning the child’s value can change things. Imagine that two independent sources contribute to a total. If we learn the total and then learn that one contribution was large, we have learned something about how large the other contribution could have been.</p>
-<p>For a concrete example, write</p>
-<p><span class="math display">\[
-X\leftarrow\epsilon_X,\qquad
-Y\leftarrow\epsilon_Y,\qquad
-M\leftarrow X+Y+\epsilon_M,
-\]</span></p>
-<p>with independent fair-coin noise terms. Before learning <span class="math inline">\(M\)</span>, <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent. Among cases with <span class="math inline">\(M=1\)</span>, however, learning <span class="math inline">\(Y=1\)</span> forces <span class="math inline">\(X=0\)</span>. Knowing the total makes the two contributions informative about each other. This is an example of <strong>collider bias</strong>.</p>
-<details class="lesson-question">
-<summary>
-In the collider example, suppose <span class="math inline">\(M=1\)</span>. What are the possible values of <span class="math inline">\((X,Y,\epsilon_M)\)</span>? Find <span class="math inline">\(P(X=0\mid M=1)\)</span> and <span class="math inline">\(P(X=0\mid M=1,Y=1)\)</span>.
-</summary>
-<p>The possibilities are <span class="math inline">\((1,0,0)\)</span>, <span class="math inline">\((0,1,0)\)</span>, and <span class="math inline">\((0,0,1)\)</span>, each equally likely. Thus,</p>
-<p><span class="math display">\[
-P(X=0\mid M=1)=\frac23.
-\]</span></p>
-<p>If we also know <span class="math inline">\(Y=1\)</span>, only <span class="math inline">\((0,1,0)\)</span> remains, so</p>
-<p><span class="math display">\[
-P(X=0\mid M=1,Y=1)=1.
-\]</span></p>
-<p>Learning <span class="math inline">\(Y\)</span> changes what we know about <span class="math inline">\(X\)</span> once we condition on <span class="math inline">\(M\)</span>.</p>
-</details>
-<div class="main-point">
-<p>Chains and forks can transmit association; conditioning on the middle variable blocks that path. A collider blocks the path until we condition on the collider or, potentially, learn about it through one of its descendants.</p>
-</div>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Structure</th>
-<th>Without conditioning</th>
-<th>Conditioning on the middle variable</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Chain: <span class="math inline">\(X\to M\to Y\)</span></td>
-<td><span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> can be associated</td>
-<td><span class="math inline">\(X\perp\!\!\!\perp Y\mid M\)</span></td>
-</tr>
-<tr class="even">
-<td>Fork: <span class="math inline">\(X\leftarrow M\to Y\)</span></td>
-<td><span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> can be associated</td>
-<td><span class="math inline">\(X\perp\!\!\!\perp Y\mid M\)</span></td>
-</tr>
-<tr class="odd">
-<td>Collider: <span class="math inline">\(X\to M\leftarrow Y\)</span></td>
-<td><span class="math inline">\(X\perp\!\!\!\perp Y\)</span></td>
-<td><span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> can be associated</td>
-</tr>
-</tbody>
-</table>
-<p>The table concerns each isolated three-variable graph. In a larger graph, another path might still connect the endpoints. We will need to consider all paths before concluding that two variables are independent.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: why the three structures imply these independences">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Optional technical note: why the three structures imply these independences
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>For the chain, write <span class="math inline">\(X=f_X(\epsilon_X)\)</span>, <span class="math inline">\(M=f_M(X,\epsilon_M)\)</span>, and <span class="math inline">\(Y=f_Y(M,\epsilon_Y)\)</span>. Independence of the noise terms makes <span class="math inline">\(\epsilon_Y\)</span> independent of <span class="math inline">\((X,M)\)</span>. For a bounded measurable function <span class="math inline">\(g\)</span>, define <span class="math inline">\(h(m)=E[g(f_Y(m,\epsilon_Y))]\)</span>. Then</p>
-<p><span class="math display">\[
-E[g(Y)\mid X,M]=h(M)=E[g(Y)\mid M],
-\]</span></p>
-<p>which gives <span class="math inline">\(Y\perp\!\!\!\perp X\mid M\)</span>.</p>
-<p>For the fork, <span class="math inline">\(M=f_M(\epsilon_M)\)</span>, <span class="math inline">\(X=f_X(M,\epsilon_X)\)</span>, and <span class="math inline">\(Y=f_Y(M,\epsilon_Y)\)</span>. Conditional on <span class="math inline">\(M\)</span>, the noise terms <span class="math inline">\(\epsilon_X\)</span> and <span class="math inline">\(\epsilon_Y\)</span> remain independent with their original distributions. Thus the conditional joint distribution of <span class="math inline">\(X,Y\)</span> factors into their conditional marginal distributions, giving <span class="math inline">\(X\perp\!\!\!\perp Y\mid M\)</span>.</p>
-<p>For the collider, <span class="math inline">\(X=f_X(\epsilon_X)\)</span> and <span class="math inline">\(Y=f_Y(\epsilon_Y)\)</span> are functions of independent noise terms, so <span class="math inline">\(X\perp\!\!\!\perp Y\)</span>. Conditioning on their shared child does not preserve this argument. The fair-coin example in the text demonstrates that conditional dependence is possible.</p>
-</div>
-</div>
-</div>
-<details class="lesson-question">
-<summary>
-Suppose independent preparation <span class="math inline">\(P\)</span> and independent exam-day luck <span class="math inline">\(L\)</span> both contribute to a score <span class="math inline">\(Y\)</span>, with graph <span class="math inline">\(P\to Y\leftarrow L\)</span>. Can preparation and luck become associated among students with the same score? How is this different from conditioning on the middle of a chain?
-</summary>
-<p>Yes. Score is a collider. Among students with a fixed score, learning that one student had especially good luck may change what we infer about that student’s preparation. The graph permits this association; a particular model determines whether and how it occurs. Conditioning on the middle of an isolated chain instead blocks the path between its endpoints.</p>
-</details>
-<div class="section-break" aria-hidden="true">
-<span class="acorn-mark"></span>
-</div>
-</section>
-<section id="the-local-markov-property" class="level2">
-<h2 class="anchored" data-anchor-id="the-local-markov-property">The local Markov property</h2>
-<p>We have seen that a graph helps us reason about association. Now return to a fact we already learned from SCMs: once we know a variable’s parents, the preceding variables that are not its parents give us no extra information about it. This is the local Markov property from the previous section. We can now see the relevant sets in a graph.</p>
-<p>Consider our earlier example:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/02c-reverse-example.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="X points to W and A; W and A point to Y." width="440"></p>
-</figure>
-</div>
-<p>Choose the topological order <span class="math inline">\(X,W,A,Y\)</span>. When we reach <span class="math inline">\(A\)</span>, its parent is <span class="math inline">\(X\)</span>. The other preceding variable is <span class="math inline">\(W\)</span>. The local Markov property gives</p>
+<section id="revisiting-the-local-markov-property" class="level2">
+<h2 class="anchored" data-anchor-id="revisiting-the-local-markov-property">Revisiting the local Markov property</h2>
+<p>We have just seen the causal graph earn its keep. A property of the SCM became something we could see in its graph.</p>
+<p>The same thing happens with the local Markov property. From the SCM, we learned that given a variable’s parents, earlier variables in a topological order that are not its parents provide no additional information about it. The graph shows us those parents, so it gives us a quicker way to find these conditional independences.</p>
+<p>Return to the graph in <a href="#fig-translate-scm" class="quarto-xref">Figure&nbsp;<span>5</span></a>.</p>
+<p>Choose the topological order <span class="math inline">\(X,W,A,Y\)</span>. When we reach <span class="math inline">\(A\)</span>, its parent is <span class="math inline">\(X\)</span>. The other preceding variable is <span class="math inline">\(W\)</span>. Therefore,</p>
 <p><span class="math display">\[
 A\mathrel{\perp\!\!\!\perp}W\mid X.
 \]</span></p>
-<p>We can see a fork <span class="math inline">\(A\leftarrow X\to W\)</span> and a collider <span class="math inline">\(A\to Y\leftarrow W\)</span>. Knowing <span class="math inline">\(X\)</span> blocks the fork, and we have not conditioned on the collider. Both ways of connecting <span class="math inline">\(A\)</span> and <span class="math inline">\(W\)</span> are blocked. This agrees with what we learned from their assignments.</p>
-<p>There is also a version that does not require us to choose an order first.</p>
-<div class="proposition-box">
-<p><strong>Local Markov property.</strong> In the causal graph of an SCM with independent noise terms and a topological order, each variable is independent of its nondescendants other than its parents, given its parents.</p>
-<p>Writing <span class="math inline">\(\operatorname{ND}_V\)</span> for the other variables that are not descendants of <span class="math inline">\(V\)</span>,</p>
-<p><span class="math display">\[
-V\mathrel{\perp\!\!\!\perp}
-\bigl(\operatorname{ND}_V\setminus\operatorname{Pa}_V\bigr)
-\mid\operatorname{Pa}_V.
-\]</span></p>
-<p>The sets in this expression stand for the corresponding collections of random variables.</p>
-</div>
-<p><strong>The graph tells us which variables to condition on and which variables then provide no extra information.</strong> Circle the node we want to study, find its parents, and find its descendants. Among the remaining nodes, those that are neither the node itself nor its parents form the collection independent of it given its parents.</p>
-<p>For <span class="math inline">\(A\)</span> in the graph above, <span class="math inline">\(X\)</span> is its parent and <span class="math inline">\(Y\)</span> its descendant. The remaining node is <span class="math inline">\(W\)</span>, giving <span class="math inline">\(A\perp\!\!\!\perp W\mid X\)</span>. If we had chosen the order <span class="math inline">\(X,A,W,Y\)</span>, <span class="math inline">\(W\)</span> would appear after <span class="math inline">\(A\)</span>. It would still be a nondescendant of <span class="math inline">\(A\)</span>. The graphical statement does not depend on which valid order we happen to write down.</p>
-<p>For <span class="math inline">\(Y\)</span>, the parents are <span class="math inline">\(W,A\)</span>, and there are no descendants. The remaining node is <span class="math inline">\(X\)</span>, so</p>
+<p>When we reach <span class="math inline">\(Y\)</span>, its parents are <span class="math inline">\(W\)</span> and <span class="math inline">\(A\)</span>. The remaining preceding variable is <span class="math inline">\(X\)</span>, so</p>
 <p><span class="math display">\[
 Y\mathrel{\perp\!\!\!\perp}X\mid W,A.
 \]</span></p>
-<p>Knowing both inputs to the outcome assignment makes the earlier variable <span class="math inline">\(X\)</span> uninformative about the remaining randomness in <span class="math inline">\(Y\)</span>.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: proof of the local Markov property">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Optional technical note: proof of the local Markov property
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-3" class="callout-3-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>First fix a topological order <span class="math inline">\(V_1,\ldots,V_K\)</span> and let <span class="math inline">\(\mathcal F_{j-1}=\sigma(\epsilon_1,\ldots,\epsilon_{j-1})\)</span>. All preceding variables, including the parents of <span class="math inline">\(V_j\)</span>, are measurable functions of these preceding noise terms. For bounded measurable <span class="math inline">\(g\)</span>, integrate over the independent noise <span class="math inline">\(\epsilon_j\)</span> and define</p>
-<p><span class="math display">\[
-h(p)=E[g(f_j(p,\epsilon_j))].
-\]</span></p>
-<p>Independence gives</p>
-<p><span class="math display">\[
-E[g(V_j)\mid\mathcal F_{j-1}]=h(\operatorname{Pa}_j).
-\]</span></p>
-<p>Applying the tower property, first to the preceding variables and then to the parents, gives</p>
-<p><span class="math display">\[
-E[g(V_j)\mid V_1,\ldots,V_{j-1}]
-=h(\operatorname{Pa}_j)
-=E[g(V_j)\mid\operatorname{Pa}_j].
-\]</span></p>
-<p>This proves the ordered version.</p>
-<p>For the graphical version, fix a node <span class="math inline">\(V\)</span>. The set of its nondescendants is closed under taking parents: if a nondescendant had a parent that was <span class="math inline">\(V\)</span> or a descendant of <span class="math inline">\(V\)</span>, it would itself be a descendant. We can therefore topologically order all nondescendants first, put <span class="math inline">\(V\)</span> next, and then topologically order its descendants. Apply the ordered result at <span class="math inline">\(V\)</span> in this order. Its preceding variables are exactly its nondescendants, which proves the stated property.</p>
-</div>
-</div>
-</div>
 <details class="lesson-question">
 <summary>
-Return to the coffee graph. What does the local Markov property say about the exam score <span class="math inline">\(Y\)</span> and coffee consumption <span class="math inline">\(C\)</span>? State the result in symbols and words.
+Return to the coffee graph in <a href="#fig-coffee" class="quarto-xref">Figure&nbsp;<span>1</span></a> and use the order <span class="math inline">\(S,C,H,L,Y\)</span>. What does the local Markov property say about the exam score <span class="math inline">\(Y\)</span> and coffee consumption <span class="math inline">\(C\)</span>?
 </summary>
-<p>The parents of <span class="math inline">\(Y\)</span> are <span class="math inline">\(S,H,L\)</span>. It has no descendants, and its only other nondescendant is <span class="math inline">\(C\)</span>. Therefore,</p>
+<p>The parents of <span class="math inline">\(Y\)</span> are <span class="math inline">\(S,H,L\)</span>. Coffee consumption <span class="math inline">\(C\)</span> comes before <span class="math inline">\(Y\)</span> but is not one of its parents. Therefore,</p>
 <p><span class="math display">\[
 Y\mathrel{\perp\!\!\!\perp}C\mid S,H,L.
 \]</span></p>
-<p>Among students with the same stress, studying, and sleep values, learning their coffee consumption gives no extra information about the exam score under this SCM. This does not say that coffee and exam scores are independent without conditioning: coffee can affect studying and sleep, and it shares stress as an ancestor with the score.</p>
+<p>Among students with the same stress, studying, and sleep values, learning their coffee consumption gives no extra information about the exam score under this SCM.</p>
 </details>
 <details class="lesson-question">
 <summary>
-For the WHI graph <span class="math inline">\(X\to Y\leftarrow A\)</span>, what does the local Markov property give us for <span class="math inline">\(A\)</span>? Can we keep that conclusion after conditioning on <span class="math inline">\(Y\)</span>?
+For the WHI graph in <a href="#fig-whi" class="quarto-xref">Figure&nbsp;<span>3</span></a>, use the order <span class="math inline">\(X,A,Y\)</span>. What does the local Markov property give us for <span class="math inline">\(A\)</span>?
 </summary>
-<p>The variable <span class="math inline">\(A\)</span> has no parents, and its only nondescendant is <span class="math inline">\(X\)</span>. Thus <span class="math inline">\(A\perp\!\!\!\perp X\)</span>. Randomization makes treatment assignment independent of baseline characteristics in this story.</p>
-<p>We cannot automatically keep that conclusion after conditioning on <span class="math inline">\(Y\)</span>. The outcome is a collider, and conditioning on it can make <span class="math inline">\(A\)</span> and <span class="math inline">\(X\)</span> associated. Independence given one collection of variables does not mean independence given any larger collection.</p>
+<p>The variable <span class="math inline">\(X\)</span> comes before <span class="math inline">\(A\)</span>, but it is not a parent of <span class="math inline">\(A\)</span>. The variable <span class="math inline">\(A\)</span> has no parents. Thus,</p>
+<p><span class="math display">\[
+A\mathrel{\perp\!\!\!\perp}X.
+\]</span></p>
+<p>Randomization makes treatment assignment independent of baseline characteristics in this story.</p>
 </details>
 <details class="lesson-question">
 <summary>
-In the appointment-reminder graph, the parents of <span class="math inline">\(M\)</span> are <span class="math inline">\(X,A\)</span>, and the parents of <span class="math inline">\(Y\)</span> are <span class="math inline">\(X,M\)</span>. What does the local Markov property tell us about <span class="math inline">\(Y\)</span>?
+In the appointment-reminder graph in <a href="#fig-appointment-reminder" class="quarto-xref">Figure&nbsp;<span>4</span></a>, use the order <span class="math inline">\(X,A,M,Y\)</span>. The parents of <span class="math inline">\(Y\)</span> are <span class="math inline">\(X,M\)</span>. What does the local Markov property tell us?
 </summary>
-<p>The outcome has no descendants. Among its nondescendants, <span class="math inline">\(X\)</span> and <span class="math inline">\(M\)</span> are parents and <span class="math inline">\(A\)</span> is not. Therefore,</p>
+<p>The variable <span class="math inline">\(A\)</span> comes before <span class="math inline">\(Y\)</span> but is not a parent of <span class="math inline">\(Y\)</span>. Therefore,</p>
 <p><span class="math display">\[
 Y\mathrel{\perp\!\!\!\perp}A\mid X,M.
 \]</span></p>
 <p>Once we know baseline characteristics and attendance, learning reminder assignment provides no additional information about whether blood pressure was measured. We have recovered the same statement we obtained from the assignments in the previous section, now by looking at the graph.</p>
 </details>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
+</div>
+</section>
+<section id="keeping-track-of-graph-terminology" class="level2">
+<h2 class="anchored" data-anchor-id="keeping-track-of-graph-terminology">Keeping track of graph terminology</h2>
+<p>We have picked up quite a few words for talking about graphs. It is useful to collect them in one place. A <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A sequence of arrows joined end to end. We may travel either with or against the arrows' directions." tabindex="0"><strong>path</strong></span> is a sequence of arrows joined end to end; we may travel either with or against their directions. A <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A path whose arrows line up head to tail, so that every arrow can be followed in its direction." tabindex="0"><strong>directed path</strong></span> is a path whose arrows line up head to tail, so that we can follow every arrow in its direction. If there is a directed path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span>, then <span class="math inline">\(X\)</span> is an <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A node is an ancestor of another node when a directed path runs from the first node to the second." tabindex="0"><strong>ancestor</strong></span> of <span class="math inline">\(Y\)</span>, and <span class="math inline">\(Y\)</span> is a <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A node is a descendant of another node when a directed path runs from the other node to it." tabindex="0"><strong>descendant</strong></span> of <span class="math inline">\(X\)</span>.</p>
+<p>The chart collects these terms together with the terminology introduced earlier. Each small picture illustrates the definition immediately beneath it.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02c-graph-terminology.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:100.0%" alt="Nine illustrated vocabulary cards define node, directed edge or arrow, directed graph, parent and child, path, directed path, ancestor and descendant, directed cycle, and directed acyclic graph or DAG."></p>
+</figure>
+</div>
+<p>The same definitions are included in the glossary. We will add more graph language in the next section when we study d-separation.</p>
 
 
 </section>
@@ -1337,8 +1179,8 @@ document.addEventListener("DOMContentLoaded", () => {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./02-exercises.html" class="pagination-link" aria-label="Exercises">
-        <span class="nav-page-text"><span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./02d-d-separation.html" class="pagination-link" aria-label="D-separation">
+        <span class="nav-page-text"><span class="chapter-title">D-separation</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

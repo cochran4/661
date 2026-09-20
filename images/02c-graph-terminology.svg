@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1050" role="img" aria-labelledby="title desc">
+  <title id="title">Illustrated graph terminology</title>
+  <desc id="desc">Nine cards pair small graph diagrams with definitions of node, directed edge, directed graph, parent and child, path, directed path, ancestor and descendant, directed cycle, and directed acyclic graph.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#315C43"/></marker>
+    <style>
+      .card{fill:#fbfcf9;stroke:#bdc9b4;stroke-width:2}.node{fill:#e6eedf;stroke:#315c43;stroke-width:2}.edge{stroke:#315c43;stroke-width:3;fill:none;marker-end:url(#arrow)}
+      .plain{stroke:#8b9987;stroke-width:3;fill:none}.hi{stroke:#315c43;stroke-width:5;fill:none;marker-end:url(#arrow)}
+      .label{font:italic 25px Georgia,serif;fill:#244635;text-anchor:middle;dominant-baseline:middle}.term{font:bold 23px Arial,sans-serif;fill:#315c43;text-anchor:middle}.def{font:17px Arial,sans-serif;fill:#343b36;text-anchor:middle}.small{font:15px Arial,sans-serif;fill:#58605a;text-anchor:middle}
+    </style>
+  </defs>
+
+  <!-- Node -->
+  <g transform="translate(20 20)"><rect class="card" width="370" height="320" rx="16"/><circle class="node" cx="185" cy="88" r="31"/><text class="label" x="185" y="88">X</text><text class="term" x="185" y="166">NODE</text><text class="def" x="185" y="207"><tspan x="185">A labeled circle representing</tspan><tspan x="185" dy="24">a random variable.</tspan></text></g>
+
+  <!-- Directed edge -->
+  <g transform="translate(415 20)"><rect class="card" width="370" height="320" rx="16"/><line class="edge" x1="115" y1="88" x2="248" y2="88"/><circle class="node" cx="90" cy="88" r="25"/><circle class="node" cx="275" cy="88" r="25"/><text class="label" x="90" y="88">X</text><text class="label" x="275" y="88">Y</text><text class="term" x="185" y="166">DIRECTED EDGE / ARROW</text><text class="def" x="185" y="207"><tspan x="185">A connection with a direction,</tspan><tspan x="185" dy="24">shown by an arrowhead.</tspan></text></g>
+
+  <!-- Directed graph -->
+  <g transform="translate(810 20)"><rect class="card" width="370" height="320" rx="16"/><line class="edge" x1="185" y1="52" x2="107" y2="115"/><line class="edge" x1="202" y1="56" x2="264" y2="114"/><line class="edge" x1="125" y1="132" x2="241" y2="132"/><circle class="node" cx="190" cy="38" r="23"/><circle class="node" cx="88" cy="132" r="23"/><circle class="node" cx="282" cy="132" r="23"/><text class="label" x="190" y="38">X</text><text class="label" x="88" y="132">A</text><text class="label" x="282" y="132">Y</text><text class="term" x="185" y="190">DIRECTED GRAPH</text><text class="def" x="185" y="231"><tspan x="185">A collection of nodes joined</tspan><tspan x="185" dy="24">only by directed edges.</tspan></text></g>
+
+  <!-- Parent child -->
+  <g transform="translate(20 365)"><rect class="card" width="370" height="320" rx="16"/><line class="edge" x1="115" y1="84" x2="248" y2="84"/><circle class="node" cx="90" cy="84" r="25"/><circle class="node" cx="275" cy="84" r="25"/><text class="label" x="90" y="84">X</text><text class="label" x="275" y="84">Y</text><text class="small" x="90" y="130">parent</text><text class="small" x="275" y="130">child</text><text class="term" x="185" y="178">PARENT / CHILD</text><text class="def" x="185" y="219"><tspan x="185">In X → Y, X is a parent of Y;</tspan><tspan x="185" dy="24">Y is a child of X.</tspan></text></g>
+
+  <!-- Path -->
+  <g transform="translate(415 365)"><rect class="card" width="370" height="320" rx="16"/><line class="edge" x1="159" y1="86" x2="105" y2="86"/><line class="edge" x1="207" y1="86" x2="264" y2="86"/><circle class="node" cx="78" cy="86" r="23"/><circle class="node" cx="184" cy="86" r="23"/><circle class="node" cx="290" cy="86" r="23"/><text class="label" x="78" y="86">X</text><text class="label" x="184" y="86">M</text><text class="label" x="290" y="86">Y</text><text class="term" x="185" y="166">PATH</text><text class="def" x="185" y="207"><tspan x="185">A route through connected nodes;</tspan><tspan x="185" dy="24">arrow direction need not be followed.</tspan></text></g>
+
+  <!-- Directed path -->
+  <g transform="translate(810 365)"><rect class="card" width="370" height="320" rx="16"/><line class="hi" x1="103" y1="86" x2="161" y2="86"/><line class="hi" x1="207" y1="86" x2="264" y2="86"/><circle class="node" cx="78" cy="86" r="23"/><circle class="node" cx="184" cy="86" r="23"/><circle class="node" cx="290" cy="86" r="23"/><text class="label" x="78" y="86">X</text><text class="label" x="184" y="86">M</text><text class="label" x="290" y="86">Y</text><text class="term" x="185" y="166">DIRECTED PATH</text><text class="def" x="185" y="207"><tspan x="185">A path whose arrows all point</tspan><tspan x="185" dy="24">in the direction traveled.</tspan></text></g>
+
+  <!-- Ancestor descendant -->
+  <g transform="translate(20 710)"><rect class="card" width="370" height="320" rx="16"/><line class="edge" x1="103" y1="84" x2="161" y2="84"/><line class="edge" x1="207" y1="84" x2="264" y2="84"/><circle class="node" cx="78" cy="84" r="23"/><circle class="node" cx="184" cy="84" r="23"/><circle class="node" cx="290" cy="84" r="23"/><text class="label" x="78" y="84">X</text><text class="label" x="184" y="84">M</text><text class="label" x="290" y="84">Y</text><text class="small" x="78" y="129">ancestor</text><text class="small" x="290" y="129">descendant</text><text class="term" x="185" y="177">ANCESTOR / DESCENDANT</text><text class="def" x="185" y="218"><tspan x="185">A directed path runs from an</tspan><tspan x="185" dy="24">ancestor to its descendant.</tspan></text></g>
+
+  <!-- Directed cycle -->
+  <g transform="translate(415 710)"><rect class="card" width="370" height="320" rx="16"/><line class="edge" x1="185" y1="51" x2="112" y2="115"/><line class="edge" x1="127" y1="137" x2="242" y2="137"/><line class="edge" x1="266" y1="116" x2="203" y2="54"/><circle class="node" cx="190" cy="35" r="22"/><circle class="node" cx="92" cy="137" r="22"/><circle class="node" cx="278" cy="137" r="22"/><text class="label" x="190" y="35">X</text><text class="label" x="92" y="137">M</text><text class="label" x="278" y="137">Y</text><text class="term" x="185" y="190">DIRECTED CYCLE</text><text class="def" x="185" y="231"><tspan x="185">A directed path that returns</tspan><tspan x="185" dy="24">to the node where it began.</tspan></text></g>
+
+  <!-- DAG -->
+  <g transform="translate(810 710)"><rect class="card" width="370" height="320" rx="16"/><line class="edge" x1="185" y1="51" x2="112" y2="115"/><line class="edge" x1="202" y1="52" x2="264" y2="114"/><line class="edge" x1="127" y1="137" x2="242" y2="137"/><circle class="node" cx="190" cy="35" r="22"/><circle class="node" cx="92" cy="137" r="22"/><circle class="node" cx="278" cy="137" r="22"/><text class="label" x="190" y="35">X</text><text class="label" x="92" y="137">M</text><text class="label" x="278" y="137">Y</text><text class="term" x="185" y="190">DIRECTED ACYCLIC GRAPH</text><text class="small" x="185" y="215">DAG</text><text class="def" x="185" y="250"><tspan x="185">A directed graph with no</tspan><tspan x="185" dy="24">directed cycles.</tspan></text></g>
+</svg>
