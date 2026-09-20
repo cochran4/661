@@ -1,0 +1,157 @@
+### 9. Building a graph from an SCM
+
+Consider the SCM
+
+$$
+\begin{aligned}
+W&\leftarrow f_W(\epsilon_W),\\
+X&\leftarrow f_X(\epsilon_X),\\
+A&\leftarrow f_A(W,X,\epsilon_A),\\
+M&\leftarrow f_M(W,A,\epsilon_M),\\
+Y&\leftarrow f_Y(X,M,\epsilon_Y),
+\end{aligned}
+$$
+
+where the noise terms are independent.
+
+a. Draw the causal graph.
+
+b. List the parents of every variable.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** The causal graph is
+
+![](images/02c-exercise-scm-graph.svg){width=680 fig-align="center" fig-alt="W and X point to A. W and A point to M. X and M point to Y."}
+
+**b.** The parent sets are
+
+$$
+\begin{aligned}
+\operatorname{Pa}_W&=\varnothing,\\
+\operatorname{Pa}_X&=\varnothing,\\
+\operatorname{Pa}_A&=\{W,X\},\\
+\operatorname{Pa}_M&=\{W,A\},\\
+\operatorname{Pa}_Y&=\{X,M\}.
+\end{aligned}
+$$
+:::
+
+### 10. Recovering an SCM from a graph
+
+Consider the following causal graph.
+
+![](images/02c-exercise-graph-to-scm.svg){width=500 fig-align="center" fig-alt="W and X point to A. W and A point to Y."}
+
+a. List the parents of every variable.
+
+b. Write the SCM represented by the graph.
+
+c. State what must be true of the noise terms.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** The parent sets are
+
+$$
+\begin{aligned}
+\operatorname{Pa}_W&=\varnothing,\\
+\operatorname{Pa}_X&=\varnothing,\\
+\operatorname{Pa}_A&=\{W,X\},\\
+\operatorname{Pa}_Y&=\{W,A\}.
+\end{aligned}
+$$
+
+**b.** The graph represents the SCM
+
+$$
+\begin{aligned}
+W&\leftarrow f_W(\epsilon_W),\\
+X&\leftarrow f_X(\epsilon_X),\\
+A&\leftarrow f_A(W,X,\epsilon_A),\\
+Y&\leftarrow f_Y(W,A,\epsilon_Y).
+\end{aligned}
+$$
+
+**c.** The noise terms $\epsilon_W$, $\epsilon_X$, $\epsilon_A$, and $\epsilon_Y$ must be mutually independent.
+:::
+
+### 11. Cycles and topological orders
+
+For each graph, determine whether the corresponding SCM has a topological order. If it does, give one. If it does not, identify a directed cycle.
+
+![](images/02c-exercise-cycle-panels.svg){width=850 fig-align="center" fig-alt="Three graphs. In graph a, A and B point to C, which points to D. In graph b, A points to B, B points to C, C points back to A, and C points to D. In graph c, X points to M and Y, and M points to Y."}
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** The corresponding SCM has a topological order. One is
+
+$$
+A,B,C,D.
+$$
+
+The order $B,A,C,D$ also works.
+
+**b.** The corresponding SCM does not have a topological order. The graph contains the directed cycle
+
+$$
+A\to B\to C\to A.
+$$
+
+**c.** The corresponding SCM has the topological order
+
+$$
+X,M,Y.
+$$
+:::
+
+### 12. Using the graph for conditional independence
+
+Return to the graph from Exercise 9 and use the topological order
+
+$$
+W,X,A,M,Y.
+$$
+
+a. For each variable, identify the variables that appear earlier in the order but are not its parents.
+
+b. Use the local Markov property to list every nontrivial conditional-independence statement supplied by this order.
+
+c. Does the local Markov property tell us whether $A$ and $X$ are dependent? Does it tell us whether $Y$ and $W$ are conditionally dependent given $X$? Explain.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** There are no earlier variables when we reach $W$. When we reach $X$, the earlier variable $W$ is not a parent. The parents of $A$ are both earlier variables, $W$ and $X$. When we reach $M$, the earlier variable $X$ is not a parent. When we reach $Y$, the earlier variables $W$ and $A$ are not parents.
+
+**b.** The nontrivial conditional-independence statements are
+
+$$
+X\mathrel{\perp\!\!\!\perp}W,
+$$
+
+$$
+M\mathrel{\perp\!\!\!\perp}X\mid W,A,
+$$
+
+and
+
+$$
+Y\mathrel{\perp\!\!\!\perp}(W,A)\mid X,M.
+$$
+
+**c.** No in both cases. The local Markov property tells us when the SCM guarantees an independence or conditional independence. It does not guarantee dependence when it supplies no independence statement.
+
+Because $X$ is a parent of $A$, the property does not give $A\mathrel{\perp\!\!\!\perp}X$, but that does not prove that $A$ and $X$ are dependent. Likewise, the property does not give $Y\mathrel{\perp\!\!\!\perp}W\mid X$, but that does not establish that $Y$ and $W$ are conditionally dependent given $X$. Whether dependence occurs can depend on the assignment functions and noise distributions.
+:::

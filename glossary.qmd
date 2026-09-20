@@ -6,6 +6,10 @@ title: "Glossary"
 
 The difference between the average potential outcome under one treatment and the average potential outcome under another treatment.
 
+**Ancestor**
+
+A node is an ancestor of another node when a directed path runs from the first node to the second.
+
 **Bias**
 
 The difference between an estimator's expected value under a probability model and the quantity it is intended to estimate.
@@ -14,9 +18,37 @@ The difference between an estimator's expected value under a probability model a
 
 A probabilistic quantity involving potential outcomes that we want to estimate.
 
+**Child**
+
+In a graph, a node is a child of another node when it receives an arrow directly from that node.
+
 **Confounder**
 
 A common cause of the exposure and outcome that can create or distort their observed association.
+
+**Descendant**
+
+A node is a descendant of another node when a directed path runs from the other node to it.
+
+**Directed acyclic graph (DAG)**
+
+A directed graph with no directed cycles.
+
+**Directed cycle**
+
+A sequence of arrows that can be followed in their directions and eventually returns to the node where it began.
+
+**Directed edge**
+
+A connection between two nodes with a direction, shown by an arrowhead. It is also called an arrow.
+
+**Directed graph**
+
+A collection of nodes joined only by directed edges.
+
+**Directed path**
+
+A path whose arrows line up head to tail, so that every arrow can be followed in its direction.
 
 **Exposure**
 
@@ -42,13 +74,21 @@ A rule that uses sample data to estimate an unknown quantity in a population or 
 
 A study that examines naturally occurring exposures or treatments rather than assigning them.
 
+**Node**
+
+A labeled circle in a graph that represents a random variable.
+
 **Outcome**
 
 The event, condition, or response that the exposure might affect.
 
 **Parent**
 
-Another variable used as an input to a variable's assignment function.
+Another variable used as an input to a variable's assignment function. In a causal graph, a parent has an arrow pointing directly to its child.
+
+**Path**
+
+A sequence of arrows joined end to end. We may travel either with or against the arrows' directions.
 
 **Positivity**
 

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 270" width="900" height="270">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#315C43"/></marker></defs>
+<g font-family="Arial,sans-serif" font-size="18" font-weight="700" fill="#244635"><text x="20" y="28">a.</text><text x="320" y="28">b.</text><text x="620" y="28">c.</text></g>
+<g fill="none" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)">
+  <line x1="82" y1="70" x2="167" y2="121"/><line x1="82" y1="200" x2="167" y2="149"/><line x1="213" y1="135" x2="257" y2="135"/>
+  <line x1="382" y1="135" x2="447" y2="75"/><line x1="478" y1="83" x2="478" y2="177"/><line x1="455" y1="197" x2="383" y2="145"/><line x1="502" y1="200" x2="557" y2="200"/>
+  <line x1="682" y1="135" x2="747" y2="75"/><line x1="682" y1="135" x2="747" y2="195"/><line x1="778" y1="83" x2="778" y2="177"/>
+</g>
+<g fill="#E6EEDF" stroke="#315C43" stroke-width="1.5">
+  <circle cx="60" cy="57" r="23"/><circle cx="60" cy="213" r="23"/><circle cx="190" cy="135" r="23"/><circle cx="280" cy="135" r="23"/>
+  <circle cx="360" cy="135" r="23"/><circle cx="478" cy="60" r="23"/><circle cx="478" cy="200" r="23"/><circle cx="580" cy="200" r="23"/>
+  <circle cx="660" cy="135" r="23"/><circle cx="778" cy="60" r="23"/><circle cx="778" cy="200" r="23"/>
+</g>
+<g text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="23" fill="#244635">
+  <text x="60" y="57" dy=".35em">A</text><text x="60" y="213" dy=".35em">B</text><text x="190" y="135" dy=".35em">C</text><text x="280" y="135" dy=".35em">D</text>
+  <text x="360" y="135" dy=".35em">A</text><text x="478" y="60" dy=".35em">B</text><text x="478" y="200" dy=".35em">C</text><text x="580" y="200" dy=".35em">D</text>
+  <text x="660" y="135" dy=".35em">X</text><text x="778" y="60" dy=".35em">M</text><text x="778" y="200" dy=".35em">Y</text>
+</g>
+</svg>

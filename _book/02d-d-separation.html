@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Glossary – Causal inference (and other things)</title>
+<title>D-separation – Causal inference (and other things)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -29,8 +29,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./references.html" rel="next">
-<link href="./02-exercises.html" rel="prev">
+<link href="./02-exercises.html" rel="next">
+<link href="./02c-causal-graphs.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -69,6 +69,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -177,7 +206,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./glossary.html">Back matter</a></li><li class="breadcrumb-item"><a href="./glossary.html"><span class="chapter-title">Glossary</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments.html">Construction</a></li><li class="breadcrumb-item"><a href="./02d-d-separation.html"><span class="chapter-title">D-separation</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -261,7 +290,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02d-d-separation.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">D-separation</span></a>
+  <a href="./02d-d-separation.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">D-separation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -302,7 +331,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./glossary.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Glossary</span></a>
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Glossary</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -321,9 +350,9 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./glossary.html">Back matter</a></li><li class="breadcrumb-item"><a href="./glossary.html"><span class="chapter-title">Glossary</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments.html">Construction</a></li><li class="breadcrumb-item"><a href="./02d-d-separation.html"><span class="chapter-title">D-separation</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Glossary</span></h1>
+<h1 class="title"><span class="chapter-title">D-separation</span></h1>
 </div>
 
 
@@ -340,72 +369,271 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><strong>Average treatment effect (ATE)</strong></p>
-<p>The difference between the average potential outcome under one treatment and the average potential outcome under another treatment.</p>
-<p><strong>Ancestor</strong></p>
-<p>A node is an ancestor of another node when a directed path runs from the first node to the second.</p>
-<p><strong>Bias</strong></p>
-<p>The difference between an estimator’s expected value under a probability model and the quantity it is intended to estimate.</p>
-<p><strong>Causal estimand</strong></p>
-<p>A probabilistic quantity involving potential outcomes that we want to estimate.</p>
-<p><strong>Child</strong></p>
-<p>In a graph, a node is a child of another node when it receives an arrow directly from that node.</p>
-<p><strong>Confounder</strong></p>
-<p>A common cause of the exposure and outcome that can create or distort their observed association.</p>
-<p><strong>Descendant</strong></p>
-<p>A node is a descendant of another node when a directed path runs from the other node to it.</p>
-<p><strong>Directed acyclic graph (DAG)</strong></p>
-<p>A directed graph with no directed cycles.</p>
-<p><strong>Directed cycle</strong></p>
-<p>A sequence of arrows that can be followed in their directions and eventually returns to the node where it began.</p>
-<p><strong>Directed edge</strong></p>
-<p>A connection between two nodes with a direction, shown by an arrowhead. It is also called an arrow.</p>
-<p><strong>Directed graph</strong></p>
-<p>A collection of nodes joined only by directed edges.</p>
-<p><strong>Directed path</strong></p>
-<p>A path whose arrows line up head to tail, so that every arrow can be followed in its direction.</p>
-<p><strong>Exposure</strong></p>
-<p>The condition, action, or factor whose causal effect is being studied. Depending on the setting, it may also be called the treatment or intervention.</p>
-<p><strong>Fundamental problem of causal inference</strong></p>
-<p>For each person, we observe the potential outcome under the treatment received but not the potential outcome under the other treatment. We therefore cannot observe both potential outcomes for the same person.</p>
-<p><strong>Identified</strong></p>
-<p>A causal estimand is identified when it can be written entirely in terms of observed variables and their probability model.</p>
-<p><strong>Independence</strong></p>
-<p>Learning the value of one random variable does not change the probability distribution of the other.</p>
-<p><strong>Estimator</strong></p>
-<p>A rule that uses sample data to estimate an unknown quantity in a population or probability model.</p>
-<p><strong>Observational study</strong></p>
-<p>A study that examines naturally occurring exposures or treatments rather than assigning them.</p>
-<p><strong>Node</strong></p>
-<p>A labeled circle in a graph that represents a random variable.</p>
-<p><strong>Outcome</strong></p>
-<p>The event, condition, or response that the exposure might affect.</p>
-<p><strong>Parent</strong></p>
-<p>Another variable used as an input to a variable’s assignment function. In a causal graph, a parent has an arrow pointing directly to its child.</p>
-<p><strong>Path</strong></p>
-<p>A sequence of arrows joined end to end. We may travel either with or against the arrows’ directions.</p>
-<p><strong>Positivity</strong></p>
-<p>Each treatment under study has a positive probability of being assigned.</p>
-<p><strong>Random variable</strong></p>
-<p>A function that assigns a numerical value to each possible outcome of an uncertain experiment or scenario.</p>
-<p><strong>Risk difference</strong></p>
-<p>The risk of an outcome under one exposure or treatment minus the risk under another.</p>
-<p><strong>Relative risk</strong></p>
-<p>The risk of an outcome among exposed people divided by the risk among unexposed people.</p>
-<p><strong>Simpson’s paradox</strong></p>
-<p>A reversal in which the direction of an association in the combined data is opposite to its direction within groups defined by a third variable.</p>
-<p><strong>Structural causal model (SCM)</strong></p>
-<p>A model that defines each variable through an assignment function of its parents and a noise variable, with the noise variables independent as an entire collection.</p>
-<p><strong>Topological order</strong></p>
-<p>An ordering of a list of random variables, with one assignment for each variable, in which every variable used in an assignment appears earlier in the list.</p>
-<p><strong>Unbiased estimator</strong></p>
-<p>An estimator whose expected value under a probability model equals the quantity it is intended to estimate.</p>
-<p><strong>Unmeasured confounder</strong></p>
-<p>A confounder that was not measured in the study data.</p>
-<p><strong>Well-defined (mathematical sense)</strong></p>
-<p>A definition is well-defined when each possible input determines one unambiguous object.</p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>A causal graph records how random variables come about. We now ask what that structure tells us about association: when can learning one variable change what we know about another, and when does conditioning stop—or create—that flow of information?</p>
+<p>We begin with the smallest graphical building blocks. Then we string them into paths and develop <strong>d-separation</strong>, the graphical rule that lets us read conditional-independence statements from a causal graph.</p>
+</section>
+<section id="chains-forks-and-colliders" class="level2">
+<h2 class="anchored" data-anchor-id="chains-forks-and-colliders">Chains, forks, and colliders</h2>
+<p>We now have a convenient picture of who generates whom. What can that picture tell us about which variables share information?</p>
+<p>Start small. An edge, a chain, a fork, and a collider are the building blocks we will use. For now, each drawing is the entire graph for its example. There are no additional paths hiding outside the picture. Whenever we say a structure <em>can transmit association</em>, we mean that it permits dependence between its endpoints. We are not saying that every choice of functions and noise distributions must produce dependence.</p>
+<p><strong>An edge can transmit association.</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02c-edge.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A single directed edge from X to Y." width="600"></p>
+</figure>
+</div>
+<p>If <span class="math inline">\(Y\)</span> uses <span class="math inline">\(X\)</span> in its assignment, learning <span class="math inline">\(X\)</span> can tell us something about <span class="math inline">\(Y\)</span>. For a concrete example, let the noise terms be independent fair coin flips, represented by <span class="math inline">\(\operatorname{Bernoulli}(1/2)\)</span> variables, and write</p>
+<p><span class="math display">\[
+X\leftarrow\epsilon_X,\qquad Y\leftarrow X+\epsilon_Y.
+\]</span></p>
+<p>If we learn that <span class="math inline">\(Y=0\)</span>, we know <span class="math inline">\(X=0\)</span>. Before learning <span class="math inline">\(Y\)</span>, either value of <span class="math inline">\(X\)</span> was equally likely. The two random variables share information.</p>
+<p><strong>A chain can transmit association through an intermediate variable.</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02c-chain.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A chain: X points to M, and M points to Y." width="600"></p>
+</figure>
+</div>
+<p>Think of a reminder affecting attendance, which affects whether a measurement is collected. In a simplified story with just these three variables, information can travel from the reminder through attendance to measurement. A concrete SCM with this graph is</p>
+<p><span class="math display">\[
+X\leftarrow\epsilon_X,\qquad
+M\leftarrow X+\epsilon_M,\qquad
+Y\leftarrow M+\epsilon_Y,
+\]</span></p>
+<p>again with independent fair-coin noise terms. This numerical example illustrates the graph; its sums are not binary attendance indicators. Learning that <span class="math inline">\(Y=0\)</span> tells us that every term in the sum was zero, including <span class="math inline">\(X\)</span>.</p>
+<p>What happens if we already know <span class="math inline">\(M\)</span>? The assignment for <span class="math inline">\(Y\)</span> uses <span class="math inline">\(M\)</span> and fresh independent noise. Once <span class="math inline">\(M\)</span> is known, learning <span class="math inline">\(X\)</span> gives us no extra information about <span class="math inline">\(Y\)</span>:</p>
+<p><span class="math display">\[
+X\mathrel{\perp\!\!\!\perp}Y\mid M.
+\]</span></p>
+<p><strong>A fork can transmit association through a shared parent.</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02c-fork.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A fork: M points to both X and Y." width="600"></p>
+</figure>
+</div>
+<p>For example, illness severity might affect both a treatment decision and an outcome. The treatment and outcome can share information because both use severity. Consider</p>
+<p><span class="math display">\[
+M\leftarrow\epsilon_M,\qquad
+X\leftarrow M+\epsilon_X,\qquad
+Y\leftarrow M+\epsilon_Y,
+\]</span></p>
+<p>with independent fair-coin noise terms. If <span class="math inline">\(Y=0\)</span>, then <span class="math inline">\(M=0\)</span>, which makes <span class="math inline">\(X=0\)</span> more likely than it was before we learned <span class="math inline">\(Y\)</span>. Association can travel along a path even when its arrows do not all point in the direction we are traveling.</p>
+<p>If we already know <span class="math inline">\(M\)</span>, however, the remaining randomness in <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> is independent. Once again,</p>
+<p><span class="math display">\[
+X\mathrel{\perp\!\!\!\perp}Y\mid M.
+\]</span></p>
+<details class="lesson-question">
+<summary>
+In the fair-coin fork example, find <span class="math inline">\(P(X=0)\)</span> and <span class="math inline">\(P(X=0\mid Y=0)\)</span>. What changes if we already know <span class="math inline">\(M=0\)</span>?
+</summary>
+<p>For <span class="math inline">\(X=0\)</span>, both <span class="math inline">\(M\)</span> and <span class="math inline">\(\epsilon_X\)</span> must be zero, so <span class="math inline">\(P(X=0)=1/4\)</span>. Learning <span class="math inline">\(Y=0\)</span> tells us <span class="math inline">\(M=0\)</span>, leaving only the independent coin flip <span class="math inline">\(\epsilon_X\)</span>, so <span class="math inline">\(P(X=0\mid Y=0)=1/2\)</span>.</p>
+<p>If we already know <span class="math inline">\(M=0\)</span>, then <span class="math inline">\(P(X=0\mid M=0)=1/2\)</span>. Learning <span class="math inline">\(Y=0\)</span> in addition does not change this probability. More generally, the conditional independence holds for either value of <span class="math inline">\(M\)</span>.</p>
+</details>
+<p><strong>A collider behaves differently.</strong></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02c-collider.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A collider: X and Y both point to M." width="600"></p>
+</figure>
+</div>
+<p>The arrows collide at <span class="math inline">\(M\)</span>. Here the endpoints are generated from separate independent noise terms. Their shared child does not by itself make them associated:</p>
+<p><span class="math display">\[
+X\mathrel{\perp\!\!\!\perp}Y.
+\]</span></p>
+<p>But learning the child’s value can change things. Imagine that two independent sources contribute to a total. If we learn the total and then learn that one contribution was large, we have learned something about how large the other contribution could have been.</p>
+<p>For a concrete example, write</p>
+<p><span class="math display">\[
+X\leftarrow\epsilon_X,\qquad
+Y\leftarrow\epsilon_Y,\qquad
+M\leftarrow X+Y+\epsilon_M,
+\]</span></p>
+<p>with independent fair-coin noise terms. Before learning <span class="math inline">\(M\)</span>, <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are independent. Among cases with <span class="math inline">\(M=1\)</span>, however, learning <span class="math inline">\(Y=1\)</span> forces <span class="math inline">\(X=0\)</span>. Knowing the total makes the two contributions informative about each other. This is an example of <strong>collider bias</strong>.</p>
+<details class="lesson-question">
+<summary>
+In the collider example, suppose <span class="math inline">\(M=1\)</span>. What are the possible values of <span class="math inline">\((X,Y,\epsilon_M)\)</span>? Find <span class="math inline">\(P(X=0\mid M=1)\)</span> and <span class="math inline">\(P(X=0\mid M=1,Y=1)\)</span>.
+</summary>
+<p>The possibilities are <span class="math inline">\((1,0,0)\)</span>, <span class="math inline">\((0,1,0)\)</span>, and <span class="math inline">\((0,0,1)\)</span>, each equally likely. Thus,</p>
+<p><span class="math display">\[
+P(X=0\mid M=1)=\frac23.
+\]</span></p>
+<p>If we also know <span class="math inline">\(Y=1\)</span>, only <span class="math inline">\((0,1,0)\)</span> remains, so</p>
+<p><span class="math display">\[
+P(X=0\mid M=1,Y=1)=1.
+\]</span></p>
+<p>Learning <span class="math inline">\(Y\)</span> changes what we know about <span class="math inline">\(X\)</span> once we condition on <span class="math inline">\(M\)</span>.</p>
+</details>
+<div class="main-point">
+<p>Chains and forks can transmit association; conditioning on the middle variable blocks that path. A collider blocks the path until we condition on the collider or, potentially, learn about it through one of its descendants.</p>
+</div>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Structure</th>
+<th>Without conditioning</th>
+<th>Conditioning on the middle variable</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Chain: <span class="math inline">\(X\to M\to Y\)</span></td>
+<td><span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> can be associated</td>
+<td><span class="math inline">\(X\perp\!\!\!\perp Y\mid M\)</span></td>
+</tr>
+<tr class="even">
+<td>Fork: <span class="math inline">\(X\leftarrow M\to Y\)</span></td>
+<td><span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> can be associated</td>
+<td><span class="math inline">\(X\perp\!\!\!\perp Y\mid M\)</span></td>
+</tr>
+<tr class="odd">
+<td>Collider: <span class="math inline">\(X\to M\leftarrow Y\)</span></td>
+<td><span class="math inline">\(X\perp\!\!\!\perp Y\)</span></td>
+<td><span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> can be associated</td>
+</tr>
+</tbody>
+</table>
+<p>The table concerns each isolated three-variable graph. In a larger graph, another path might still connect the endpoints. We will need to consider all paths before concluding that two variables are independent.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: why the three structures imply these independences">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Optional technical note: why the three structures imply these independences
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>For the chain, write <span class="math inline">\(X=f_X(\epsilon_X)\)</span>, <span class="math inline">\(M=f_M(X,\epsilon_M)\)</span>, and <span class="math inline">\(Y=f_Y(M,\epsilon_Y)\)</span>. Independence of the noise terms makes <span class="math inline">\(\epsilon_Y\)</span> independent of <span class="math inline">\((X,M)\)</span>. For a bounded measurable function <span class="math inline">\(g\)</span>, define <span class="math inline">\(h(m)=E[g(f_Y(m,\epsilon_Y))]\)</span>. Then</p>
+<p><span class="math display">\[
+E[g(Y)\mid X,M]=h(M)=E[g(Y)\mid M],
+\]</span></p>
+<p>which gives <span class="math inline">\(Y\perp\!\!\!\perp X\mid M\)</span>.</p>
+<p>For the fork, <span class="math inline">\(M=f_M(\epsilon_M)\)</span>, <span class="math inline">\(X=f_X(M,\epsilon_X)\)</span>, and <span class="math inline">\(Y=f_Y(M,\epsilon_Y)\)</span>. Conditional on <span class="math inline">\(M\)</span>, the noise terms <span class="math inline">\(\epsilon_X\)</span> and <span class="math inline">\(\epsilon_Y\)</span> remain independent with their original distributions. Thus the conditional joint distribution of <span class="math inline">\(X,Y\)</span> factors into their conditional marginal distributions, giving <span class="math inline">\(X\perp\!\!\!\perp Y\mid M\)</span>.</p>
+<p>For the collider, <span class="math inline">\(X=f_X(\epsilon_X)\)</span> and <span class="math inline">\(Y=f_Y(\epsilon_Y)\)</span> are functions of independent noise terms, so <span class="math inline">\(X\perp\!\!\!\perp Y\)</span>. Conditioning on their shared child does not preserve this argument. The fair-coin example in the text demonstrates that conditional dependence is possible.</p>
+</div>
+</div>
+</div>
+<details class="lesson-question">
+<summary>
+Suppose independent preparation <span class="math inline">\(P\)</span> and independent exam-day luck <span class="math inline">\(L\)</span> both contribute to a score <span class="math inline">\(Y\)</span>, with graph <span class="math inline">\(P\to Y\leftarrow L\)</span>. Can preparation and luck become associated among students with the same score? How is this different from conditioning on the middle of a chain?
+</summary>
+<p>Yes. Score is a collider. Among students with a fixed score, learning that one student had especially good luck may change what we infer about that student’s preparation. The graph permits this association; a particular model determines whether and how it occurs. Conditioning on the middle of an isolated chain instead blocks the path between its endpoints.</p>
+</details>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
+</div>
+</section>
+<section id="from-building-blocks-to-paths" class="level2">
+<h2 class="anchored" data-anchor-id="from-building-blocks-to-paths">From building blocks to paths</h2>
+<p>Chains, forks, and colliders become useful when several of them are strung together. To study whether two variables can share information, we trace every path between their nodes.</p>
+<p>A <strong>path</strong> is a sequence of distinct nodes connected by edges. We may travel along an edge in either direction. A <strong>directed path</strong> is more restrictive: every arrow must point in the direction we travel.</p>
+<p>For example,</p>
+<p><span class="math display">\[
+X   o M o Y
+\]</span></p>
+<p>is a directed path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span>. The same edges also form a path from <span class="math inline">\(Y\)</span> to <span class="math inline">\(X\)</span>, but not a directed path in that direction. A path need not be directed to transmit association. The fork <span class="math inline">\(Xleftarrow M o Y\)</span> already showed us why.</p>
+<p>A longer path is made from the same three building blocks. At every node between its endpoints, look only at the two arrows belonging to that path:</p>
+<ul>
+<li>If the arrows meet head-to-tail, the node is in a chain.</li>
+<li>If both arrows leave the node, the node is in a fork.</li>
+<li>If both arrows point into the node, the node is a collider.</li>
+</ul>
+<p>Whether the entire path is open depends on these middle nodes and on which variables we condition on.</p>
+<div class="definition-box">
+<p><strong>Blocked and open paths.</strong> A path is <strong>blocked</strong> by a collection of variables <span class="math inline">\(Z\)</span> if it contains at least one of the following:</p>
+<ol type="1">
+<li>a chain or fork whose middle node is in <span class="math inline">\(Z\)</span>; or</li>
+<li>a collider such that neither the collider nor any of its descendants is in <span class="math inline">\(Z\)</span>.</li>
+</ol>
+<p>If neither condition occurs, the path is <strong>open</strong> given <span class="math inline">\(Z\)</span>.</p>
+</div>
+<p>This definition collects what we learned from the three-variable structures. Conditioning on the middle of a chain or fork blocks the path. A collider blocks the path by default, but conditioning on the collider opens it. Conditioning on a descendant of the collider can also reveal information about the collider and open the path.</p>
+<p>When we condition on nothing, take <span class="math inline">\(Z=
+arnothing\)</span>. Chains and forks remain open, while every collider blocks its path.</p>
+<details class="lesson-question">
+<summary>
+For each three-variable structure, is the path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span> open without conditioning? Is it open after conditioning on <span class="math inline">\(M\)</span>?
+</summary>
+<p>For the chain <span class="math inline">\(X    o M o Y\)</span> and the fork <span class="math inline">\(Xleftarrow M o Y\)</span>, the path is open without conditioning and blocked after conditioning on <span class="math inline">\(M\)</span>.</p>
+<p>For the collider <span class="math inline">\(X o Mleftarrow Y\)</span>, the path is blocked without conditioning and open after conditioning on <span class="math inline">\(M\)</span>.</p>
+</details>
+<p>One blocked path is not enough when the graph contains several paths. Information may still travel along another open route. We therefore need a statement about <strong>every</strong> path between two nodes.</p>
+<div class="definition-box">
+<p><strong>d-separation.</strong> Two collections of nodes <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are <strong>d-separated</strong> by a collection <span class="math inline">\(Z\)</span> if every path from a node in <span class="math inline">\(X\)</span> to a node in <span class="math inline">\(Y\)</span> is blocked by <span class="math inline">\(Z\)</span>. Otherwise, <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are <strong>d-connected</strong> given <span class="math inline">\(Z\)</span>.</p>
+</div>
+<p>The letter <em>d</em> reminds us that the directions of the arrows determine whether a middle node is a chain, fork, or collider. We may write</p>
+<p><span class="math display">\[
+(Xmathrel{perp!!!perp_d}Ymid Z)_G
+\]</span></p>
+<p>to say that <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are d-separated by <span class="math inline">\(Z\)</span> in graph <span class="math inline">\(G\)</span>. The subscript <span class="math inline">\(G\)</span> matters: d-separation is a statement about a graph, while ordinary conditional independence is a statement about random variables.</p>
+<p>Return to the graph in <a href="02c-causal-graphs.html#fig-translate-scm" class="quarto-xref">Figure&nbsp;<span>5</span></a>.</p>
+<p>There are two paths between <span class="math inline">\(W\)</span> and <span class="math inline">\(A\)</span>:</p>
+<p><span class="math display">\[
+W\leftarrow X\to A
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+W\to Y\leftarrow A.
+\]</span></p>
+<p>Without conditioning, the first path is open because <span class="math inline">\(X\)</span> is the middle of a fork. The second path is blocked because <span class="math inline">\(Y\)</span> is a collider. Because at least one path is open, <span class="math inline">\(W\)</span> and <span class="math inline">\(A\)</span> are d-connected.</p>
+<p>Now condition on <span class="math inline">\(X\)</span>. This blocks the fork. The path through <span class="math inline">\(Y\)</span> remains blocked by its collider. Every path is now blocked, so <span class="math inline">\(W\)</span> and <span class="math inline">\(A\)</span> are d-separated by <span class="math inline">\(X\)</span>.</p>
+<details class="lesson-question">
+<summary>
+What happens if we condition on both <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>? Are <span class="math inline">\(W\)</span> and <span class="math inline">\(A\)</span> d-separated?
+</summary>
+<p>No.&nbsp;Conditioning on <span class="math inline">\(X\)</span> blocks the fork <span class="math inline">\(W\leftarrow X\to A\)</span>, but conditioning on the collider <span class="math inline">\(Y\)</span> opens the path <span class="math inline">\(W\to Y\leftarrow A\)</span>. Because one path remains open, <span class="math inline">\(W\)</span> and <span class="math inline">\(A\)</span> are d-connected given <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>.</p>
+</details>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
+</div>
+</section>
+<section id="from-d-separation-to-independence" class="level2">
+<h2 class="anchored" data-anchor-id="from-d-separation-to-independence">From d-separation to independence</h2>
+<p>D-separation is powerful because it turns a graphical statement into a statement about random variables.</p>
+<div class="proposition-box">
+<p><strong>Global Markov property.</strong> If <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are d-separated by <span class="math inline">\(Z\)</span> in the causal graph of an SCM, then the corresponding random variables are conditionally independent:</p>
+<p><span class="math display">\[
+(Xmathrel{perp!!!perp_d}Ymid Z)_G
+quadLongrightarrowquad
+Xmathrel{perp!!!perp}Ymid Z.
+\]</span></p>
+</div>
+<p>The implication goes in one direction. If the graph says the paths are blocked, the SCM guarantees conditional independence. If two variables happen to be independent because particular effects cancel or an assignment ignores one of its displayed inputs, the graph need not reveal that extra independence.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: proof of the global Markov property">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Optional technical note: proof of the global Markov property
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>A full proof requires more probability and graph machinery than we need here. One route uses the factorization of the joint distribution implied by the SCM and shows that d-separation entails the corresponding conditional-independence factorization. This result is commonly called the global Markov property for directed acyclic graphs.</p>
+<p>The local Markov property from the previous section is a special case. The general result allows us to inspect every path between arbitrary collections of nodes rather than considering only one variable, its parents, and its nondescendants.</p>
+</div>
+</div>
+</div>
+<p>The practical recipe is:</p>
+<ol type="1">
+<li>List every path between the variables of interest.</li>
+<li>On each path, identify chains, forks, and colliders.</li>
+<li>Check whether the conditioning variables block or open that path.</li>
+<li>Conclude d-separation only if every path is blocked.</li>
+<li>Use the global Markov property to translate d-separation into conditional independence.</li>
+</ol>
+<p>This recipe lets us move from a potentially complicated picture to a precise statement about the random variables represented by its nodes.</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script>
@@ -820,13 +1048,13 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./02-exercises.html" class="pagination-link" aria-label="Exercises">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Exercises</span></span>
+      <a href="./02c-causal-graphs.html" class="pagination-link" aria-label="Causal graphs">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Causal graphs</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./references.html" class="pagination-link" aria-label="References">
-        <span class="nav-page-text"><span class="chapter-title">References</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./02-exercises.html" class="pagination-link" aria-label="Exercises">
+        <span class="nav-page-text"><span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

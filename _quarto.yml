@@ -20,6 +20,7 @@ book:
         - 02a-assignments.qmd
         - 02b-structural-causal-models.qmd
         - 02c-causal-graphs.qmd
+        - 02d-d-separation.qmd
         - 02-exercises.qmd
     - part: "Measured confounding"
       chapters: []
@@ -63,6 +64,8 @@ book:
             file: 02b-structural-causal-models.qmd
           - text: "Causal graphs"
             file: 02c-causal-graphs.qmd
+          - text: "d-separation"
+            file: 02d-d-separation.qmd
           - text: "Exercises"
             file: 02-exercises.qmd
       - text: "Back matter"

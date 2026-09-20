@@ -11,3 +11,7 @@ filters:
 ## Structural causal models {.unnumbered}
 
 {{< include _exercises/02b-structural-causal-models.qmd >}}
+
+## Causal graphs {.unnumbered}
+
+{{< include _exercises/02c-causal-graphs.qmd >}}

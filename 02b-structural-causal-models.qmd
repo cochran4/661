@@ -468,11 +468,28 @@ Here is the precise version of that idea:
 
 ::: {.proposition-box}
 **Local Markov property.** Suppose $V_1,\ldots,V_K$ is a topological order. Given its parents, each variable $V_j$ is independent of the variables that came before it and are not its parents.
+:::
+
+::: {.callout-note title="Optional technical note: proof of the local Markov property" collapse="true"}
+Begin with the topological order $V_1,\ldots,V_K$ and fix one variable $V_j$.
+
+Let $R_j$ collect the variables that appear before $V_j$ but are not its parents.
+
+Every variable that appears before $V_j$ is ultimately a function of the earlier noise variables $\epsilon_1,\ldots,\epsilon_{j-1}$. This includes both the parents of $V_j$ and the variables in $R_j$.
+
+The assignment for $V_j$ is
 
 $$
-V_j\mathrel{\perp\!\!\!\perp}
-V_{\{1,\ldots,j-1\}\setminus\operatorname{Pa}_j}
-\mid \operatorname{Pa}_j.
+V_j\leftarrow f_j(\operatorname{Pa}_j,\epsilon_j).
+$$
+
+The noise variable $\epsilon_j$ is independent of the entire collection $\epsilon_1,\ldots,\epsilon_{j-1}$. Once we know the parents of $V_j$, learning the variables in $R_j$ can therefore tell us more about the earlier noise variables, but it cannot tell us anything about the remaining randomness $\epsilon_j$ used to generate $V_j$.
+
+Given $\operatorname{Pa}_j$, the variables in $R_j$ provide no additional information about $V_j$. Therefore,
+
+$$
+V_j\mathrel{\perp\!\!\!\perp}R_j
+\mid\operatorname{Pa}_j.
 $$
 :::
 

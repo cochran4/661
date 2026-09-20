@@ -191,6 +191,10 @@ window.Quarto = {
  <span class="dropdown-text">Causal graphs</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./02d-d-separation.html">
+ <span class="dropdown-text">d-separation</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./02-exercises.html">
  <span class="dropdown-text">Exercises</span></a>
   </li>  
@@ -302,6 +306,11 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02c-causal-graphs.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Causal graphs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02d-d-separation.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">D-separation</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -608,7 +617,7 @@ Y\leftarrow f_Y(X,A,\epsilon_Y).
 \operatorname{Pa}_Y=\{X,A\}.
 \]</span></p>
 <div class="definition-box">
-<p><span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="Another variable used as an input to a variable's assignment function." tabindex="0"><strong>Parents</strong></span>. The parents of a variable are the other variables used as inputs to its assignment function. Noise terms are not included among the parents.</p>
+<p><span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="Another variable used as an input to a variable's assignment function. In a causal graph, a parent has an arrow pointing directly to its child." tabindex="0"><strong>Parents</strong></span>. The parents of a variable are the other variables used as inputs to its assignment function. Noise terms are not included among the parents.</p>
 </div>
 <p>Consider the following three collections of assignments.</p>
 <p>The assignments in <strong>Collection A</strong> are</p>
@@ -704,11 +713,34 @@ Y_1 \leftarrow f_Y(X,1,\epsilon_Y).
 <p>Here is the precise version of that idea:</p>
 <div class="proposition-box">
 <p><strong>Local Markov property.</strong> Suppose <span class="math inline">\(V_1,\ldots,V_K\)</span> is a topological order. Given its parents, each variable <span class="math inline">\(V_j\)</span> is independent of the variables that came before it and are not its parents.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: proof of the local Markov property">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Optional technical note: proof of the local Markov property
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Begin with the topological order <span class="math inline">\(V_1,\ldots,V_K\)</span> and fix one variable <span class="math inline">\(V_j\)</span>.</p>
+<p>Let <span class="math inline">\(R_j\)</span> collect the variables that appear before <span class="math inline">\(V_j\)</span> but are not its parents.</p>
+<p>Every variable that appears before <span class="math inline">\(V_j\)</span> is ultimately a function of the earlier noise variables <span class="math inline">\(\epsilon_1,\ldots,\epsilon_{j-1}\)</span>. This includes both the parents of <span class="math inline">\(V_j\)</span> and the variables in <span class="math inline">\(R_j\)</span>.</p>
+<p>The assignment for <span class="math inline">\(V_j\)</span> is</p>
 <p><span class="math display">\[
-V_j\mathrel{\perp\!\!\!\perp}
-V_{\{1,\ldots,j-1\}\setminus\operatorname{Pa}_j}
-\mid \operatorname{Pa}_j.
+V_j\leftarrow f_j(\operatorname{Pa}_j,\epsilon_j).
 \]</span></p>
+<p>The noise variable <span class="math inline">\(\epsilon_j\)</span> is independent of the entire collection <span class="math inline">\(\epsilon_1,\ldots,\epsilon_{j-1}\)</span>. Once we know the parents of <span class="math inline">\(V_j\)</span>, learning the variables in <span class="math inline">\(R_j\)</span> can therefore tell us more about the earlier noise variables, but it cannot tell us anything about the remaining randomness <span class="math inline">\(\epsilon_j\)</span> used to generate <span class="math inline">\(V_j\)</span>.</p>
+<p>Given <span class="math inline">\(\operatorname{Pa}_j\)</span>, the variables in <span class="math inline">\(R_j\)</span> provide no additional information about <span class="math inline">\(V_j\)</span>. Therefore,</p>
+<p><span class="math display">\[
+V_j\mathrel{\perp\!\!\!\perp}R_j
+\mid\operatorname{Pa}_j.
+\]</span></p>
+</div>
+</div>
 </div>
 <p>Take the following SCM:</p>
 <p><span class="math display">\[
@@ -777,7 +809,7 @@ Y\leftarrow f_Y(X,A,U,\epsilon_Y).
 \]</span></p>
 <p>The shared information now travels through <span class="math inline">\(U\)</span> instead of hiding inside both <span class="math inline">\(\epsilon_A\)</span> and <span class="math inline">\(\epsilon_Y\)</span>. The noise terms <span class="math inline">\(\epsilon_U\)</span>, <span class="math inline">\(\epsilon_X\)</span>, <span class="math inline">\(\epsilon_A\)</span>, and <span class="math inline">\(\epsilon_Y\)</span> can again satisfy the independence requirement in our definition. We do not need to have observed <span class="math inline">\(U\)</span> for it to be part of the story. Adding it fixes the structure of the causal model. It does not magically make the causal question answerable from the data we observed.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="Technical note on our starting point">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -786,7 +818,7 @@ Y\leftarrow f_Y(X,A,U,\epsilon_Y).
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>We begin upstream with a story about how the world generates its variables. The SCM encodes that story through parents, assignment functions, and independent noise variables. Conditional independences, graphs, and eventually potential outcomes then follow from that starting point.</p>
 <p>A traditional potential-outcomes approach can begin farther downstream. It defines potential outcomes and states assumptions about them directly. Some statements treated as assumptions in that framework are consequences of the SCM in ours.</p>
