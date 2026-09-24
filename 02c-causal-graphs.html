@@ -46,7 +46,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-12ca529a1c26fb8dee66fe492e8a00b7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-a3414f3ffc8cedfe87f55cc0f2c68ceb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -422,7 +422,7 @@ C\leftarrow f_C(S,\epsilon_C).
 </figure>
 </div>
 <p><strong>Now do this for every parent in every assignment.</strong> The assignment for <span class="math inline">\(H\)</span> gives us arrows from <span class="math inline">\(S\)</span> and <span class="math inline">\(C\)</span> into <span class="math inline">\(H\)</span>. The assignment for <span class="math inline">\(L\)</span> gives us arrows from <span class="math inline">\(S\)</span>, <span class="math inline">\(C\)</span>, and <span class="math inline">\(H\)</span> into <span class="math inline">\(L\)</span>. The assignment for <span class="math inline">\(Y\)</span> gives us arrows from <span class="math inline">\(S\)</span>, <span class="math inline">\(H\)</span>, and <span class="math inline">\(L\)</span> into <span class="math inline">\(Y\)</span>. No arrows point into <span class="math inline">\(S\)</span> because its assignment has no parents.</p>
-<div id="fig-coffee" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="The completed graph on the same five labeled circles: S points to C, H, L, and Y; C points to H and L; H points to L and Y; and L points to Y.">
+<div id="fig-coffee" class="quarto-float quarto-figure quarto-figure-center anchored" alt="The completed graph on the same five labeled circles: S points to C, H, L, and Y; C points to H and L; H points to L and Y; and L points to Y." data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-coffee-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="images/02c-coffee-complete.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="The completed graph on the same five labeled circles: S points to C, H, L, and Y; C points to H and L; H points to L and Y; and L points to Y." width="600">
@@ -648,7 +648,7 @@ i_1&lt;i_2&lt;\cdots&lt;i_m&lt;i_1,
 </div>
 <p>Since we only work with SCMs that have a topological order, our causal graphs never contain a directed cycle. A graph with no directed cycles is called <em>acyclic</em>, so our causal graphs are <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="A directed graph with no directed cycles." tabindex="0"><strong>directed acyclic graphs</strong></span>, or <strong>DAGs</strong>. If you have taken an epidemiology class, you may have seen this term before.</p>
 <p>Let’s practice.</p>
-<div id="fig-order-practice" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="A and B both point to C; C points to D and E.">
+<div id="fig-order-practice" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A and B both point to C; C points to D and E." data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-order-practice-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="images/02c-order-practice.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A and B both point to C; C points to D and E." width="600">
@@ -674,7 +674,7 @@ E&amp;\leftarrow f_E(C,\epsilon_E),
 \]</span></p>
 <p>with independent noise terms. We could put <span class="math inline">\(B\)</span> before <span class="math inline">\(A\)</span>, or <span class="math inline">\(E\)</span> before <span class="math inline">\(D\)</span>, or both. There are four possible orders. Changing the order in these ways does not change the parent sets or the graph.</p>
 </details>
-<div id="fig-cycle-practice" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="A points to B, B to C, C to D and E, and D back to B.">
+<div id="fig-cycle-practice" class="quarto-float quarto-figure quarto-figure-center anchored" alt="A points to B, B to C, C to D and E, and D back to B." data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cycle-practice-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="images/02c-cycle-practice.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A points to B, B to C, C to D and E, and D back to B." width="600">

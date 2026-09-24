@@ -46,7 +46,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-12ca529a1c26fb8dee66fe492e8a00b7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-a3414f3ffc8cedfe87f55cc0f2c68ceb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -386,8 +386,8 @@ window.Quarto = {
 <p>The graph gives us a way to do that, but we need to be systematic. There may be several paths between two variables, and conditioning can change which paths transmit association. In this section, we develop a principled way to examine those paths and determine what independence and conditional-independence relationships the graph implies.</p>
 <p>By association, we mean dependence, and by dependence, we mean the variables are not independent. Meanwhile, association after conditioning means conditional dependence, which means the variables are not conditionally independent. We will use these precise terms throughout the rest of the section. We will return at the end to exactly what the graph can—and cannot—tell us.</p>
 </section>
-<section id="start-with-two-variables" class="level2">
-<h2 class="anchored" data-anchor-id="start-with-two-variables">Start with two variables</h2>
+<section id="two-variables" class="level2">
+<h2 class="anchored" data-anchor-id="two-variables">Two variables</h2>
 <p>Begin with the smallest possible graph. Let <span class="math inline">\(A\)</span> be an exposure and <span class="math inline">\(Y\)</span> an outcome. Suppose the entire graph contains only these two variables, connected by an arrow.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -443,8 +443,8 @@ A\perp\!\!\!\perp Y.
 <span class="acorn-mark"></span>
 </div>
 </section>
-<section id="move-on-to-three-variables" class="level2">
-<h2 class="anchored" data-anchor-id="move-on-to-three-variables">Move on to three variables</h2>
+<section id="three-variables" class="level2">
+<h2 class="anchored" data-anchor-id="three-variables">Three variables</h2>
 <p>Once other variables enter the graph, however, <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> can be connected even when there is no arrow directly between them. To understand how that can happen, we will start with three arrangements: <strong>chains, forks, and colliders</strong>. These are the building blocks of paths through a graph. Once we understand each one, including what happens when we condition on its middle variable, we can combine them to study more complicated graphs.</p>
 <p>Suppose a third variable <span class="math inline">\(X\)</span> lies between the exposure <span class="math inline">\(A\)</span> and outcome <span class="math inline">\(Y\)</span>. In each of the following graphs, <span class="math inline">\(A\)</span> and <span class="math inline">\(X\)</span> are connected by an arrow, and <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are connected by an arrow. The directions of the two arrows determine whether <span class="math inline">\(X\)</span> is part of a chain, a fork, or a collider. Each displayed three-variable graph is the entire graph for its example.</p>
 <section id="chain" class="level3">
@@ -654,22 +654,190 @@ E[Y\mid X=0,A=1]\neq E[Y\mid X=0,A=0].
 </div>
 </section>
 </section>
-<section id="graduate-to-more-complicated-graphs" class="level2">
-<h2 class="anchored" data-anchor-id="graduate-to-more-complicated-graphs">Graduate to more complicated graphs</h2>
-<p>A larger graph is a smorgasbord of chains, forks, and colliders. To understand what it tells us about independence, we need to figure out what happens when we combine these building blocks.</p>
-<p>Our destination is a graphical rule called <strong>d-separation</strong>. The global Markov property tells us why this rule matters.</p>
-<div class="proposition-box">
-<p><strong>Global Markov property.</strong> Consider an SCM with a topological order. If a collection of other variables <span class="math inline">\(X_1,\ldots,X_k\)</span> d-separates <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> in its causal graph, then</p>
+<section id="paths" class="level2">
+<h2 class="anchored" data-anchor-id="paths">Paths</h2>
+<p>Chains, forks, and colliders are the building blocks of longer paths. As we move along a path, each internal variable is the middle of a chain, a fork, or a collider. What can these building blocks tell us about the variables at the two ends?</p>
+<p>We will start with a few simple causal graphs, each with just one path between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>. Consider</p>
 <p><span class="math display">\[
-A\perp\!\!\!\perp Y\mid X_1,\ldots,X_k.
+A\to C\to F\to Y.
 \]</span></p>
-<p>The conditioning collection may be empty. In that case, the conclusion is <span class="math inline">\(A\perp\!\!\!\perp Y\)</span>.</p>
+<p>This path contains two overlapping chains: <span class="math inline">\(A\to C\to F\)</span> and <span class="math inline">\(C\to F\to Y\)</span>. Their middle variables are <span class="math inline">\(C\)</span> and <span class="math inline">\(F\)</span>, respectively.</p>
+<p>The endpoints <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> may be dependent. But conditioning on the middle variable of either chain makes them conditionally independent:</p>
+<p><span class="math display">\[
+A\perp\!\!\!\perp Y\mid C,
+\qquad
+A\perp\!\!\!\perp Y\mid F.
+\]</span></p>
+<details class="lesson-question">
+<summary>
+Can we give an example where <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are dependent without conditioning?
+</summary>
+<p>Let <span class="math inline">\(A\)</span> be a fair coin flip, and let each remaining variable copy its parent:</p>
+<p><span class="math display">\[
+C\leftarrow A,\qquad
+F\leftarrow C,\qquad
+Y\leftarrow F.
+\]</span></p>
+<p>Then <span class="math inline">\(Y=A\)</span>, so learning <span class="math inline">\(A\)</span> tells us <span class="math inline">\(Y\)</span> exactly. In particular,</p>
+<p><span class="math display">\[
+P(Y=1)=\frac12,
+\qquad
+P(Y=1\mid A=1)=1.
+\]</span></p>
+<p>Thus, <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are dependent in this SCM.</p>
+</details>
+<p>Now consider</p>
+<p><span class="math display">\[
+A\leftarrow B\to C\to F\to Y.
+\]</span></p>
+<p>This path contains a fork, <span class="math inline">\(A\leftarrow B\to C\)</span>, followed by two chains, <span class="math inline">\(B\to C\to F\)</span> and <span class="math inline">\(C\to F\to Y\)</span>. Their middle variables are <span class="math inline">\(B\)</span>, <span class="math inline">\(C\)</span>, and <span class="math inline">\(F\)</span>.</p>
+<p>Again, <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> may be dependent. But conditioning on any one of these middle variables makes them conditionally independent:</p>
+<p><span class="math display">\[
+A\perp\!\!\!\perp Y\mid B,
+\qquad
+A\perp\!\!\!\perp Y\mid C,
+\qquad
+A\perp\!\!\!\perp Y\mid F.
+\]</span></p>
+<p>What changes when the path contains a collider? Consider</p>
+<p><span class="math display">\[
+A\to C\leftarrow B\to Y.
+\]</span></p>
+<p>Here <span class="math inline">\(C\)</span> is the middle of a collider, and <span class="math inline">\(B\)</span> is the middle of a fork. Because of the collider, the endpoints are independent without conditioning:</p>
+<p><span class="math display">\[
+A\perp\!\!\!\perp Y.
+\]</span></p>
+<p>Conditioning on <span class="math inline">\(C\)</span> can make <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> conditionally dependent.</p>
+<details class="lesson-question">
+<summary>
+Can we give an example where conditioning on <span class="math inline">\(C\)</span> makes <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> conditionally dependent?
+</summary>
+<p>Let <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> be independent fair coin flips, and set</p>
+<p><span class="math display">\[
+C\leftarrow A+B,
+\qquad
+Y\leftarrow B.
+\]</span></p>
+<p>Among observations with <span class="math inline">\(C=1\)</span>, exactly one of <span class="math inline">\(A,B\)</span> equals one. Since <span class="math inline">\(Y=B\)</span>, learning <span class="math inline">\(A\)</span> tells us <span class="math inline">\(Y\)</span>: if <span class="math inline">\(A=0\)</span>, then <span class="math inline">\(Y=1\)</span>; if <span class="math inline">\(A=1\)</span>, then <span class="math inline">\(Y=0\)</span>. Thus,</p>
+<p><span class="math display">\[
+P(Y=1\mid C=1)=\frac12,
+\qquad
+P(Y=1\mid C=1,A=0)=1.
+\]</span></p>
+<p>Learning <span class="math inline">\(A\)</span> changes the distribution of <span class="math inline">\(Y\)</span> once we condition on <span class="math inline">\(C=1\)</span>. Therefore, <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are conditionally dependent given <span class="math inline">\(C\)</span> in this SCM.</p>
+</details>
+<p>But what if we condition on both <span class="math inline">\(C\)</span> and <span class="math inline">\(B\)</span>? Conditioning on the collider can allow dependence, but we are also conditioning on the middle of the fork. That is enough to make the endpoints conditionally independent:</p>
+<p><span class="math display">\[
+A\perp\!\!\!\perp Y\mid B,C.
+\]</span></p>
+<p>Thus, conditioning on a collider does not undo the effect of conditioning on a middle variable in a chain or fork elsewhere along this path.</p>
+<p>There is one more possibility that our three-variable examples could not show. Consider</p>
+<p><span class="math display">\[
+A\to D\leftarrow Y,
+\qquad
+D\to F.
+\]</span></p>
+<p>The path between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> contains the collider <span class="math inline">\(D\)</span>, so <span class="math inline">\(A\perp\!\!\!\perp Y\)</span>. Conditioning on <span class="math inline">\(D\)</span> can make the endpoints conditionally dependent. But what about conditioning on <span class="math inline">\(F\)</span>?</p>
+<p>Learning <span class="math inline">\(F\)</span> can give us information about <span class="math inline">\(D\)</span>. For example, the assignment could be <span class="math inline">\(F\leftarrow D\)</span>. Knowing <span class="math inline">\(F\)</span> would then tell us <span class="math inline">\(D\)</span> exactly, so conditioning on <span class="math inline">\(F\)</span> would have the same effect as conditioning on <span class="math inline">\(D\)</span>.</p>
+<p>Thus, leaving the collider itself out of the conditioning collection is not enough. To retain this independence guarantee, we must also leave out its descendants.</p>
+<p>These examples suggest two ways to prevent dependence along a path. We can condition on a middle variable in a chain or fork. Or the path can contain a collider with neither it nor any of its descendants conditioned on. We call a path <strong>blocked</strong>, or <strong>closed</strong>, when either condition holds. Otherwise, we call it <strong>open</strong>.</p>
+<div class="definition-box">
+<p><strong>Blocked and open paths.</strong> A path between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> is <strong>blocked</strong> by a collection of variables other than its endpoints if at least one of the following holds:</p>
+<ol type="1">
+<li>A middle variable in a chain or fork along the path is conditioned on.</li>
+<li>A collider along the path is not conditioned on, and none of its descendants is conditioned on.</li>
+</ol>
+<p>If neither condition holds, the path is <strong>open</strong> conditional on that collection.</p>
 </div>
-<p>The plan, then, is to find variables that d-separate <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>, and condition on them to make <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> independent. To do that, we need to define d-separation. Let’s start with an example, since it is more illustrative than jumping straight to the definition.</p>
-<section id="list-out-paths" class="level3">
-<h3 class="anchored" data-anchor-id="list-out-paths">List out paths</h3>
-<p>Consider the following graph.</p>
-<div id="fig-dsep-five-paths" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Arrows B to A, C, and Y; A to C and D; C to F; F to Y; Y to D; and D to E." data-fig-align="center">
+<p>Let’s apply this definition. For the path</p>
+<p><span class="math display">\[
+A\leftarrow U\to V\to Y,
+\]</span></p>
+<p><span class="math inline">\(U\)</span> is the middle of a fork and <span class="math inline">\(V\)</span> is the middle of a chain. The path is open without conditioning. Conditioning on <span class="math inline">\(U\)</span>, on <span class="math inline">\(V\)</span>, or on both blocks it.</p>
+<details class="lesson-question">
+<summary>
+For the path <span class="math inline">\(A\to U\leftarrow V\to Y\)</span>, which collections chosen from <span class="math inline">\(U,V\)</span> block the path?
+</summary>
+<p>Without conditioning, the collider <span class="math inline">\(U\)</span> blocks the path. Conditioning on <span class="math inline">\(U\)</span> alone opens it. Conditioning on <span class="math inline">\(V\)</span> blocks the path at the fork, whether or not we also condition on <span class="math inline">\(U\)</span>.</p>
+<p>Thus, the path is blocked when we condition on nothing, on <span class="math inline">\(V\)</span>, or on both <span class="math inline">\(U,V\)</span>. It is open when we condition on <span class="math inline">\(U\)</span> alone.</p>
+</details>
+<details class="lesson-question">
+<summary>
+Now add the arrow <span class="math inline">\(U\to Z\)</span>. Which collections chosen from <span class="math inline">\(U,V,Z\)</span> block the path <span class="math inline">\(A\to U\leftarrow V\to Y\)</span>?
+</summary>
+<p>Conditioning on either <span class="math inline">\(U\)</span> or its descendant <span class="math inline">\(Z\)</span> removes the blockage at the collider. But conditioning on <span class="math inline">\(V\)</span> always blocks this path.</p>
+<p>The path is therefore blocked when we condition on nothing or on any collection containing <span class="math inline">\(V\)</span>: <span class="math inline">\(V\)</span>; <span class="math inline">\(U,V\)</span>; <span class="math inline">\(V,Z\)</span>; or <span class="math inline">\(U,V,Z\)</span>.</p>
+<p>It is open when we condition on <span class="math inline">\(U\)</span>, on <span class="math inline">\(Z\)</span>, or on <span class="math inline">\(U,Z\)</span>.</p>
+</details>
+<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: why either condition is enough when there is only one path">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Optional technical note: why either condition is enough when there is only one path
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Suppose an SCM has a topological order and exactly one path between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>. Let <span class="math inline">\(S\)</span> denote the collection of variables we condition on, excluding <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>. We will prove that either condition in the definition gives</p>
+<p><span class="math display">\[
+A\perp\!\!\!\perp Y\mid S.
+\]</span></p>
+<p>The graph may contain other variables and branches. The important assumption is that there is only one path between the two endpoints.</p>
+<p>We use two elementary facts about independence:</p>
+<ul>
+<li>Functions of disjoint collections of mutually independent noise terms are independent.</li>
+<li>If two collections of variables are conditionally independent given <span class="math inline">\(V\)</span>, conditioning additionally on variables from each collection preserves independence between what remains in the two collections.</li>
+</ul>
+<p>For the second fact, imagine fixing <span class="math inline">\(V=v\)</span>. The joint distribution of the two collections factors into a distribution for each collection. Conditioning separately on information from each collection preserves that factorization. The same statement applies without <span class="math inline">\(V\)</span> when the collections are independent to begin with.</p>
+<p><strong>1. Conditioning on a middle variable in a chain or fork.</strong></p>
+<p>Let <span class="math inline">\(V\)</span> be such a variable on the unique path, and suppose <span class="math inline">\(V\)</span> is in <span class="math inline">\(S\)</span>. Since <span class="math inline">\(V\)</span> is not a collider on this path, at least one of its two adjacent arrows points away from it. Choose that side of the path.</p>
+<p>Temporarily remove <span class="math inline">\(V\)</span> from the drawing and let <span class="math inline">\(R\)</span> be the entire connected piece on the chosen side. Let <span class="math inline">\(L\)</span> contain all remaining variables other than <span class="math inline">\(V\)</span>. One endpoint lies in <span class="math inline">\(R\)</span> and the other lies in <span class="math inline">\(L\)</span>.</p>
+<p>There is exactly one edge between <span class="math inline">\(V\)</span> and <span class="math inline">\(R\)</span>, and it points from <span class="math inline">\(V\)</span> into <span class="math inline">\(R\)</span>. Why exactly one? Another edge from <span class="math inline">\(V\)</span> into the same connected piece would provide another route to the endpoint on that side, giving a second path between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>. Likewise, there are no edges between <span class="math inline">\(R\)</span> and <span class="math inline">\(L\)</span>; otherwise removing <span class="math inline">\(V\)</span> would not have separated the endpoints.</p>
+<p>Consequently, the only input into the assignments in <span class="math inline">\(R\)</span> from outside <span class="math inline">\(R\)</span> is <span class="math inline">\(V\)</span>. Substituting assignments in topological order lets us write the entire collection as</p>
+<p><span class="math display">\[
+R\leftarrow h(V,\epsilon_R),
+\]</span></p>
+<p>where <span class="math inline">\(\epsilon_R\)</span> collects the noise terms belonging to variables in <span class="math inline">\(R\)</span>.</p>
+<p>No variable in <span class="math inline">\(R\)</span> is a parent of a variable outside <span class="math inline">\(R\)</span>. Thus, <span class="math inline">\(V,L\)</span> are functions only of noise terms outside <span class="math inline">\(R\)</span>. Mutual independence of the SCM’s noise terms gives</p>
+<p><span class="math display">\[
+\epsilon_R\perp\!\!\!\perp (V,L).
+\]</span></p>
+<p>Once <span class="math inline">\(V\)</span> is known, the remaining randomness determining <span class="math inline">\(R\)</span> is therefore independent of <span class="math inline">\(L\)</span>. Hence,</p>
+<p><span class="math display">\[
+R\perp\!\!\!\perp L\mid V.
+\]</span></p>
+<p>Any additional variables in <span class="math inline">\(S\)</span> belong to <span class="math inline">\(R\)</span> or <span class="math inline">\(L\)</span>. Conditioning on those variables preserves conditional independence between the two collections. Since <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> lie on opposite sides and are not themselves conditioned on,</p>
+<p><span class="math display">\[
+A\perp\!\!\!\perp Y\mid S.
+\]</span></p>
+<p>This proves the first blocking rule, including situations where we also condition on colliders elsewhere along the path.</p>
+<p><strong>2. A collider with neither it nor any descendant conditioned on.</strong></p>
+<p>Let <span class="math inline">\(V\)</span> be a collider on the unique path, and suppose neither <span class="math inline">\(V\)</span> nor any of its descendants is in <span class="math inline">\(S\)</span>.</p>
+<p>First, neither endpoint can be a descendant of <span class="math inline">\(V\)</span>. A directed path from <span class="math inline">\(V\)</span> to either endpoint would give a second route to that endpoint: it cannot follow the original path, whose adjacent arrow points into <span class="math inline">\(V\)</span>. Combining that route with the original path would contradict uniqueness of the path between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>.</p>
+<p>Now remove <span class="math inline">\(V\)</span> and all its descendants. This removes neither endpoint nor any variable in <span class="math inline">\(S\)</span>.</p>
+<p>It also leaves a valid system of assignments for the remaining variables. No removed variable can be a parent of a remaining variable: a child of <span class="math inline">\(V\)</span> or of one of its descendants would itself be a descendant and would have been removed. We can therefore generate all remaining variables without using any of the removed assignments or noise terms.</p>
+<p>The remaining graph has no path between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>, because their unique path passed through <span class="math inline">\(V\)</span>. They now belong to different connected pieces. Each piece is generated from its own collection of noise terms, and those noise collections are mutually independent. Thus, the collections of variables in the different pieces are independent.</p>
+<p>Every variable in <span class="math inline">\(S\)</span> belongs to one of these remaining pieces. Conditioning on variables within the separate pieces preserves their independence. In particular,</p>
+<p><span class="math display">\[
+A\perp\!\!\!\perp Y\mid S.
+\]</span></p>
+<p>This proves the second blocking rule.</p>
+<p>Both arguments rely on there being only one path between the endpoints. In a larger graph, blocking one path is not enough if another path remains open.</p>
+</div>
+</div>
+</div>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
+</div>
+</section>
+<section id="multiple-paths" class="level2">
+<h2 class="anchored" data-anchor-id="multiple-paths">Multiple paths</h2>
+<p>What happens when there is more than one path between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>? A blocked path is no longer enough to guarantee independence: another path may remain open. We need to consider all of them.</p>
+<p>Consider the following causal graph.</p>
+<div id="fig-dsep-five-paths" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Arrows B to A, C, and Y; A to C and D; C to F; F to Y; Y to D; and D to E.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-dsep-five-paths-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="images/02d-five-paths.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Arrows B to A, C, and Y; A to C and D; C to F; F to Y; Y to D; and D to E." width="700">
@@ -679,7 +847,7 @@ Figure&nbsp;1: A graph with several paths between A and Y.
 </figcaption>
 </figure>
 </div>
-<p>Recall that a path from <span class="math inline">\(A\)</span> to <span class="math inline">\(Y\)</span> starts at <span class="math inline">\(A\)</span>, follows arrows in either direction, and ends at <span class="math inline">\(Y\)</span>, without visiting any node twice. There are five paths in <a href="#fig-dsep-five-paths" class="quarto-xref">Figure&nbsp;<span>1</span></a>:</p>
+<p>There are five paths between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>:</p>
 <ol type="1">
 <li><span class="math inline">\(A\to C\to F\to Y\)</span>.</li>
 <li><span class="math inline">\(A\leftarrow B\to C\to F\to Y\)</span>.</li>
@@ -687,140 +855,91 @@ Figure&nbsp;1: A graph with several paths between A and Y.
 <li><span class="math inline">\(A\to D\leftarrow Y\)</span>.</li>
 <li><span class="math inline">\(A\to C\leftarrow B\to Y\)</span>.</li>
 </ol>
-<p>The node <span class="math inline">\(E\)</span> is not on any path from <span class="math inline">\(A\)</span> to <span class="math inline">\(Y\)</span>, because going from <span class="math inline">\(D\)</span> to <span class="math inline">\(E\)</span> leaves us no way to reach <span class="math inline">\(Y\)</span> without visiting <span class="math inline">\(D\)</span> again.</p>
-<p>Which paths could make <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> dependent? Our initial guess might be paths (1), (2), and (3). These paths connect <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> through chains and forks, and chains and forks are what we say that transmitted dependence in our three-variable examples.</p>
-<p>We may also think path (4) and (5) do not make <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> dependent. Path (4) has a collider at <span class="math inline">\(D\)</span>, and path (5) has a collider at <span class="math inline">\(C\)</span>. Colliders prevented dependence in our three-variable example.</p>
-<p>One thing to note is that a node’s role depends on the path. On path (1), <span class="math inline">\(C\)</span> is the middle of a chain. On path (5), both arrows point into <span class="math inline">\(C\)</span>, so it is a collider. We examine the two arrows next to a node on the particular path we are tracing to determine a node’s role.</p>
-</section>
-<section id="choose-what-to-condition-on" class="level3">
-<h3 class="anchored" data-anchor-id="choose-what-to-condition-on">Choose what to condition on</h3>
-<p>Paths (4) and (5) have colliders, so for now we only need to worry about paths (1), (2), and (3). How might we try to “block” the transmission of dependence along those paths? Conditioning helped us before: in our three-variable examples, conditioning on the middle of a chain or fork made its outer variables conditionally independent.</p>
+<p>When we condition on nothing, paths (1), (2), and (3) are open: they contain only chains and forks. Path (4) is blocked by its collider <span class="math inline">\(D\)</span>, and path (5) is blocked by its collider <span class="math inline">\(C\)</span>. There are open paths between the endpoints, so <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> may be dependent.</p>
+<p>How might we make <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> conditionally independent? Our single-path examples suggest conditioning on middle variables in chains or forks. But now we need a collection that blocks <strong>every path</strong>.</p>
+<p>Paths (4) and (5) are already blocked, so start with paths (1), (2), and (3):</p>
 <ul>
-<li>On path (1), both <span class="math inline">\(C\)</span> and <span class="math inline">\(F\)</span> are middle variables in chains.</li>
-<li>On path (2), <span class="math inline">\(B\)</span> is the middle of a fork, while <span class="math inline">\(C\)</span> and <span class="math inline">\(F\)</span> are middle variables in chains.</li>
-<li>On path (3), <span class="math inline">\(B\)</span> is the middle of a fork.</li>
+<li>On path (1), conditioning on <span class="math inline">\(C\)</span> blocks a chain.</li>
+<li>On path (2), conditioning on <span class="math inline">\(B\)</span> blocks a fork, and conditioning on <span class="math inline">\(C\)</span> blocks a chain.</li>
+<li>On path (3), conditioning on <span class="math inline">\(B\)</span> blocks a fork.</li>
 </ul>
-<p>This suggests conditioning on <span class="math inline">\(B\)</span> and <span class="math inline">\(C\)</span>: <span class="math inline">\(C\)</span> addresses path (1), <span class="math inline">\(B\)</span> addresses path (3), and both address path (2).</p>
-<p>But conditioning can change what happens along paths (4) and (5), too. We set them aside because they contained colliders. Does that reasoning still hold after conditioning on <span class="math inline">\(B,C\)</span>?</p>
-<p>Path (4), <span class="math inline">\(A\to D\leftarrow Y\)</span>, still connects <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> through the collider <span class="math inline">\(D\)</span>. We are not conditioning on <span class="math inline">\(D\)</span>, so this path still poses no problem.</p>
-<p>Path (5), <span class="math inline">\(A\to C\leftarrow B\to Y\)</span>, is trickier. We are conditioning on its collider <span class="math inline">\(C\)</span>, which can make <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> conditionally dependent. We can therefore no longer rely on <span class="math inline">\(C\)</span> to prevent dependence along this path. However, <span class="math inline">\(B\)</span> is the middle of the fork <span class="math inline">\(C\leftarrow B\to Y\)</span>, and we are conditioning on <span class="math inline">\(B\)</span>. This suggests that <span class="math inline">\(B\)</span> still ``blocks” the transmission of dependence along the full path from <span class="math inline">\(A\)</span> to <span class="math inline">\(Y\)</span>.</p>
-<p>It turns that conditioning on <span class="math inline">\(B,C\)</span> does give us</p>
-<p><span class="math display">\[
-A\perp\!\!\!\perp Y\mid B,C.
-\]</span></p>
-<p>We will justify this by showing that <span class="math inline">\(B,C\)</span> <em>d-separates</em> <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>. And so, the global Markov property applies giving us this conditional independent result.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: how this differs from local Markov property">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Optional technical note: how this differs from local Markov property
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>This conclusion goes beyond a direct application of the local Markov property to <span class="math inline">\(Y\)</span>. Its parents are <span class="math inline">\(B,F\)</span>, so the local Markov property gives <span class="math inline">\(Y\perp\!\!\!\perp A\mid B,F\)</span>. Our path-based argument instead gives independence conditional on <span class="math inline">\(B,C\)</span>, even though <span class="math inline">\(C\)</span> is not a parent of <span class="math inline">\(Y\)</span>.</p>
-<p>What if we also condition on <span class="math inline">\(D\)</span>? On path (4), <span class="math inline">\(A\to D\leftarrow Y\)</span>, we would then be conditioning on a collider. Our three-variable example showed that this can make its parents conditionally dependent. This suggests that adding <span class="math inline">\(D\)</span> could undo what we accomplished by conditioning on <span class="math inline">\(B,C\)</span>. And indeed, if we condition on <span class="math inline">\(B,C,D\)</span>, we can longer guarantee that <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are conditional independent.</p>
-<p>Conditioning on more variables can therefore undo the independence guarantee we obtained with <span class="math inline">\(B,C\)</span>.</p>
-</div>
-</div>
-</div>
-</section>
-<section id="blocking-a-single-path" class="level3">
-<h3 class="anchored" data-anchor-id="blocking-a-single-path">Blocking a single path</h3>
-<p>Before we can define d-separation, we need to know what it means to <strong>block a path.</strong> This makes precise the intuition we have been building: a path may allow dependence between its endpoints, and we want to understand when conditioning or colliders prevent that.</p>
-<p>Our three-variable examples suggest two ways a path can be blocked. In a chain or fork, conditioning on the middle variable makes the outer variables conditionally independent. A collider does the opposite: its outer variables are independent without conditioning, but may become conditionally dependent when we condition on the collider. These observations suggest that a conditioned middle variable in a chain or fork, or an unconditioned collider, can block a longer path. Just one such variable is enough to block the path.</p>
-<p>This is almost it. There is just one more possibility that our three-variable examples could not show: conditioning on a descendant of a collider. To see why this matters, return to path (4), <span class="math inline">\(A\to D\leftarrow Y\)</span>. We have treated this path as blocked because <span class="math inline">\(D\)</span> is a collider that we are not conditioning on. But <span class="math inline">\(D\)</span> has a descendant, <span class="math inline">\(E\)</span>, because our graph also contains <span class="math inline">\(D\to E\)</span>. Conditioning on <span class="math inline">\(E\)</span> can give us information about <span class="math inline">\(D\)</span>. For example, if the assignment is <span class="math inline">\(E\leftarrow D\)</span>, knowing <span class="math inline">\(E\)</span> tells us <span class="math inline">\(D\)</span> exactly. So this path can be open even without conditioning on <span class="math inline">\(D\)</span>: conditioning on its descendant <span class="math inline">\(E\)</span> is enough.</p>
-<p>Our rule must therefore account for both the collider and its descendants.</p>
-<div class="definition-box">
-<p><strong>Blocked and open paths.</strong> A path is <strong>blocked</strong> by the variables we condition on, <span class="math inline">\(X_1,\ldots,X_k\)</span>, if at least one of the following holds:</p>
-<ol type="1">
-<li>A middle variable in a chain or fork along the path is conditioned on.</li>
-<li>A collider along the path is not conditioned on, and none of its descendants is conditioned on.</li>
-</ol>
-<p>If neither condition holds, the path is <strong>open</strong> conditional on <span class="math inline">\(X_1,\ldots,X_k\)</span>.</p>
-</div>
-<p>Let’s apply this definition to a few paths. In each example, we focus on one path from <span class="math inline">\(A\)</span> to <span class="math inline">\(Y\)</span>. We try to figure out which other variables shown could we condition on to block that path.</p>
-<p>Consider</p>
-<p><span class="math display">\[
-A\leftarrow U\to V\to Y.
-\]</span></p>
-<p>Here <span class="math inline">\(U\)</span> is the middle of a fork and <span class="math inline">\(V\)</span> is the middle of a chain. There are no colliders, so the path is open when we condition on nothing. Conditioning on <span class="math inline">\(U\)</span> blocks the fork; conditioning on <span class="math inline">\(V\)</span> blocks the chain. Thus, the conditioning sets that block this path are <span class="math inline">\(\{U\}\)</span>, <span class="math inline">\(\{V\}\)</span>, and <span class="math inline">\(\{U,V\}\)</span>. A single conditioned noncollider is enough.</p>
-<details class="lesson-question">
-<summary>
-For the path <span class="math inline">\(A\to U\leftarrow V\to Y\)</span>, which conditioning sets chosen from <span class="math inline">\(U,V\)</span> block the path?
-</summary>
-<p>The internal node <span class="math inline">\(U\)</span> is a collider, while <span class="math inline">\(V\)</span> is the middle of a fork.</p>
+<p>This suggests conditioning on <span class="math inline">\(B,C\)</span>. That blocks the three paths we were worried about. But we must also revisit paths (4) and (5): conditioning can open a path that was previously blocked.</p>
+<p>Path (4), <span class="math inline">\(A\to D\leftarrow Y\)</span>, remains blocked. We are conditioning on neither its collider <span class="math inline">\(D\)</span> nor its descendant <span class="math inline">\(E\)</span>.</p>
+<p>Path (5), <span class="math inline">\(A\to C\leftarrow B\to Y\)</span>, needs more care. Conditioning on <span class="math inline">\(C\)</span> removes the blockage at the collider. However, we are also conditioning on <span class="math inline">\(B\)</span>, the middle of a fork along the same path. That is enough to block it.</p>
+<p>Thus, conditioning on <span class="math inline">\(B,C\)</span> blocks all five paths:</p>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
 <thead>
 <tr class="header">
-<th>Conditioning set</th>
-<th>Path status</th>
-<th>Reason</th>
+<th>Path</th>
+<th>Conditional on <span class="math inline">\(B,C\)</span></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Nothing</td>
-<td>Blocked</td>
-<td>The collider <span class="math inline">\(U\)</span> is not conditioned on.</td>
+<td>(1) <span class="math inline">\(A\to C\to F\to Y\)</span></td>
+<td>Blocked at <span class="math inline">\(C\)</span></td>
 </tr>
 <tr class="even">
-<td><span class="math inline">\(U\)</span></td>
-<td>Open</td>
-<td>Conditioning on <span class="math inline">\(U\)</span> opens the collider, and <span class="math inline">\(V\)</span> is not conditioned on.</td>
+<td>(2) <span class="math inline">\(A\leftarrow B\to C\to F\to Y\)</span></td>
+<td>Blocked at <span class="math inline">\(B\)</span> and <span class="math inline">\(C\)</span></td>
 </tr>
 <tr class="odd">
-<td><span class="math inline">\(V\)</span></td>
-<td>Blocked</td>
-<td>The collider <span class="math inline">\(U\)</span> is not conditioned on; the conditioned fork at <span class="math inline">\(V\)</span> also blocks the path.</td>
+<td>(3) <span class="math inline">\(A\leftarrow B\to Y\)</span></td>
+<td>Blocked at <span class="math inline">\(B\)</span></td>
 </tr>
 <tr class="even">
-<td><span class="math inline">\(U,V\)</span></td>
-<td>Blocked</td>
-<td>The conditioned fork at <span class="math inline">\(V\)</span> blocks the path even though the collider at <span class="math inline">\(U\)</span> is opened.</td>
+<td>(4) <span class="math inline">\(A\to D\leftarrow Y\)</span></td>
+<td>Blocked at <span class="math inline">\(D\)</span></td>
+</tr>
+<tr class="odd">
+<td>(5) <span class="math inline">\(A\to C\leftarrow B\to Y\)</span></td>
+<td>Blocked at <span class="math inline">\(B\)</span></td>
 </tr>
 </tbody>
 </table>
-</details>
-<details class="lesson-question">
-<summary>
-Consider the path <span class="math inline">\(A\to U\leftarrow V\to Y\)</span>, now with the additional arrow <span class="math inline">\(U\to Z\)</span>. Which conditioning sets chosen from <span class="math inline">\(U,V,Z\)</span> block the path from <span class="math inline">\(A\)</span> through <span class="math inline">\(U,V\)</span> to <span class="math inline">\(Y\)</span>?
-</summary>
-<p>The variable <span class="math inline">\(Z\)</span> is a descendant of the collider <span class="math inline">\(U\)</span>. Conditioning on either <span class="math inline">\(U\)</span> or <span class="math inline">\(Z\)</span> removes the blockage at <span class="math inline">\(U\)</span>. But conditioning on <span class="math inline">\(V\)</span> always blocks the path, because <span class="math inline">\(V\)</span> is a noncollider on it.</p>
-<p>The blocking sets are therefore the empty set and every set containing <span class="math inline">\(V\)</span>: <span class="math inline">\(\{V\}\)</span>, <span class="math inline">\(\{U,V\}\)</span>, <span class="math inline">\(\{V,Z\}\)</span>, and <span class="math inline">\(\{U,V,Z\}\)</span>. The path is open given <span class="math inline">\(\{U\}\)</span>, <span class="math inline">\(\{Z\}\)</span>, or <span class="math inline">\(\{U,Z\}\)</span>.</p>
-<p>Notice that <span class="math inline">\(Z\)</span> can change whether the path is open even though it is not on the path itself.</p>
-</details>
-</section>
-<section id="blocking-all-paths" class="level3">
-<h3 class="anchored" data-anchor-id="blocking-all-paths">Blocking all paths</h3>
-<p>Blocking one path need not make its endpoints conditionally independent: another path may remain open. We need a criterion that considers every path.</p>
-<div class="definition-box">
-<p><strong>d-separation.</strong> A collection <span class="math inline">\(X_1,\ldots,X_k\)</span> <strong>d-separates</strong> <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> if it blocks every path between them. Otherwise, <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are <strong>d-connected</strong> given that collection.</p>
-</div>
-<p>d-separation is a statement about a graph; conditional independence is a statement about random variables. The global Markov property connects them: if <span class="math inline">\(X_1,\ldots,X_k\)</span> d-separates <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> in the causal graph of an SCM with a topological order, then</p>
-<p><span class="math display">\[
-A\perp\!\!\!\perp Y\mid X_1,\ldots,X_k.
-\]</span></p>
-<p>We can now justify our earlier conclusion in <a href="#fig-dsep-five-paths" class="quarto-xref">Figure&nbsp;<span>1</span></a>. Conditioning on <span class="math inline">\(B,C\)</span> blocks path (1) at <span class="math inline">\(C\)</span>, path (2) at <span class="math inline">\(B\)</span> and <span class="math inline">\(C\)</span>, and path (3) at <span class="math inline">\(B\)</span>. Path (4) is blocked by its collider <span class="math inline">\(D\)</span>, since neither <span class="math inline">\(D\)</span> nor its descendant <span class="math inline">\(E\)</span> is conditioned on. On path (5), conditioning on <span class="math inline">\(C\)</span> opens the collider there, but conditioning on <span class="math inline">\(B\)</span> still blocks the path.</p>
-<p>All five paths are blocked. Therefore, <span class="math inline">\(B,C\)</span> does indeed d-separate <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>, and the global Markov property establishes</p>
+<p>We say that <span class="math inline">\(B,C\)</span> <strong>d-separates</strong> <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>. As we suspected, blocking every path gives us conditional independence:</p>
 <p><span class="math display">\[
 A\perp\!\!\!\perp Y\mid B,C.
 \]</span></p>
+<p>This is the general strategy: find a collection of variables that blocks every path between the endpoints. The name for accomplishing this is d-separation.</p>
+<div class="definition-box">
+<p><strong>d-separation.</strong> A collection of variables <span class="math inline">\(X_1,\ldots,X_k\)</span>, excluding the endpoints <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>, <strong>d-separates</strong> <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> if it blocks every path between them.</p>
+<p>The conditioning collection may be empty.</p>
+</div>
+<p>We now have a precise statement about the graph: every path between two variables is blocked by the conditioning collection. The <strong>global Markov property</strong> tells us what this implies about the random variables.</p>
+<div class="proposition-box">
+<p><strong>Global Markov property.</strong> Suppose an SCM admits a topological order. If <span class="math inline">\(X_1,\ldots,X_k\)</span> d-separates <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> in its causal graph, then</p>
+<p><span class="math display">\[
+A\perp\!\!\!\perp Y\mid X_1,\ldots,X_k.
+\]</span></p>
+<p>If the conditioning collection is empty, the conclusion is <span class="math inline">\(A\perp\!\!\!\perp Y\)</span>.</p>
+</div>
+<p>d-separation is a statement about paths in a graph. Conditional independence is a statement about random variables. The global Markov property connects the two.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: proof of the global Markov property">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Optional technical note: proof of the global Markov property
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>To-do: add the full proof. The single-path argument above establishes the result when there is exactly one path between the endpoints. The general proof must account for multiple paths that can share variables.</p>
+</div>
+</div>
+</div>
 <details class="lesson-question">
 <summary>
-Why is conditioning on <span class="math inline">\(C\)</span> alone insufficient to d-separate <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>?
+In <a href="#fig-dsep-five-paths" class="quarto-xref">Figure&nbsp;<span>1</span></a>, why is conditioning on <span class="math inline">\(C\)</span> alone insufficient to d-separate <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>?
 </summary>
-<p>Conditioning on <span class="math inline">\(C\)</span> blocks paths (1) and (2), but path (3), <span class="math inline">\(A\leftarrow B\to Y\)</span>, remains open. It also opens the collider at <span class="math inline">\(C\)</span> on path (5), <span class="math inline">\(A\to C\leftarrow B\to Y\)</span>. Since we have not conditioned on <span class="math inline">\(B\)</span>, path (5) is now open too. Path (4) remains blocked at <span class="math inline">\(D\)</span>. Two paths remain open, so <span class="math inline">\(C\)</span> does not d-separate <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>.</p>
+<p>Conditioning on <span class="math inline">\(C\)</span> blocks paths (1) and (2), but path (3), <span class="math inline">\(A\leftarrow B\to Y\)</span>, remains open.</p>
+<p>It also opens path (5), <span class="math inline">\(A\to C\leftarrow B\to Y\)</span>, by conditioning on its collider. Since <span class="math inline">\(B\)</span> is not conditioned on, nothing else blocks that path.</p>
+<p>Path (4) remains blocked at <span class="math inline">\(D\)</span>. But two paths remain open, so <span class="math inline">\(C\)</span> does not d-separate <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>.</p>
 </details>
-<p>Let’s work through another example. Consider this causal graph, which has topological order <span class="math inline">\(U,A,C,M,N,Y,K,L\)</span>.</p>
+<p>Let’s work through another example.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/02d-second-dsep.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="U points to A and C; C points to Y; A points to M, M to N, and N to Y; A and Y point to K; K points to L." width="700"></p>
@@ -833,40 +952,23 @@ Why is conditioning on <span class="math inline">\(C\)</span> alone insufficient
 <li><span class="math inline">\(A\to K\leftarrow Y\)</span>.</li>
 </ol>
 <p>To block the first path, we could condition on either <span class="math inline">\(U\)</span> or <span class="math inline">\(C\)</span>. To block the second, we could condition on either <span class="math inline">\(M\)</span> or <span class="math inline">\(N\)</span>. The third path is already blocked by its collider <span class="math inline">\(K\)</span>, provided we condition on neither <span class="math inline">\(K\)</span> nor its descendant <span class="math inline">\(L\)</span>.</p>
-<p>Choose <span class="math inline">\(C,M\)</span>. Conditioning on <span class="math inline">\(C\)</span> blocks the first path, and conditioning on <span class="math inline">\(M\)</span> blocks the second. The third remains blocked at <span class="math inline">\(K\)</span>. We have checked <strong>every path</strong>, so <span class="math inline">\(C,M\)</span> d-separates <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>. The global Markov property gives</p>
+<p>Choose <span class="math inline">\(C,M\)</span>. Conditioning on <span class="math inline">\(C\)</span> blocks the first path, and conditioning on <span class="math inline">\(M\)</span> blocks the second. The third remains blocked at <span class="math inline">\(K\)</span>. Thus, <span class="math inline">\(C,M\)</span> d-separates <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>. The SCM has topological order <span class="math inline">\(U,A,C,M,N,Y,K,L\)</span>, so the global Markov property gives</p>
 <p><span class="math display">\[
-A\perp Y\mid C,M.
+A\perp\!\!\!\perp Y\mid C,M.
 \]</span></p>
-<p>This is not a direct application of the local Markov property to either endpoint: <span class="math inline">\(A\)</span> has parent <span class="math inline">\(U\)</span>, while <span class="math inline">\(Y\)</span> has parents <span class="math inline">\(C,N\)</span>. Our conditioning collection <span class="math inline">\(C,M\)</span> is neither parent set. By examining paths, we can find other collections that guarantee conditional independence.</p>
-<p>Adding <span class="math inline">\(L\)</span> to the conditioning collection opens the third path through its collider <span class="math inline">\(K\)</span>. Thus, <span class="math inline">\(C,M,L\)</span> does not d-separate <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>. The global Markov property then supplies no conditional-independence guarantee for these endpoints.</p>
-<p>These examples suggest a systematic approach to using the global Markov property:</p>
+<p>This is not a direct application of the local Markov property to either endpoint. The parent of <span class="math inline">\(A\)</span> is <span class="math inline">\(U\)</span>, while the parents of <span class="math inline">\(Y\)</span> are <span class="math inline">\(C,N\)</span>. Our conditioning collection <span class="math inline">\(C,M\)</span> is neither parent set. Examining paths lets us find other collections that guarantee conditional independence.</p>
+<p>What if we also condition on <span class="math inline">\(L\)</span>? This opens the third path through its collider <span class="math inline">\(K\)</span>, because <span class="math inline">\(L\)</span> is a descendant of <span class="math inline">\(K\)</span>. The first two paths remain blocked, but that is no longer enough. The collection <span class="math inline">\(C,M,L\)</span> does not d-separate <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>, so the global Markov property does not guarantee conditional independence for this collection. It does not establish conditional dependence either.</p>
+<p>These examples give us a systematic approach:</p>
 <ol type="1">
-<li>Identify the two variables of interest and list every path between them.</li>
-<li>For the variables we are conditioning on, check each path. Is there a conditioned middle variable in a chain or fork? Is there a collider with neither itself nor any of its descendants conditioned on? Either is enough to block that path.</li>
-<li>Check whether <strong>every path is blocked</strong>. If so, the conditioning collection d-separates the endpoints.</li>
-<li>Apply the global Markov property to conclude conditional independence. If any path remains open, the property gives no conclusion about independence or dependence.</li>
+<li><strong>List every path</strong> between the two variables of interest.</li>
+<li><strong>Check each path under the proposed conditioning collection.</strong> A conditioned middle variable in a chain or fork blocks the path. So does a collider with neither itself nor any descendant conditioned on.</li>
+<li><strong>Check whether every path is blocked.</strong> If so, the conditioning collection d-separates the endpoints.</li>
+<li><strong>Apply the global Markov property</strong> to conclude conditional independence. If a path remains open, the property gives no conclusion about independence or dependence.</li>
 </ol>
-<p>When searching for variables to condition on, check every path again after choosing them. Conditioning that blocks one path may open another.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: the global Markov property">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Optional technical note: the global Markov property
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>To-do. I’ll eventually want to put the full proof here. It is a bit involved, so for now, I’ll leave this blank.</p>
-</div>
-</div>
-</div>
+<p>When choosing variables to condition on, check every path again after choosing them. Conditioning that blocks one path may open another.</p>
 <div class="section-break" aria-hidden="true">
 <span class="acorn-mark"></span>
 </div>
-</section>
 </section>
 <section id="what-the-graph-does-not-guarantee" class="level2">
 <h2 class="anchored" data-anchor-id="what-the-graph-does-not-guarantee">What the graph does not guarantee</h2>
