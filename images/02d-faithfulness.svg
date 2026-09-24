@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" width="600" height="300">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#315C43"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)">
+<line x1="144" y1="150" x2="267" y2="78"/><line x1="144" y1="150" x2="267" y2="222"/>
+<line x1="313" y1="72" x2="456" y2="141"/><line x1="313" y1="228" x2="456" y2="159"/>
+</g>
+<g fill="#E6EEDF" stroke="#315C43" stroke-width="1.5">
+<circle cx="120" cy="150" r="23"/><circle cx="290" cy="65" r="23"/><circle cx="290" cy="235" r="23"/><circle cx="480" cy="150" r="23"/>
+</g>
+<g text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="23" fill="#244635">
+<text x="120" y="158">X₁</text><text x="290" y="73">X₂</text><text x="290" y="243">X₃</text><text x="480" y="158">X₄</text>
+</g>
+</svg>

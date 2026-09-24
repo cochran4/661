@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 155" width="700" height="155">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#315C43"/></marker></defs>
+<g stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"><line x1="126" y1="55" x2="320" y2="55"/><line x1="574" y1="55" x2="380" y2="55"/></g>
+<g fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"><circle cx="100" cy="55" r="25"/><circle cx="350" cy="55" r="25"/><circle cx="600" cy="55" r="25"/></g>
+<g fill="#244635" font-family="Georgia,serif" text-anchor="middle"><g font-size="24" font-style="italic"><text x="100" y="63">R</text><text x="350" y="63">S</text><text x="600" y="63">Y</text></g><g font-size="18"><text x="100" y="113">Rural residence</text><text x="350" y="113">Emergency-department</text><text x="350" y="136">visit</text><text x="600" y="113">Chest pain severity</text></g></g>
+</svg>

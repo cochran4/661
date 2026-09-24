@@ -1,0 +1,185 @@
+### 13. Chest pain in the emergency department
+
+Consider this made-up example. Among people experiencing chest pain in a region, rural residence and chest pain severity are independent. Let $R$ indicate rural residence, $Y$ denote chest pain severity before deciding whether to seek care, and $S$ indicate whether a person visits the emergency department.
+
+People living in rural areas face a longer journey to the emergency department and may stay home when symptoms are mild. More severe chest pain makes a visit more likely. These relationships are represented by the following graph:
+
+![](images/02d-exercise-emergency-department.svg){width=700 fig-align="center" fig-alt="R, rural residence, and Y, chest pain severity, both point to S, an emergency department visit. S is a collider."}
+
+A researcher examines only emergency-department patients and finds that rural patients tend to have more severe chest pain. Explain how this association could arise even though rural residence and chest pain severity are independent in the regional population. Identify the variable being conditioned on and its role in the graph.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+The researcher conditions on $S=1$: everyone in the study visited the emergency department. In the graph $R\to S\leftarrow Y$, $S$ is a collider.
+
+Rural residents with mild chest pain may stay home, while nearby residents with similarly mild symptoms may visit. Rural residents who do visit can therefore be disproportionately those with severe symptoms. The emergency-department records omit the rural residents with mild symptoms who stayed home.
+
+Thus, $R\perp Y$ in the regional population is compatible with dependence between $R$ and $Y$ among people with $S=1$. Conditioning on a common effect can create an association between its causes. The graph permits this dependence; the care-seeking pattern described explains why the selected rural patients could have more severe symptoms.
+:::
+
+### 14. Listing and classifying paths
+
+Consider the following causal graph.
+
+![](images/02d-exercise-paths.svg){width=700 fig-align="center" fig-alt="U points to A and V; V points to Y; A and Y point to K; K points to L."}
+
+a. List every path between $A$ and $Y$.
+
+b. For each path, state whether it is open or blocked when conditioning on nothing, on $V$, and on $V,L$. Identify the node responsible whenever a path is blocked.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** The paths are $A\leftarrow U\to V\to Y$ and $A\to K\leftarrow Y$. The node $L$ is not on a path between $A$ and $Y$.
+
+**b.**
+
+| Path | Nothing | $V$ | $V,L$ |
+|---|---|---|---|
+| $A\leftarrow U\to V\to Y$ | Open | Blocked at $V$ | Blocked at $V$ |
+| $A\to K\leftarrow Y$ | Blocked at $K$ | Blocked at $K$ | Open |
+
+Conditioning on $L$, a descendant of $K$, opens the collider on the second path.
+:::
+
+### 15. Blocking individual paths
+
+For each drawing, list **all** conditioning sets chosen from the displayed variables other than $A,Y$ that block the specified path from $A$ to $Y$. Include the empty set if it works. Each drawing shows all relevant arrows.
+
+a. $A\leftarrow U\to V\to Y$.
+
+b. $A\to U\leftarrow V\leftarrow Y$.
+
+c. $A\to U\to V\leftarrow Y$, with the additional arrow $V\to Z$. Study the path through $U,V$; $Z$ is not on it.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** $\{U\}$, $\{V\}$, and $\{U,V\}$. Both internal nodes are noncolliders. The path is open with no conditioning, and conditioning on either internal node blocks it.
+
+**b.** The empty set, $\{V\}$, and $\{U,V\}$. The collider $U$ blocks the path without conditioning. Conditioning on $U$ alone opens it. Conditioning on the noncollider $V$ blocks it whether or not $U$ is conditioned on.
+
+**c.** The empty set, $\{U\}$, $\{U,V\}$, $\{U,Z\}$, and $\{U,V,Z\}$. Without conditioning, the collider $V$ blocks the path. Conditioning on $V$ or its descendant $Z$ opens that collider, but conditioning on $U$ still blocks the path. The remaining sets, $\{V\}$, $\{Z\}$, and $\{V,Z\}$, leave the path open.
+:::
+
+### 16. Finding d-separating sets
+
+Return to the graph in Exercise 14. Choose conditioning variables only from $U,V,K,L$.
+
+a. Find two different conditioning sets that d-separate $A$ and $Y$. For each set, explain why every path is blocked.
+
+b. Can a conditioning set containing $K$ or $L$ d-separate $A$ and $Y$? Explain.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** $\{U\}$ and $\{V\}$ both work. Either blocks the path $A\leftarrow U\to V\to Y$ at a noncollider. The path $A\to K\leftarrow Y$ remains blocked at its collider $K$. The set $\{U,V\}$ also works.
+
+**b.** No. Conditioning on $K$ or $L$ opens the path $A\to K\leftarrow Y$. Its only internal node is $K$, so conditioning on $U$ or $V$ cannot block this path.
+:::
+
+### 17. Applying the global Markov property
+
+Suppose the graph in Exercise 14 comes from an SCM with a topological order.
+
+a. Use your d-separation conclusions to state two conditional-independence relationships between $A$ and $Y$ guaranteed by the global Markov property.
+
+b. Does the global Markov property guarantee $A\perp Y\mid V,L$? If not, does it establish that $A$ and $Y$ are conditionally dependent given $V,L$? Explain.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** Since $U$ and $V$ each d-separate $A$ and $Y$, the global Markov property gives
+
+$$
+A\perp Y\mid U,
+\qquad
+A\perp Y\mid V.
+$$
+
+It also gives $A\perp Y\mid U,V$.
+
+**b.** No to both questions. The collection $V,L$ does not d-separate the endpoints because $A\to K\leftarrow Y$ is open. The global Markov property therefore gives no independence guarantee for this conditioning set. Failure of d-separation does not establish conditional dependence; that can depend on the particular assignments and noise distributions.
+:::
+
+
+### 18. Conditioning on a variable measured before exposure
+
+Consider the following causal graph. The variables $W,U,V,M,T$ are measured before exposure $A$. Suppose the graph comes from an SCM with a topological order.
+
+![](images/02d-exercise-m-bias.svg){width=700 fig-align="center" fig-alt="W points to A and Y; U points to A and M; V points to M and Y; M points to T."}
+
+a. List every path between $A$ and $Y$. Does $W$ d-separate them? State the corresponding conclusion from the global Markov property.
+
+b. Does $W,M$ d-separate $A$ and $Y$? What about $W,T$? Explain what changes on each path.
+
+c. A researcher argues that adding $M$ to the conditioning collection is harmless because it was measured before $A$. What does this graph tell us about that argument?
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** There are two paths: $A\leftarrow W\to Y$ and $A\leftarrow U\to M\leftarrow V\to Y$. Conditioning on $W$ blocks the first. The second is blocked by its collider $M$, since neither $M$ nor its descendant $T$ is conditioned on. Thus, $W$ d-separates the endpoints, giving $A\perp Y\mid W$.
+
+**b.** Neither collection d-separates them. The first path remains blocked at $W$, but conditioning on either $M$ or its descendant $T$ opens the second path. Neither $U$ nor $V$ is conditioned on, so nothing else blocks that path. The global Markov property no longer guarantees conditional independence.
+
+**c.** Measurement before exposure is not enough to justify adding a variable to the conditioning collection. Here, adding $M$ can introduce conditional dependence between $A$ and $Y$. This phenomenon is called **M-bias**, after the shape of the path through $U,M,V$. More generally, adding conditioning variables can destroy d-separation by opening a collider, even when those variables precede exposure. An open path permits dependence; it does not prove that dependence occurs in every SCM with this graph.
+:::
+
+### 19. Can every path be blocked?
+
+Consider the following causal graph from an SCM with a topological order.
+
+![](images/02d-exercise-direct.svg){width=660 fig-align="center" fig-alt="U points to A and Y; A points to Y and M; M points to Y; Y points to T."}
+
+a. List every path between $A$ and $Y$. Which remain open conditional on $U,M$?
+
+b. Can any collection chosen from $U,M,T$ d-separate $A$ and $Y$? Explain. Does your answer establish that $A$ and $Y$ are dependent?
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** The paths are $A\leftarrow U\to Y$, $A\to M\to Y$, and $A\to Y$. Conditioning on $U,M$ blocks the first two. The direct path $A\to Y$ remains open.
+
+**b.** No. The direct path has no internal node, so none of the other variables can block it. Conditioning on $T$ cannot change this.
+
+More generally, whenever a graph contains a direct arrow between two endpoints, no collection of other variables can d-separate them, regardless of the other paths in the graph. This does not prove dependence: it means the global Markov property cannot guarantee independence or conditional independence for those endpoints.
+:::
+
+### 20. Disconnected parts of a graph
+
+Consider the following causal graph from an SCM with a topological order.
+
+![](images/02d-exercise-disconnected.svg){width=680 fig-align="center" fig-alt="Two disconnected triangles: U points to A and C, and A points to C; V points to Y and D, and Y points to D."}
+
+a. Are $A$ and $Y$ d-separated without conditioning? What does the global Markov property imply?
+
+b. Are $A$ and $Y$ d-separated by $C,D$? Explain why conditioning on these colliders does or does not change your answer.
+
+c. Does every collection chosen from $U,V,C,D$ d-separate $A$ and $Y$? Explain and state the general observation this illustrates.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** Yes. There is no path between $A$ and $Y$, so there is no open path. They are d-separated by the empty collection, giving $A\perp Y$.
+
+**b.** Yes, giving $A\perp Y\mid C,D$. Conditioning on the colliders can change whether paths within each disconnected part are open. It cannot create a path between the two parts.
+
+**c.** Yes. More generally, if there is no path between two endpoints in the graph, every collection of other variables in that graph d-separates them. For an SCM with a topological order, the global Markov property guarantees both independence without conditioning and conditional independence conditional on any such collection. Conditioning can open an existing path, but it cannot create a path where none exists.
+:::

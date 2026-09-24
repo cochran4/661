@@ -15,3 +15,7 @@ filters:
 ## Causal graphs {.unnumbered}
 
 {{< include _exercises/02c-causal-graphs.qmd >}}
+
+## Global Markov property {.unnumbered}
+
+{{< include _exercises/02d-global-markov-property.qmd >}}
