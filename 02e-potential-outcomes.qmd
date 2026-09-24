@@ -1,0 +1,32 @@
+---
+title: "Potential outcomes"
+---
+
+![](images/potential-outcomes-squirrel-bucket.png){width=700 fig-align="center" fig-alt="A puzzled squirrel stands beneath a bucket of water, hesitating over a rope handle that would tip the water onto its head. Vintage paperback-style ink illustration."}
+
+## Introduction
+
+The wait is over. We are ready for causal inference.
+
+But since I have had you anticipating this moment for a while, let's first appreciate everything we did to get here.
+
+We started with a story. We knew causal inference would somehow have to reverse the process by which the world generated our data, so we needed to think carefully about that process. A probability model alone was not enough. We needed to describe data generation as a step-by-step procedure, in which each variable (or vector of variables) is produced as a function of others. As the King of Hearts advises in Alice in Wonderland: "Begin at the beginning ... and go on till you come to the end: then stop."
+
+That commitment became our list of assignments. With a topological order, we could read this list top to bottom as a single run of a procedure that generates data. To convince ourselves that assignments really do produce data, we wrote down concrete examples using Bernoulli and normal variables and simulated from them. Along the way, we saw what these assignments imply about the underlying probability model.
+
+Then we realized we were overdoing it. The important part of the story is which variables generate which. Everything else in the generation is independent noise (our jitter). Pared down this way, our list of assignments earned a name: the structural causal model, or SCM, as we now affectionately call it. We gave it that name even though we weren't yet doing anything causal.
+
+Next, we drew the graph. Because writing out an SCM takes forever, we captured its structure in a causal graph. The graph is a summary of the SCM: it drops the specific functions and noise distributions but keeps who feeds whom. It was causal in name only, too.
+
+The graph paid off immediately. No cycles (with finitely many variables) gives us a topological order. The local and global Markov properties, and d-separation in particular, tell us what is and isn't independent in the SCM, and how dependence is transmitted. This matters because the associations in our data are our clues for causal inference, so we needed to understand how they arise.
+
+And yet, we have not done any causal inference. Our SCM and graph become causal only when we say what happens under manipulation.
+
+So we go back to the beginning (the Alice quote again, if you like) and to where we first saw causal inference: the clinical trial. Causal questions are questions about what happens when we manipulate something, like this poor squirrel contemplating the rope (please don't!). Clinical trials answered them with randomization and thought experiments. With SCMs, we can be far more precise.
+
+In this chapter, we will define an intervention as replacing an assignment in the SCM, see how that changes the data-generating procedure and the graph, and connect the result to potential outcomes.
+
+
+## A single intervention
+
+We

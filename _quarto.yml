@@ -21,6 +21,7 @@ book:
         - 02b-structural-causal-models.qmd
         - 02c-causal-graphs.qmd
         - 02d-global-markov-property.qmd
+        - 02e-potential-outcomes.qmd
         - 02-exercises.qmd
     - part: "Measured confounding"
       chapters: []
@@ -66,6 +67,8 @@ book:
             file: 02c-causal-graphs.qmd
           - text: "Global Markov property"
             file: 02d-global-markov-property.qmd
+          - text: "Potential outcomes"
+            file: 02e-potential-outcomes.qmd
           - text: "Exercises"
             file: 02-exercises.qmd
       - text: "Back matter"
