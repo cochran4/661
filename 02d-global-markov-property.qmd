@@ -547,32 +547,15 @@ Both arguments rely on there being only one path between the endpoints. In a lar
 
 <div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
 
-## Graduate to more complicated graphs
+## Multiple paths
 
-A larger graph is a smorgasbord of chains, forks, and colliders. To understand what it tells us about independence, we need to figure out what happens when we combine these building blocks.
+What happens when there is more than one path between $A$ and $Y$? A blocked path is no longer enough to guarantee independence: another path may remain open. We need to consider all of them.
 
-Our destination is a graphical rule called **d-separation**. The global Markov property tells us why this rule matters.
-
-::: {.proposition-box}
-**Global Markov property.** Consider an SCM with a topological order. If a collection of other variables $X_1,\ldots,X_k$ d-separates $A$ and $Y$ in its causal graph, then
-
-$$
-A\perp\!\!\!\perp Y\mid X_1,\ldots,X_k.
-$$
-
-The conditioning collection may be empty. In that case, the conclusion is $A\perp\!\!\!\perp Y$.
-:::
-
-The plan, then, is to find variables that d-separate $A$
-and $Y$, and condition on them to make $A$ and $Y$ independent. To do that, we need to define d-separation. Let's start with an example, since it is more illustrative than jumping straight to the definition.
-
-### List out paths
-
-Consider the following graph. 
+Consider the following causal graph.
 
 ![A graph with several paths between A and Y.](images/02d-five-paths.svg){#fig-dsep-five-paths width=700 fig-align="center" fig-alt="Arrows B to A, C, and Y; A to C and D; C to F; F to Y; Y to D; and D to E."}
 
-Recall that a path from $A$ to $Y$ starts at $A$, follows arrows in either direction, and ends at $Y$, without visiting any node twice. There are five paths in @fig-dsep-five-paths:
+There are five paths between $A$ and $Y$:
 
 1. $A\to C\to F\to Y$.
 2. $A\leftarrow B\to C\to F\to Y$.
@@ -580,135 +563,78 @@ Recall that a path from $A$ to $Y$ starts at $A$, follows arrows in either direc
 4. $A\to D\leftarrow Y$.
 5. $A\to C\leftarrow B\to Y$.
 
-The node $E$ is not on any path from $A$ to $Y$, because going from $D$ to $E$ leaves us no way to reach $Y$ without visiting $D$ again.
+When we condition on nothing, paths (1), (2), and (3) are open: they contain only chains and forks. Path (4) is blocked by its collider $D$, and path (5) is blocked by its collider $C$. There are open paths between the endpoints, so $A$ and $Y$ may be dependent.
 
-Which paths could make $A$ and $Y$ dependent? Our initial guess might be paths (1), (2), and (3). These paths connect $A$ and $Y$ through chains and forks, and chains and forks are what we say that transmitted dependence in our three-variable examples. 
+How might we make $A$ and $Y$ conditionally independent? Our single-path examples suggest conditioning on middle variables in chains or forks. But now we need a collection that blocks **every path**.
 
-We may also think path (4) and (5) do not make $A$ and $Y$ dependent. Path (4) has a collider at $D$, and path (5) has a collider at $C$. Colliders prevented dependence in our three-variable example.
+Paths (4) and (5) are already blocked, so start with paths (1), (2), and (3):
 
-One thing to note is that a node's role depends on the path. On path (1), $C$ is the middle of a chain. On path (5), both arrows point into $C$, so it is a collider. We examine the two arrows next to a node on the particular path we are tracing to determine a node's role.
+- On path (1), conditioning on $C$ blocks a chain.
+- On path (2), conditioning on $B$ blocks a fork, and conditioning on $C$ blocks a chain.
+- On path (3), conditioning on $B$ blocks a fork.
 
-### Choose what to condition on
+This suggests conditioning on $B,C$. That blocks the three paths we were worried about. But we must also revisit paths (4) and (5): conditioning can open a path that was previously blocked.
 
-Paths (4) and (5) have colliders, so for now we only need to worry about paths (1), (2), and (3). How might we try to "block" the transmission of dependence along those paths? Conditioning helped us before: in our three-variable examples, conditioning on the middle of a chain or fork made its outer variables conditionally independent.
+Path (4), $A\to D\leftarrow Y$, remains blocked. We are conditioning on neither its collider $D$ nor its descendant $E$.
 
-- On path (1), both $C$ and $F$ are middle variables in chains.
-- On path (2), $B$ is the middle of a fork, while $C$ and $F$ are middle variables in chains.
-- On path (3), $B$ is the middle of a fork.
+Path (5), $A\to C\leftarrow B\to Y$, needs more care. Conditioning on $C$ removes the blockage at the collider. However, we are also conditioning on $B$, the middle of a fork along the same path. That is enough to block it.
 
-This suggests conditioning on $B$ and $C$: $C$ addresses path (1), $B$ addresses path (3), and both address path (2).
+Thus, conditioning on $B,C$ blocks all five paths:
 
-But conditioning can change what happens along paths (4) and (5), too. We set them aside because they contained colliders. Does that reasoning still hold after conditioning on $B,C$?
+| Path | Conditional on $B,C$ |
+|---|---|
+| (1) $A\to C\to F\to Y$ | Blocked at $C$ |
+| (2) $A\leftarrow B\to C\to F\to Y$ | Blocked at $B$ and $C$ |
+| (3) $A\leftarrow B\to Y$ | Blocked at $B$ |
+| (4) $A\to D\leftarrow Y$ | Blocked at $D$ |
+| (5) $A\to C\leftarrow B\to Y$ | Blocked at $B$ |
 
-Path (4), $A\to D\leftarrow Y$, still connects $A$ and $Y$ through the collider $D$. We are not conditioning on $D$, so this path still poses no problem.
-
-Path (5), $A\to C\leftarrow B\to Y$, is trickier. We are conditioning on its collider $C$, which can make $A$ and $B$ conditionally dependent. We can therefore no longer rely on $C$ to prevent dependence along this path. However, $B$ is the middle of the fork $C\leftarrow B\to Y$, and we are conditioning on $B$. This suggests that $B$ still ``blocks" the transmission of dependence along the full path from $A$ to $Y$.
-
-It turns that conditioning on $B,C$ does give us
+We say that $B,C$ **d-separates** $A$ and $Y$. As we suspected, blocking every path gives us conditional independence:
 
 $$
 A\perp\!\!\!\perp Y\mid B,C.
 $$
 
-We will justify this by showing that $B,C$ *d-separates* $A$ and $Y$. And so, the global Markov property applies giving us this conditional independent result.
-
-
-::: {.callout-note title="Optional technical note: how this differs from local Markov property" collapse="true"}
-
-This conclusion goes beyond a direct application of the local Markov property to $Y$. Its parents are $B,F$, so the local Markov property gives $Y\perp\!\!\!\perp A\mid B,F$. Our path-based argument instead gives independence conditional on $B,C$, even though $C$ is not a parent of $Y$.
-
-What if we also condition on $D$? On path (4), $A\to D\leftarrow Y$, we would then be conditioning on a collider. Our three-variable example showed that this can make its parents conditionally dependent. This suggests that adding $D$ could undo what we accomplished by conditioning on $B,C$. And indeed, if we condition on $B,C,D$, we can longer guarantee that $A$ and $Y$ are conditional independent.
-
-Conditioning on more variables can therefore undo the independence guarantee we obtained with $B,C$.
-
-:::
-
-### Blocking a single path
-
-Before we can define d-separation, we need to know what it means to **block a path.** This makes precise the intuition we have been building: a path may allow dependence between its endpoints, and we want to understand when conditioning or colliders prevent that.
-
-Our three-variable examples suggest two ways a path can be blocked. In a chain or fork, conditioning on the middle variable makes the outer variables conditionally independent. A collider does the opposite: its outer variables are independent without conditioning, but may become conditionally dependent when we condition on the collider. These observations suggest that a conditioned middle variable in a chain or fork, or an unconditioned collider, can block a longer path. Just one such variable is enough to block the path.
-
-This is almost it. There is just one more possibility that our three-variable examples could not show: conditioning on a descendant of a collider. To see why this matters, return to path (4), $A\to D\leftarrow Y$. We have treated this path as blocked because $D$ is a collider that we are not conditioning on. But $D$ has a descendant, $E$, because our graph also contains $D\to E$. Conditioning on $E$ can give us information about $D$. For example, if the assignment is $E\leftarrow D$, knowing $E$ tells us $D$ exactly. So this path can be open even without conditioning on $D$: conditioning on its descendant $E$ is enough.
-
-Our rule must therefore account for both the collider and its descendants.
+This is the general strategy: find a collection of variables that blocks every path between the endpoints. The name for accomplishing this is d-separation.
 
 ::: {.definition-box}
-**Blocked and open paths.** A path is **blocked** by the variables we condition on, $X_1,\ldots,X_k$, if at least one of the following holds:
+**d-separation.** A collection of variables $X_1,\ldots,X_k$, excluding the endpoints $A$ and $Y$, **d-separates** $A$ and $Y$ if it blocks every path between them.
 
-1. A middle variable in a chain or fork along the path is conditioned on.
-2. A collider along the path is not conditioned on, and none of its descendants is conditioned on.
-
-If neither condition holds, the path is **open** conditional on $X_1,\ldots,X_k$.
+The conditioning collection may be empty.
 :::
 
-Let's apply this definition to a few paths. In each example, we focus on one path from $A$ to $Y$. We try to figure out which other variables shown could we condition on to block that path.
+We now have a precise statement about the graph: every path between two variables is blocked by the conditioning collection. The **global Markov property** tells us what this implies about the random variables.
 
-Consider
-
-$$
-A\leftarrow U\to V\to Y.
-$$
-
-Here $U$ is the middle of a fork and $V$ is the middle of a chain. There are no colliders, so the path is open when we condition on nothing. Conditioning on $U$ blocks the fork; conditioning on $V$ blocks the chain. Thus, the conditioning sets that block this path are $\{U\}$, $\{V\}$, and $\{U,V\}$. A single conditioned noncollider is enough.
-
-<details class="lesson-question">
-<summary>For the path $A\to U\leftarrow V\to Y$, which conditioning sets chosen from $U,V$ block the path?</summary>
-
-The internal node $U$ is a collider, while $V$ is the middle of a fork.
-
-| Conditioning set | Path status | Reason |
-|---|---|---|
-| Nothing | Blocked | The collider $U$ is not conditioned on. |
-| $U$ | Open | Conditioning on $U$ opens the collider, and $V$ is not conditioned on. |
-| $V$ | Blocked | The collider $U$ is not conditioned on; the conditioned fork at $V$ also blocks the path. |
-| $U,V$ | Blocked | The conditioned fork at $V$ blocks the path even though the collider at $U$ is opened. |
-
-</details>
-
-<details class="lesson-question">
-<summary>Consider the path $A\to U\leftarrow V\to Y$, now with the additional arrow $U\to Z$. Which conditioning sets chosen from $U,V,Z$ block the path from $A$ through $U,V$ to $Y$?</summary>
-
-The variable $Z$ is a descendant of the collider $U$. Conditioning on either $U$ or $Z$ removes the blockage at $U$. But conditioning on $V$ always blocks the path, because $V$ is a noncollider on it.
-
-The blocking sets are therefore the empty set and every set containing $V$: $\{V\}$, $\{U,V\}$, $\{V,Z\}$, and $\{U,V,Z\}$. The path is open given $\{U\}$, $\{Z\}$, or $\{U,Z\}$.
-
-Notice that $Z$ can change whether the path is open even though it is not on the path itself.
-
-</details>
-
-### Blocking all paths
-
-Blocking one path need not make its endpoints conditionally independent: another path may remain open. We need a criterion that considers every path.
-
-::: {.definition-box}
-**d-separation.** A collection $X_1,\ldots,X_k$ **d-separates** $A$ and $Y$ if it blocks every path between them. Otherwise, $A$ and $Y$ are **d-connected** given that collection.
-:::
-
-d-separation is a statement about a graph; conditional independence is a statement about random variables. The global Markov property connects them: if $X_1,\ldots,X_k$ d-separates $A$ and $Y$ in the causal graph of an SCM with a topological order, then
+::: {.proposition-box}
+**Global Markov property.** Suppose an SCM admits a topological order. If $X_1,\ldots,X_k$ d-separates $A$ and $Y$ in its causal graph, then
 
 $$
 A\perp\!\!\!\perp Y\mid X_1,\ldots,X_k.
 $$
 
-We can now justify our earlier conclusion in @fig-dsep-five-paths. Conditioning on $B,C$ blocks path (1) at $C$, path (2) at $B$ and $C$, and path (3) at $B$. Path (4) is blocked by its collider $D$, since neither $D$ nor its descendant $E$ is conditioned on. On path (5), conditioning on $C$ opens the collider there, but conditioning on $B$ still blocks the path.
+If the conditioning collection is empty, the conclusion is $A\perp\!\!\!\perp Y$.
+:::
 
-All five paths are blocked. Therefore, $B,C$ does indeed d-separate $A$ and $Y$, and the global Markov property establishes
+d-separation is a statement about paths in a graph. Conditional independence is a statement about random variables. The global Markov property connects the two.
 
-$$
-A\perp\!\!\!\perp Y\mid B,C.
-$$
+::: {.callout-note title="Optional technical note: proof of the global Markov property" collapse="true"}
 
+To-do: add the full proof. The single-path argument above establishes the result when there is exactly one path between the endpoints. The general proof must account for multiple paths that can share variables.
+
+:::
 
 <details class="lesson-question">
-<summary>Why is conditioning on $C$ alone insufficient to d-separate $A$ and $Y$?</summary>
+<summary>In @fig-dsep-five-paths, why is conditioning on $C$ alone insufficient to d-separate $A$ and $Y$?</summary>
 
-Conditioning on $C$ blocks paths (1) and (2), but path (3), $A\leftarrow B\to Y$, remains open. It also opens the collider at $C$ on path (5), $A\to C\leftarrow B\to Y$. Since we have not conditioned on $B$, path (5) is now open too. Path (4) remains blocked at $D$. Two paths remain open, so $C$ does not d-separate $A$ and $Y$.
+Conditioning on $C$ blocks paths (1) and (2), but path (3), $A\leftarrow B\to Y$, remains open.
+
+It also opens path (5), $A\to C\leftarrow B\to Y$, by conditioning on its collider. Since $B$ is not conditioned on, nothing else blocks that path.
+
+Path (4) remains blocked at $D$. But two paths remain open, so $C$ does not d-separate $A$ and $Y$.
 
 </details>
 
-
-Let's work through another example. Consider this causal graph, which has topological order $U,A,C,M,N,Y,K,L$.
+Let's work through another example.
 
 ![](images/02d-second-dsep.svg){width=700 fig-align="center" fig-alt="U points to A and C; C points to Y; A points to M, M to N, and N to Y; A and Y point to K; K points to L."}
 
@@ -720,30 +646,24 @@ There are three paths between $A$ and $Y$:
 
 To block the first path, we could condition on either $U$ or $C$. To block the second, we could condition on either $M$ or $N$. The third path is already blocked by its collider $K$, provided we condition on neither $K$ nor its descendant $L$.
 
-Choose $C,M$. Conditioning on $C$ blocks the first path, and conditioning on $M$ blocks the second. The third remains blocked at $K$. We have checked **every path**, so $C,M$ d-separates $A$ and $Y$. The global Markov property gives
+Choose $C,M$. Conditioning on $C$ blocks the first path, and conditioning on $M$ blocks the second. The third remains blocked at $K$. Thus, $C,M$ d-separates $A$ and $Y$. The SCM has topological order $U,A,C,M,N,Y,K,L$, so the global Markov property gives
 
 $$
-A\perp Y\mid C,M.
+A\perp\!\!\!\perp Y\mid C,M.
 $$
 
-This is not a direct application of the local Markov property to either endpoint: $A$ has parent $U$, while $Y$ has parents $C,N$. Our conditioning collection $C,M$ is neither parent set. By examining paths, we can find other collections that guarantee conditional independence.
+This is not a direct application of the local Markov property to either endpoint. The parent of $A$ is $U$, while the parents of $Y$ are $C,N$. Our conditioning collection $C,M$ is neither parent set. Examining paths lets us find other collections that guarantee conditional independence.
 
-Adding $L$ to the conditioning collection opens the third path through its collider $K$. Thus, $C,M,L$ does not d-separate $A$ and $Y$. The global Markov property then supplies no conditional-independence guarantee for these endpoints.
+What if we also condition on $L$? This opens the third path through its collider $K$, because $L$ is a descendant of $K$. The first two paths remain blocked, but that is no longer enough. The collection $C,M,L$ does not d-separate $A$ and $Y$, so the global Markov property does not guarantee conditional independence for this collection. It does not establish conditional dependence either.
 
-These examples suggest a systematic approach to using the global Markov property:
+These examples give us a systematic approach:
 
-1. Identify the two variables of interest and list every path between them.
-2. For the variables we are conditioning on, check each path. Is there a conditioned middle variable in a chain or fork? Is there a collider with neither itself nor any of its descendants conditioned on? Either is enough to block that path.
-3. Check whether **every path is blocked**. If so, the conditioning collection d-separates the endpoints.
-4. Apply the global Markov property to conclude conditional independence. If any path remains open, the property gives no conclusion about independence or dependence.
+1. **List every path** between the two variables of interest.
+2. **Check each path under the proposed conditioning collection.** A conditioned middle variable in a chain or fork blocks the path. So does a collider with neither itself nor any descendant conditioned on.
+3. **Check whether every path is blocked.** If so, the conditioning collection d-separates the endpoints.
+4. **Apply the global Markov property** to conclude conditional independence. If a path remains open, the property gives no conclusion about independence or dependence.
 
-When searching for variables to condition on, check every path again after choosing them. Conditioning that blocks one path may open another.
-
-
-
-::: {.callout-note title="Optional technical note: the global Markov property" collapse="true"}
-To-do. I'll eventually want to put the full proof here. It is a bit involved, so for now, I'll leave this blank.
-:::
+When choosing variables to condition on, check every path again after choosing them. Conditioning that blocks one path may open another.
 
 <div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
 
