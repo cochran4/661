@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 540" width="700" height="540">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#315C43"/></marker></defs>
+<line x1="326.4" y1="56.0" x2="87.2" y2="167.3" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="373.6" y1="56.0" x2="612.8" y2="167.3" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="169.8" y1="268.7" x2="83.3" y2="198.9" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="211.7" y1="299.3" x2="324.9" y2="373.5" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="488.3" y1="299.3" x2="375.1" y2="373.5" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="530.2" y1="268.7" x2="616.7" y2="198.9" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="350.0" y1="416.0" x2="350.0" y2="470.0" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<circle cx="350" cy="45" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="350" y="53" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">W</text>
+<circle cx="60" cy="180" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="60" y="188" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">A</text>
+<circle cx="640" cy="180" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="640" y="188" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">Y</text>
+<circle cx="190" cy="285" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="190" y="293" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">U</text>
+<circle cx="510" cy="285" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="510" y="293" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">V</text>
+<circle cx="350" cy="390" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="350" y="398" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">M</text>
+<circle cx="350" cy="500" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="350" y="508" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">T</text>
+</svg>

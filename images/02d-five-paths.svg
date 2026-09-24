@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 500" width="700" height="500">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#315C43"/></marker></defs>
+<line x1="122.3" y1="206.6" x2="324.3" y2="85.4" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="123.8" y1="230.5" x2="322.5" y2="317.9" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="100.0" y1="96.0" x2="100.0" y2="190.0" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="126.0" y1="70.0" x2="320.0" y2="70.0" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<path d="M116 50 C260 -15 660 0 608 191" fill="none" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="372.3" y1="83.4" x2="449.3" y2="129.6" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="497.3" y1="158.4" x2="574.3" y2="204.6" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="576.2" y1="230.5" x2="377.5" y2="317.9" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="350.0" y1="356.0" x2="350.0" y2="420.0" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<circle cx="100" cy="70" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="100" y="78" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">B</text>
+<circle cx="100" cy="220" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="100" y="228" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">A</text>
+<circle cx="350" cy="70" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="350" y="78" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">C</text>
+<circle cx="600" cy="220" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="600" y="228" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">Y</text>
+<circle cx="350" cy="330" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="350" y="338" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">D</text>
+<circle cx="350" cy="450" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="350" y="458" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">E</text>
+<circle cx="475" cy="145" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="475" y="153" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">F</text>
+</svg>

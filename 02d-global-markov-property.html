@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Global Markov property – Causal inference (and other things)</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./02-exercises.html" rel="next">
+<link href="./02c-causal-graphs.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-12ca529a1c26fb8dee66fe492e8a00b7.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Causal inference (and other things)</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./00-syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-motivation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Motivation</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-motivation">    
+        <li>
+    <a class="dropdown-item" href="./01a-being-a-detective.html">
+ <span class="dropdown-text">Being a detective with data</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01b-why-probability-is-not-enough.html">
+ <span class="dropdown-text">Why probability is not enough</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01c-clinical-trials.html">
+ <span class="dropdown-text">Clinical trials as our exemplar</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01d-probability.html">
+ <span class="dropdown-text">Probability gives us a formal language</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-construction" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Construction</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-construction">    
+        <li>
+    <a class="dropdown-item" href="./02a-assignments.html">
+ <span class="dropdown-text">A list of assignments</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02b-structural-causal-models.html">
+ <span class="dropdown-text">Structural causal models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02c-causal-graphs.html">
+ <span class="dropdown-text">Causal graphs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02d-global-markov-property.html">
+ <span class="dropdown-text">Global Markov property</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-back-matter" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Back matter</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-back-matter">    
+        <li>
+    <a class="dropdown-item" href="./glossary.html">
+ <span class="dropdown-text">Glossary</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./references.html">
+ <span class="dropdown-text">References</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments.html">Construction</a></li><li class="breadcrumb-item"><a href="./02d-global-markov-property.html"><span class="chapter-title">Global Markov property</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">index.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-syllabus.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Syllabus</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Motivation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01a-being-a-detective.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Being a detective with data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01b-why-probability-is-not-enough.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Why probability is not enough</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01c-clinical-trials.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Clinical trials as our exemplar</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01d-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Probability gives us a formal language</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Construction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02a-assignments.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">A list of assignments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02b-structural-causal-models.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Structural causal models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02c-causal-graphs.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Causal graphs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02d-global-markov-property.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Global Markov property</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Measured confounding</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Unmeasured confounding</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Sensitivity analysis</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Missing data</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Complex surveys</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Back matter</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Glossary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">References</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02a-assignments.html">Construction</a></li><li class="breadcrumb-item"><a href="./02d-global-markov-property.html"><span class="chapter-title">Global Markov property</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">Global Markov property</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02d-squirrels-sharing-contact.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:85.0%" alt="Two squirrels in checked hats and tailored clothing hold up their phones. A contact card travels along a green arrow from the left squirrel's phone to the right squirrel's phone."></p>
+</figure>
+</div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>We now have a graph showing how the variables in our story are connected. Those connections give associations an origin story. If learning one variable tells us something about another, we can look through the graph for the paths along which that information might have traveled. (Recall that a <strong>path</strong> is a sequence of distinct nodes connected by arrows; we may follow those arrows in either direction.)</p>
+<p>Why study associations in a book about cause and effect? Associations are what we encounter in data. We observe that variables are related, perhaps even after conditioning on other variables. Since we care about how the world generated those variables, we would like to understand how those associations came about.</p>
+<p>The graph gives us a way to do that, but we need to be systematic. There may be several paths between two variables, and conditioning can change which paths transmit association. In this section, we develop a principled way to examine those paths and determine what independence and conditional-independence relationships the graph implies.</p>
+<p>By association, we mean dependence, and by dependence, we mean the variables are not independent. Meanwhile, association after conditioning means conditional dependence, which means the variables are not conditionally independent. We will use these precise terms throughout the rest of the section. We will return at the end to exactly what the graph can—and cannot—tell us.</p>
+</section>
+<section id="start-with-two-variables" class="level2">
+<h2 class="anchored" data-anchor-id="start-with-two-variables">Start with two variables</h2>
+<p>Begin with the smallest possible graph. Let <span class="math inline">\(A\)</span> be an exposure and <span class="math inline">\(Y\)</span> an outcome. Suppose the entire graph contains only these two variables, connected by an arrow.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02d-edge-ay.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A single directed edge from exposure A to outcome Y." width="600"></p>
+</figure>
+</div>
+<p>The corresponding SCM has the form</p>
+<p><span class="math display">\[
+\begin{aligned}
+A&amp;\leftarrow f_A(\epsilon_A),\\
+Y&amp;\leftarrow f_Y(A,\epsilon_Y),
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(\epsilon_A\)</span> and <span class="math inline">\(\epsilon_Y\)</span> are independent. The arrow tells us that <span class="math inline">\(A\)</span> is an input to the assignment for <span class="math inline">\(Y\)</span>. So <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> can move together: the value <span class="math inline">\(A\)</span> takes can shape the value <span class="math inline">\(Y\)</span> takes. Put differently, if we find out the value of <span class="math inline">\(A\)</span>, we may be able to make a better guess about <span class="math inline">\(Y\)</span>. It works in reverse too. If we find out the value of <span class="math inline">\(Y\)</span>, we may be able to make a better guess about <span class="math inline">\(A\)</span>. The two variables may be dependent.</p>
+<p>To show that dependence is possible, a single example is enough. Let the noise terms be independent <span class="math inline">\(\operatorname{Bernoulli}(1/2)\)</span> random variables and write</p>
+<p><span class="math display">\[
+A\leftarrow\epsilon_A,
+\qquad
+Y\leftarrow A+\epsilon_Y.
+\]</span></p>
+<p>Using linearity of conditional expectation and independence of <span class="math inline">\(A\)</span> and <span class="math inline">\(\epsilon_Y\)</span>, we obtain</p>
+<p><span class="math display">\[
+E[Y\mid A]
+=A+E[\epsilon_Y\mid A]
+=A+\frac12.
+\]</span></p>
+<p>This conditional mean is <span class="math inline">\(1/2\)</span> when <span class="math inline">\(A=0\)</span> and <span class="math inline">\(3/2\)</span> when <span class="math inline">\(A=1\)</span>. It varies with <span class="math inline">\(A\)</span>, so <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are dependent.</p>
+<p>Why is this enough? If <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> were independent, then <span class="math inline">\(E[Y\mid A]=E[Y]\)</span> whenever the expectation exists. A conditional mean that varies with <span class="math inline">\(A\)</span> therefore establishes dependence. (The reverse argument does not generally work: a constant conditional mean alone does not establish independence.)</p>
+<p>This single example establishes that the causal graph allows <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> to be dependent.</p>
+<p>Now consider a causal graph containing the same two variables but no arrow between them.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02d-disconnected-ay.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Two nodes, exposure A and outcome Y, with no edge connecting them." width="600"></p>
+</figure>
+</div>
+<p>Here we claim that <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> must be independent. To establish this, we need an argument that applies to every SCM with this graph. Such an SCM has the form</p>
+<p><span class="math display">\[
+A\leftarrow f_A(\epsilon_A),
+\qquad
+Y\leftarrow f_Y(\epsilon_Y),
+\]</span></p>
+<p>with independent noise terms. We can apply the local Markov property using the topological order <span class="math inline">\(A,Y\)</span>. The variable <span class="math inline">\(A\)</span> precedes <span class="math inline">\(Y\)</span>, and <span class="math inline">\(Y\)</span> has no parents. Thus,</p>
+<p><span class="math display">\[
+Y\perp\!\!\!\perp A\mid\varnothing.
+\]</span></p>
+<p>The empty set <span class="math inline">\(\varnothing\)</span> means that we are conditioning on no variables. This is simply independence:</p>
+<p><span class="math display">\[
+A\perp\!\!\!\perp Y.
+\]</span></p>
+<p>The assignments also explain why: <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are functions of separate independent noise terms. Taking functions of those noise terms preserves their independence. This argument applies to every SCM with this two-variable graph.</p>
+<p>With only two variables, that’s it.</p>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
+</div>
+</section>
+<section id="move-on-to-three-variables" class="level2">
+<h2 class="anchored" data-anchor-id="move-on-to-three-variables">Move on to three variables</h2>
+<p>Once other variables enter the graph, however, <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> can be connected even when there is no arrow directly between them. To understand how that can happen, we will start with three arrangements: <strong>chains, forks, and colliders</strong>. These are the building blocks of paths through a graph. Once we understand each one, including what happens when we condition on its middle variable, we can combine them to study more complicated graphs.</p>
+<p>Suppose a third variable <span class="math inline">\(X\)</span> lies between the exposure <span class="math inline">\(A\)</span> and outcome <span class="math inline">\(Y\)</span>. In each of the following graphs, <span class="math inline">\(A\)</span> and <span class="math inline">\(X\)</span> are connected by an arrow, and <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are connected by an arrow. The directions of the two arrows determine whether <span class="math inline">\(X\)</span> is part of a chain, a fork, or a collider. Each displayed three-variable graph is the entire graph for its example.</p>
+<section id="chain" class="level3">
+<h3 class="anchored" data-anchor-id="chain">Chain</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02d-chain-axy.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A chain: exposure A points to mediator X, which points to outcome Y." width="600"></p>
+</figure>
+</div>
+<p>A <strong>chain</strong> has one arrow entering the middle variable and one arrow leaving it. Here the arrows form a directed path from <span class="math inline">\(A\)</span>, through <span class="math inline">\(X\)</span>, to <span class="math inline">\(Y\)</span>:</p>
+<p><span class="math display">\[
+A\to X\to Y.
+\]</span></p>
+<p>The corresponding SCM is</p>
+<p><span class="math display">\[
+\begin{aligned}
+A&amp;\leftarrow f_A(\epsilon_A),\\
+X&amp;\leftarrow f_X(A,\epsilon_X),\\
+Y&amp;\leftarrow f_Y(X,\epsilon_Y),
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(\epsilon_A,\epsilon_X,\epsilon_Y\)</span> are independent.</p>
+<p>We call the variable <span class="math inline">\(X\)</span> a <strong>mediator</strong> of the <span class="math inline">\(A\)</span>-<span class="math inline">\(Y\)</span> relationship. Consider three binary variables:</p>
+<ul>
+<li><span class="math inline">\(A=1\)</span> if you set an alarm for 9 a.m.</li>
+<li><span class="math inline">\(X=1\)</span> if you get out of bed by 9:01 a.m.</li>
+<li><span class="math inline">\(Y=1\)</span> if you arrive on time for your 10 a.m. class.</li>
+</ul>
+<p>Getting out of bed by 9:01 mediates the relationship between setting the alarm and arriving on time. <span class="math inline">\(A\)</span> goes into the assignment for <span class="math inline">\(X\)</span>, and <span class="math inline">\(X\)</span> goes into the assignment for <span class="math inline">\(Y\)</span>, so <span class="math inline">\(A\)</span> can influence <span class="math inline">\(Y\)</span> even though it is not an input to <span class="math inline">\(Y\)</span>’s assignment.</p>
+<p>To demonstrate that <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> can be dependent, consider a simple model. You set the alarm with probability <span class="math inline">\(1/2\)</span>. You get out of bed by 9:01 with probability <span class="math inline">\(3/4\)</span> if you set the alarm and <span class="math inline">\(1/4\)</span> otherwise. You arrive on time with probability <span class="math inline">\(3/4\)</span> if you get out of bed by 9:01 and <span class="math inline">\(1/4\)</span> otherwise, regardless of whether you set the alarm.</p>
+<p>We can write these assignments using Bernoulli draws:</p>
+<p><span class="math display">\[
+\begin{aligned}
+A&amp;\leftarrow\operatorname{Bernoulli}(1/2),\\
+X&amp;\leftarrow\operatorname{Bernoulli}(1/4+A/2),\\
+Y&amp;\leftarrow\operatorname{Bernoulli}(1/4+X/2).
+\end{aligned}
+\]</span></p>
+<p>Each draw uses fresh independent randomness; its probability of being one depends on the parents shown in its assignment. In particular,</p>
+<p><span class="math display">\[
+E[X\mid A]=\frac14+\frac A2,
+\qquad
+E[Y\mid X,A]=\frac14+\frac X2.
+\]</span></p>
+<p>To find <span class="math inline">\(E[Y\mid A]\)</span>, first condition on both <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span>, then average over <span class="math inline">\(X\)</span> conditional on <span class="math inline">\(A\)</span>. By iterated expectations,</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[Y\mid A]
+&amp;=E\!\left[E[Y\mid X,A]\mid A\right]\\
+&amp;=E\!\left[\frac14+\frac X2\mid A\right]\\
+&amp;=\frac14+\frac12E[X\mid A]\\
+&amp;=\frac14+\frac12\left(\frac14+\frac A2\right)\\
+&amp;=\frac38+\frac A4.
+\end{aligned}
+\]</span></p>
+<p>The third line uses linearity of conditional expectation. Since <span class="math inline">\(Y\)</span> is binary, its conditional mean is also the probability of arriving on time: <span class="math inline">\(3/8\)</span> without the alarm and <span class="math inline">\(5/8\)</span> with it. The mean varies with <span class="math inline">\(A\)</span>, so <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are dependent in this SCM. In words, you are more likely to arrive to class on time if you set an alarm! This single example establishes that a chain allows its endpoints to be dependent.</p>
+<p>Now condition on the mediator <span class="math inline">\(X\)</span>. For any SCM with this three-variable graph, the local Markov property applies with topological order <span class="math inline">\(A,X,Y\)</span>. The only parent of <span class="math inline">\(Y\)</span> is <span class="math inline">\(X\)</span>, while <span class="math inline">\(A\)</span> precedes <span class="math inline">\(Y\)</span> and is not a parent. Therefore,</p>
+<p><span class="math display">\[
+Y\perp\!\!\!\perp A\mid X.
+\]</span></p>
+<p>In the alarm example, once we know whether you got out of bed by 9:01, knowing whether you set the alarm provides no additional information about arriving on time. Among those who got up by 9:01, the probability is <span class="math inline">\(3/4\)</span> with or without an alarm; among those who did not, it is <span class="math inline">\(1/4\)</span> with or without an alarm. This reflects the model’s assumption that the alarm affects arrival only through getting out of bed by 9:01.</p>
+<p>More generally, the assignment for <span class="math inline">\(Y\)</span> uses <span class="math inline">\(X\)</span> and <span class="math inline">\(\epsilon_Y\)</span>. Once <span class="math inline">\(X\)</span> is fixed, the remaining randomness comes from <span class="math inline">\(\epsilon_Y\)</span>, which is independent of <span class="math inline">\((A,X)\)</span>. The conditional-independence conclusion therefore holds for the general chain, not just our numerical example.</p>
+<p>The reverse orientation, <span class="math inline">\(A\leftarrow X\leftarrow Y\)</span>, is also a chain: one arrow enters the middle node and one leaves it. Our displayed chain uses <span class="math inline">\(A\to X\to Y\)</span> because it has the natural interpretation of a mediator between an exposure and an outcome.</p>
+</section>
+<section id="fork" class="level3">
+<h3 class="anchored" data-anchor-id="fork">Fork</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02d-fork-axy.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A fork: X points to both exposure A and outcome Y." width="600"></p>
+</figure>
+</div>
+<p>A <strong>fork</strong> has two arrows leaving the middle variable:</p>
+<p><span class="math display">\[
+A\leftarrow X\to Y.
+\]</span></p>
+<p>Here <span class="math inline">\(X\)</span> is a <strong>common cause</strong> of <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>, also called a <strong>confounder</strong> of the <span class="math inline">\(A\)</span>-<span class="math inline">\(Y\)</span> relationship. For example, blood pressure may affect both whether a patient receives RHC and whether the patient dies.</p>
+<p>The corresponding SCM is</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow f_X(\epsilon_X),\\
+A&amp;\leftarrow f_A(X,\epsilon_A),\\
+Y&amp;\leftarrow f_Y(X,\epsilon_Y),
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(\epsilon_X,\epsilon_A,\epsilon_Y\)</span> are independent. Without conditioning on <span class="math inline">\(X\)</span>, the common cause can make <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> dependent. A single example is enough to demonstrate this possibility.</p>
+<details class="lesson-question">
+<summary>
+Can you construct an SCM with this fork in which <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are dependent?
+</summary>
+<p>One simple choice is</p>
+<p><span class="math display">\[
+X\leftarrow\operatorname{Bernoulli}(1/2),
+\qquad A\leftarrow X,
+\qquad Y\leftarrow X.
+\]</span></p>
+<p>The assignments for <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are deterministic: they copy <span class="math inline">\(X\)</span> and do not use their own noise terms. This is allowed in an SCM with independent noise terms.</p>
+<p>Because <span class="math inline">\(Y=A\)</span>,</p>
+<p><span class="math display">\[
+E[Y\mid A]=A.
+\]</span></p>
+<p>The conditional mean is zero when <span class="math inline">\(A=0\)</span> and one when <span class="math inline">\(A=1\)</span>. It varies with <span class="math inline">\(A\)</span>, so <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are dependent.</p>
+</details>
+<p>Now condition on the common cause <span class="math inline">\(X\)</span>. For any SCM with this three-variable graph, apply the local Markov property with topological order <span class="math inline">\(X,A,Y\)</span>. The only parent of <span class="math inline">\(Y\)</span> is <span class="math inline">\(X\)</span>, and <span class="math inline">\(A\)</span> precedes <span class="math inline">\(Y\)</span> without being a parent. Thus,</p>
+<p><span class="math display">\[
+Y\perp\!\!\!\perp A\mid X.
+\]</span></p>
+<p>Once <span class="math inline">\(X\)</span> is known, the remaining randomness in <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> comes from separate independent noise terms. Learning <span class="math inline">\(A\)</span> therefore gives no additional information about <span class="math inline">\(Y\)</span>. In the dropdown example, knowing <span class="math inline">\(X\)</span> determines both variables completely; in the general fork, they need not be deterministic given <span class="math inline">\(X\)</span>.</p>
+</section>
+<section id="collider" class="level3">
+<h3 class="anchored" data-anchor-id="collider">Collider</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02d-collider-axy.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A collider: exposure A and outcome Y both point to X." width="600"></p>
+</figure>
+</div>
+<p>A <strong>collider</strong> has two arrows entering the middle variable:</p>
+<p><span class="math display">\[
+A\to X\leftarrow Y.
+\]</span></p>
+<p>The arrows collide at <span class="math inline">\(X\)</span>, making <span class="math inline">\(X\)</span> a <strong>common effect</strong> of <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>. The corresponding SCM is</p>
+<p><span class="math display">\[
+\begin{aligned}
+A&amp;\leftarrow f_A(\epsilon_A),\\
+Y&amp;\leftarrow f_Y(\epsilon_Y),\\
+X&amp;\leftarrow f_X(A,Y,\epsilon_X),
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(\epsilon_A,\epsilon_Y,\epsilon_X\)</span> are independent.</p>
+<p>Here <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are independent. To see this, apply the local Markov property with topological order <span class="math inline">\(A,Y,X\)</span>. The variable <span class="math inline">\(A\)</span> precedes <span class="math inline">\(Y\)</span>, and <span class="math inline">\(Y\)</span> has no parents. Therefore,</p>
+<p><span class="math display">\[
+Y\perp\!\!\!\perp A\mid\varnothing,
+\qquad\text{or simply}\qquad
+A\perp\!\!\!\perp Y.
+\]</span></p>
+<p>As in the disconnected two-variable graph, <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are generated from separate independent noise terms. Having a common effect does not change their independence.</p>
+<p>But <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> may be conditionally dependent given <span class="math inline">\(X\)</span>. To demonstrate this possibility, consider a simplified model of studying, luck, and grades:</p>
+<ul>
+<li><span class="math inline">\(A=1\)</span> if you study for an exam.</li>
+<li><span class="math inline">\(Y=1\)</span> if you have good luck on the exam.</li>
+<li><span class="math inline">\(X=1\)</span> if you get a good grade.</li>
+</ul>
+<p>Suppose studying and luck are independent, each with probability <span class="math inline">\(1/2\)</span>, and a good grade requires both:</p>
+<p><span class="math display">\[
+A\leftarrow\operatorname{Bernoulli}(1/2),
+\qquad
+Y\leftarrow\operatorname{Bernoulli}(1/2),
+\qquad
+X\leftarrow AY.
+\]</span></p>
+<p>The two Bernoulli draws use independent randomness. The grade assignment is deterministic and does not use an additional noise term.</p>
+<p>Now suppose you did not get a good grade: <span class="math inline">\(X=0\)</span>. If you studied (<span class="math inline">\(A=1\)</span>), then <span class="math inline">\(X=AY=Y\)</span>. Your lack of a good grade tells us that <span class="math inline">\(Y=0\)</span>: you did not have good luck. Consequently,</p>
+<p><span class="math display">\[
+E[Y\mid X=0,A=1]=0.
+\]</span></p>
+<p>If you did not study (<span class="math inline">\(A=0\)</span>), then <span class="math inline">\(X=0\)</span> regardless of your luck. Learning that you did not get a good grade tells us nothing further about <span class="math inline">\(Y\)</span>. Luck remains a Bernoulli variable with probability <span class="math inline">\(1/2\)</span>, so</p>
+<p><span class="math display">\[
+E[Y\mid X=0,A=0]=\frac12.
+\]</span></p>
+<p>At the same value <span class="math inline">\(X=0\)</span>, learning whether you studied changes the conditional mean of luck. In particular,</p>
+<p><span class="math display">\[
+E[Y\mid X=0,A=1]\neq E[Y\mid X=0,A=0].
+\]</span></p>
+<p>If <span class="math inline">\(Y\)</span> and <span class="math inline">\(A\)</span> were conditionally independent given <span class="math inline">\(X\)</span>, then <span class="math inline">\(E[Y\mid X,A]=E[Y\mid X]\)</span>. The unequal conditional means show that this does not hold. Thus, although <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are independent, they are not conditionally independent given <span class="math inline">\(X\)</span> in this example.</p>
+<p>The example establishes that conditioning on a collider can make its parents conditionally dependent. This is an example of <strong>collider bias</strong>.</p>
+<p>The table below summarizes what each arrangement tells us about independence between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>, before and after conditioning on <span class="math inline">\(X\)</span>. Each row treats the displayed three-variable graph as the entire graph.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Structure</th>
+<th>Role of <span class="math inline">\(X\)</span></th>
+<th>Without conditioning on <span class="math inline">\(X\)</span></th>
+<th>After conditioning on <span class="math inline">\(X\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Chain: <span class="math inline">\(A\to X\to Y\)</span></td>
+<td>Mediator</td>
+<td><span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> may be dependent</td>
+<td><span class="math inline">\(A\perp\!\!\!\perp Y\mid X\)</span></td>
+</tr>
+<tr class="even">
+<td>Fork: <span class="math inline">\(A\leftarrow X\to Y\)</span></td>
+<td>Common cause</td>
+<td><span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> may be dependent</td>
+<td><span class="math inline">\(A\perp\!\!\!\perp Y\mid X\)</span></td>
+</tr>
+<tr class="odd">
+<td>Collider: <span class="math inline">\(A\to X\leftarrow Y\)</span></td>
+<td>Common effect</td>
+<td><span class="math inline">\(A\perp\!\!\!\perp Y\)</span></td>
+<td><span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> may be conditionally dependent</td>
+</tr>
+</tbody>
+</table>
+<div class="main-point">
+<p>In chains and forks, the outer variables may be dependent, but they are conditionally independent given the middle variable. In a collider, the outer variables are independent, but they can become conditionally dependent given the middle variable.</p>
+</div>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
+</div>
+</section>
+</section>
+<section id="graduate-to-more-complicated-graphs" class="level2">
+<h2 class="anchored" data-anchor-id="graduate-to-more-complicated-graphs">Graduate to more complicated graphs</h2>
+<p>A larger graph is a smorgasbord of chains, forks, and colliders. To understand what it tells us about independence, we need to figure out what happens when we combine these building blocks.</p>
+<p>Our destination is a graphical rule called <strong>d-separation</strong>. The global Markov property tells us why this rule matters.</p>
+<div class="proposition-box">
+<p><strong>Global Markov property.</strong> Consider an SCM with a topological order. If a collection of other variables <span class="math inline">\(X_1,\ldots,X_k\)</span> d-separates <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> in its causal graph, then</p>
+<p><span class="math display">\[
+A\perp\!\!\!\perp Y\mid X_1,\ldots,X_k.
+\]</span></p>
+<p>The conditioning collection may be empty. In that case, the conclusion is <span class="math inline">\(A\perp\!\!\!\perp Y\)</span>.</p>
+</div>
+<p>The plan, then, is to find variables that d-separate <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>, and condition on them to make <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> independent. To do that, we need to define d-separation. Let’s start with an example, since it is more illustrative than jumping straight to the definition.</p>
+<section id="list-out-paths" class="level3">
+<h3 class="anchored" data-anchor-id="list-out-paths">List out paths</h3>
+<p>Consider the following graph.</p>
+<div id="fig-dsep-five-paths" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Arrows B to A, C, and Y; A to C and D; C to F; F to Y; Y to D; and D to E." data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-dsep-five-paths-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/02d-five-paths.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Arrows B to A, C, and Y; A to C and D; C to F; F to Y; Y to D; and D to E." width="700">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-dsep-five-paths-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: A graph with several paths between A and Y.
+</figcaption>
+</figure>
+</div>
+<p>Recall that a path from <span class="math inline">\(A\)</span> to <span class="math inline">\(Y\)</span> starts at <span class="math inline">\(A\)</span>, follows arrows in either direction, and ends at <span class="math inline">\(Y\)</span>, without visiting any node twice. There are five paths in <a href="#fig-dsep-five-paths" class="quarto-xref">Figure&nbsp;<span>1</span></a>:</p>
+<ol type="1">
+<li><span class="math inline">\(A\to C\to F\to Y\)</span>.</li>
+<li><span class="math inline">\(A\leftarrow B\to C\to F\to Y\)</span>.</li>
+<li><span class="math inline">\(A\leftarrow B\to Y\)</span>.</li>
+<li><span class="math inline">\(A\to D\leftarrow Y\)</span>.</li>
+<li><span class="math inline">\(A\to C\leftarrow B\to Y\)</span>.</li>
+</ol>
+<p>The node <span class="math inline">\(E\)</span> is not on any path from <span class="math inline">\(A\)</span> to <span class="math inline">\(Y\)</span>, because going from <span class="math inline">\(D\)</span> to <span class="math inline">\(E\)</span> leaves us no way to reach <span class="math inline">\(Y\)</span> without visiting <span class="math inline">\(D\)</span> again.</p>
+<p>Which paths could make <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> dependent? Our initial guess might be paths (1), (2), and (3). These paths connect <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> through chains and forks, and chains and forks are what we say that transmitted dependence in our three-variable examples.</p>
+<p>We may also think path (4) and (5) do not make <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> dependent. Path (4) has a collider at <span class="math inline">\(D\)</span>, and path (5) has a collider at <span class="math inline">\(C\)</span>. Colliders prevented dependence in our three-variable example.</p>
+<p>One thing to note is that a node’s role depends on the path. On path (1), <span class="math inline">\(C\)</span> is the middle of a chain. On path (5), both arrows point into <span class="math inline">\(C\)</span>, so it is a collider. We examine the two arrows next to a node on the particular path we are tracing to determine a node’s role.</p>
+</section>
+<section id="choose-what-to-condition-on" class="level3">
+<h3 class="anchored" data-anchor-id="choose-what-to-condition-on">Choose what to condition on</h3>
+<p>Paths (4) and (5) have colliders, so for now we only need to worry about paths (1), (2), and (3). How might we try to “block” the transmission of dependence along those paths? Conditioning helped us before: in our three-variable examples, conditioning on the middle of a chain or fork made its outer variables conditionally independent.</p>
+<ul>
+<li>On path (1), both <span class="math inline">\(C\)</span> and <span class="math inline">\(F\)</span> are middle variables in chains.</li>
+<li>On path (2), <span class="math inline">\(B\)</span> is the middle of a fork, while <span class="math inline">\(C\)</span> and <span class="math inline">\(F\)</span> are middle variables in chains.</li>
+<li>On path (3), <span class="math inline">\(B\)</span> is the middle of a fork.</li>
+</ul>
+<p>This suggests conditioning on <span class="math inline">\(B\)</span> and <span class="math inline">\(C\)</span>: <span class="math inline">\(C\)</span> addresses path (1), <span class="math inline">\(B\)</span> addresses path (3), and both address path (2).</p>
+<p>But conditioning can change what happens along paths (4) and (5), too. We set them aside because they contained colliders. Does that reasoning still hold after conditioning on <span class="math inline">\(B,C\)</span>?</p>
+<p>Path (4), <span class="math inline">\(A\to D\leftarrow Y\)</span>, still connects <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> through the collider <span class="math inline">\(D\)</span>. We are not conditioning on <span class="math inline">\(D\)</span>, so this path still poses no problem.</p>
+<p>Path (5), <span class="math inline">\(A\to C\leftarrow B\to Y\)</span>, is trickier. We are conditioning on its collider <span class="math inline">\(C\)</span>, which can make <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> conditionally dependent. We can therefore no longer rely on <span class="math inline">\(C\)</span> to prevent dependence along this path. However, <span class="math inline">\(B\)</span> is the middle of the fork <span class="math inline">\(C\leftarrow B\to Y\)</span>, and we are conditioning on <span class="math inline">\(B\)</span>. This suggests that <span class="math inline">\(B\)</span> still ``blocks” the transmission of dependence along the full path from <span class="math inline">\(A\)</span> to <span class="math inline">\(Y\)</span>.</p>
+<p>It turns that conditioning on <span class="math inline">\(B,C\)</span> does give us</p>
+<p><span class="math display">\[
+A\perp\!\!\!\perp Y\mid B,C.
+\]</span></p>
+<p>We will justify this by showing that <span class="math inline">\(B,C\)</span> <em>d-separates</em> <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>. And so, the global Markov property applies giving us this conditional independent result.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: how this differs from local Markov property">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Optional technical note: how this differs from local Markov property
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>This conclusion goes beyond a direct application of the local Markov property to <span class="math inline">\(Y\)</span>. Its parents are <span class="math inline">\(B,F\)</span>, so the local Markov property gives <span class="math inline">\(Y\perp\!\!\!\perp A\mid B,F\)</span>. Our path-based argument instead gives independence conditional on <span class="math inline">\(B,C\)</span>, even though <span class="math inline">\(C\)</span> is not a parent of <span class="math inline">\(Y\)</span>.</p>
+<p>What if we also condition on <span class="math inline">\(D\)</span>? On path (4), <span class="math inline">\(A\to D\leftarrow Y\)</span>, we would then be conditioning on a collider. Our three-variable example showed that this can make its parents conditionally dependent. This suggests that adding <span class="math inline">\(D\)</span> could undo what we accomplished by conditioning on <span class="math inline">\(B,C\)</span>. And indeed, if we condition on <span class="math inline">\(B,C,D\)</span>, we can longer guarantee that <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are conditional independent.</p>
+<p>Conditioning on more variables can therefore undo the independence guarantee we obtained with <span class="math inline">\(B,C\)</span>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="blocking-a-single-path" class="level3">
+<h3 class="anchored" data-anchor-id="blocking-a-single-path">Blocking a single path</h3>
+<p>Before we can define d-separation, we need to know what it means to <strong>block a path.</strong> This makes precise the intuition we have been building: a path may allow dependence between its endpoints, and we want to understand when conditioning or colliders prevent that.</p>
+<p>Our three-variable examples suggest two ways a path can be blocked. In a chain or fork, conditioning on the middle variable makes the outer variables conditionally independent. A collider does the opposite: its outer variables are independent without conditioning, but may become conditionally dependent when we condition on the collider. These observations suggest that a conditioned middle variable in a chain or fork, or an unconditioned collider, can block a longer path. Just one such variable is enough to block the path.</p>
+<p>This is almost it. There is just one more possibility that our three-variable examples could not show: conditioning on a descendant of a collider. To see why this matters, return to path (4), <span class="math inline">\(A\to D\leftarrow Y\)</span>. We have treated this path as blocked because <span class="math inline">\(D\)</span> is a collider that we are not conditioning on. But <span class="math inline">\(D\)</span> has a descendant, <span class="math inline">\(E\)</span>, because our graph also contains <span class="math inline">\(D\to E\)</span>. Conditioning on <span class="math inline">\(E\)</span> can give us information about <span class="math inline">\(D\)</span>. For example, if the assignment is <span class="math inline">\(E\leftarrow D\)</span>, knowing <span class="math inline">\(E\)</span> tells us <span class="math inline">\(D\)</span> exactly. So this path can be open even without conditioning on <span class="math inline">\(D\)</span>: conditioning on its descendant <span class="math inline">\(E\)</span> is enough.</p>
+<p>Our rule must therefore account for both the collider and its descendants.</p>
+<div class="definition-box">
+<p><strong>Blocked and open paths.</strong> A path is <strong>blocked</strong> by the variables we condition on, <span class="math inline">\(X_1,\ldots,X_k\)</span>, if at least one of the following holds:</p>
+<ol type="1">
+<li>A middle variable in a chain or fork along the path is conditioned on.</li>
+<li>A collider along the path is not conditioned on, and none of its descendants is conditioned on.</li>
+</ol>
+<p>If neither condition holds, the path is <strong>open</strong> conditional on <span class="math inline">\(X_1,\ldots,X_k\)</span>.</p>
+</div>
+<p>Let’s apply this definition to a few paths. In each example, we focus on one path from <span class="math inline">\(A\)</span> to <span class="math inline">\(Y\)</span>. We try to figure out which other variables shown could we condition on to block that path.</p>
+<p>Consider</p>
+<p><span class="math display">\[
+A\leftarrow U\to V\to Y.
+\]</span></p>
+<p>Here <span class="math inline">\(U\)</span> is the middle of a fork and <span class="math inline">\(V\)</span> is the middle of a chain. There are no colliders, so the path is open when we condition on nothing. Conditioning on <span class="math inline">\(U\)</span> blocks the fork; conditioning on <span class="math inline">\(V\)</span> blocks the chain. Thus, the conditioning sets that block this path are <span class="math inline">\(\{U\}\)</span>, <span class="math inline">\(\{V\}\)</span>, and <span class="math inline">\(\{U,V\}\)</span>. A single conditioned noncollider is enough.</p>
+<details class="lesson-question">
+<summary>
+For the path <span class="math inline">\(A\to U\leftarrow V\to Y\)</span>, which conditioning sets chosen from <span class="math inline">\(U,V\)</span> block the path?
+</summary>
+<p>The internal node <span class="math inline">\(U\)</span> is a collider, while <span class="math inline">\(V\)</span> is the middle of a fork.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Conditioning set</th>
+<th>Path status</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Nothing</td>
+<td>Blocked</td>
+<td>The collider <span class="math inline">\(U\)</span> is not conditioned on.</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(U\)</span></td>
+<td>Open</td>
+<td>Conditioning on <span class="math inline">\(U\)</span> opens the collider, and <span class="math inline">\(V\)</span> is not conditioned on.</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(V\)</span></td>
+<td>Blocked</td>
+<td>The collider <span class="math inline">\(U\)</span> is not conditioned on; the conditioned fork at <span class="math inline">\(V\)</span> also blocks the path.</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(U,V\)</span></td>
+<td>Blocked</td>
+<td>The conditioned fork at <span class="math inline">\(V\)</span> blocks the path even though the collider at <span class="math inline">\(U\)</span> is opened.</td>
+</tr>
+</tbody>
+</table>
+</details>
+<details class="lesson-question">
+<summary>
+Consider the path <span class="math inline">\(A\to U\leftarrow V\to Y\)</span>, now with the additional arrow <span class="math inline">\(U\to Z\)</span>. Which conditioning sets chosen from <span class="math inline">\(U,V,Z\)</span> block the path from <span class="math inline">\(A\)</span> through <span class="math inline">\(U,V\)</span> to <span class="math inline">\(Y\)</span>?
+</summary>
+<p>The variable <span class="math inline">\(Z\)</span> is a descendant of the collider <span class="math inline">\(U\)</span>. Conditioning on either <span class="math inline">\(U\)</span> or <span class="math inline">\(Z\)</span> removes the blockage at <span class="math inline">\(U\)</span>. But conditioning on <span class="math inline">\(V\)</span> always blocks the path, because <span class="math inline">\(V\)</span> is a noncollider on it.</p>
+<p>The blocking sets are therefore the empty set and every set containing <span class="math inline">\(V\)</span>: <span class="math inline">\(\{V\}\)</span>, <span class="math inline">\(\{U,V\}\)</span>, <span class="math inline">\(\{V,Z\}\)</span>, and <span class="math inline">\(\{U,V,Z\}\)</span>. The path is open given <span class="math inline">\(\{U\}\)</span>, <span class="math inline">\(\{Z\}\)</span>, or <span class="math inline">\(\{U,Z\}\)</span>.</p>
+<p>Notice that <span class="math inline">\(Z\)</span> can change whether the path is open even though it is not on the path itself.</p>
+</details>
+</section>
+<section id="blocking-all-paths" class="level3">
+<h3 class="anchored" data-anchor-id="blocking-all-paths">Blocking all paths</h3>
+<p>Blocking one path need not make its endpoints conditionally independent: another path may remain open. We need a criterion that considers every path.</p>
+<div class="definition-box">
+<p><strong>d-separation.</strong> A collection <span class="math inline">\(X_1,\ldots,X_k\)</span> <strong>d-separates</strong> <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> if it blocks every path between them. Otherwise, <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are <strong>d-connected</strong> given that collection.</p>
+</div>
+<p>d-separation is a statement about a graph; conditional independence is a statement about random variables. The global Markov property connects them: if <span class="math inline">\(X_1,\ldots,X_k\)</span> d-separates <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> in the causal graph of an SCM with a topological order, then</p>
+<p><span class="math display">\[
+A\perp\!\!\!\perp Y\mid X_1,\ldots,X_k.
+\]</span></p>
+<p>We can now justify our earlier conclusion in <a href="#fig-dsep-five-paths" class="quarto-xref">Figure&nbsp;<span>1</span></a>. Conditioning on <span class="math inline">\(B,C\)</span> blocks path (1) at <span class="math inline">\(C\)</span>, path (2) at <span class="math inline">\(B\)</span> and <span class="math inline">\(C\)</span>, and path (3) at <span class="math inline">\(B\)</span>. Path (4) is blocked by its collider <span class="math inline">\(D\)</span>, since neither <span class="math inline">\(D\)</span> nor its descendant <span class="math inline">\(E\)</span> is conditioned on. On path (5), conditioning on <span class="math inline">\(C\)</span> opens the collider there, but conditioning on <span class="math inline">\(B\)</span> still blocks the path.</p>
+<p>All five paths are blocked. Therefore, <span class="math inline">\(B,C\)</span> does indeed d-separate <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>, and the global Markov property establishes</p>
+<p><span class="math display">\[
+A\perp\!\!\!\perp Y\mid B,C.
+\]</span></p>
+<details class="lesson-question">
+<summary>
+Why is conditioning on <span class="math inline">\(C\)</span> alone insufficient to d-separate <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>?
+</summary>
+<p>Conditioning on <span class="math inline">\(C\)</span> blocks paths (1) and (2), but path (3), <span class="math inline">\(A\leftarrow B\to Y\)</span>, remains open. It also opens the collider at <span class="math inline">\(C\)</span> on path (5), <span class="math inline">\(A\to C\leftarrow B\to Y\)</span>. Since we have not conditioned on <span class="math inline">\(B\)</span>, path (5) is now open too. Path (4) remains blocked at <span class="math inline">\(D\)</span>. Two paths remain open, so <span class="math inline">\(C\)</span> does not d-separate <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>.</p>
+</details>
+<p>Let’s work through another example. Consider this causal graph, which has topological order <span class="math inline">\(U,A,C,M,N,Y,K,L\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02d-second-dsep.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="U points to A and C; C points to Y; A points to M, M to N, and N to Y; A and Y point to K; K points to L." width="700"></p>
+</figure>
+</div>
+<p>There are three paths between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>:</p>
+<ol type="1">
+<li><span class="math inline">\(A\leftarrow U\to C\to Y\)</span>.</li>
+<li><span class="math inline">\(A\to M\to N\to Y\)</span>.</li>
+<li><span class="math inline">\(A\to K\leftarrow Y\)</span>.</li>
+</ol>
+<p>To block the first path, we could condition on either <span class="math inline">\(U\)</span> or <span class="math inline">\(C\)</span>. To block the second, we could condition on either <span class="math inline">\(M\)</span> or <span class="math inline">\(N\)</span>. The third path is already blocked by its collider <span class="math inline">\(K\)</span>, provided we condition on neither <span class="math inline">\(K\)</span> nor its descendant <span class="math inline">\(L\)</span>.</p>
+<p>Choose <span class="math inline">\(C,M\)</span>. Conditioning on <span class="math inline">\(C\)</span> blocks the first path, and conditioning on <span class="math inline">\(M\)</span> blocks the second. The third remains blocked at <span class="math inline">\(K\)</span>. We have checked <strong>every path</strong>, so <span class="math inline">\(C,M\)</span> d-separates <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>. The global Markov property gives</p>
+<p><span class="math display">\[
+A\perp Y\mid C,M.
+\]</span></p>
+<p>This is not a direct application of the local Markov property to either endpoint: <span class="math inline">\(A\)</span> has parent <span class="math inline">\(U\)</span>, while <span class="math inline">\(Y\)</span> has parents <span class="math inline">\(C,N\)</span>. Our conditioning collection <span class="math inline">\(C,M\)</span> is neither parent set. By examining paths, we can find other collections that guarantee conditional independence.</p>
+<p>Adding <span class="math inline">\(L\)</span> to the conditioning collection opens the third path through its collider <span class="math inline">\(K\)</span>. Thus, <span class="math inline">\(C,M,L\)</span> does not d-separate <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>. The global Markov property then supplies no conditional-independence guarantee for these endpoints.</p>
+<p>These examples suggest a systematic approach to using the global Markov property:</p>
+<ol type="1">
+<li>Identify the two variables of interest and list every path between them.</li>
+<li>For the variables we are conditioning on, check each path. Is there a conditioned middle variable in a chain or fork? Is there a collider with neither itself nor any of its descendants conditioned on? Either is enough to block that path.</li>
+<li>Check whether <strong>every path is blocked</strong>. If so, the conditioning collection d-separates the endpoints.</li>
+<li>Apply the global Markov property to conclude conditional independence. If any path remains open, the property gives no conclusion about independence or dependence.</li>
+</ol>
+<p>When searching for variables to condition on, check every path again after choosing them. Conditioning that blocks one path may open another.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: the global Markov property">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Optional technical note: the global Markov property
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>To-do. I’ll eventually want to put the full proof here. It is a bit involved, so for now, I’ll leave this blank.</p>
+</div>
+</div>
+</div>
+<div class="section-break" aria-hidden="true">
+<span class="acorn-mark"></span>
+</div>
+</section>
+</section>
+<section id="what-the-graph-does-not-guarantee" class="level2">
+<h2 class="anchored" data-anchor-id="what-the-graph-does-not-guarantee">What the graph does not guarantee</h2>
+<p>d-separation gives us a guarantee: if the graph blocks every path, the corresponding random variables are conditionally independent. What happens when the graph leaves a path open?</p>
+<p>An open path tells us that the variables <strong>can</strong> be dependent. It does not guarantee that they are. The particular assignment functions may make an input irrelevant, or contributions traveling along different paths may cancel one another.</p>
+<p>Here is an example of exact cancellation. Consider</p>
+<p><span class="math display">\[
+\begin{aligned}
+X_1&amp;\leftarrow N_1,\\
+X_2&amp;\leftarrow X_1+N_2,\\
+X_3&amp;\leftarrow X_1+N_3,\\
+X_4&amp;\leftarrow X_3-X_2+N_4,
+\end{aligned}
+\]</span></p>
+<p>where the noise terms are mutually independent.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02d-faithfulness.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A diamond-shaped causal graph with arrows from X1 to X2 and X3, and arrows from X2 and X3 to X4." width="600"></p>
+</figure>
+</div>
+<p>There are two open directed paths from <span class="math inline">\(X_1\)</span> to <span class="math inline">\(X_4\)</span>. The graph therefore does not d-separate them. But substituting the assignments gives</p>
+<p><span class="math display">\[
+X_4=(X_1+N_3)-(X_1+N_2)+N_4
+=N_3-N_2+N_4.
+\]</span></p>
+<p>The contribution of <span class="math inline">\(X_1\)</span> cancels exactly. Because <span class="math inline">\(X_1\)</span> depends only on <span class="math inline">\(N_1\)</span>, while <span class="math inline">\(X_4\)</span> depends only on <span class="math inline">\(N_2,N_3,\)</span> and <span class="math inline">\(N_4\)</span>, we have</p>
+<p><span class="math display">\[
+X_1\perp\!\!\!\perp X_4.
+\]</span></p>
+<p>Thus, conditional independence does not generally imply d-separation. A <strong>faithfulness</strong> assumption adds this reverse direction.</p>
+<div class="definition-box">
+<p><strong>Faithfulness.</strong> A distribution is faithful to a causal graph if every conditional-independence relationship in the distribution is represented by d-separation in the graph. That is, whenever <span class="math inline">\(A\perp\!\!\!\perp B\mid C\)</span>, the collection <span class="math inline">\(C\)</span> d-separates <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> in the causal graph.</p>
+</div>
+<p>Under faithfulness, d-separation and conditional independence agree in both directions. Faithfulness is an additional assumption, not something guaranteed by the SCM or its graph.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: why assume faithfulness?">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Optional technical note: why assume faithfulness?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>In many common model classes, including linear models, the parameter values that produce extra independences through exact cancellation form a very small set. This is one reason faithfulness is often treated as a reasonable working assumption. It becomes especially important when we try to learn a causal graph from observed conditional-independence relationships.</p>
+</div>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((element) => {
+    new bootstrap.Tooltip(element, {
+      placement: "top",
+      trigger: "hover focus"
+    });
+  });
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./02c-causal-graphs.html" class="pagination-link" aria-label="Causal graphs">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Causal graphs</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./02-exercises.html" class="pagination-link" aria-label="Exercises">
+        <span class="nav-page-text"><span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

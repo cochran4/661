@@ -36,7 +36,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./glossary.html" rel="next">
-<link href="./02d-d-separation.html" rel="prev">
+<link href="./02d-global-markov-property.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -176,8 +176,8 @@ window.Quarto = {
  <span class="dropdown-text">Causal graphs</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./02d-d-separation.html">
- <span class="dropdown-text">d-separation</span></a>
+    <a class="dropdown-item" href="./02d-global-markov-property.html">
+ <span class="dropdown-text">Global Markov property</span></a>
   </li>  
         <li>
     <a class="dropdown-item" href="./02-exercises.html">
@@ -295,7 +295,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./02d-d-separation.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">D-separation</span></a>
+  <a href="./02d-global-markov-property.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Global Markov property</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -664,6 +664,123 @@ W,X,A,M,Y.
 <li><p>For each variable, identify the variables that appear earlier in the order but are not its parents.</p></li>
 <li><p>Use the local Markov property to list every nontrivial conditional-independence statement supplied by this order.</p></li>
 <li><p>Does the local Markov property tell us whether <span class="math inline">\(A\)</span> and <span class="math inline">\(X\)</span> are dependent? Does it tell us whether <span class="math inline">\(Y\)</span> and <span class="math inline">\(W\)</span> are conditionally dependent given <span class="math inline">\(X\)</span>? Explain.</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+</section>
+<section id="global-markov-property" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="global-markov-property">Global Markov property</h2>
+<section id="chest-pain-in-the-emergency-department" class="level3">
+<h3 class="anchored" data-anchor-id="chest-pain-in-the-emergency-department">13. Chest pain in the emergency department</h3>
+<p>Consider this made-up example. Among people experiencing chest pain in a region, rural residence and chest pain severity are independent. Let <span class="math inline">\(R\)</span> indicate rural residence, <span class="math inline">\(Y\)</span> denote chest pain severity before deciding whether to seek care, and <span class="math inline">\(S\)</span> indicate whether a person visits the emergency department.</p>
+<p>People living in rural areas face a longer journey to the emergency department and may stay home when symptoms are mild. More severe chest pain makes a visit more likely. These relationships are represented by the following graph:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02d-exercise-emergency-department.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="R, rural residence, and Y, chest pain severity, both point to S, an emergency department visit. S is a collider." width="700"></p>
+</figure>
+</div>
+<p>A researcher examines only emergency-department patients and finds that rural patients tend to have more severe chest pain. Explain how this association could arise even though rural residence and chest pain severity are independent in the regional population. Identify the variable being conditioned on and its role in the graph.</p>
+<div class="response-space">
+
+</div>
+</section>
+<section id="listing-and-classifying-paths" class="level3">
+<h3 class="anchored" data-anchor-id="listing-and-classifying-paths">14. Listing and classifying paths</h3>
+<p>Consider the following causal graph.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02d-exercise-paths.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="U points to A and V; V points to Y; A and Y point to K; K points to L." width="700"></p>
+</figure>
+</div>
+<ol type="a">
+<li><p>List every path between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>.</p></li>
+<li><p>For each path, state whether it is open or blocked when conditioning on nothing, on <span class="math inline">\(V\)</span>, and on <span class="math inline">\(V,L\)</span>. Identify the node responsible whenever a path is blocked.</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="blocking-individual-paths" class="level3">
+<h3 class="anchored" data-anchor-id="blocking-individual-paths">15. Blocking individual paths</h3>
+<p>For each drawing, list <strong>all</strong> conditioning sets chosen from the displayed variables other than <span class="math inline">\(A,Y\)</span> that block the specified path from <span class="math inline">\(A\)</span> to <span class="math inline">\(Y\)</span>. Include the empty set if it works. Each drawing shows all relevant arrows.</p>
+<ol type="a">
+<li><p><span class="math inline">\(A\leftarrow U\to V\to Y\)</span>.</p></li>
+<li><p><span class="math inline">\(A\to U\leftarrow V\leftarrow Y\)</span>.</p></li>
+<li><p><span class="math inline">\(A\to U\to V\leftarrow Y\)</span>, with the additional arrow <span class="math inline">\(V\to Z\)</span>. Study the path through <span class="math inline">\(U,V\)</span>; <span class="math inline">\(Z\)</span> is not on it.</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="finding-d-separating-sets" class="level3">
+<h3 class="anchored" data-anchor-id="finding-d-separating-sets">16. Finding d-separating sets</h3>
+<p>Return to the graph in Exercise 14. Choose conditioning variables only from <span class="math inline">\(U,V,K,L\)</span>.</p>
+<ol type="a">
+<li><p>Find two different conditioning sets that d-separate <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>. For each set, explain why every path is blocked.</p></li>
+<li><p>Can a conditioning set containing <span class="math inline">\(K\)</span> or <span class="math inline">\(L\)</span> d-separate <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>? Explain.</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="applying-the-global-markov-property" class="level3">
+<h3 class="anchored" data-anchor-id="applying-the-global-markov-property">17. Applying the global Markov property</h3>
+<p>Suppose the graph in Exercise 14 comes from an SCM with a topological order.</p>
+<ol type="a">
+<li><p>Use your d-separation conclusions to state two conditional-independence relationships between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> guaranteed by the global Markov property.</p></li>
+<li><p>Does the global Markov property guarantee <span class="math inline">\(A\perp Y\mid V,L\)</span>? If not, does it establish that <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are conditionally dependent given <span class="math inline">\(V,L\)</span>? Explain.</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="conditioning-on-a-variable-measured-before-exposure" class="level3">
+<h3 class="anchored" data-anchor-id="conditioning-on-a-variable-measured-before-exposure">18. Conditioning on a variable measured before exposure</h3>
+<p>Consider the following causal graph. The variables <span class="math inline">\(W,U,V,M,T\)</span> are measured before exposure <span class="math inline">\(A\)</span>. Suppose the graph comes from an SCM with a topological order.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02d-exercise-m-bias.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="W points to A and Y; U points to A and M; V points to M and Y; M points to T." width="700"></p>
+</figure>
+</div>
+<ol type="a">
+<li><p>List every path between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>. Does <span class="math inline">\(W\)</span> d-separate them? State the corresponding conclusion from the global Markov property.</p></li>
+<li><p>Does <span class="math inline">\(W,M\)</span> d-separate <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>? What about <span class="math inline">\(W,T\)</span>? Explain what changes on each path.</p></li>
+<li><p>A researcher argues that adding <span class="math inline">\(M\)</span> to the conditioning collection is harmless because it was measured before <span class="math inline">\(A\)</span>. What does this graph tell us about that argument?</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="can-every-path-be-blocked" class="level3">
+<h3 class="anchored" data-anchor-id="can-every-path-be-blocked">19. Can every path be blocked?</h3>
+<p>Consider the following causal graph from an SCM with a topological order.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02d-exercise-direct.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="U points to A and Y; A points to Y and M; M points to Y; Y points to T." width="660"></p>
+</figure>
+</div>
+<ol type="a">
+<li><p>List every path between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>. Which remain open conditional on <span class="math inline">\(U,M\)</span>?</p></li>
+<li><p>Can any collection chosen from <span class="math inline">\(U,M,T\)</span> d-separate <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>? Explain. Does your answer establish that <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> are dependent?</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="disconnected-parts-of-a-graph" class="level3">
+<h3 class="anchored" data-anchor-id="disconnected-parts-of-a-graph">20. Disconnected parts of a graph</h3>
+<p>Consider the following causal graph from an SCM with a topological order.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/02d-exercise-disconnected.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Two disconnected triangles: U points to A and C, and A points to C; V points to Y and D, and Y points to D." width="680"></p>
+</figure>
+</div>
+<ol type="a">
+<li><p>Are <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> d-separated without conditioning? What does the global Markov property imply?</p></li>
+<li><p>Are <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> d-separated by <span class="math inline">\(C,D\)</span>? Explain why conditioning on these colliders does or does not change your answer.</p></li>
+<li><p>Does every collection chosen from <span class="math inline">\(U,V,C,D\)</span> d-separate <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>? Explain and state the general observation this illustrates.</p></li>
 </ol>
 <div class="response-space">
 
@@ -1086,8 +1203,8 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./02d-d-separation.html" class="pagination-link" aria-label="D-separation">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">D-separation</span></span>
+      <a href="./02d-global-markov-property.html" class="pagination-link" aria-label="Global Markov property">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Global Markov property</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

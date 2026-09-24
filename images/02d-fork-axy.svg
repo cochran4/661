@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 140" width="600" height="140">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#315C43"/></marker></defs>
+<line x1="275.0" y1="70.0" x2="99.0" y2="70.0" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="325.0" y1="70.0" x2="501.0" y2="70.0" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<circle cx="70" cy="70" r="23" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="70" y="70" dy=".35em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">A</text>
+<circle cx="300" cy="70" r="23" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="300" y="70" dy=".35em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">X</text>
+<circle cx="530" cy="70" r="23" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="530" y="70" dy=".35em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">Y</text>
+</svg>
