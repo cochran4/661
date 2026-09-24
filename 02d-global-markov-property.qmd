@@ -14,7 +14,7 @@ The graph gives us a way to do that, but we need to be systematic. There may be 
 
 By association, we mean dependence, and by dependence, we mean the variables are not independent. Meanwhile, association after conditioning means conditional dependence, which means the variables are not conditionally independent. We will use these precise terms throughout the rest of the section. We will return at the end to exactly what the graph can—and cannot—tell us.
 
-## Start with two variables
+## Two variables
 
 Begin with the smallest possible graph. Let $A$ be an exposure and $Y$ an outcome. Suppose the entire graph contains only these two variables, connected by an arrow.
 
@@ -83,7 +83,7 @@ With only two variables, that's it.
 
 <div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
 
-## Move on to three variables
+## Three variables
 
  Once other variables enter the graph, however, $A$ and $Y$ can be connected even when there is no arrow directly between them. To understand how that can happen, we will start with three arrangements: **chains, forks, and colliders**. These are the building blocks of paths through a graph. Once we understand each one, including what happens when we condition on its middle variable, we can combine them to study more complicated graphs.
 
@@ -306,6 +306,244 @@ The table below summarizes what each arrangement tells us about independence bet
 In chains and forks, the outer variables may be dependent, but they are conditionally independent given the middle variable. In a collider, the outer variables are independent, but they can become conditionally dependent given the middle variable.
 :::
 
+
+<div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
+
+## Paths
+
+Chains, forks, and colliders are the building blocks of longer paths. As we move along a path, each internal variable is the middle of a chain, a fork, or a collider. What can these building blocks tell us about the variables at the two ends?
+
+We will start with a few simple causal graphs, each with just one path between $A$ and $Y$. Consider
+
+$$
+A\to C\to F\to Y.
+$$
+
+This path contains two overlapping chains: $A\to C\to F$ and $C\to F\to Y$. Their middle variables are $C$ and $F$, respectively.
+
+The endpoints $A$ and $Y$ may be dependent. But conditioning on the middle variable of either chain makes them conditionally independent:
+
+$$
+A\perp\!\!\!\perp Y\mid C,
+\qquad
+A\perp\!\!\!\perp Y\mid F.
+$$
+
+<details class="lesson-question">
+<summary>Can we give an example where $A$ and $Y$ are dependent without conditioning?</summary>
+
+Let $A$ be a fair coin flip, and let each remaining variable copy its parent:
+
+$$
+C\leftarrow A,\qquad
+F\leftarrow C,\qquad
+Y\leftarrow F.
+$$
+
+Then $Y=A$, so learning $A$ tells us $Y$ exactly. In particular,
+
+$$
+P(Y=1)=\frac12,
+\qquad
+P(Y=1\mid A=1)=1.
+$$
+
+Thus, $A$ and $Y$ are dependent in this SCM.
+
+</details>
+
+Now consider
+
+$$
+A\leftarrow B\to C\to F\to Y.
+$$
+
+This path contains a fork, $A\leftarrow B\to C$, followed by two chains, $B\to C\to F$ and $C\to F\to Y$. Their middle variables are $B$, $C$, and $F$.
+
+Again, $A$ and $Y$ may be dependent. But conditioning on any one of these middle variables makes them conditionally independent:
+
+$$
+A\perp\!\!\!\perp Y\mid B,
+\qquad
+A\perp\!\!\!\perp Y\mid C,
+\qquad
+A\perp\!\!\!\perp Y\mid F.
+$$
+
+What changes when the path contains a collider? Consider
+
+$$
+A\to C\leftarrow B\to Y.
+$$
+
+Here $C$ is the middle of a collider, and $B$ is the middle of a fork. Because of the collider, the endpoints are independent without conditioning:
+
+$$
+A\perp\!\!\!\perp Y.
+$$
+
+Conditioning on $C$ can make $A$ and $Y$ conditionally dependent.
+
+<details class="lesson-question">
+<summary>Can we give an example where conditioning on $C$ makes $A$ and $Y$ conditionally dependent?</summary>
+
+Let $A$ and $B$ be independent fair coin flips, and set
+
+$$
+C\leftarrow A+B,
+\qquad
+Y\leftarrow B.
+$$
+
+Among observations with $C=1$, exactly one of $A,B$ equals one. Since $Y=B$, learning $A$ tells us $Y$: if $A=0$, then $Y=1$; if $A=1$, then $Y=0$. Thus,
+
+$$
+P(Y=1\mid C=1)=\frac12,
+\qquad
+P(Y=1\mid C=1,A=0)=1.
+$$
+
+Learning $A$ changes the distribution of $Y$ once we condition on $C=1$. Therefore, $A$ and $Y$ are conditionally dependent given $C$ in this SCM.
+
+</details>
+
+But what if we condition on both $C$ and $B$? Conditioning on the collider can allow dependence, but we are also conditioning on the middle of the fork. That is enough to make the endpoints conditionally independent:
+
+$$
+A\perp\!\!\!\perp Y\mid B,C.
+$$
+
+Thus, conditioning on a collider does not undo the effect of conditioning on a middle variable in a chain or fork elsewhere along this path.
+
+There is one more possibility that our three-variable examples could not show. Consider
+
+$$
+A\to D\leftarrow Y,
+\qquad
+D\to F.
+$$
+
+The path between $A$ and $Y$ contains the collider $D$, so $A\perp\!\!\!\perp Y$. Conditioning on $D$ can make the endpoints conditionally dependent. But what about conditioning on $F$?
+
+Learning $F$ can give us information about $D$. For example, the assignment could be $F\leftarrow D$. Knowing $F$ would then tell us $D$ exactly, so conditioning on $F$ would have the same effect as conditioning on $D$.
+
+Thus, leaving the collider itself out of the conditioning collection is not enough. To retain this independence guarantee, we must also leave out its descendants.
+
+These examples suggest two ways to prevent dependence along a path. We can condition on a middle variable in a chain or fork. Or the path can contain a collider with neither it nor any of its descendants conditioned on. We call a path **blocked**, or **closed**, when either condition holds. Otherwise, we call it **open**.
+
+::: {.definition-box}
+**Blocked and open paths.** A path between $A$ and $Y$ is **blocked** by a collection of variables other than its endpoints if at least one of the following holds:
+
+1. A middle variable in a chain or fork along the path is conditioned on.
+2. A collider along the path is not conditioned on, and none of its descendants is conditioned on.
+
+If neither condition holds, the path is **open** conditional on that collection.
+:::
+
+Let’s apply this definition. For the path
+
+$$
+A\leftarrow U\to V\to Y,
+$$
+
+$U$ is the middle of a fork and $V$ is the middle of a chain. The path is open without conditioning. Conditioning on $U$, on $V$, or on both blocks it.
+
+<details class="lesson-question">
+<summary>For the path $A\to U\leftarrow V\to Y$, which collections chosen from $U,V$ block the path?</summary>
+
+Without conditioning, the collider $U$ blocks the path. Conditioning on $U$ alone opens it. Conditioning on $V$ blocks the path at the fork, whether or not we also condition on $U$.
+
+Thus, the path is blocked when we condition on nothing, on $V$, or on both $U,V$. It is open when we condition on $U$ alone.
+
+</details>
+
+<details class="lesson-question">
+<summary>Now add the arrow $U\to Z$. Which collections chosen from $U,V,Z$ block the path $A\to U\leftarrow V\to Y$?</summary>
+
+Conditioning on either $U$ or its descendant $Z$ removes the blockage at the collider. But conditioning on $V$ always blocks this path.
+
+The path is therefore blocked when we condition on nothing or on any collection containing $V$: $V$; $U,V$; $V,Z$; or $U,V,Z$.
+
+It is open when we condition on $U$, on $Z$, or on $U,Z$.
+
+</details>
+
+::: {.callout-note title="Optional technical note: why either condition is enough when there is only one path" collapse="true"}
+
+Suppose an SCM has a topological order and exactly one path between $A$ and $Y$. Let $S$ denote the collection of variables we condition on, excluding $A$ and $Y$. We will prove that either condition in the definition gives
+
+$$
+A\perp\!\!\!\perp Y\mid S.
+$$
+
+The graph may contain other variables and branches. The important assumption is that there is only one path between the two endpoints.
+
+We use two elementary facts about independence:
+
+- Functions of disjoint collections of mutually independent noise terms are independent.
+- If two collections of variables are conditionally independent given $V$, conditioning additionally on variables from each collection preserves independence between what remains in the two collections.
+
+For the second fact, imagine fixing $V=v$. The joint distribution of the two collections factors into a distribution for each collection. Conditioning separately on information from each collection preserves that factorization. The same statement applies without $V$ when the collections are independent to begin with.
+
+**1. Conditioning on a middle variable in a chain or fork.**
+
+Let $V$ be such a variable on the unique path, and suppose $V$ is in $S$. Since $V$ is not a collider on this path, at least one of its two adjacent arrows points away from it. Choose that side of the path.
+
+Temporarily remove $V$ from the drawing and let $R$ be the entire connected piece on the chosen side. Let $L$ contain all remaining variables other than $V$. One endpoint lies in $R$ and the other lies in $L$.
+
+There is exactly one edge between $V$ and $R$, and it points from $V$ into $R$. Why exactly one? Another edge from $V$ into the same connected piece would provide another route to the endpoint on that side, giving a second path between $A$ and $Y$. Likewise, there are no edges between $R$ and $L$; otherwise removing $V$ would not have separated the endpoints.
+
+Consequently, the only input into the assignments in $R$ from outside $R$ is $V$. Substituting assignments in topological order lets us write the entire collection as
+
+$$
+R\leftarrow h(V,\epsilon_R),
+$$
+
+where $\epsilon_R$ collects the noise terms belonging to variables in $R$.
+
+No variable in $R$ is a parent of a variable outside $R$. Thus, $V,L$ are functions only of noise terms outside $R$. Mutual independence of the SCM's noise terms gives
+
+$$
+\epsilon_R\perp\!\!\!\perp (V,L).
+$$
+
+Once $V$ is known, the remaining randomness determining $R$ is therefore independent of $L$. Hence,
+
+$$
+R\perp\!\!\!\perp L\mid V.
+$$
+
+Any additional variables in $S$ belong to $R$ or $L$. Conditioning on those variables preserves conditional independence between the two collections. Since $A$ and $Y$ lie on opposite sides and are not themselves conditioned on,
+
+$$
+A\perp\!\!\!\perp Y\mid S.
+$$
+
+This proves the first blocking rule, including situations where we also condition on colliders elsewhere along the path.
+
+**2. A collider with neither it nor any descendant conditioned on.**
+
+Let $V$ be a collider on the unique path, and suppose neither $V$ nor any of its descendants is in $S$.
+
+First, neither endpoint can be a descendant of $V$. A directed path from $V$ to either endpoint would give a second route to that endpoint: it cannot follow the original path, whose adjacent arrow points into $V$. Combining that route with the original path would contradict uniqueness of the path between $A$ and $Y$.
+
+Now remove $V$ and all its descendants. This removes neither endpoint nor any variable in $S$.
+
+It also leaves a valid system of assignments for the remaining variables. No removed variable can be a parent of a remaining variable: a child of $V$ or of one of its descendants would itself be a descendant and would have been removed. We can therefore generate all remaining variables without using any of the removed assignments or noise terms.
+
+The remaining graph has no path between $A$ and $Y$, because their unique path passed through $V$. They now belong to different connected pieces. Each piece is generated from its own collection of noise terms, and those noise collections are mutually independent. Thus, the collections of variables in the different pieces are independent.
+
+Every variable in $S$ belongs to one of these remaining pieces. Conditioning on variables within the separate pieces preserves their independence. In particular,
+
+$$
+A\perp\!\!\!\perp Y\mid S.
+$$
+
+This proves the second blocking rule.
+
+Both arguments rely on there being only one path between the endpoints. In a larger graph, blocking one path is not enough if another path remains open.
+
+:::
 
 <div class="section-break" aria-hidden="true"><span class="acorn-mark"></span></div>
 
