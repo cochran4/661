@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 300" width="620" height="300" role="img" aria-labelledby="title">
+<title id="title">Causal graph for vaccination and influenza in a couple</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#315C43"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)">
+<path d="M180 92 L145 208"/>
+<path d="M440 92 L475 208"/>
+<path d="M203 88 C285 128 365 170 458 215"/>
+<path d="M417 88 C335 128 255 170 162 215"/>
+</g>
+<g fill="#E6EEDF" stroke="#315C43" stroke-width="1.5">
+<circle cx="190" cy="65" r="27"/>
+<circle cx="430" cy="65" r="27"/>
+<circle cx="135" cy="235" r="27"/>
+<circle cx="485" cy="235" r="27"/>
+</g>
+<g text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">
+<text x="190" y="73">A₁</text>
+<text x="430" y="73">A₂</text>
+<text x="135" y="243">Y₁</text>
+<text x="485" y="243">Y₂</text>
+</g>
+</svg>

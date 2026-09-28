@@ -180,6 +180,10 @@ window.Quarto = {
  <span class="dropdown-text">Global Markov property</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./02e-potential-outcomes.html">
+ <span class="dropdown-text">Potential outcomes</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./02-exercises.html">
  <span class="dropdown-text">Exercises</span></a>
   </li>  
@@ -296,6 +300,11 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02d-global-markov-property.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Global Markov property</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02e-potential-outcomes.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Potential outcomes</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -473,7 +482,7 @@ Y&amp;\leftarrow f_Y(X,A,\epsilon_Y),
 <p>with independent noise terms.</p>
 <details class="lesson-question">
 <summary>
-Draw the causal graph for the WHI SCM. How does it differ from the RHC graph in <a href="#fig-rhc" class="quarto-xref">Figure&nbsp;<span>2</span></a>?
+Draw the causal graph for the WHI SCM. How does it differ from the RHC graph in <a href="02e-potential-outcomes.html#fig-rhc" class="quarto-xref">Figure&nbsp;<span>2</span></a>?
 </summary>
 <div id="fig-whi" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Nodes X and A each have an arrow pointing to Y. There is no arrow between X and A.">
 <figure class="quarto-float quarto-float-fig figure">
@@ -485,7 +494,7 @@ Figure&nbsp;3: The WHI causal graph.
 </figcaption>
 </figure>
 </div>
-<p>Both <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span> are parents of <span class="math inline">\(Y\)</span>, so we draw <span class="math inline">\(X\to Y\)</span> and <span class="math inline">\(A\to Y\)</span>. Neither <span class="math inline">\(X\)</span> nor <span class="math inline">\(A\)</span> has any parents. Compared with the RHC graph in <a href="#fig-rhc" class="quarto-xref">Figure&nbsp;<span>2</span></a>, the arrow <span class="math inline">\(X\to A\)</span> is absent: the randomized treatment assignment does not use <span class="math inline">\(X\)</span>.</p>
+<p>Both <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span> are parents of <span class="math inline">\(Y\)</span>, so we draw <span class="math inline">\(X\to Y\)</span> and <span class="math inline">\(A\to Y\)</span>. Neither <span class="math inline">\(X\)</span> nor <span class="math inline">\(A\)</span> has any parents. Compared with the RHC graph in <a href="02e-potential-outcomes.html#fig-rhc" class="quarto-xref">Figure&nbsp;<span>2</span></a>, the arrow <span class="math inline">\(X\to A\)</span> is absent: the randomized treatment assignment does not use <span class="math inline">\(X\)</span>.</p>
 </details>
 <p>For a mediation example, let <span class="math inline">\(X\)</span> collect baseline characteristics, <span class="math inline">\(A\)</span> indicate randomized assignment to a reminder, <span class="math inline">\(M\)</span> indicate attendance, and <span class="math inline">\(Y\)</span> indicate whether blood pressure is measured at the appointment. The reminder can affect measurement only through attendance. We suppose</p>
 <p><span class="math display">\[
@@ -725,7 +734,7 @@ Y\mathrel{\perp\!\!\!\perp}C\mid S,H,L.
 </details>
 <details class="lesson-question">
 <summary>
-For the WHI graph in <a href="#fig-whi" class="quarto-xref">Figure&nbsp;<span>3</span></a>, use the order <span class="math inline">\(X,A,Y\)</span>. What does the local Markov property give us for <span class="math inline">\(A\)</span>?
+For the WHI graph in <a href="02e-potential-outcomes.html#fig-whi" class="quarto-xref">Figure&nbsp;<span>1</span></a>, use the order <span class="math inline">\(X,A,Y\)</span>. What does the local Markov property give us for <span class="math inline">\(A\)</span>?
 </summary>
 <p>The variable <span class="math inline">\(X\)</span> comes before <span class="math inline">\(A\)</span>, but it is not a parent of <span class="math inline">\(A\)</span>. The variable <span class="math inline">\(A\)</span> has no parents. Thus,</p>
 <p><span class="math display">\[

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 300" width="700" height="300" role="img" aria-labelledby="title">
+<title id="title">Causal graph for asthma treatment at two time points</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#315C43"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)">
+<path d="M105 150 L245 150"/>
+<path d="M305 150 L445 150"/>
+<path d="M505 150 L645 150"/>
+<path d="M95 125 C180 30 390 30 455 125"/>
+<path d="M94 174 C220 285 510 285 655 174"/>
+<path d="M294 174 C390 245 545 235 650 174"/>
+</g>
+<g fill="#E6EEDF" stroke="#315C43" stroke-width="1.5">
+<circle cx="75" cy="150" r="28"/>
+<circle cx="275" cy="150" r="28"/>
+<circle cx="475" cy="150" r="28"/>
+<circle cx="675" cy="150" r="28"/>
+</g>
+<g text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">
+<text x="75" y="158">A₁</text>
+<text x="275" y="158">Y₁</text>
+<text x="475" y="158">A₂</text>
+<text x="675" y="158">Y₂</text>
+</g>
+</svg>

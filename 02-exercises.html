@@ -36,7 +36,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./glossary.html" rel="next">
-<link href="./02d-global-markov-property.html" rel="prev">
+<link href="./02e-potential-outcomes.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -180,6 +180,10 @@ window.Quarto = {
  <span class="dropdown-text">Global Markov property</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./02e-potential-outcomes.html">
+ <span class="dropdown-text">Potential outcomes</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./02-exercises.html">
  <span class="dropdown-text">Exercises</span></a>
   </li>  
@@ -296,6 +300,11 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02d-global-markov-property.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Global Markov property</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02e-potential-outcomes.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Potential outcomes</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -785,6 +794,249 @@ W,X,A,M,Y.
 <div class="response-space">
 
 </div>
+</section>
+</section>
+<section id="potential-outcomes" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="potential-outcomes">Potential outcomes</h2>
+<section id="constructing-potential-outcomes" class="level3">
+<h3 class="anchored" data-anchor-id="constructing-potential-outcomes">21. Constructing potential outcomes</h3>
+<p>Suppose <span class="math inline">\(W\)</span> is the outdoor wildfire-smoke level, <span class="math inline">\(A\)</span> indicates whether a classroom air purifier is used, <span class="math inline">\(P\)</span> is the indoor particulate level, and <span class="math inline">\(Y\)</span> is the number of asthma symptoms reported by students. Consider the SCM</p>
+<p><span class="math display">\[
+\begin{aligned}
+W&amp;\leftarrow f_W(\epsilon_W),\\
+A&amp;\leftarrow f_A(W,\epsilon_A),\\
+P&amp;\leftarrow f_P(W,A,\epsilon_P),\\
+Y&amp;\leftarrow f_Y(W,P,\epsilon_Y).
+\end{aligned}
+\]</span></p>
+<p>For an intervention that sets purifier use to <span class="math inline">\(a\)</span>:</p>
+<ol type="a">
+<li><p>Rename every variable and write the resulting assignments before making the substitution.</p></li>
+<li><p>Substitute <span class="math inline">\(a\)</span> wherever <span class="math inline">\(A(a)\)</span> appears on the right-hand side. Write the complete potential-outcome assignments.</p></li>
+<li><p>The intervention value <span class="math inline">\(a\)</span> does not appear explicitly in the final assignment for <span class="math inline">\(Y(a)\)</span>. Explain how it can nevertheless affect <span class="math inline">\(Y(a)\)</span>.</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="applying-causal-irrelevance" class="level3">
+<h3 class="anchored" data-anchor-id="applying-causal-irrelevance">22. Applying causal irrelevance</h3>
+<p>Return to the air-purifier SCM in Exercise 21.</p>
+<ol type="a">
+<li><p>Consider <span class="math inline">\(W(a),A(a),P(a),Y(a)\)</span> in assignment order. Which potential outcomes equal their original variables by causal irrelevance? Explain each conclusion by examining the variable’s parents, the parents of those parents, and so on.</p></li>
+<li><p>Rewrite the complete potential-outcome assignments using every equality justified by causal irrelevance.</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="applying-consistency" class="level3">
+<h3 class="anchored" data-anchor-id="applying-consistency">23. Applying consistency</h3>
+<p>Return again to the air-purifier SCM.</p>
+<ol type="a">
+<li><p>Suppose the original purifier value satisfies <span class="math inline">\(A=a\)</span>. Use the assignments in order to establish first that <span class="math inline">\(P(a)=P\)</span> and then that <span class="math inline">\(Y(a)=Y\)</span>.</p></li>
+<li><p>State the consistency conclusions separately for classrooms with <span class="math inline">\(A=1\)</span> and classrooms with <span class="math inline">\(A=0\)</span>.</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="calculating-potential-outcomes" class="level3">
+<h3 class="anchored" data-anchor-id="calculating-potential-outcomes">24. Calculating potential outcomes</h3>
+<p>Consider the SCM</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow\epsilon_X,\\
+A&amp;\leftarrow\mathbb{1}(\epsilon_A&lt;0.5),\\
+Y&amp;\leftarrow X+2A+\epsilon_Y.
+\end{aligned}
+\]</span></p>
+<p>The following noise values have already been drawn:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;"><span class="math inline">\(\epsilon_X\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\epsilon_A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\epsilon_Y\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">0.3</td>
+<td style="text-align: right;">0.4</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td style="text-align: right;">0.8</td>
+<td style="text-align: right;">0.7</td>
+<td style="text-align: right;">0.1</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">0.6</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">0.8</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td style="text-align: right;">0.6</td>
+<td style="text-align: right;">0.4</td>
+<td style="text-align: right;">0.2</td>
+</tr>
+</tbody>
+</table>
+<ol type="a">
+<li>Fill the eight missing cells in the table. Use the same row’s noise values to generate the original variables and all potential outcomes.</li>
+</ol>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 7%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+<col style="width: 10%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;"><span class="math inline">\(X\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Y\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(X(0)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(A(0)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Y(0)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(X(1)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(A(1)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Y(1)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;"><span class="math inline">\(\square\)</span></td>
+<td style="text-align: right;">2.6</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><span class="math inline">\(\square\)</span></td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.6</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td style="text-align: right;">0.8</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"><span class="math inline">\(\square\)</span></td>
+<td style="text-align: right;">0.8</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">0.8</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.9</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3.1</td>
+<td style="text-align: right;"><span class="math inline">\(\square\)</span></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1.1</td>
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><span class="math inline">\(\square\)</span></td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;"><span class="math inline">\(\square\)</span></td>
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2.9</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td style="text-align: right;"><span class="math inline">\(\square\)</span></td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.8</td>
+<td style="text-align: right;">0.6</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><span class="math inline">\(\square\)</span></td>
+<td style="text-align: right;">0.6</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2.8</td>
+</tr>
+</tbody>
+</table>
+<ol start="2" type="a">
+<li><p>Which equalities in the completed table follow from causal irrelevance?</p></li>
+<li><p>Verify consistency for each person. Which of <span class="math inline">\(Y(0)\)</span> or <span class="math inline">\(Y(1)\)</span> must equal <span class="math inline">\(Y\)</span> in each row?</p></li>
+<li><p>Calculate <span class="math inline">\(Y(1)-Y(0)\)</span> for every person. What do you notice?</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="three-interventions-over-time" class="level3">
+<h3 class="anchored" data-anchor-id="three-interventions-over-time">25. Three interventions over time</h3>
+<p>Suppose a patient’s insulin dose can be adjusted before breakfast, lunch, and dinner. Let <span class="math inline">\(A_j\)</span> indicate whether an additional dose is given before meal <span class="math inline">\(j\)</span>, and let <span class="math inline">\(Y_j\)</span> be the blood-glucose measurement after that meal. Consider the SCM</p>
+<p><span class="math display">\[
+\begin{aligned}
+A_1&amp;\leftarrow f_{A_1}(\epsilon_{A_1}),\\
+Y_1&amp;\leftarrow f_{Y_1}(A_1,\epsilon_{Y_1}),\\
+A_2&amp;\leftarrow f_{A_2}(A_1,Y_1,\epsilon_{A_2}),\\
+Y_2&amp;\leftarrow f_{Y_2}(A_1,Y_1,A_2,\epsilon_{Y_2}),\\
+A_3&amp;\leftarrow f_{A_3}(A_1,Y_1,A_2,Y_2,\epsilon_{A_3}),\\
+Y_3&amp;\leftarrow f_{Y_3}(A_1,Y_1,A_2,Y_2,A_3,\epsilon_{Y_3}).
+\end{aligned}
+\]</span></p>
+<ol type="a">
+<li><p>Each treatment is binary. How many intervention combinations are possible?</p></li>
+<li><p>Construct the complete potential-outcome assignments under <span class="math inline">\((a_1,a_2,a_3)=(1,0,1)\)</span>. Show the renaming step and the substitution step.</p></li>
+<li><p>Apply causal irrelevance. Which potential outcomes can be replaced by their original variables?</p></li>
+<li><p>Suppose only that <span class="math inline">\(A_1=1\)</span>. Which additional potential outcomes equal their original variables by consistency? Where does the equality stop?</p></li>
+<li><p>Now suppose <span class="math inline">\(A_1=1\)</span> and <span class="math inline">\(A_2=0\)</span>. Which additional equalities follow, and where does the equality stop next?</p></li>
+<li><p>Finally, suppose <span class="math inline">\(A_1=1,A_2=0,A_3=1\)</span>. What does consistency imply about <span class="math inline">\(Y_3(1,0,1)\)</span>?</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="defining-and-interpreting-causal-effects" class="level3">
+<h3 class="anchored" data-anchor-id="defining-and-interpreting-causal-effects">26. Defining and interpreting causal effects</h3>
+<p>For each scenario:</p>
+<ol type="1">
+<li>write the causal effect using potential outcomes; and</li>
+<li>interpret the supplied numerical value in context.</li>
+</ol>
+<ol type="a">
+<li><p>A smoking-cessation program is compared with no program. Let <span class="math inline">\(Y\)</span> be the number of cigarettes smoked per day. The average treatment effect is <span class="math inline">\(-3.2\)</span>.</p></li>
+<li><p>A vaccine is compared with no vaccine. Let <span class="math inline">\(Y\)</span> indicate whether a person develops influenza. The causal relative risk is <span class="math inline">\(0.40\)</span>.</p></li>
+<li><p>A pain therapy is compared with no therapy. Let <span class="math inline">\(Y\)</span> be a pain score, and let the baseline variable <span class="math inline">\(X=1\)</span> indicate severe pain before treatment. The average treatment effect among people with <span class="math inline">\(X=1\)</span> is <span class="math inline">\(-5\)</span>.</p></li>
+<li><p>An exercise program is compared with no program. Let <span class="math inline">\(Y\)</span> be systolic blood pressure and let <span class="math inline">\(A\)</span> indicate whether the person participated in the program in the original data-generating process. The average treatment effect among the treated is <span class="math inline">\(-6\)</span>.</p></li>
+</ol>
+<div class="response-space">
+
+</div>
 
 
 </section>
@@ -1203,8 +1455,8 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./02d-global-markov-property.html" class="pagination-link" aria-label="Global Markov property">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Global Markov property</span></span>
+      <a href="./02e-potential-outcomes.html" class="pagination-link" aria-label="Potential outcomes">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Potential outcomes</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
