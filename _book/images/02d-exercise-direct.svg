@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 660 360" width="660" height="360">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#315C43"/></marker></defs>
+<line x1="306.7" y1="56.6" x2="86.8" y2="166.6" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="353.3" y1="56.6" x2="573.2" y2="166.6" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="86.0" y1="180.0" x2="570.0" y2="180.0" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="83.3" y1="191.6" x2="303.2" y2="301.6" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="353.3" y1="303.4" x2="573.2" y2="193.4" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<line x1="600.0" y1="206.0" x2="600.0" y2="285.0" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)"/>
+<circle cx="330" cy="45" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="330" y="53" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">U</text>
+<circle cx="60" cy="180" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="60" y="188" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">A</text>
+<circle cx="600" cy="180" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="600" y="188" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">Y</text>
+<circle cx="330" cy="315" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="330" y="323" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">M</text>
+<circle cx="600" cy="315" r="25" fill="#E6EEDF" stroke="#315C43" stroke-width="1.5"/><text x="600" y="323" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">T</text>
+</svg>

@@ -1,0 +1,334 @@
+### 21. Constructing potential outcomes
+
+Suppose $W$ is the outdoor wildfire-smoke level, $A$ indicates whether a classroom air purifier is used, $P$ is the indoor particulate level, and $Y$ is the number of asthma symptoms reported by students. Consider the SCM
+
+$$
+\begin{aligned}
+W&\leftarrow f_W(\epsilon_W),\\
+A&\leftarrow f_A(W,\epsilon_A),\\
+P&\leftarrow f_P(W,A,\epsilon_P),\\
+Y&\leftarrow f_Y(W,P,\epsilon_Y).
+\end{aligned}
+$$
+
+For an intervention that sets purifier use to $a$:
+
+a. Rename every variable and write the resulting assignments before making the substitution.
+
+b. Substitute $a$ wherever $A(a)$ appears on the right-hand side. Write the complete potential-outcome assignments.
+
+c. The intervention value $a$ does not appear explicitly in the final assignment for $Y(a)$. Explain how it can nevertheless affect $Y(a)$.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** After renaming the variables,
+
+$$
+\begin{aligned}
+W(a)&\leftarrow f_W(\epsilon_W),\\
+A(a)&\leftarrow f_A(W(a),\epsilon_A),\\
+P(a)&\leftarrow f_P(W(a),A(a),\epsilon_P),\\
+Y(a)&\leftarrow f_Y(W(a),P(a),\epsilon_Y).
+\end{aligned}
+$$
+
+**b.** Substituting $a$ for the right-hand occurrence of $A(a)$ gives
+
+$$
+\begin{aligned}
+W(a)&\leftarrow f_W(\epsilon_W),\\
+A(a)&\leftarrow f_A(W(a),\epsilon_A),\\
+P(a)&\leftarrow f_P(W(a),a,\epsilon_P),\\
+Y(a)&\leftarrow f_Y(W(a),P(a),\epsilon_Y).
+\end{aligned}
+$$
+
+**c.** The value $a$ enters the calculation for $P(a)$, and $P(a)$ is then an input to the assignment for $Y(a)$. Thus, the intervention can affect $Y(a)$ through indoor particulate levels even though $a$ is not written directly in the final assignment.
+:::
+
+### 22. Applying causal irrelevance
+
+Return to the air-purifier SCM in Exercise 21.
+
+a. Consider $W(a),A(a),P(a),Y(a)$ in assignment order. Which potential outcomes equal their original variables by causal irrelevance? Explain each conclusion by examining the variable's parents, the parents of those parents, and so on.
+
+b. Rewrite the complete potential-outcome assignments using every equality justified by causal irrelevance.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** The variable $W$ has no parents, so $W(a)=W$. The only parent of $A$ is $W$, and neither $W$ nor any of its parents includes $A$. Thus, $A(a)=A$.
+
+The variable $A$ is a parent of $P$, so causal irrelevance does not equate $P(a)$ with $P$. Although $A$ is not a parent of $Y$, $P$ is a parent of $Y$ and $A$ is a parent of $P$. The intervention value can therefore enter the calculation for $Y(a)$ through $P(a)$, so causal irrelevance does not equate $Y(a)$ with $Y$.
+
+**b.** After applying causal irrelevance,
+
+$$
+\begin{aligned}
+W&\leftarrow f_W(\epsilon_W),\\
+A&\leftarrow f_A(W,\epsilon_A),\\
+P(a)&\leftarrow f_P(W,a,\epsilon_P),\\
+Y(a)&\leftarrow f_Y(W,P(a),\epsilon_Y).
+\end{aligned}
+$$
+:::
+
+### 23. Applying consistency
+
+Return again to the air-purifier SCM.
+
+a. Suppose the original purifier value satisfies $A=a$. Use the assignments in order to establish first that $P(a)=P$ and then that $Y(a)=Y$.
+
+b. State the consistency conclusions separately for classrooms with $A=1$ and classrooms with $A=0$.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** After causal irrelevance,
+
+$$
+P(a)\leftarrow f_P(W,a,\epsilon_P),
+\qquad
+P\leftarrow f_P(W,A,\epsilon_P).
+$$
+
+When $A=a$, these assignments have identical inputs, so $P(a)=P$. Carrying this equality into the next assignment gives
+
+$$
+Y(a)=f_Y(W,P(a),\epsilon_Y)
+=f_Y(W,P,\epsilon_Y)=Y.
+$$
+
+**b.** For classrooms that used a purifier,
+
+$$
+P(1)=P,\qquad Y(1)=Y
+\qquad\text{whenever }A=1.
+$$
+
+For classrooms that did not use a purifier,
+
+$$
+P(0)=P,\qquad Y(0)=Y
+\qquad\text{whenever }A=0.
+$$
+:::
+
+### 24. Calculating potential outcomes
+
+Consider the SCM
+
+$$
+\begin{aligned}
+X&\leftarrow\epsilon_X,\\
+A&\leftarrow\mathbb{1}(\epsilon_A<0.5),\\
+Y&\leftarrow X+2A+\epsilon_Y.
+\end{aligned}
+$$
+
+The following noise values have already been drawn:
+
+| Person | $\epsilon_X$ | $\epsilon_A$ | $\epsilon_Y$ |
+|---|---:|---:|---:|
+| 1 | 0.2 | 0.3 | 0.4 |
+| 2 | 0.8 | 0.7 | 0.1 |
+| 3 | 0.5 | 0.2 | 0.6 |
+| 4 | 0.1 | 0.9 | 0.8 |
+| 5 | 0.6 | 0.4 | 0.2 |
+
+a. Fill the eight missing cells in the table. Use the same row's noise values to generate the original variables and all potential outcomes.
+
+| Person | $X$ | $A$ | $Y$ | $X(0)$ | $A(0)$ | $Y(0)$ | $X(1)$ | $A(1)$ | $Y(1)$ |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 0.2 | $\square$ | 2.6 | 0.2 | 1 | $\square$ | 0.2 | 1 | 2.6 |
+| 2 | 0.8 | 0 | $\square$ | 0.8 | 0 | 0.9 | 0.8 | 0 | 2.9 |
+| 3 | 0.5 | 1 | 3.1 | $\square$ | 1 | 1.1 | 0.5 | 1 | $\square$ |
+| 4 | 0.1 | 0 | 0.9 | 0.1 | $\square$ | 0.9 | 0.1 | 0 | 2.9 |
+| 5 | $\square$ | 1 | 2.8 | 0.6 | 1 | $\square$ | 0.6 | 1 | 2.8 |
+
+b. Which equalities in the completed table follow from causal irrelevance?
+
+c. Verify consistency for each person. Which of $Y(0)$ or $Y(1)$ must equal $Y$ in each row?
+
+d. Calculate $Y(1)-Y(0)$ for every person. What do you notice?
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** The completed table is
+
+| Person | $X$ | $A$ | $Y$ | $X(0)$ | $A(0)$ | $Y(0)$ | $X(1)$ | $A(1)$ | $Y(1)$ |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 0.2 | 1 | 2.6 | 0.2 | 1 | 0.6 | 0.2 | 1 | 2.6 |
+| 2 | 0.8 | 0 | 0.9 | 0.8 | 0 | 0.9 | 0.8 | 0 | 2.9 |
+| 3 | 0.5 | 1 | 3.1 | 0.5 | 1 | 1.1 | 0.5 | 1 | 3.1 |
+| 4 | 0.1 | 0 | 0.9 | 0.1 | 0 | 0.9 | 0.1 | 0 | 2.9 |
+| 5 | 0.6 | 1 | 2.8 | 0.6 | 1 | 0.8 | 0.6 | 1 | 2.8 |
+
+**b.** Causal irrelevance gives
+
+$$
+X(0)=X(1)=X,
+\qquad
+A(0)=A(1)=A
+$$
+
+for every person.
+
+**c.** When $A=0$, consistency gives $Y(0)=Y$; this occurs for persons 2 and 4. When $A=1$, consistency gives $Y(1)=Y$; this occurs for persons 1, 3, and 5.
+
+**d.** For every person,
+
+$$
+Y(1)-Y(0)=2.
+$$
+
+The treatment effect is constant in this SCM.
+:::
+
+### 25. Three interventions over time
+
+Suppose a patient's insulin dose can be adjusted before breakfast, lunch, and dinner. Let $A_j$ indicate whether an additional dose is given before meal $j$, and let $Y_j$ be the blood-glucose measurement after that meal. Consider the SCM
+
+$$
+\begin{aligned}
+A_1&\leftarrow f_{A_1}(\epsilon_{A_1}),\\
+Y_1&\leftarrow f_{Y_1}(A_1,\epsilon_{Y_1}),\\
+A_2&\leftarrow f_{A_2}(A_1,Y_1,\epsilon_{A_2}),\\
+Y_2&\leftarrow f_{Y_2}(A_1,Y_1,A_2,\epsilon_{Y_2}),\\
+A_3&\leftarrow f_{A_3}(A_1,Y_1,A_2,Y_2,\epsilon_{A_3}),\\
+Y_3&\leftarrow f_{Y_3}(A_1,Y_1,A_2,Y_2,A_3,\epsilon_{Y_3}).
+\end{aligned}
+$$
+
+a. Each treatment is binary. How many intervention combinations are possible?
+
+b. Construct the complete potential-outcome assignments under $(a_1,a_2,a_3)=(1,0,1)$. Show the renaming step and the substitution step.
+
+c. Apply causal irrelevance. Which potential outcomes can be replaced by their original variables?
+
+d. Suppose only that $A_1=1$. Which additional potential outcomes equal their original variables by consistency? Where does the equality stop?
+
+e. Now suppose $A_1=1$ and $A_2=0$. Which additional equalities follow, and where does the equality stop next?
+
+f. Finally, suppose $A_1=1,A_2=0,A_3=1$. What does consistency imply about $Y_3(1,0,1)$?
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** There are
+
+$$
+2^3=8
+$$
+
+possible intervention combinations.
+
+**b.** After renaming,
+
+$$
+\begin{aligned}
+A_1(1,0,1)&\leftarrow f_{A_1}(\epsilon_{A_1}),\\
+Y_1(1,0,1)&\leftarrow f_{Y_1}(A_1(1,0,1),\epsilon_{Y_1}),\\
+A_2(1,0,1)&\leftarrow f_{A_2}(A_1(1,0,1),Y_1(1,0,1),\epsilon_{A_2}),\\
+Y_2(1,0,1)&\leftarrow f_{Y_2}(A_1(1,0,1),Y_1(1,0,1),A_2(1,0,1),\epsilon_{Y_2}),\\
+A_3(1,0,1)&\leftarrow f_{A_3}(A_1(1,0,1),Y_1(1,0,1),A_2(1,0,1),Y_2(1,0,1),\epsilon_{A_3}),\\
+Y_3(1,0,1)&\leftarrow f_{Y_3}(A_1(1,0,1),Y_1(1,0,1),A_2(1,0,1),Y_2(1,0,1),A_3(1,0,1),\epsilon_{Y_3}).
+\end{aligned}
+$$
+
+After substituting the intervention values,
+
+$$
+\begin{aligned}
+A_1(1,0,1)&\leftarrow f_{A_1}(\epsilon_{A_1}),\\
+Y_1(1,0,1)&\leftarrow f_{Y_1}(1,\epsilon_{Y_1}),\\
+A_2(1,0,1)&\leftarrow f_{A_2}(1,Y_1(1,0,1),\epsilon_{A_2}),\\
+Y_2(1,0,1)&\leftarrow f_{Y_2}(1,Y_1(1,0,1),0,\epsilon_{Y_2}),\\
+A_3(1,0,1)&\leftarrow f_{A_3}(1,Y_1(1,0,1),0,Y_2(1,0,1),\epsilon_{A_3}),\\
+Y_3(1,0,1)&\leftarrow f_{Y_3}(1,Y_1(1,0,1),0,Y_2(1,0,1),1,\epsilon_{Y_3}).
+\end{aligned}
+$$
+
+**c.** Only $A_1(1,0,1)$ can be replaced by its original variable through causal irrelevance:
+
+$$
+A_1(1,0,1)=A_1.
+$$
+
+Every other calculation uses at least one intervention value, directly or through an earlier variable.
+
+**d.** If $A_1=1$, then the assignments for $Y_1(1,0,1)$ and $Y_1$ agree, so $Y_1(1,0,1)=Y_1$. This equality carries into the assignment for $A_2(1,0,1)$, giving $A_2(1,0,1)=A_2$. The equality stops before $Y_2$ because its potential-outcome assignment receives $0$, while the original receives $A_2$.
+
+**e.** If $A_2=0$ as well, then $Y_2(1,0,1)=Y_2$. This carries into the next assignment, giving $A_3(1,0,1)=A_3$. The equality stops before $Y_3$ because its potential-outcome assignment receives $1$, while the original receives $A_3$.
+
+**f.** If $A_3=1$ too, then all inputs to the final assignments agree, and consistency gives
+
+$$
+Y_3(1,0,1)=Y_3.
+$$
+:::
+
+### 26. Defining and interpreting causal effects
+
+For each scenario:
+
+1. write the causal effect using potential outcomes; and
+2. interpret the supplied numerical value in context.
+
+a. A smoking-cessation program is compared with no program. Let $Y$ be the number of cigarettes smoked per day. The average treatment effect is $-3.2$.
+
+b. A vaccine is compared with no vaccine. Let $Y$ indicate whether a person develops influenza. The causal relative risk is $0.40$.
+
+c. A pain therapy is compared with no therapy. Let $Y$ be a pain score, and let the baseline variable $X=1$ indicate severe pain before treatment. The average treatment effect among people with $X=1$ is $-5$.
+
+d. An exercise program is compared with no program. Let $Y$ be systolic blood pressure and let $A$ indicate whether the person participated in the program in the original data-generating process. The average treatment effect among the treated is $-6$.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** The average treatment effect is
+
+$$
+E\{Y(1)-Y(0)\}=-3.2.
+$$
+
+The smoking-cessation program reduces the number of cigarettes smoked per day by 3.2, on average, compared with no program.
+
+**b.** The causal relative risk is
+
+$$
+\frac{P\{Y(1)=1\}}{P\{Y(0)=1\}}=0.40.
+$$
+
+The risk of influenza under vaccination is 40% of the risk under no vaccination.
+
+**c.** The subgroup average treatment effect is
+
+$$
+E\{Y(1)-Y(0)\mid X=1\}=-5.
+$$
+
+Among people with severe baseline pain, the therapy reduces the pain score by 5 points on average compared with no therapy.
+
+**d.** The average treatment effect among the treated is
+
+$$
+E\{Y(1)-Y(0)\mid A=1\}=-6.
+$$
+
+Among people who participated in the exercise program in the original data-generating process, participation reduces systolic blood pressure by 6 units on average compared with no participation.
+:::

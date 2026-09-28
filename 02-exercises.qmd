@@ -19,3 +19,7 @@ filters:
 ## Global Markov property {.unnumbered}
 
 {{< include _exercises/02d-global-markov-property.qmd >}}
+
+## Potential outcomes {.unnumbered}
+
+{{< include _exercises/02e-potential-outcomes.qmd >}}

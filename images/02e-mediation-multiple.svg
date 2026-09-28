@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 330" width="620" height="330" role="img" aria-labelledby="title">
+<title id="title">Causal graph with treatment and mediator</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="#315C43"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)">
+<path d="M80 165 L202 165"/><path d="M258 165 L372 165"/><path d="M428 165 L542 165"/>
+<path d="M72 142 Q170 45 380 142"/><path d="M70 188 Q280 300 550 188"/><path d="M247 188 Q375 270 550 188"/>
+</g>
+<g fill="#E6EEDF" stroke="#315C43" stroke-width="1.5">
+<circle cx="50" cy="165" r="27"/><circle cx="230" cy="165" r="27"/><circle cx="400" cy="165" r="27"/><circle cx="570" cy="165" r="27"/>
+</g>
+<g text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="24" fill="#244635">
+<text x="50" y="173">X</text><text x="230" y="173">A</text><text x="400" y="173">M</text><text x="570" y="173">Y</text>
+</g>
+</svg>
