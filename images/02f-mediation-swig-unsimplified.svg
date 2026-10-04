@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 910 530" width="910" height="530" role="img" aria-labelledby="title">
+<title id="title">Mediation SWIG before causal irrelevance</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#315C43" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)">
+<path d="M 100.0,145.0 L 100.0,312.0"/>
+<path d="M 144.4,107.6 L 402.7,151.9"/>
+<path d="M 141.8,83.3 C 450,-40 805,20 792.1,312.0"/>
+<path d="M 235.7,337.1 L 413.0,190.6"/>
+<path d="M 235.4,383.3 C 355,485 660,485 755.4,393.3"/>
+<path d="M 585.3,183.5 L 753.6,328.7"/>
+</g>
+<circle cx="100" cy="100" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="100" y="100" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">X(a,m)</text>
+<circle cx="100" cy="360" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="100" y="360" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">A(a,m)</text>
+<circle cx="208" cy="360" r="34" fill="#FFFDF9" stroke="#315C43" stroke-width="1.8"/>
+<text x="208" y="360" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">a</text>
+<circle cx="450" cy="160" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="450" y="160" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">M(a,m)</text>
+<circle cx="558" cy="160" r="34" fill="#FFFDF9" stroke="#315C43" stroke-width="1.8"/>
+<text x="558" y="160" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">m</text>
+<circle cx="790" cy="360" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="790" y="360" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">Y(a,m)</text>
+</svg>

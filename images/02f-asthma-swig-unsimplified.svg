@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1020 550" width="1020" height="550" role="img" aria-labelledby="title">
+<title id="title">Asthma SWIG before causal irrelevance</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#315C43" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)">
+<path d="M 235.0,203.5 L 373.7,131.7"/>
+<path d="M 236.8,232.5 L 490.3,326.1"/>
+<path d="M 214.6,254.1 C 315,550 875,550 898.8,288.7"/>
+<path d="M 463.6,159.5 L 525.1,287.8"/>
+<path d="M 498.7,82.6 C 600,55 780,70 860.8,167.0"/>
+<path d="M 694.7,333.0 L 844.2,252.7"/>
+</g>
+<circle cx="95" cy="220" r="64" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="95" y="220" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="21" fill="#244635">A₁(a₁,a₂)</text>
+<circle cx="203" cy="220" r="34" fill="#FFFDF9" stroke="#315C43" stroke-width="1.8"/>
+<text x="203" y="220" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">a₁</text>
+<circle cx="435" cy="100" r="64" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="435" y="100" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="21" fill="#244635">Y₁(a₁,a₂)</text>
+<circle cx="555" cy="350" r="64" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="555" y="350" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="21" fill="#244635">A₂(a₁,a₂)</text>
+<circle cx="663" cy="350" r="34" fill="#FFFDF9" stroke="#315C43" stroke-width="1.8"/>
+<text x="663" y="350" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">a₂</text>
+<circle cx="905" cy="220" r="64" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="905" y="220" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="21" fill="#244635">Y₂(a₁,a₂)</text>
+</svg>

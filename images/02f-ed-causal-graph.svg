@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 320" width="620" height="320" role="img" aria-labelledby="title">
+<title id="title">ED causal graph</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#315C43" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)">
+<path d="M 129.9,169.1 L 257.5,102.3"/>
+<path d="M 340.2,100.1 L 477.1,168.5"/>
+<path d="M 127.0,215.6 C 220,280 410,280 482.9,220.4"/>
+</g>
+<circle cx="90" cy="190" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="90" y="190" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">A</text>
+<circle cx="300" cy="80" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="300" y="80" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">H</text>
+<circle cx="520" cy="190" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="520" y="190" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">Y</text>
+</svg>

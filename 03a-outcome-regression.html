@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Syllabus – Causal inference (and other things)</title>
+<title>Outcome regression – Causal inference (and other things)</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -26,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -35,8 +70,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./01a-being-a-detective.html" rel="next">
-<link href="./index.html" rel="prev">
+<link href="./glossary.html" rel="next">
+<link href="./02-exercises.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -74,6 +109,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -201,7 +265,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./00-syllabus.html"><span class="chapter-title">Syllabus</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03a-outcome-regression.html">Measured confounding</a></li><li class="breadcrumb-item"><a href="./03a-outcome-regression.html"><span class="chapter-title">Outcome regression</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -220,7 +284,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./00-syllabus.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Syllabus</span></a>
+  <a href="./00-syllabus.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Syllabus</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -316,7 +380,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./03a-outcome-regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Outcome regression</span></a>
+  <a href="./03a-outcome-regression.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Outcome regression</span></a>
   </div>
 </li>
       </ul>
@@ -367,9 +431,9 @@ ul.task-list li input[type="checkbox"] {
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default">
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03a-outcome-regression.html">Measured confounding</a></li><li class="breadcrumb-item"><a href="./03a-outcome-regression.html"><span class="chapter-title">Outcome regression</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Syllabus</span></h1>
+<h1 class="title"><span class="chapter-title">Outcome regression</span></h1>
 </div>
 
 
@@ -386,437 +450,357 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p><strong>Causal Inference, Surveys, and Missing Data for Population Health</strong></p>
-<p>BMI/POP HLTH 661</p>
-<p>Fall 2026</p>
-<div class="section-break" aria-hidden="true">
-<span class="acorn-mark"></span>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>We now have the tools to answer our first identification question. Consider a common situation in an observational study. We have an exposure <span class="math inline">\(A\)</span>, an outcome <span class="math inline">\(Y\)</span>, and a collection of common causes of <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>. We collect those common causes in <span class="math inline">\(X\)</span>. When all these confounders are measured, we call this measured confounding.</p>
+<p>The RHC study could fit this setup. Our exposure is receipt of RHC, and our outcome is death within 30 days. Age, sex, diagnosis, blood pressure, heart rate, creatinine, and white blood cell count could influence the treatment decision and the patient’s outcome. Here, we collect the relevant pretreatment information into <span class="math inline">\(X\)</span>. This is a broader grouping than the one we used in the homework, where diagnosis and clinical measurements had their own assignments.</p>
+<p>Our causal assumptions are represented by the SCM</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow f_X(\epsilon_X),\\
+A&amp;\leftarrow f_A(X,\epsilon_A),\\
+Y&amp;\leftarrow f_Y(X,A,\epsilon_Y),
+\end{aligned}
+\]</span></p>
+<p>with mutually independent noise terms. The model says that <span class="math inline">\(X\)</span> captures the common causes needed to describe treatment and outcome. In the RHC study, this also requires us to treat the measurements in <span class="math inline">\(X\)</span> as available before the treatment decision. Recording many variables does not, by itself, establish either assumption.</p>
+<p>The corresponding causal graph is</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03a-measured-confounding.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="The measured-confounding causal graph. X points to A and Y, and A points to Y." width="620"></p>
+</figure>
 </div>
-<section id="course-information" class="level2">
-<h2 class="anchored" data-anchor-id="course-information">Course Information</h2>
-<section id="course-logistics" class="level3">
-<h3 class="anchored" data-anchor-id="course-logistics">Course Logistics</h3>
-<section id="classroom-and-meeting-times" class="level4">
-<h4 class="anchored" data-anchor-id="classroom-and-meeting-times">Classroom and Meeting Times</h4>
-<p>Days/Time: Tue/Thu 4:00–5:15 PM<br>
-Location: 726 WARF</p>
-</section>
-<section id="instructor" class="level4">
-<h4 class="anchored" data-anchor-id="instructor">Instructor</h4>
-<p>Amy Cochran<br>
-Email: cochran4@math.wisc.edu<br>
-Office hours: TBD, 685 WARF</p>
-</section>
-<section id="credit-hours" class="level4">
-<h4 class="anchored" data-anchor-id="credit-hours">Credit Hours</h4>
-<p>3 credits</p>
-<p><strong>UW–Madison credit hour policy.</strong> The credit standard for this course is met by an expectation of a total of <strong>135 hours</strong> (at least 45 hours per credit) of student engagement with course learning activities. This includes regularly scheduled instructor–student meeting times (75-minute blocks on Tuesday and Thursday), reading, problem sets, and other work described in this syllabus.</p>
-</section>
-<section id="requisites" class="level4">
-<h4 class="anchored" data-anchor-id="requisites">Requisites</h4>
-<p>POP HLTH/B M I 552, F&amp;W ECOL/STAT 572 (or HORT 572 prior to Spring 2025), SOC/C&amp;E SOC 361, or ED PSYCH 761</p>
-</section>
-<section id="course-attributes" class="level4">
-<h4 class="anchored" data-anchor-id="course-attributes">Course Attributes</h4>
-<p>Graduate level</p>
-</section>
-<section id="instructional-mode" class="level4">
-<h4 class="anchored" data-anchor-id="instructional-mode">Instructional Mode</h4>
-<p>Face to face</p>
-</section>
-</section>
-<section id="course-descriptions" class="level3">
-<h3 class="anchored" data-anchor-id="course-descriptions">Course Descriptions</h3>
-<section id="official-description" class="level4">
-<h4 class="anchored" data-anchor-id="official-description">Official Description</h4>
-<p>Overview of modern statistical methods for dealing with “incomplete” data, including the design and analysis of complex surveys, the analysis of missing data, and causal inference.</p>
-</section>
-<section id="instructor-description" class="level4">
-<h4 class="anchored" data-anchor-id="instructor-description">Instructor Description</h4>
-<p>This course builds a foundation for making causal claims from observational data. We want to move past associations — <em>this thing is related to that thing</em> — and actually say that one thing <strong>causes</strong> another. Does vaping give you cancer? Is intermittent fasting bad for your heart? Can I eat eggs every morning? People are acting on these questions regardless (vaping, skipping breakfast, eating eggs), and the science they rely on should meet them with honest answers rather than a shrug about causation.</p>
-<p>Making those claims is hard. Without randomization, there are always at least two explanations for any pattern we see, and ruling them out requires both the right tools and honest accounting of their limits. We build those tools from the ground up: causal models and graphs, potential outcomes and causal effects, measured and unmeasured confounding, and sensitivity analysis. We also extend them to practical complications like missing data and complex survey designs.</p>
-<p>Those tools are learned by using them. We write code in R, analyze real data in class, and the final project involves emulating a target trial from observational data.</p>
-</section>
-</section>
-<section id="course-materials" class="level3">
-<h3 class="anchored" data-anchor-id="course-materials">Course Materials</h3>
-<p>The course draws on several resource texts:</p>
-<ul>
-<li><a href="https://miguelhernan.org/whatifbook"><em>Causal Inference: What If</em></a> by Hernán and Robins</li>
-<li><a href="https://stefvanbuuren.name/fimd/"><em>Flexible Imputation of Missing Data</em></a> by van Buuren</li>
-<li><a href="https://tidy-survey-r.github.io/tidy-survey-book/"><em>Exploring Complex Survey Data Analysis Using R</em></a> by Zimmer, Powell, and Velásquez</li>
-</ul>
-<p>Additional notes and materials will be provided throughout the semester that build on and extend these texts.</p>
-<div class="section-break" aria-hidden="true">
-<span class="acorn-mark"></span>
+<p>For an intervention on <span class="math inline">\(A\)</span> with value <span class="math inline">\(a\)</span>, the potential-outcome assignments are</p>
+<p><span class="math display">\[
+\begin{aligned}
+X(a)&amp;\leftarrow f_X(\epsilon_X),\\
+A(a)&amp;\leftarrow f_A(X(a),\epsilon_A),\\
+Y(a)&amp;\leftarrow f_Y(X(a),a,\epsilon_Y).
+\end{aligned}
+\]</span></p>
+<p>Their SWIG is</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03a-measured-confounding-swig.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="The unsimplified measured-confounding SWIG. X(a) points to A(a) and Y(a). Fixed a points to Y(a). The random A(a) and fixed a are separate nearby circles." width="620"></p>
+</figure>
 </div>
+<p>Suppose treatment is binary. A common causal quantity is the average treatment effect:</p>
+<p><span class="math display">\[
+\operatorname{ATE}=E\{Y(1)\}-E\{Y(0)\}.
+\]</span></p>
+<p>For RHC, it compares the population’s risk of death if everyone received RHC with the risk if everyone did not. Because <span class="math inline">\(Y\)</span> is binary, <span class="math inline">\(E\{Y(a)\}=P\{Y(a)=1\}\)</span>. We can also compare these risks using the causal relative risk,</p>
+<p><span class="math display">\[
+\operatorname{CRR}=\frac{E\{Y(1)\}}{E\{Y(0)\}},
+\]</span></p>
+<p>or the causal odds ratio,</p>
+<p><span class="math display">\[
+\operatorname{COR}
+=\frac{E\{Y(1)\}/[1-E\{Y(1)\}]}
+{E\{Y(0)\}/[1-E\{Y(0)\}]}.
+\]</span></p>
+<p>The ratios require their denominators to be nonzero, and the odds must be defined. All three comparisons can be constructed from the two means <span class="math inline">\(E\{Y(1)\}\)</span> and <span class="math inline">\(E\{Y(0)\}\)</span>. So let us identify <span class="math inline">\(E\{Y(a)\}\)</span> for a general intervention value <span class="math inline">\(a\)</span>.</p>
 </section>
+<section id="identification" class="level2">
+<h2 class="anchored" data-anchor-id="identification">Identification</h2>
+<p>Our task is to rewrite <span class="math inline">\(E\{Y(a)\}\)</span> in terms of the observed-data distribution. We turn to our three rules: causal irrelevance, the global Markov property, and consistency.</p>
+<p>First, causal irrelevance. Neither <span class="math inline">\(X(a)\)</span> nor <span class="math inline">\(A(a)\)</span> is a descendant of the fixed intervention value <span class="math inline">\(a\)</span> in the SWIG. Therefore,</p>
+<p><span class="math display">\[
+X(a)=X,\qquad A(a)=A.
+\]</span></p>
+<p>After applying causal irrelevance, the assignments become</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow f_X(\epsilon_X),\\
+A&amp;\leftarrow f_A(X,\epsilon_A),\\
+Y(a)&amp;\leftarrow f_Y(X,a,\epsilon_Y).
+\end{aligned}
+\]</span></p>
+<p>The simplified SWIG is</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03a-measured-confounding-swig-simplified.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="The simplified measured-confounding SWIG. X points to A and Y(a), and fixed a points to Y(a)." width="620"></p>
+</figure>
+</div>
+<p>Now look for independence relationships. The path <span class="math inline">\(A\leftarrow X\to Y(a)\)</span> is blocked when we condition on <span class="math inline">\(X\)</span>. The global Markov property gives</p>
+<p><span class="math display">\[
+A\mathrel{\perp\!\!\!\perp}Y(a)\mid X.
+\]</span></p>
+<p>This relationship is called <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="The independence of a potential outcome and the original treatment conditional on baseline variables: $A\mathrel{\perp\!\!\!\perp}Y(a)\mid X$." tabindex="0">conditional exchangeability</span>. It follows from the SCM we specified; it is not another assumption we need to add to that model.</p>
+<p>Once <span class="math inline">\(X\)</span> is known, learning <span class="math inline">\(A\)</span> provides no additional information about <span class="math inline">\(Y(a)\)</span>. In particular, it does not change its conditional mean:</p>
+<p><span class="math display">\[
+E\{Y(a)\mid X\}=E\{Y(a)\mid X,A\}.
+\]</span></p>
+<p>This implication is called conditional mean exchangeability. We can add <span class="math inline">\(A\)</span> to the conditioning information because it does not change the mean.</p>
+<p>The remaining rule is consistency. It tells us that <span class="math inline">\(Y(a)=Y\)</span> whenever <span class="math inline">\(A=a\)</span>. Our last expression has <span class="math inline">\(Y(a)\)</span> inside the expectation and <span class="math inline">\(A\)</span> in the conditioning information. That suggests choosing the particular treatment value <span class="math inline">\(A=a\)</span>:</p>
+<p><span class="math display">\[
+E\{Y(a)\mid X\}=E\{Y(a)\mid X,A=a\}.
+\]</span></p>
+<p>To use the right-hand side, we need treatment <span class="math inline">\(a\)</span> to occur among people with the baseline characteristics under consideration. For binary treatment, this is the <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="Each treatment under study has a positive probability of being assigned." tabindex="0">positivity</span> requirement</p>
+<p><span class="math display">\[
+P(A=a\mid X)&gt;0
+\]</span></p>
+<p>for almost every baseline value in the population. If no one with certain baseline characteristics receives treatment <span class="math inline">\(a\)</span>, the observed-data distribution does not tell us the outcome mean for that treatment in that group.</p>
+<p>Now consistency lets us make the swap. We are conditioning on exactly the event where <span class="math inline">\(Y(a)=Y\)</span>, so</p>
+<p><span class="math display">\[
+E\{Y(a)\mid X,A=a\}=E\{Y\mid X,A=a\}.
+\]</span></p>
+<p>Combining the two steps gives</p>
+<p><span class="math display">\[
+E\{Y(a)\mid X\}=E\{Y\mid X,A=a\}.
+\]</span></p>
+<p>The left side concerns a potential outcome. The right side uses only original variables, so it is a feature of the observed-data distribution.</p>
+<p>We still need to return to <span class="math inline">\(E\{Y(a)\}\)</span>. The usual probability trick, iterated expectations, gives</p>
+<p><span class="math display">\[
+E\{Y(a)\}=E\big[E\{Y(a)\mid X\}\big].
+\]</span></p>
+<p>Substitute the expression we just obtained:</p>
+<p><span class="math display">\[
+E\{Y(a)\}=E\big[E\{Y\mid X,A=a\}\big].
+\]</span></p>
+<p>Done. The outer expectation averages over the population distribution of <span class="math inline">\(X\)</span>.</p>
+<div class="proposition-box">
+<p>Identification under measured confounding. Suppose the SCM above has mutually independent noise terms, <span class="math inline">\(A\)</span> is binary, and <span class="math inline">\(Y(a)\)</span> is integrable. If <span class="math inline">\(P(A=a\mid X)&gt;0\)</span> almost surely, then</p>
+<p><span class="math display">\[
+E\{Y(a)\}=E\big[E\{Y\mid X,A=a\}\big].
+\]</span></p>
+</div>
+<p>This expression is an adjustment formula, also called the g-formula for this setting. Apply it with <span class="math inline">\(a=1\)</span> and <span class="math inline">\(a=0\)</span> to identify the two means needed for our causal contrasts. Positivity must hold for both treatment values when the contrast uses both.</p>
 </section>
-<section id="course-format-and-expectations" class="level2">
-<h2 class="anchored" data-anchor-id="course-format-and-expectations">Course Format and Expectations</h2>
-<section id="assessment-and-grading" class="level3">
-<h3 class="anchored" data-anchor-id="assessment-and-grading">Assessment and Grading</h3>
-<p>Your course work is weighted out of <strong>100 points</strong>:</p>
-<ul>
-<li><strong>Homework:</strong> 15 points</li>
-<li><strong>Quizzes:</strong> 35 points</li>
-<li><strong>Attendance:</strong> 15 points</li>
-<li><strong>Project:</strong> 35 points</li>
-</ul>
-<section id="guaranteed-grade-lines" class="level4">
-<h4 class="anchored" data-anchor-id="guaranteed-grade-lines">Guaranteed Grade Lines</h4>
-<p>A percentage score in the indicated range guarantees at least the letter grade next to it:</p>
-<ul>
-<li><strong>A:</strong> [93,100]</li>
-<li><strong>AB:</strong> [88,93)</li>
-<li><strong>B:</strong> [83, 88)</li>
-<li><strong>BC:</strong> [78, 83)</li>
-<li><strong>C:</strong> [63, 78)</li>
-<li><strong>D:</strong> [50, 63)</li>
-<li><strong>F:</strong> [0, 50]</li>
-</ul>
-<p>Grade lines may be lowered at the end.</p>
-</section>
-</section>
-<section id="devices" class="level3">
-<h3 class="anchored" data-anchor-id="devices">Devices</h3>
-<p>The class will be device-free: the use of laptops, tablets, and phones is prohibited except during class sessions when devices are used for specific learning activities. Students with approved accommodations through the McBurney Disability Resource Center may use devices as specified in their accommodations.</p>
-</section>
-<section id="attendance" class="level3">
-<h3 class="anchored" data-anchor-id="attendance">Attendance</h3>
-<p>Attendance is expected and graded. Full credit is earned with three or fewer unexcused absences. Each additional unexcused absence reduces the attendance grade by an equal share, calculated using the number of scheduled class meetings beyond the three allowed absences.</p>
-<p>Some absences can be anticipated and should be arranged with the instructor beforehand: conferences, academic travel, religious observances, or other scheduled commitments. Others arise unexpectedly: illness, family emergencies, or other extenuating circumstances. For these, let the instructor know as soon as you are able. All other absences are unexcused.</p>
-</section>
-<section id="class-meetings" class="level3">
-<h3 class="anchored" data-anchor-id="class-meetings">Class Meetings</h3>
-<p>Class meets in person starting promptly at 4:00 PM on Tuesdays and Thursdays. Each class follows the same structure: a short lecture, followed by pen-and-paper problems worked through in small groups, followed by a coding session in R. The instructor will move between groups during problem-solving and coding to ask and answer questions.</p>
-<p>This structure only works if you show up ready to engage. That means trying problems before asking for help, supporting peers, and bringing your laptop for the coding portion.</p>
-</section>
-<section id="homework" class="level3">
-<h3 class="anchored" data-anchor-id="homework">Homework</h3>
-<p>Homework assignments are due by 4:00 PM on September 17; October 1, 8, 22, and 29; November 5 and 19; and December 8. With the exception of the final assignment, which is due on Tuesday, these dates are Thursdays. Submit each assignment on Canvas as a single PDF before class. There are 8 assignments total.</p>
-<p>Homework is graded for completeness, not correctness. Mastery is assessed through quizzes and the project.</p>
-<ul>
-<li>No late assignments will be accepted.</li>
-<li>Collaboration on ideas is encouraged, but writing solutions together or copying another person’s work is not allowed.</li>
-<li>AI tools may be used to brainstorm, explore ideas, or improve writing clarity. You are fully responsible for the accuracy and integrity of what you submit.</li>
-<li>Neatness and clarity matter. Write one problem per page except for very short problems. Computations without explanation will not receive credit even if the answer is correct.</li>
-</ul>
-</section>
-<section id="quizzes" class="level3">
-<h3 class="anchored" data-anchor-id="quizzes">Quizzes</h3>
-<p>There are 8 short in-class quizzes, given on the same dates as homework: September 17; October 1, 8, 22, and 29; November 5 and 19; and December 8. The final quiz is on a Tuesday; all other quizzes are on Thursdays. Quizzes assess comprehension of recent material and will look similar to homework problems. The lowest quiz score will be dropped.</p>
-</section>
-<section id="project" class="level3">
-<h3 class="anchored" data-anchor-id="project">Project</h3>
-<p>The project is the central assessment of the course. Working individually, you will develop a complete protocol for a target trial emulation. The final submission has two parts: a written protocol and an analysis script that executes on a sandbox dataset. The protocol can be written in any format (e.g., Quarto, Word, or LaTeX). The project unfolds across six milestones:</p>
-<ul>
-<li><strong>Scientific gap:</strong> Thursday, September 10</li>
-<li><strong>Target trial table:</strong> Thursday, September 24</li>
-<li><strong>Construction:</strong> Thursday, October 15</li>
-<li><strong>Identification:</strong> Thursday, November 12</li>
-<li><strong>Estimation:</strong> Thursday, December 3</li>
-<li><strong>Final document:</strong> Tuesday, December 15</li>
-</ul>
-<p>More detail on each milestone will be provided on Canvas. You are welcome to use your own dataset or work with the dataset the instructor uses throughout the course.</p>
-</section>
-<section id="schedule-tentative" class="level3">
-<h3 class="anchored" data-anchor-id="schedule-tentative">Schedule (Tentative)</h3>
-<div class="schedule-table-wrap" role="region" aria-label="Scrollable course schedule" tabindex="0">
-<div id="tbl-course-schedule" class="course-schedule quarto-float quarto-figure quarto-figure-center anchored" data-tbl-colwidths="[8, 12, 8, 25, 47]">
-<figure class="quarto-float quarto-float-tbl figure">
-<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-course-schedule-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Table&nbsp;1: Tentative course schedule for Fall 2026.
-</figcaption>
-<div aria-describedby="tbl-course-schedule-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<table class="course-schedule caption-top table">
+<section id="estimating-the-conditional-mean" class="level2">
+<h2 class="anchored" data-anchor-id="estimating-the-conditional-mean">Estimating the conditional mean</h2>
+<p>Identification gives us an expression involving the observed-data distribution. Estimation asks how to recover its pieces from a sample. Suppose we observe independent, identically distributed study units <span class="math inline">\((X_i,A_i,Y_i)\)</span>, for <span class="math inline">\(i=1,\ldots,n\)</span>.</p>
+<p>There are two pieces to estimate. Start with the inner conditional mean,</p>
+<p><span class="math display">\[
+E\{Y\mid X,A=a\}.
+\]</span></p>
+<p>Write the conditional-mean function as</p>
+<p><span class="math display">\[
+m(x,a)=E(Y\mid X=x,A=a).
+\]</span></p>
+<p>This is a regression problem. When we regress <span class="math inline">\(Y\)</span> on <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span>, we estimate <span class="math inline">\(m(x,a)\)</span>. Once we have a fitted function <span class="math inline">\(\widehat m\)</span>, we can supply a person’s baseline values <span class="math inline">\(X_i\)</span> and whichever treatment value <span class="math inline">\(a\)</span> we want:</p>
+<p><span class="math display">\[
+\widehat m(X_i,a).
+\]</span></p>
+<p>Let us make this operation concrete before averaging anything.</p>
+<div class="example-box">
+<p>Linear outcome regression. Suppose <span class="math inline">\(A\)</span> indicates receiving a pain therapy, <span class="math inline">\(X\)</span> is baseline pain, and <span class="math inline">\(Y\)</span> is pain measured afterward. Assume the measured-confounding SCM applies with this <span class="math inline">\(X\)</span>. For illustration, suppose the fitted regression is</p>
+<p><span class="math display">\[
+\widehat m(x,a)=2+0.6x-1.5a.
+\]</span></p>
+<p>For a person with baseline pain <span class="math inline">\(X=4\)</span>, predict their outcome under each treatment value:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\widehat m(4,0)&amp;=2+0.6(4)-1.5(0)=4.4,\\
+\widehat m(4,1)&amp;=2+0.6(4)-1.5(1)=2.9.
+\end{aligned}
+\]</span></p>
+<p>We keep baseline pain at <span class="math inline">\(4\)</span> and change the treatment input. The same operation for four people gives</p>
+<table class="caption-top table">
 <colgroup>
-<col style="width: 8%">
-<col style="width: 12%">
-<col style="width: 8%">
-<col style="width: 25%">
-<col style="width: 47%">
+<col style="width: 20%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 26%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: right;">Week</th>
-<th>Date</th>
-<th>Day</th>
-<th>Section</th>
-<th>Topics</th>
+<th>Person</th>
+<th style="text-align: right;">Baseline pain <span class="math inline">\(X_i\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\widehat m(X_i,0)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\widehat m(X_i,1)\)</span></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">1</td>
-<td>Sep 3</td>
-<td>Th</td>
-<td>Motivation</td>
-<td>Cornfield conditions</td>
-</tr>
-<tr class="even">
+<td>1</td>
 <td style="text-align: right;">2</td>
-<td>Sep 8</td>
-<td>Tu</td>
-<td></td>
-<td>Clinical trials</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">2</td>
-<td>Sep 10</td>
-<td>Th</td>
-<td>Review</td>
-<td>Probability and statistics review</td>
+<td style="text-align: right;">3.2</td>
+<td style="text-align: right;">1.7</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">3</td>
-<td>Sep 15</td>
-<td>Tu</td>
-<td>Construction</td>
-<td>Structural equation models (SEM)</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">3</td>
-<td>Sep 17</td>
-<td>Th</td>
-<td></td>
-<td>Nonparametric SEM (NPSEM)</td>
-</tr>
-<tr class="even">
+<td>2</td>
 <td style="text-align: right;">4</td>
-<td>Sep 22</td>
-<td>Tu</td>
-<td></td>
-<td>Causal graphs</td>
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">2.9</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">4</td>
-<td>Sep 24</td>
-<td>Th</td>
-<td></td>
-<td>d-separation</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">5</td>
-<td>Sep 29</td>
-<td>Tu</td>
-<td></td>
-<td>Potential outcomes</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">5</td>
-<td>Oct 1</td>
-<td>Th</td>
-<td></td>
-<td>SWIGs</td>
-</tr>
-<tr class="even">
+<td>3</td>
 <td style="text-align: right;">6</td>
-<td>Oct 6</td>
-<td>Tu</td>
-<td></td>
-<td>Causal effects</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">6</td>
-<td>Oct 8</td>
-<td>Th</td>
-<td>Measured confounding</td>
-<td>Outcome regression</td>
+<td style="text-align: right;">5.6</td>
+<td style="text-align: right;">4.1</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">7</td>
-<td>Oct 13</td>
-<td>Tu</td>
-<td></td>
-<td>Matching</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">7</td>
-<td>Oct 15</td>
-<td>Th</td>
-<td></td>
-<td>Propensity score</td>
-</tr>
-<tr class="even">
+<td>4</td>
 <td style="text-align: right;">8</td>
-<td>Oct 20</td>
-<td>Tu</td>
-<td></td>
-<td>Inverse probability weighting</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">8</td>
-<td>Oct 22</td>
-<td>Th</td>
-<td></td>
-<td>Doubly robust methods</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">9</td>
-<td>Oct 27</td>
-<td>Tu</td>
-<td></td>
-<td>Flexible modeling methods</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">9</td>
-<td>Oct 29</td>
-<td>Th</td>
-<td>Unmeasured confounding</td>
-<td>Instrumental variables</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">10</td>
-<td>Nov 3</td>
-<td>Tu</td>
-<td></td>
-<td>Regression discontinuity</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">10</td>
-<td>Nov 5</td>
-<td>Th</td>
-<td></td>
-<td>Other strategies</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">11</td>
-<td>Nov 10</td>
-<td>Tu</td>
-<td>Sensitivity</td>
-<td>E-values</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">11</td>
-<td>Nov 12</td>
-<td>Th</td>
-<td></td>
-<td>Gamma / Rosenbaum sensitivity</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">12</td>
-<td>Nov 17</td>
-<td>Tu</td>
-<td>Missing data</td>
-<td>Missing data mechanisms</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">12</td>
-<td>Nov 19</td>
-<td>Th</td>
-<td></td>
-<td>Multiple imputation</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">13</td>
-<td>Nov 24</td>
-<td>Tu</td>
-<td></td>
-<td>Chained equations</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">13</td>
-<td>Nov 26</td>
-<td>Th</td>
-<td></td>
-<td><strong>Thanksgiving (no class)</strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">14</td>
-<td>Dec 1</td>
-<td>Tu</td>
-<td></td>
-<td>Missing not at random</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">14</td>
-<td>Dec 3</td>
-<td>Th</td>
-<td>Surveys</td>
-<td>Complex survey design</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">15</td>
-<td>Dec 8</td>
-<td>Tu</td>
-<td></td>
-<td>Weighting and variance estimation</td>
+<td style="text-align: right;">6.8</td>
+<td style="text-align: right;">5.3</td>
 </tr>
 </tbody>
 </table>
+<p>Each row contains two predictions from the same fitted regression. Neither prediction requires changing the person’s baseline value.</p>
 </div>
-</figure>
+<p>For a linear regression, supplying new input values is all that prediction does. A more elaborate model might include several baseline variables, nonlinear terms, or treatment interactions. We still evaluate the fitted conditional mean at <span class="math inline">\((X_i,a)\)</span>.</p>
+<div class="example-box">
+<p>Logistic outcome regression. For a binary outcome such as death within 30 days, the conditional mean is a probability. Logistic regression models its log odds:</p>
+<p><span class="math display">\[
+\operatorname{logit}\{m(x,a)\}
+=\beta_0+\beta_Aa+\beta_X^\mathsf{T}x.
+\]</span></p>
+<p>To see the calculation with RHC variables, suppose <span class="math inline">\(X\)</span> consists of age and creatinine for this numerical illustration. Consider the fitted equation</p>
+<p><span class="math display">\[
+\operatorname{logit}\{\widehat m(x,a)\}
+=-4+0.4a+0.03\,\operatorname{age}
++0.5\,\operatorname{creatinine}.
+\]</span></p>
+<p>These coefficients and the four people below are illustrative, not results from fitting the RHC dataset. This small model lets us see the prediction calculation; the full study analysis can include the other measured confounders.</p>
+<p>For a 60-year-old with creatinine <span class="math inline">\(1\)</span>, the fitted log odds under <span class="math inline">\(a=0\)</span> are</p>
+<p><span class="math display">\[
+-4+0.4(0)+0.03(60)+0.5(1)=-1.7.
+\]</span></p>
+<p>Convert log odds to a probability:</p>
+<p><span class="math display">\[
+\widehat m(x,0)=\frac{\exp(-1.7)}{1+\exp(-1.7)}\approx0.1545.
+\]</span></p>
+<p>With the same baseline values and <span class="math inline">\(a=1\)</span>, the fitted log odds are <span class="math inline">\(-1.3\)</span>, giving</p>
+<p><span class="math display">\[
+\widehat m(x,1)=\frac{\exp(-1.3)}{1+\exp(-1.3)}\approx0.2142.
+\]</span></p>
+<p>Repeat this for each person:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;">Age</th>
+<th style="text-align: right;">Creatinine</th>
+<th style="text-align: right;"><span class="math inline">\(\widehat m(X_i,0)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\widehat m(X_i,1)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.0911</td>
+<td style="text-align: right;">0.1301</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.1545</td>
+<td style="text-align: right;">0.2142</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td style="text-align: right;">60</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.2315</td>
+<td style="text-align: right;">0.3100</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td style="text-align: right;">80</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.3543</td>
+<td style="text-align: right;">0.4502</td>
+</tr>
+</tbody>
+</table>
+<p>These are predicted mortality risks. Changing the treatment input from <span class="math inline">\(0\)</span> to <span class="math inline">\(1\)</span> changes the prediction, while all baseline inputs remain fixed.</p>
 </div>
-</div>
-<!-- Useful resource https://bookdown.org/glorya_hu/MNAR-Guide/ -->
-<!--
-May need to skip below or update it
----
+<p>In Homework 2, we used logistic regression to model the probability of receiving RHC. Here we regress the outcome on treatment and baseline variables. That is why this approach is called <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="Estimation of the outcome's conditional mean given treatment and baseline variables. For causal estimation, the fitted mean is evaluated under specified treatment values and averaged over baseline values." tabindex="0">outcome regression</span>.</p>
+<p>For the actual homework dataset, we could fit the outcome regression in R as follows:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>rhc <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"homework2_rhc.csv"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>rhc<span class="sc">$</span>sex <span class="ot">&lt;-</span> <span class="fu">factor</span>(rhc<span class="sc">$</span>sex)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>rhc<span class="sc">$</span>diagnosis <span class="ot">&lt;-</span> <span class="fu">factor</span>(rhc<span class="sc">$</span>diagnosis)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  death_30d <span class="sc">~</span> rhc <span class="sc">+</span> age <span class="sc">+</span> sex <span class="sc">+</span> diagnosis <span class="sc">+</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    mean_blood_pressure <span class="sc">+</span> heart_rate <span class="sc">+</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    creatinine <span class="sc">+</span> white_blood_cell_count,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> rhc</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Make two copies of the predictor data. Keep each patient’s baseline values, but supply a different treatment input in each copy:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>under_0 <span class="ot">&lt;-</span> rhc</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>under_0<span class="sc">$</span>rhc <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>under_1 <span class="ot">&lt;-</span> rhc</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>under_1<span class="sc">$</span>rhc <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>risk_0 <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> under_0, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>risk_1 <span class="ot">&lt;-</span> <span class="fu">predict</span>(fit, <span class="at">newdata =</span> under_1, <span class="at">type =</span> <span class="st">"response"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The argument <code>type = “response”</code> asks for probabilities rather than log odds. Each element of <code>risk_0</code> estimates <span class="math inline">\(m(X_i,0)\)</span>, and each element of <code>risk_1</code> estimates <span class="math inline">\(m(X_i,1)\)</span>. These fitted predictions will generally differ from the illustrative numbers above.</p>
+<p>The SCM justified the identification formula. The regression is an additional choice about how to estimate its conditional mean. For these predictions to estimate the right function, the fitted model must describe that conditional mean adequately. For example, the simple logistic model above assumes linear terms in the log odds and no treatment interactions.</p>
+</section>
+<section id="estimating-the-outer-expectation" class="level2">
+<h2 class="anchored" data-anchor-id="estimating-the-outer-expectation">Estimating the outer expectation</h2>
+<p>Return to the expression we identified:</p>
+<p><span class="math display">\[
+E\{Y(a)\}=E\{m(X,a)\}.
+\]</span></p>
+<p>For a fixed intervention value <span class="math inline">\(a\)</span>, <span class="math inline">\(m(X,a)\)</span> is just a function of <span class="math inline">\(X\)</span>. Call it <span class="math inline">\(g_a(X)\)</span>. The outer expectation is</p>
+<p><span class="math display">\[
+E\{g_a(X)\}.
+\]</span></p>
+<p>We know how to estimate a mean like this. Evaluate the fitted function for everyone in the sample, then take the sample mean:</p>
+<p><span class="math display">\[
+\widehat\mu(a)
+=\frac1n\sum_{i=1}^n\widehat m(X_i,a).
+\]</span></p>
+<p>Everyone contributes their baseline values under the same treatment input <span class="math inline">\(a\)</span>. We do not restrict this average to people whose original treatment happened to equal <span class="math inline">\(a\)</span>.</p>
+<p>Return first to the linear-regression table. The average prediction under no therapy is</p>
+<p><span class="math display">\[
+\widehat\mu(0)=\frac{3.2+4.4+5.6+6.8}{4}=5.
+\]</span></p>
+<p>The average prediction under therapy is</p>
+<p><span class="math display">\[
+\widehat\mu(1)=\frac{1.7+2.9+4.1+5.3}{4}=3.5.
+\]</span></p>
+<p>The estimated average treatment effect is therefore</p>
+<p><span class="math display">\[
+\widehat{\operatorname{ATE}}
+=\widehat\mu(1)-\widehat\mu(0)
+=3.5-5=-1.5.
+\]</span></p>
+<p>Under the causal model and the fitted regression, therapy lowers the population’s mean pain by an estimated 1.5 points.</p>
+<p>Now return to the illustrative logistic-regression table. Averaging the predicted risks gives</p>
+<p><span class="math display">\[
+\begin{aligned}
+\widehat\mu(0)
+&amp;=\frac{0.0911+0.1545+0.2315+0.3543}{4}
+\approx0.2079,\\
+\widehat\mu(1)
+&amp;=\frac{0.1301+0.2142+0.3100+0.4502}{4}
+\approx0.2761.
+\end{aligned}
+\]</span></p>
+<p>The estimated ATE is approximately</p>
+<p><span class="math display">\[
+\widehat\mu(1)-\widehat\mu(0)\approx0.0683,
+\]</span></p>
+<p>using the unrounded predictions. This is an increase of about 6.83 percentage points in mortality risk under RHC in this illustrative example. The causal relative risk estimate is approximately</p>
+<p><span class="math display">\[
+\frac{0.2761}{0.2079}\approx1.33.
+\]</span></p>
+<p>It compares the two population risks, not the treatment coefficient or the individual patients’ risk ratios.</p>
+<p>The same averages in the actual RHC analysis are</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>mu_0 <span class="ot">&lt;-</span> <span class="fu">mean</span>(risk_0)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>mu_1 <span class="ot">&lt;-</span> <span class="fu">mean</span>(risk_1)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>ate <span class="ot">&lt;-</span> mu_1 <span class="sc">-</span> mu_0</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>causal_rr <span class="ot">&lt;-</span> mu_1 <span class="sc">/</span> mu_0</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>causal_or <span class="ot">&lt;-</span> (mu_1 <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> mu_1)) <span class="sc">/</span> (mu_0 <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> mu_0))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>We fitted one outcome regression, predicted for everyone under each treatment value, and averaged those predictions. Bob’s our uncle.</p>
 
-## Learning outcomes by level
 
-| Level | Goals |
-|---|---|
-| **Knowledge** | Recall and state formal definitions of mathematical objects and their properties used in elementary linear algebra (e.g., dimension of a vector space; linear dependence of a set of vectors). |
-|  | Recall and state standard theorems used in elementary linear algebra (e.g., symmetric matrices are diagonalizable; linear operators with non-trivial kernel are not invertible). |
-| **Comprehension** | Use standard methods and tools of mathematical argument in the context of linear algebra (e.g., direct/indirect methods; examples/counterexamples; induction; first-order logic; set theory; quantifiers). |
-|  | Verify whether a mathematical construct has a particular property (e.g., a matrix is invertible; a set is a vector subspace; a vector is an eigenvector). |
-|  | Verify premises of standard theorems in elementary linear algebra in order to apply conclusions in longer arguments (e.g., a matrix has zero determinant ⇒ nullity larger than one). |
-|  | Prove or disprove statements related to definitions, properties, and theorems using techniques of mathematical argument. |
-|  | Convey formal mathematical arguments in English using appropriate mathematical terminology and notation. |
-| **Application** | Perform standard computations in linear algebra (e.g., rank of a matrix; determinant of a square matrix). |
--->
-<div class="section-break" aria-hidden="true">
-<span class="acorn-mark"></span>
-</div>
-</section>
-</section>
-<section id="official-uw-statements" class="level2">
-<h2 class="anchored" data-anchor-id="official-uw-statements">Official UW Statements</h2>
-<section id="accommodations-for-students-with-disabilities" class="level3">
-<h3 class="anchored" data-anchor-id="accommodations-for-students-with-disabilities">Accommodations for Students with Disabilities</h3>
-<p>The University of Wisconsin–Madison supports the right of all enrolled students to a full and equal educational opportunity. The Americans with Disabilities Act (ADA), Wisconsin State Statute (36.12), and UW–Madison policy (<a href="https://policy.wisc.edu/library/UW-855">UW-855</a>) require the university to provide reasonable accommodations to students with disabilities to access and participate in its academic programs and educational services. Faculty and students share responsibility in the accommodation process. Students are expected to inform faculty of their need for instructional accommodations during the beginning of the semester, or as soon as possible after being approved for accommodations. Faculty will work either directly with the student or in coordination with the <a href="https://mcburney.wisc.edu/">McBurney Disability Resource Center</a> to provide reasonable instructional and course-related accommodations. Disability information, including instructional accommodations as part of a student’s educational record, is confidential and protected under <a href="https://registrar.wisc.edu/ferpa/">FERPA</a>.</p>
-</section>
-<section id="teaching-learning-data-transparency-statement" class="level3">
-<h3 class="anchored" data-anchor-id="teaching-learning-data-transparency-statement">Teaching &amp; Learning Data Transparency Statement</h3>
-<p>The privacy and security of faculty, staff, and students’ personal information is a top priority for UW–Madison. The university carefully reviews and vets all campus-supported digital tools used for teaching and learning, including those that support <a href="https://teachlearn.wisc.edu/deep/">data empowered educational practices</a> and proctoring. View more information about <a href="https://teachlearn.wisc.edu/teaching-and-learning-data-transparency-statement/">teaching and learning data transparency</a> at UW–Madison.</p>
-</section>
-<section id="privacy-of-student-records-use-of-audio-recorded-lectures" class="level3">
-<h3 class="anchored" data-anchor-id="privacy-of-student-records-use-of-audio-recorded-lectures">Privacy of Student Records &amp; Use of Audio Recorded Lectures</h3>
-<p>Lecture materials and recordings for this course are protected intellectual property at UW–Madison. Students enrolled in this course may use the materials and recordings for their personal use related to participation in the course. Students may also take notes solely for their personal use. If a lecture is not already recorded, students are not authorized to record lectures without permission unless they are considered by the university to be a qualified student with a disability who has an approved accommodation that includes recording. Students may not copy or have lecture materials and recordings outside of class, including posting on internet sites or selling to commercial entities, with the exception of sharing copies of personal notes as a notetaker through the McBurney Disability Resource Center. Students are otherwise prohibited from providing or selling their personal notes to anyone else or being paid for taking notes by any person or commercial firm without the instructor’s express written permission. Unauthorized use of these copyrighted lecture materials and recordings constitutes copyright infringement and may be addressed under the university’s policies, UWS Chapters 14 and 17, governing student academic and non-academic misconduct. View <a href="https://registrar.wisc.edu/ferpa/">more information about FERPA</a>.</p>
-</section>
-<section id="course-evaluations" class="level3">
-<h3 class="anchored" data-anchor-id="course-evaluations">Course Evaluations</h3>
-<p>Students at the University of Wisconsin–Madison have the opportunity to evaluate their learning experiences and the courses they are enrolled in through course evaluations. Many instructors use a <a href="https://kb.wisc.edu/luwmad/81069">digital course evaluation tool</a> to collect feedback from students. Students typically receive notifications two weeks prior to the end of the semester requesting that they complete course evaluations. Student participation is an integral component of course development, and confidential feedback is important. UW–Madison strongly encourages student participation in course evaluations.</p>
-</section>
-<section id="students-rules-rights-responsibilities" class="level3">
-<h3 class="anchored" data-anchor-id="students-rules-rights-responsibilities">Students’ Rules, Rights &amp; Responsibilities</h3>
-<p>View more information about <a href="https://guide.wisc.edu/undergraduate/#rulesrightsandresponsibilitiestext">student rules, rights, and responsibilities</a>, such as student privacy rights, sharing of academic record information, academic integrity, and grievances.</p>
-</section>
-<section id="diversity-inclusion-statement" class="level3">
-<h3 class="anchored" data-anchor-id="diversity-inclusion-statement">Diversity &amp; Inclusion Statement</h3>
-<p>Diversity is a source of strength, creativity, and innovation for the University of Wisconsin–Madison. We value the contributions of each person and respect the profound ways their identity, culture, background, experience, status, abilities, and opinion enrich the university community. We commit ourselves to the pursuit of excellence in teaching, research, outreach, and diversity as inextricably linked goals. UW–Madison fulfills its public mission by creating a welcoming and inclusive community for people from every background – people who as students, faculty, and staff serve Wisconsin and the world. (Source: <a href="https://diversity.wisc.edu/institutional-statement-on-diversity/">Institutional Statement on Diversity</a>)</p>
-</section>
-<section id="student-health-well-being-basic-needs" class="level3">
-<h3 class="anchored" data-anchor-id="student-health-well-being-basic-needs">Student Health, Well-Being &amp; Basic Needs</h3>
-<p>Students often experience stressors outside the classroom that can impact their academic experience. These might include mental and physical health concerns; difficulty securing food, housing, and other basic needs; misuse of alcohol or other drugs; sexual or relationship violence; family challenges; and campus climate, among others. If you’re experiencing one or more of these challenges, you’re not alone and help is available. To learn more, visit <a href="https://students.wisc.edu/guides/get-help-now/">Get Help</a>.</p>
-</section>
-<section id="academic-integrity-statement" class="level3">
-<h3 class="anchored" data-anchor-id="academic-integrity-statement">Academic Integrity Statement</h3>
-<p>By virtue of enrollment, each student agrees to uphold the high academic standards of the University of Wisconsin–Madison. Academic misconduct is behavior that negatively impacts the integrity of the institution. Cheating, fabrication, plagiarism, unauthorized collaboration and helping others commit these previously listed acts are examples of misconduct that might result in disciplinary action. Examples of <a href="https://conduct.students.wisc.edu/academic-misconduct/">disciplinary sanctions</a> include, but are not limited to, failure on the assignment/course, written reprimand, disciplinary probation, suspension, or expulsion.</p>
-</section>
-<section id="ai-statement" class="level3">
-<h3 class="anchored" data-anchor-id="ai-statement">AI Statement</h3>
-<p>The use of artificial intelligence (AI) tools and applications, such as Copilot, Gemini, and others, is permitted in this course when it supports the course learning objectives. You are responsible for any information you submit based on an AI query. Ensure that you have permission before posting course content, including assignment or assessment prompts, and verify that AI-generated results do not contain misinformation or unethical content. Your use of AI tools must be documented and cited to conform to this course’s expectations. When you use AI on a submitted assignment, include a brief AI-use statement naming the tool and describing how you used it. You remain responsible for the correctness, clarity, and completeness of all submitted work.</p>
-</section>
-<section id="academic-calendar-religious-observances" class="level3">
-<h3 class="anchored" data-anchor-id="academic-calendar-religious-observances">Academic Calendar &amp; Religious Observances</h3>
-<p>View the full <a href="https://secfac.wisc.edu/academic-calendar">academic calendar</a> in addition to information about religious and election day observances. Students are responsible for notifying instructors within the first two weeks of classes about any need for flexibility due to <a href="https://policy.wisc.edu/library/UW-880">religious observances</a>.</p>
-<p>Establishment of the academic calendar for the University of Wisconsin–Madison falls within the authority of the faculty as set forth in <a href="https://policy.wisc.edu/library/UW-801">Faculty Policies and Procedures</a>. Construction of the academic calendar is subject to various rules and laws prescribed by the Board of Regents, the Faculty Senate, State of Wisconsin and the federal government. Find <a href="https://registrar.wisc.edu/dates/">additional dates and deadlines for students</a> on the Office of the Registrar website.</p>
-
-
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -1232,13 +1216,13 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./index.html" class="pagination-link" aria-label="index.html">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">index.html</span></span>
+      <a href="./02-exercises.html" class="pagination-link" aria-label="Exercises">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Exercises</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./01a-being-a-detective.html" class="pagination-link" aria-label="Being a detective with data">
-        <span class="nav-page-text"><span class="chapter-title">Being a detective with data</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./glossary.html" class="pagination-link" aria-label="Glossary">
+        <span class="nav-page-text"><span class="chapter-title">Glossary</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

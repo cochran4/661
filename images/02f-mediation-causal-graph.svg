@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 730 430" width="730" height="430" role="img" aria-labelledby="title">
+<title id="title">Causal graph with treatment and mediator</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#315C43" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)">
+<path d="M 100.0,145.0 L 100.0,242.0"/>
+<path d="M 142.3,115.4 L 314.9,178.5"/>
+<path d="M 139.9,79.1 C 310,-10 625,10 629.1,242.0"/>
+<path d="M 142.3,274.6 L 314.9,211.5"/>
+<path d="M 136.1,316.8 C 255,405 495,405 593.5,321.1"/>
+<path d="M 402.4,209.9 L 584.7,274.1"/>
+</g>
+<circle cx="100" cy="100" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="100" y="100" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">X</text>
+<circle cx="100" cy="290" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="100" y="290" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">A</text>
+<circle cx="360" cy="195" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="360" y="195" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">M</text>
+<circle cx="630" cy="290" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="630" y="290" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">Y</text>
+</svg>
