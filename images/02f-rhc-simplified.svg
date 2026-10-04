@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" width="600" height="360" role="img" aria-labelledby="title">
+<title id="title">RHC SWIG after causal irrelevance</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#315C43" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)">
+<path d="M 142.6,134.4 L 127.9,222.7"/>
+<path d="M 189.8,111.1 L 447.6,247.5"/>
+<path d="M 245.0,270.0 L 442.0,270.0"/>
+</g>
+<circle cx="150" cy="90" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="150" y="90" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">X</text>
+<circle cx="120" cy="270" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="120" y="270" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">A</text>
+<circle cx="209" cy="270" r="34" fill="#FFFDF9" stroke="#315C43" stroke-width="1.8"/>
+<text x="209" y="270" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">a</text>
+<circle cx="490" cy="270" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="490" y="270" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">Y(a)</text>
+</svg>

@@ -22,9 +22,11 @@ book:
         - 02c-causal-graphs.qmd
         - 02d-global-markov-property.qmd
         - 02e-potential-outcomes.qmd
+        - 02f-single-world-intervention-graphs.qmd
         - 02-exercises.qmd
     - part: "Measured confounding"
-      chapters: []
+      chapters:
+        - 03a-outcome-regression.qmd
     - part: "Unmeasured confounding"
       chapters: []
     - part: "Sensitivity analysis"
@@ -69,8 +71,14 @@ book:
             file: 02d-global-markov-property.qmd
           - text: "Potential outcomes"
             file: 02e-potential-outcomes.qmd
+          - text: "Single-world intervention graphs"
+            file: 02f-single-world-intervention-graphs.qmd
           - text: "Exercises"
             file: 02-exercises.qmd
+      - text: "Measured confounding"
+        menu:
+          - text: "Outcome regression"
+            file: 03a-outcome-regression.qmd
       - text: "Back matter"
         menu:
           - text: "Glossary"

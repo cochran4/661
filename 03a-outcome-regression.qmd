@@ -1,0 +1,375 @@
+---
+title: "Outcome regression"
+---
+
+## Introduction
+
+We now have the tools to answer our first identification question. Consider a common situation in an observational study. We have an exposure $A$, an outcome $Y$, and a collection of common causes of $A$ and $Y$. We collect those common causes in $X$. When all these confounders are measured, we call this measured confounding.
+
+The RHC study could fit this setup. Our exposure is receipt of RHC, and our outcome is death within 30 days. Age, sex, diagnosis, blood pressure, heart rate, creatinine, and white blood cell count could influence the treatment decision and the patient's outcome. Here, we collect the relevant pretreatment information into $X$. This is a broader grouping than the one we used in the homework, where diagnosis and clinical measurements had their own assignments.
+
+Our causal assumptions are represented by the SCM
+
+$$
+\begin{aligned}
+X&\leftarrow f_X(\epsilon_X),\\
+A&\leftarrow f_A(X,\epsilon_A),\\
+Y&\leftarrow f_Y(X,A,\epsilon_Y),
+\end{aligned}
+$$
+
+with mutually independent noise terms. The model says that $X$ captures the common causes needed to describe treatment and outcome. In the RHC study, this also requires us to treat the measurements in $X$ as available before the treatment decision. Recording many variables does not, by itself, establish either assumption.
+
+The corresponding causal graph is
+
+![](images/03a-measured-confounding.svg){width=620 fig-align="center" fig-alt="The measured-confounding causal graph. X points to A and Y, and A points to Y."}
+
+For an intervention on $A$ with value $a$, the potential-outcome assignments are
+
+$$
+\begin{aligned}
+X(a)&\leftarrow f_X(\epsilon_X),\\
+A(a)&\leftarrow f_A(X(a),\epsilon_A),\\
+Y(a)&\leftarrow f_Y(X(a),a,\epsilon_Y).
+\end{aligned}
+$$
+
+Their SWIG is
+
+![](images/03a-measured-confounding-swig.svg){width=620 fig-align="center" fig-alt="The unsimplified measured-confounding SWIG. X(a) points to A(a) and Y(a). Fixed a points to Y(a). The random A(a) and fixed a are separate nearby circles."}
+
+Suppose treatment is binary. A common causal quantity is the average treatment effect:
+
+$$
+\operatorname{ATE}=E\{Y(1)\}-E\{Y(0)\}.
+$$
+
+For RHC, it compares the population's risk of death if everyone received RHC with the risk if everyone did not. Because $Y$ is binary, $E\{Y(a)\}=P\{Y(a)=1\}$. We can also compare these risks using the causal relative risk,
+
+$$
+\operatorname{CRR}=\frac{E\{Y(1)\}}{E\{Y(0)\}},
+$$
+
+or the causal odds ratio,
+
+$$
+\operatorname{COR}
+=\frac{E\{Y(1)\}/[1-E\{Y(1)\}]}
+{E\{Y(0)\}/[1-E\{Y(0)\}]}.
+$$
+
+The ratios require their denominators to be nonzero, and the odds must be defined. All three comparisons can be constructed from the two means $E\{Y(1)\}$ and $E\{Y(0)\}$. So let us identify $E\{Y(a)\}$ for a general intervention value $a$.
+
+## Identification
+
+Our task is to rewrite $E\{Y(a)\}$ in terms of the observed-data distribution. We turn to our three rules: causal irrelevance, the global Markov property, and consistency.
+
+First, causal irrelevance. Neither $X(a)$ nor $A(a)$ is a descendant of the fixed intervention value $a$ in the SWIG. Therefore,
+
+$$
+X(a)=X,\qquad A(a)=A.
+$$
+
+After applying causal irrelevance, the assignments become
+
+$$
+\begin{aligned}
+X&\leftarrow f_X(\epsilon_X),\\
+A&\leftarrow f_A(X,\epsilon_A),\\
+Y(a)&\leftarrow f_Y(X,a,\epsilon_Y).
+\end{aligned}
+$$
+
+The simplified SWIG is
+
+![](images/03a-measured-confounding-swig-simplified.svg){width=620 fig-align="center" fig-alt="The simplified measured-confounding SWIG. X points to A and Y(a), and fixed a points to Y(a)."}
+
+Now look for independence relationships. The path $A\leftarrow X\to Y(a)$ is blocked when we condition on $X$. The global Markov property gives
+
+$$
+A\mathrel{\perp\!\!\!\perp}Y(a)\mid X.
+$$
+
+This relationship is called [conditional exchangeability]{.glossary-term}. It follows from the SCM we specified; it is not another assumption we need to add to that model.
+
+Once $X$ is known, learning $A$ provides no additional information about $Y(a)$. In particular, it does not change its conditional mean:
+
+$$
+E\{Y(a)\mid X\}=E\{Y(a)\mid X,A\}.
+$$
+
+This implication is called conditional mean exchangeability. We can add $A$ to the conditioning information because it does not change the mean.
+
+The remaining rule is consistency. It tells us that $Y(a)=Y$ whenever $A=a$. Our last expression has $Y(a)$ inside the expectation and $A$ in the conditioning information. That suggests choosing the particular treatment value $A=a$:
+
+$$
+E\{Y(a)\mid X\}=E\{Y(a)\mid X,A=a\}.
+$$
+
+To use the right-hand side, we need treatment $a$ to occur among people with the baseline characteristics under consideration. For binary treatment, this is the [positivity]{.glossary-term} requirement
+
+$$
+P(A=a\mid X)>0
+$$
+
+for almost every baseline value in the population. If no one with certain baseline characteristics receives treatment $a$, the observed-data distribution does not tell us the outcome mean for that treatment in that group.
+
+Now consistency lets us make the swap. We are conditioning on exactly the event where $Y(a)=Y$, so
+
+$$
+E\{Y(a)\mid X,A=a\}=E\{Y\mid X,A=a\}.
+$$
+
+Combining the two steps gives
+
+$$
+E\{Y(a)\mid X\}=E\{Y\mid X,A=a\}.
+$$
+
+The left side concerns a potential outcome. The right side uses only original variables, so it is a feature of the observed-data distribution.
+
+We still need to return to $E\{Y(a)\}$. The usual probability trick, iterated expectations, gives
+
+$$
+E\{Y(a)\}=E\big[E\{Y(a)\mid X\}\big].
+$$
+
+Substitute the expression we just obtained:
+
+$$
+E\{Y(a)\}=E\big[E\{Y\mid X,A=a\}\big].
+$$
+
+Done. The outer expectation averages over the population distribution of $X$.
+
+::: {.proposition-box}
+Identification under measured confounding. Suppose the SCM above has mutually independent noise terms, $A$ is binary, and $Y(a)$ is integrable. If $P(A=a\mid X)>0$ almost surely, then
+
+$$
+E\{Y(a)\}=E\big[E\{Y\mid X,A=a\}\big].
+$$
+:::
+
+This expression is an adjustment formula, also called the g-formula for this setting. Apply it with $a=1$ and $a=0$ to identify the two means needed for our causal contrasts. Positivity must hold for both treatment values when the contrast uses both.
+
+## Estimating the conditional mean
+
+Identification gives us an expression involving the observed-data distribution. Estimation asks how to recover its pieces from a sample. Suppose we observe independent, identically distributed study units $(X_i,A_i,Y_i)$, for $i=1,\ldots,n$.
+
+There are two pieces to estimate. Start with the inner conditional mean,
+
+$$
+E\{Y\mid X,A=a\}.
+$$
+
+Write the conditional-mean function as
+
+$$
+m(x,a)=E(Y\mid X=x,A=a).
+$$
+
+This is a regression problem. When we regress $Y$ on $X$ and $A$, we estimate $m(x,a)$. Once we have a fitted function $\widehat m$, we can supply a person's baseline values $X_i$ and whichever treatment value $a$ we want:
+
+$$
+\widehat m(X_i,a).
+$$
+
+Let us make this operation concrete before averaging anything.
+
+::: {.example-box}
+Linear outcome regression. Suppose $A$ indicates receiving a pain therapy, $X$ is baseline pain, and $Y$ is pain measured afterward. Assume the measured-confounding SCM applies with this $X$. For illustration, suppose the fitted regression is
+
+$$
+\widehat m(x,a)=2+0.6x-1.5a.
+$$
+
+For a person with baseline pain $X=4$, predict their outcome under each treatment value:
+
+$$
+\begin{aligned}
+\widehat m(4,0)&=2+0.6(4)-1.5(0)=4.4,\\
+\widehat m(4,1)&=2+0.6(4)-1.5(1)=2.9.
+\end{aligned}
+$$
+
+We keep baseline pain at $4$ and change the treatment input. The same operation for four people gives
+
+| Person | Baseline pain $X_i$ | $\widehat m(X_i,0)$ | $\widehat m(X_i,1)$ |
+|---|---:|---:|---:|
+| 1 | 2 | 3.2 | 1.7 |
+| 2 | 4 | 4.4 | 2.9 |
+| 3 | 6 | 5.6 | 4.1 |
+| 4 | 8 | 6.8 | 5.3 |
+
+Each row contains two predictions from the same fitted regression. Neither prediction requires changing the person's baseline value.
+:::
+
+For a linear regression, supplying new input values is all that prediction does. A more elaborate model might include several baseline variables, nonlinear terms, or treatment interactions. We still evaluate the fitted conditional mean at $(X_i,a)$.
+
+::: {.example-box}
+Logistic outcome regression. For a binary outcome such as death within 30 days, the conditional mean is a probability. Logistic regression models its log odds:
+
+$$
+\operatorname{logit}\{m(x,a)\}
+=\beta_0+\beta_Aa+\beta_X^\mathsf{T}x.
+$$
+
+To see the calculation with RHC variables, suppose $X$ consists of age and creatinine for this numerical illustration. Consider the fitted equation
+
+$$
+\operatorname{logit}\{\widehat m(x,a)\}
+=-4+0.4a+0.03\,\operatorname{age}
++0.5\,\operatorname{creatinine}.
+$$
+
+These coefficients and the four people below are illustrative, not results from fitting the RHC dataset. This small model lets us see the prediction calculation; the full study analysis can include the other measured confounders.
+
+For a 60-year-old with creatinine $1$, the fitted log odds under $a=0$ are
+
+$$
+-4+0.4(0)+0.03(60)+0.5(1)=-1.7.
+$$
+
+Convert log odds to a probability:
+
+$$
+\widehat m(x,0)=\frac{\exp(-1.7)}{1+\exp(-1.7)}\approx0.1545.
+$$
+
+With the same baseline values and $a=1$, the fitted log odds are $-1.3$, giving
+
+$$
+\widehat m(x,1)=\frac{\exp(-1.3)}{1+\exp(-1.3)}\approx0.2142.
+$$
+
+Repeat this for each person:
+
+| Person | Age | Creatinine | $\widehat m(X_i,0)$ | $\widehat m(X_i,1)$ |
+|---|---:|---:|---:|---:|
+| 1 | 40 | 1 | 0.0911 | 0.1301 |
+| 2 | 60 | 1 | 0.1545 | 0.2142 |
+| 3 | 60 | 2 | 0.2315 | 0.3100 |
+| 4 | 80 | 2 | 0.3543 | 0.4502 |
+
+These are predicted mortality risks. Changing the treatment input from $0$ to $1$ changes the prediction, while all baseline inputs remain fixed.
+:::
+
+In Homework 2, we used logistic regression to model the probability of receiving RHC. Here we regress the outcome on treatment and baseline variables. That is why this approach is called [outcome regression]{.glossary-term}.
+
+For the actual homework dataset, we could fit the outcome regression in R as follows:
+
+~~~r
+rhc <- read.csv("homework2_rhc.csv")
+rhc$sex <- factor(rhc$sex)
+rhc$diagnosis <- factor(rhc$diagnosis)
+
+fit <- glm(
+  death_30d ~ rhc + age + sex + diagnosis +
+    mean_blood_pressure + heart_rate +
+    creatinine + white_blood_cell_count,
+  family = binomial(),
+  data = rhc
+)
+~~~
+
+Make two copies of the predictor data. Keep each patient's baseline values, but supply a different treatment input in each copy:
+
+~~~r
+under_0 <- rhc
+under_0$rhc <- 0
+
+under_1 <- rhc
+under_1$rhc <- 1
+
+risk_0 <- predict(fit, newdata = under_0, type = "response")
+risk_1 <- predict(fit, newdata = under_1, type = "response")
+~~~
+
+The argument <code>type = "response"</code> asks for probabilities rather than log odds. Each element of <code>risk_0</code> estimates $m(X_i,0)$, and each element of <code>risk_1</code> estimates $m(X_i,1)$. These fitted predictions will generally differ from the illustrative numbers above.
+
+The SCM justified the identification formula. The regression is an additional choice about how to estimate its conditional mean. For these predictions to estimate the right function, the fitted model must describe that conditional mean adequately. For example, the simple logistic model above assumes linear terms in the log odds and no treatment interactions.
+
+## Estimating the outer expectation
+
+Return to the expression we identified:
+
+$$
+E\{Y(a)\}=E\{m(X,a)\}.
+$$
+
+For a fixed intervention value $a$, $m(X,a)$ is just a function of $X$. Call it $g_a(X)$. The outer expectation is
+
+$$
+E\{g_a(X)\}.
+$$
+
+We know how to estimate a mean like this. Evaluate the fitted function for everyone in the sample, then take the sample mean:
+
+$$
+\widehat\mu(a)
+=\frac1n\sum_{i=1}^n\widehat m(X_i,a).
+$$
+
+Everyone contributes their baseline values under the same treatment input $a$. We do not restrict this average to people whose original treatment happened to equal $a$.
+
+Return first to the linear-regression table. The average prediction under no therapy is
+
+$$
+\widehat\mu(0)=\frac{3.2+4.4+5.6+6.8}{4}=5.
+$$
+
+The average prediction under therapy is
+
+$$
+\widehat\mu(1)=\frac{1.7+2.9+4.1+5.3}{4}=3.5.
+$$
+
+The estimated average treatment effect is therefore
+
+$$
+\widehat{\operatorname{ATE}}
+=\widehat\mu(1)-\widehat\mu(0)
+=3.5-5=-1.5.
+$$
+
+Under the causal model and the fitted regression, therapy lowers the population's mean pain by an estimated 1.5 points.
+
+Now return to the illustrative logistic-regression table. Averaging the predicted risks gives
+
+$$
+\begin{aligned}
+\widehat\mu(0)
+&=\frac{0.0911+0.1545+0.2315+0.3543}{4}
+\approx0.2079,\\
+\widehat\mu(1)
+&=\frac{0.1301+0.2142+0.3100+0.4502}{4}
+\approx0.2761.
+\end{aligned}
+$$
+
+The estimated ATE is approximately
+
+$$
+\widehat\mu(1)-\widehat\mu(0)\approx0.0683,
+$$
+
+using the unrounded predictions. This is an increase of about 6.83 percentage points in mortality risk under RHC in this illustrative example. The causal relative risk estimate is approximately
+
+$$
+\frac{0.2761}{0.2079}\approx1.33.
+$$
+
+It compares the two population risks, not the treatment coefficient or the individual patients' risk ratios.
+
+The same averages in the actual RHC analysis are
+
+~~~r
+mu_0 <- mean(risk_0)
+mu_1 <- mean(risk_1)
+
+ate <- mu_1 - mu_0
+causal_rr <- mu_1 / mu_0
+causal_or <- (mu_1 / (1 - mu_1)) / (mu_0 / (1 - mu_0))
+~~~
+
+We fitted one outcome regression, predicted for everyone under each treatment value, and averaged those predictions. Bob's our uncle.

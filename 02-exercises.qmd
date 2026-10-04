@@ -23,3 +23,7 @@ filters:
 ## Potential outcomes {.unnumbered}
 
 {{< include _exercises/02e-potential-outcomes.qmd >}}
+
+## Single-world intervention graphs {.unnumbered}
+
+{{< include _exercises/02f-single-world-intervention-graphs.qmd >}}

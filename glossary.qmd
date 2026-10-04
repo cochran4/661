@@ -26,6 +26,18 @@ In a graph, a node is a child of another node when it receives an arrow directly
 
 A common cause of the exposure and outcome that can create or distort their observed association.
 
+**Conditional exchangeability**
+
+The independence of a potential outcome and the original treatment conditional on baseline variables: $A\mathrel{\perp\!\!\!\perp}Y(a)\mid X$.
+
+**Outcome regression**
+
+Estimation of the outcome's conditional mean given treatment and baseline variables. For causal estimation, the fitted mean is evaluated under specified treatment values and averaged over baseline values.
+
+**Positivity**
+
+For an intervention value $a$, treatment $a$ has positive conditional probability at almost every baseline value in the target population: $P(A=a\mid X)>0$ for discrete treatment.
+
 **Descendant**
 
 A node is a descendant of another node when a directed path runs from the other node to it.
@@ -109,6 +121,10 @@ The risk of an outcome among exposed people divided by the risk among unexposed 
 **Simpson's paradox**
 
 A reversal in which the direction of an association in the combined data is opposite to its direction within groups defined by a third variable.
+
+**Single-world intervention graph (SWIG)**
+
+The graph of the potential-outcome SCM under one collection of intervention values. An intervened node is split into two nearby circles. The random part retains its incoming arrows, and the fixed part inherits its outgoing arrows.
 
 **Structural causal model (SCM)**
 

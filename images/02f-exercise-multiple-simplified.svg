@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1060 480" width="1060" height="480" role="img" aria-labelledby="title">
+<title id="title">Exercise 29 multiple-intervention SWIG</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#315C43" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)">
+<path d="M 100.0,135.0 L 100.0,252.0"/>
+<path d="M 143.1,77.0 C 480,-25 965,0 952.4,252.1"/>
+<path d="M 244.0,300.0 L 387.0,300.0"/>
+<path d="M 473.2,276.2 L 619.2,185.4"/>
+<path d="M 468.4,330.2 C 590,440 810,440 916.1,333.9"/>
+<path d="M 796.5,181.9 L 912.0,270.7"/>
+</g>
+<circle cx="100" cy="90" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="100" y="90" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">X</text>
+<circle cx="100" cy="300" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="100" y="300" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">A</text>
+<circle cx="208" cy="300" r="34" fill="#FFFDF9" stroke="#315C43" stroke-width="1.8"/>
+<text x="208" y="300" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">a</text>
+<circle cx="435" cy="300" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="435" y="300" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">M(a)</text>
+<circle cx="660" cy="160" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="660" y="160" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">B(a)</text>
+<circle cx="768" cy="160" r="34" fill="#FFFDF9" stroke="#315C43" stroke-width="1.8"/>
+<text x="768" y="160" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">b</text>
+<circle cx="950" cy="300" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="950" y="300" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">Y(a,b)</text>
+</svg>

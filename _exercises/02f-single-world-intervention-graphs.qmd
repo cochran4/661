@@ -1,0 +1,145 @@
+### 27. From assignments to a SWIG
+
+Consider the potential-outcome SCM
+
+$$
+\begin{aligned}
+X(a)&\leftarrow f_X(\epsilon_X),\\
+A(a)&\leftarrow f_A(X(a),\epsilon_A),\\
+M(a)&\leftarrow f_M(X(a),a,\epsilon_M),\\
+Y(a)&\leftarrow f_Y(a,M(a),\epsilon_Y).
+\end{aligned}
+$$
+
+The noise terms are mutually independent.
+
+
+Draw its SWIG, including the fixed intervention value $a$.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+Each assignment supplies the incoming arrows for its left-hand variable. The assignment generating $A(a)$ remains, so $X(a)$ points to $A(a)$. The fixed value $a$, rather than $A(a)$, is an input to $M(a)$ and $Y(a)$.
+
+![](images/02f-exercise-assignments-swig.svg){width=700 fig-align="center" fig-alt="X(a) points to A(a) and M(a). Fixed a points to M(a) and Y(a). M(a) points to Y(a). The random A(a) and fixed a are separate nearby circles."}
+:::
+
+### 28. A single intervention from a causal graph
+
+Consider the following causal graph:
+
+![](images/02f-exercise-single-causal.svg){width=700 fig-align="center" fig-alt="X points to A and Y; A points to M; Z points to M; and M points to Y."}
+
+a. Construct the SWIG for an intervention on $A$, with intervention value $a$.
+
+b. Apply causal irrelevance. Redraw the SWIG with simplified labels and explain each change.
+
+c. For each statement below, decide whether it is guaranteed by the model. Explain using the local or global Markov property. When independence is not guaranteed, identify an open path.
+
+$$
+\begin{aligned}
+A&\mathrel{\perp\!\!\!\perp}Y(a),\\
+A&\mathrel{\perp\!\!\!\perp}Y(a)\mid X,\\
+A&\mathrel{\perp\!\!\!\perp}Y(a)\mid M(a).
+\end{aligned}
+$$
+
+d. Decide whether each equality follows from the model. Explain which rule or rules justify it. 
+
+$$
+E\{Y(a)\mid A=a,X\}=E\{Y(a)\mid X\},
+$$
+
+$$
+E\{Y(a)\mid A=a,X\}=E\{Y\mid A=a,X\}.
+$$
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** Rename every random variable using $(a)$, and split the intervened node. The arrow from $X(a)$ ends at the random part $A(a)$; the arrow to $M(a)$ begins at the fixed value $a$.
+
+![](images/02f-exercise-single-swig.svg){width=700 fig-align="center" fig-alt="X(a) points to A(a) and Y(a); fixed a points to M(a); Z(a) points to M(a); and M(a) points to Y(a)."}
+
+**b.** The fixed value $a$ is not an ancestor of $X(a)$, $Z(a)$, or $A(a)$. Causal irrelevance therefore gives
+
+$$
+X(a)=X,\qquad Z(a)=Z,\qquad A(a)=A.
+$$
+
+It is an ancestor of $M(a)$ and $Y(a)$, so their labels retain $a$.
+
+![](images/02f-exercise-single-simplified.svg){width=700 fig-align="center" fig-alt="X points to A and Y(a); fixed a points to M(a); Z points to M(a); and M(a) points to Y(a)."}
+
+**c.** Without conditioning, independence is not guaranteed: the path $A\leftarrow X\to Y(a)$ is open. Conditioning on $X$ blocks this path, giving
+
+$$
+A\mathrel{\perp\!\!\!\perp}Y(a)\mid X.
+$$
+
+This also follows from the local Markov property for $A$ in the topological order $X,Z,M(a),Y(a),A$: its only parent is $X$. The fixed value $a$ is a constant.
+
+Conditioning on $M(a)$ alone does not block $A\leftarrow X\to Y(a)$, so the third independence statement is not guaranteed. The open paths permit dependence but do not require it for every choice of assignment functions.
+
+**d.** Both equalities follow. The first follows from the conditional independence given $X$ in part c: learning $A=a$ supplies no additional information about $Y(a)$ once $X$ is known. The second follows from consistency, which gives $Y(a)=Y$ whenever $A=a$.
+:::
+
+### 29. Multiple interventions
+
+Consider the following causal graph:
+
+![](images/02f-exercise-multiple-causal.svg){width=750 fig-align="center" fig-alt="X points to A and Y; A points to M; M points to B and Y; and B points to Y."}
+
+a. Construct the SWIG for interventions on both $A$ and $B$, with intervention values $a$ and $b$.
+
+b. Apply causal irrelevance. Redraw the SWIG with simplified labels and explain each change.
+
+c. For each statement below, decide whether it is guaranteed by the model. Explain using the local or global Markov property. When independence is not guaranteed, identify an open path.
+
+$$
+\begin{aligned}
+A&\mathrel{\perp\!\!\!\perp}Y(a,b)\mid X,\\
+B(a)&\mathrel{\perp\!\!\!\perp}Y(a,b)\mid X,\\
+B(a)&\mathrel{\perp\!\!\!\perp}Y(a,b)\mid X,M(a).
+\end{aligned}
+$$
+
+d. Decide whether each equality follows from the model. Explain which rule or rules justify it. 
+
+$$
+E\{Y(a,b)\mid B(a)=b,X,M(a)\}
+=E\{Y(a,b)\mid X,M(a)\},
+$$
+
+$$
+E\{Y(a,b)\mid A=a,B=b,X\}
+=E\{Y\mid A=a,B=b,X\}.
+$$
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+**a.** Rename every random variable using $(a,b)$, and split both intervened nodes. The incoming arrow from $X(a,b)$ ends at $A(a,b)$; the outgoing arrow to $M(a,b)$ begins at $a$. The incoming arrow from $M(a,b)$ ends at $B(a,b)$; the outgoing arrow to $Y(a,b)$ begins at $b$.
+
+![](images/02f-exercise-multiple-swig.svg){width=800 fig-align="center" fig-alt="X(a,b) points to A(a,b) and Y(a,b); fixed a points to M(a,b); M(a,b) points to B(a,b) and Y(a,b); and fixed b points to Y(a,b)."}
+
+**b.** Neither fixed value is an ancestor of $X(a,b)$ or $A(a,b)$, so these become $X$ and $A$. The fixed value $a$ is an ancestor of $M(a,b)$ and $B(a,b)$, but $b$ is not. Their labels become $M(a)$ and $B(a)$. Both fixed values are ancestors of $Y(a,b)$, so its label retains both.
+
+![](images/02f-exercise-multiple-simplified.svg){width=800 fig-align="center" fig-alt="X points to A and Y(a,b); fixed a points to M(a); M(a) points to B(a) and Y(a,b); and fixed b points to Y(a,b)."}
+
+In particular, $B(a)$ is still generated from $M(a)$ and its original noise term. It is not replaced by $b$.
+
+**c.** The first statement is guaranteed. The path $A\leftarrow X\to Y(a,b)$ is blocked by $X$. The second is not guaranteed: $B(a)\leftarrow M(a)\to Y(a,b)$ remains open when we condition only on $X$. The third is guaranteed because conditioning on $M(a)$ blocks that path.
+
+The third statement also follows from the local Markov property for $Y(a,b)$ in the topological order $X,A,M(a),B(a),Y(a,b)$. Its random parents are $X,M(a)$; $a$ and $b$ are constants. The open path in the second statement permits conditional dependence but does not require it for every choice of assignment functions.
+
+**d.** Both equalities follow. The first uses the conditional independence in part c to remove $B(a)=b$ from the conditioning information.
+
+The second uses consistency. When $A=a$, consistency gives $M(a)=M$, and the calculation generating $B(a)$ also agrees with the original calculation, giving $B(a)=B$. When $B=b$ as well, all inputs to the potential-outcome and original outcome assignments agree, so $Y(a,b)=Y$. This replacement does not require an independence statement involving the original $B$.
+:::
