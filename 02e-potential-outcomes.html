@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.18">
+<meta name="generator" content="quarto-1.10.19">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -62,7 +62,7 @@ div.csl-indent {
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="site_libs/bootstrap/bootstrap-a3414f3ffc8cedfe87f55cc0f2c68ceb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -221,6 +221,10 @@ window.Quarto = {
     <a class="dropdown-item" href="./03a-outcome-regression.html">
  <span class="dropdown-text">Outcome regression</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="./03-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -365,6 +369,11 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./03a-outcome-regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Outcome regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
   </div>
 </li>
       </ul>
@@ -1194,9 +1203,9 @@ V(a_1,\ldots,a_k)=V(a_1,\ldots,a_{j-1},a_{j+1},\ldots,a_k) \qquad \text{whenever
 <div class="definition-box">
 <p>A <strong>causal quantity</strong> is any quantity involving potential outcomes. A <strong>causal effect</strong> compares potential outcomes under different interventions.</p>
 </div>
-<p>For example, <span class="math inline">\(E\{Y(1)\}\)</span> is a causal quantity: it describes the average outcome under intervention value <span class="math inline">\(1\)</span>. The difference</p>
+<p>For example, <span class="math inline">\(E\left[Y(1)\right]\)</span> is a causal quantity: it describes the average outcome under intervention value <span class="math inline">\(1\)</span>. The difference</p>
 <p><span class="math display">\[
-E\{Y(1)\}-E\{Y(0)\}
+E\left[Y(1)\right]-E\left[Y(0)\right]
 \]</span></p>
 <p>is a causal effect because it compares outcomes under two interventions.</p>
 <p>There is no single causal effect for a study. We must choose the interventions to compare, the outcome, the population, and the scale of the comparison.</p>
@@ -1207,7 +1216,7 @@ E\{Y(1)\}-E\{Y(0)\}
 <p><span class="math display">\[
 \operatorname{ATE}
 =
-E\{Y(1)-Y(0)\}.
+E\left[Y(1)-Y(0)\right].
 \]</span></p>
 <p>It is the average change in the outcome when we compare intervention value <span class="math inline">\(1\)</span> with intervention value <span class="math inline">\(0\)</span> in the population represented by the SCM.</p>
 </div>
@@ -1274,7 +1283,7 @@ P\{Y(0)=1\}=0.20.
 <p><span class="math display">\[
 \operatorname{CATE}(x)
 =
-E\{Y(1)-Y(0)\mid X=x\}.
+E\left[Y(1)-Y(0)\mid X=x\right].
 \]</span></p>
 </div>
 <p>For example, let <span class="math inline">\(X=1\)</span> indicate severe illness at baseline and <span class="math inline">\(X=0\)</span> indicate mild illness. We might find</p>
@@ -1290,13 +1299,13 @@ E\{Y(1)-Y(0)\mid X=x\}.
 <p><span class="math display">\[
 \operatorname{ATT}
 =
-E\{Y(1)-Y(0)\mid A=1\}.
+E\left[Y(1)-Y(0)\mid A=1\right].
 \]</span></p>
 <p>It is the average treatment effect among people whose original treatment value was <span class="math inline">\(1\)</span>.</p>
 </div>
 <p>For example, suppose</p>
 <p><span class="math display">\[
-E\{Y(1)-Y(0)\mid A=1\}=-0.12.
+E\left[Y(1)-Y(0)\mid A=1\right]=-0.12.
 \]</span></p>
 <p>Among the people who received treatment in the original data-generating process, treatment reduces the outcome by 12 units on average.</p>
 <p>Notice why it is useful that our construction retains the naturally generated <span class="math inline">\(A\)</span>. We can describe the potential outcomes <span class="math inline">\(Y(1),Y(0)\)</span> jointly with the original treatment and ask about effects among people with <span class="math inline">\(A=1\)</span>.</p>
