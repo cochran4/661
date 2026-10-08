@@ -1,0 +1,9 @@
+---
+title: "Exercises"
+filters:
+  - _filters/solutions.lua
+---
+
+## Outcome regression {.unnumbered}
+
+{{< include _exercises/03a-outcome-regression.qmd >}}

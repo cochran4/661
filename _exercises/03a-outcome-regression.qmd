@@ -1,0 +1,179 @@
+For these exercises, assume the measured-confounding SCM with baseline covariates $X$, exposure $A$, outcome $Y$, and mutually independent noise terms. Assume observations are i.i.d. and the relevant conditional means are defined. You may use a calculator. Keep additional digits during calculations and report your final answers to two decimal places.
+
+### 1. Estimating means from counts
+
+Both $X$ and $A$ are binary, and $Y$ indicates an adverse outcome. The dataset has the following counts:
+
+| $X$ | $A$ | Number of people | Number with $Y=1$ |
+|---:|---:|---:|---:|
+| 0 | 0 | 30 | 12 |
+| 0 | 1 | 10 | 2 |
+| 1 | 0 | 20 | 12 |
+| 1 | 1 | 40 | 16 |
+
+a. Estimate $\mu(x,a)$ for all four combinations of $x$ and $a$.
+
+b. Find $\hat\mu(X,1)$ and $\hat\mu(X,0)$ for someone whose recorded values are $X=1,A=0$.
+
+c. Estimate $E\left[Y(1)\right]$ and $E\left[Y(0)\right]$ using everyone in the sample.
+
+d. Estimate and interpret the ATE, causal relative risk, and causal odds ratio for intervention value $1$ compared with $0$.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. Divide the number with $Y=1$ by the number of people in each group:
+
+$$
+\begin{aligned}
+\hat\mu(0,0)&=12/30=0.40,&\hat\mu(0,1)&=2/10=0.20,\\
+\hat\mu(1,0)&=12/20=0.60,&\hat\mu(1,1)&=16/40=0.40.
+\end{aligned}
+$$
+
+b. Keeping $X=1$, we obtain $\hat\mu(X,1)=0.40$ and $\hat\mu(X,0)=0.60$, regardless of the recorded treatment.
+
+c. There are 40 people with $X=0$ and 60 with $X=1$. Thus,
+
+$$
+E\left[Y(1)\right]\approx\frac{40(0.20)+60(0.40)}{100}=0.32,
+$$
+
+$$
+E\left[Y(0)\right]\approx\frac{40(0.40)+60(0.60)}{100}=0.52.
+$$
+
+d. The ATE is approximately $0.32-0.52=-0.20$: setting treatment to $1$ rather than $0$ lowers the risk by an estimated 20 percentage points. The causal relative risk is approximately $0.32/0.52=0.62$: the risk under $1$ is about 0.62 times that under $0$. The causal odds ratio is approximately
+
+$$
+\frac{0.32/(1-0.32)}{0.52/(1-0.52)}\approx0.43.
+$$
+
+The odds under intervention $1$ are about 0.43 times the odds under intervention $0$.
+:::
+
+### 2. Linear regression with an interaction
+
+For a continuous outcome, the fitted conditional mean is
+
+$$
+\hat\mu(x,a)=10+2x-3a-ax.
+$$
+
+The sample contains four people:
+
+| $X$ | Recorded $A$ |
+|---:|---:|
+| 1 | 0 |
+| 2 | 1 |
+| 3 | 0 |
+| 4 | 1 |
+
+a. Complete columns for $\hat\mu(X,A)$, $\hat\mu(X,1)$, and $\hat\mu(X,0)$ for these four people.
+
+b. Estimate $E\left[Y(1)\right]$, $E\left[Y(0)\right]$, and the ATE.
+
+c. A classmate reports an ATE of $-3$, the coefficient on $A$. Explain the error.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. Substituting each person's recorded $X$ gives:
+
+| $X$ | Recorded $A$ | $\hat\mu(X,A)$ | $\hat\mu(X,1)$ | $\hat\mu(X,0)$ |
+|---:|---:|---:|---:|---:|
+| 1 | 0 | 12 | 8 | 12 |
+| 2 | 1 | 9 | 9 | 14 |
+| 3 | 0 | 16 | 10 | 16 |
+| 4 | 1 | 11 | 11 | 18 |
+
+b. Averaging gives $E\left[Y(1)\right]\approx9.50$ and $E\left[Y(0)\right]\approx15.00$. The ATE is approximately $9.50-15.00=-5.50$ outcome units.
+
+c. The interaction makes the fitted treatment difference $-3-x$. The coefficient $-3$ is the fitted difference at $X=0$, not the average difference for this sample. Averaging the four differences $-4,-5,-6,-7$ gives $-5.50$.
+:::
+
+### 3. Logistic regression
+
+For a binary outcome, the fitted logistic regression is
+
+$$
+\operatorname{logit}\{\hat\mu(x,a)\}=-1+x-a.
+$$
+
+The sample contains two people with $X=0$ and two with $X=1$. To convert log odds $\eta$ to a probability, use $\exp(\eta)/(1+\exp(\eta))$.
+
+a. Calculate $\hat\mu(x,a)$ for each combination of $x=0,1$ and $a=0,1$.
+
+b. Estimate $E\left[Y(1)\right]$ and $E\left[Y(0)\right]$.
+
+c. Estimate the ATE, causal relative risk, and causal odds ratio for intervention value $1$ compared with $0$.
+
+d. Calculate $\exp(-1)$, the fitted conditional odds ratio for treatment. Compare it with your causal odds ratio in part c and explain why they need not agree.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. Transform the fitted log odds to probabilities:
+
+| $x$ | $a$ | Fitted log odds | $\hat\mu(x,a)$ |
+|---:|---:|---:|---:|
+| 0 | 0 | -1 | 0.27 |
+| 0 | 1 | -2 | 0.12 |
+| 1 | 0 | 0 | 0.50 |
+| 1 | 1 | -1 | 0.27 |
+
+b. Use the probabilities before rounding. Equal numbers have each $X$ value, giving $E\left[Y(1)\right]\approx0.19$ and $E\left[Y(0)\right]\approx0.38$.
+
+c. Using the unrounded averages, the ATE is approximately $-0.19$, the causal relative risk is approximately $0.50$, and the causal odds ratio is approximately $0.39$. Treatment $1$ lowers the risk by an estimated 19.0 percentage points. Its risk is about half that under $0$, and its odds are about 0.39 times those under $0$.
+
+d. The fitted conditional odds ratio is $\exp(-1)\approx0.37$. It compares odds at a fixed $X$. The causal odds ratio compares odds formed from the risks after averaging over $X$. Averaging probabilities and then converting to odds need not preserve the conditional odds ratio, even without a treatment interaction.
+:::
+
+### 4. A nonbinary exposure
+
+For a continuous exposure $A$ and continuous outcome $Y$, the fitted conditional mean is
+
+$$
+\hat\mu(x,a)=20+2x-a-0.5ax.
+$$
+
+The sample contains four people with $X$ values $1,2,3,4$.
+
+a. Estimate $E\left[Y(a)\right]$ at $a=0,2,4$.
+
+b. Using $a=0$ as the reference, calculate differences and ratios of means for $a=2$ and $a=4$. Interpret your results in outcome units and as multiples of the reference mean.
+
+c. Sketch the estimated mean response curve over $0\leq a\leq4$.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. The fitted values are:
+
+| $X$ | $\hat\mu(X,0)$ | $\hat\mu(X,2)$ | $\hat\mu(X,4)$ |
+|---:|---:|---:|---:|
+| 1 | 22 | 19 | 16 |
+| 2 | 24 | 20 | 16 |
+| 3 | 26 | 21 | 16 |
+| 4 | 28 | 22 | 16 |
+
+Averaging gives $E\left[Y(0)\right]\approx25.00$, $E\left[Y(2)\right]\approx20.50$, and $E\left[Y(4)\right]\approx16.00$.
+
+b. Comparing $2$ with $0$, the difference is approximately $-4.50$ outcome units and the ratio is $20.50/25.00=0.82$. Comparing $4$ with $0$, the difference is approximately $-9.00$ units and the ratio is $16.00/25.00=0.64$. These are ratios of means, rather than relative risks.
+
+c. The sample mean of $X$ is $2.50$. Averaging the fitted function gives
+
+$$
+E\left[Y(a)\right]\approx20+2(2.50)-a-0.5a(2.50)=25-2.25a.
+$$
+
+Sketch a straight line from $(0,25)$ through $(2,20.50)$ to $(4,16)$.
+:::

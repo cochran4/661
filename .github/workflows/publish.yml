@@ -31,6 +31,7 @@ jobs:
           packages: |
             any::knitr
             any::rmarkdown
+            any::MASS
 
       - name: Render and publish to GitHub Pages
         uses: quarto-dev/quarto-actions/publish@v2

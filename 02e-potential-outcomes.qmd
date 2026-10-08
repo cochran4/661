@@ -901,10 +901,10 @@ Potential outcomes let us define many causal quantities.
 A **causal quantity** is any quantity involving potential outcomes. A **causal effect** compares potential outcomes under different interventions.
 :::
 
-For example, $E\{Y(1)\}$ is a causal quantity: it describes the average outcome under intervention value $1$. The difference
+For example, $E\left[Y(1)\right]$ is a causal quantity: it describes the average outcome under intervention value $1$. The difference
 
 $$
-E\{Y(1)\}-E\{Y(0)\}
+E\left[Y(1)\right]-E\left[Y(0)\right]
 $$
 
 is a causal effect because it compares outcomes under two interventions.
@@ -919,7 +919,7 @@ There is no single causal effect for a study. We must choose the interventions t
 $$
 \operatorname{ATE}
 =
-E\{Y(1)-Y(0)\}.
+E\left[Y(1)-Y(0)\right].
 $$
 
 It is the average change in the outcome when we compare intervention value $1$ with intervention value $0$ in the population represented by the SCM.
@@ -1008,7 +1008,7 @@ For example, sometimes we might want the average effect among people with specif
 $$
 \operatorname{CATE}(x)
 =
-E\{Y(1)-Y(0)\mid X=x\}.
+E\left[Y(1)-Y(0)\mid X=x\right].
 $$
 :::
 
@@ -1030,7 +1030,7 @@ We can similarly define conditional causal relative risks and odds ratios by con
 $$
 \operatorname{ATT}
 =
-E\{Y(1)-Y(0)\mid A=1\}.
+E\left[Y(1)-Y(0)\mid A=1\right].
 $$
 
 It is the average treatment effect among people whose original treatment value was $1$.
@@ -1039,7 +1039,7 @@ It is the average treatment effect among people whose original treatment value w
 For example, suppose
 
 $$
-E\{Y(1)-Y(0)\mid A=1\}=-0.12.
+E\left[Y(1)-Y(0)\mid A=1\right]=-0.12.
 $$
 
 Among the people who received treatment in the original data-generating process, treatment reduces the outcome by 12 units on average.

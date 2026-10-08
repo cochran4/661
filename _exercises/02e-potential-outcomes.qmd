@@ -303,7 +303,7 @@ d. An exercise program is compared with no program. Let $Y$ be systolic blood pr
 **a.** The average treatment effect is
 
 $$
-E\{Y(1)-Y(0)\}=-3.2.
+E\left[Y(1)-Y(0)\right]=-3.2.
 $$
 
 The smoking-cessation program reduces the number of cigarettes smoked per day by 3.2, on average, compared with no program.
@@ -319,7 +319,7 @@ The risk of influenza under vaccination is 40% of the risk under no vaccination.
 **c.** The subgroup average treatment effect is
 
 $$
-E\{Y(1)-Y(0)\mid X=1\}=-5.
+E\left[Y(1)-Y(0)\mid X=1\right]=-5.
 $$
 
 Among people with severe baseline pain, the therapy reduces the pain score by 5 points on average compared with no therapy.
@@ -327,7 +327,7 @@ Among people with severe baseline pain, the therapy reduces the pain score by 5 
 **d.** The average treatment effect among the treated is
 
 $$
-E\{Y(1)-Y(0)\mid A=1\}=-6.
+E\left[Y(1)-Y(0)\mid A=1\right]=-6.
 $$
 
 Among people who participated in the exercise program in the original data-generating process, participation reduces systolic blood pressure by 6 units on average compared with no participation.

@@ -49,11 +49,11 @@ $$
 d. Decide whether each equality follows from the model. Explain which rule or rules justify it. 
 
 $$
-E\{Y(a)\mid A=a,X\}=E\{Y(a)\mid X\},
+E\left[Y(a)\mid A=a,X\right]=E\left[Y(a)\mid X\right],
 $$
 
 $$
-E\{Y(a)\mid A=a,X\}=E\{Y\mid A=a,X\}.
+E\left[Y(a)\mid A=a,X\right]=E\left[Y\mid A=a,X\right].
 $$
 
 <div class="response-space"></div>
@@ -111,13 +111,13 @@ $$
 d. Decide whether each equality follows from the model. Explain which rule or rules justify it. 
 
 $$
-E\{Y(a,b)\mid B(a)=b,X,M(a)\}
-=E\{Y(a,b)\mid X,M(a)\},
+E\left[Y(a,b)\mid B(a)=b,X,M(a)\right]
+=E\left[Y(a,b)\mid X,M(a)\right],
 $$
 
 $$
-E\{Y(a,b)\mid A=a,B=b,X\}
-=E\{Y\mid A=a,B=b,X\}.
+E\left[Y(a,b)\mid A=a,B=b,X\right]
+=E\left[Y\mid A=a,B=b,X\right].
 $$
 
 <div class="response-space"></div>

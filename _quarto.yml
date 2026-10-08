@@ -27,6 +27,7 @@ book:
     - part: "Measured confounding"
       chapters:
         - 03a-outcome-regression.qmd
+        - 03-exercises.qmd
     - part: "Unmeasured confounding"
       chapters: []
     - part: "Sensitivity analysis"
@@ -79,6 +80,8 @@ book:
         menu:
           - text: "Outcome regression"
             file: 03a-outcome-regression.qmd
+          - text: "Exercises"
+            file: 03-exercises.qmd
       - text: "Back matter"
         menu:
           - text: "Glossary"
