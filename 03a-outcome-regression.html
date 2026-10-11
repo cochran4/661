@@ -70,7 +70,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./03-exercises.html" rel="next">
+<link href="./03b-matching.html" rel="next">
 <link href="./02-exercises.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -238,6 +238,10 @@ window.Quarto = {
  <span class="dropdown-text">Outcome regression</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./03b-matching.html">
+ <span class="dropdown-text">Matching</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./03-exercises.html">
  <span class="dropdown-text">Exercises</span></a>
   </li>  
@@ -389,6 +393,11 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./03b-matching.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Matching</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./03-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
   </div>
 </li>
@@ -459,6 +468,11 @@ window.Quarto = {
 </header>
 
 
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03a-squirrel-predictions.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="The familiar squirrel in a checked cap and waistcoat sorts paired prediction cards into two piles beside a calculator. Four squirrels each hold cards labeled 1 and 0, representing predictions under two treatment settings. Vintage paperback-style ink illustration." width="700"></p>
+</figure>
+</div>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
 <p>We now have the tools to answer our first identification question. Imagine we have an exposure <span class="math inline">\(A\)</span>, an outcome <span class="math inline">\(Y\)</span>, and a collection of common causes of <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>. And that’s it. We collect those common causes in <span class="math inline">\(X\)</span>. When all of them are measured, we call this <span class="glossary-term">measured confounding</span>. It is the default setup for observational research. Most analyses you will read, and most you will run, assume it, whether or not they say so out loud.</p>
@@ -550,8 +564,24 @@ E\left[Y(a)\mid X,A=a\right]=E\left[Y\mid X,A=a\right].
 E\left[Y(a)\mid X\right]=E\left[Y\mid X,A=a\right].
 \]</span></p>
 <p>The left side concerns a potential outcome. The right side uses only original variables, so it is a feature of the observed-data distribution.</p>
-<p>There is a small aside we need to make. We need <span class="math inline">\(E\left[Y\mid X,A=a\right]\)</span> to be defined. This relates to the positivity condition we saw for randomized trials, but now it is conditional on <span class="math inline">\(X\)</span>. In practice, it means that for patients with similar values of <span class="math inline">\(X\)</span>, there is a positive chance of getting a treatment close to <span class="math inline">\(a\)</span>. It does not follow direcly from the SCM, so it is a condition we have to add.</p>
-<p>But we have to remember what we were after. It was <span class="math inline">\(E\left[Y(a)\right]\)</span>, not <span class="math inline">\(E\left[Y(a)\mid X\right]\)</span>. Fortunately, we have a standard probability trick for getting from one to the other, the law of iterated expectations. Averaging over the distribution of <span class="math inline">\(X\)</span> gives us</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note: conditional positivity">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical note: conditional positivity
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>We need <span class="math inline">\(E\left[Y\mid X,A=a\right]\)</span> to be defined at the covariate values over which we average. This relates to the positivity condition we saw for randomized trials, but now it is conditional on <span class="math inline">\(X\)</span>.</p>
+<p>For a discrete exposure, conditional positivity requires <span class="math inline">\(P(A=a\mid X)&gt;0\)</span> almost surely. For a continuous exposure, we look for support near <span class="math inline">\(a\)</span>, rather than a positive probability of observing exactly <span class="math inline">\(A=a\)</span>. In practice, patients with similar covariates must have a chance of receiving treatment values near the one we want to study. This support requirement does not follow from the SCM alone.</p>
+</div>
+</div>
+</div>
+<p>Remember we are after <span class="math inline">\(E\left[Y(a)\right]\)</span>, not <span class="math inline">\(E\left[Y(a)\mid X\right]\)</span>. Fortunately, we have a standard probability trick for getting from one to the other, the law of iterated expectations. Averaging over the distribution of <span class="math inline">\(X\)</span> gives us</p>
 <p><span class="math display">\[
 E\left[Y(a)\right]=E\big[E\left[Y(a)\mid X\right]\big].
 \]</span></p>
@@ -583,7 +613,7 @@ E\left[E\left[Y\mid X,A=0\right]\right].
 </section>
 <section id="estimating-the-conditional-mean" class="level2">
 <h2 class="anchored" data-anchor-id="estimating-the-conditional-mean">Estimating the conditional mean</h2>
-<p>Identification tells us that <span class="math inline">\(E\{Y(a)\}\)</span> can be written using only the distribution of the data we actually observe. No potential outcomes appear on the right-hand side. But we do not know that distribution; all we have is a sample. So the next question is one of estimation. <em>How do we recover the pieces of that expression from data?</em></p>
+<p>Identification tells us that <span class="math inline">\(E[Y(a)]\)</span> can be written using only the distribution of the data we actually observe. No potential outcomes appear on the right-hand side. But we do not know that distribution; all we have is a sample. So the next question is one of estimation. <em>How do we recover the pieces of that expression from data?</em></p>
 <p>There are two pieces to estimate, one nested inside the other. Let’s start with the inner one. It will help to give it a name. Define</p>
 <p><span class="math display">\[\mu(X,A)=E\left[Y\mid X,A\right].\]</span></p>
 <p>This is just a regression function. We hand it a patient’s covariates and a treatment, and it hands back the expected outcome. The inner piece of our formula is this same function with <span class="math inline">\(A\)</span> set to a particular value,</p>
@@ -676,20 +706,13 @@ E\left[Y\mid X,A=a\right]
 \hat\mu(1,0)=0.495.
 \]</span></p>
 <p>We estimate that 39.1% of people in this group would have asthma symptoms under the stay-indoors intervention, compared with 49.5% under the do-not-stay-indoors intervention.</p>
-<p>In each case, we keep <span class="math inline">\(X\)</span> fixed and change the treatment input. This gives us both <span class="math inline">\(\hat\mu(X,1)\)</span> and <span class="math inline">\(\hat\mu(X,0)\)</span> for every person, regardless of their recorded treatment.</p>
+<p>In each case, we keep <span class="math inline">\(X\)</span> fixed and change the treatment input. This gives us both <span class="math inline">\(\hat\mu(X,1)\)</span> and <span class="math inline">\(\hat\mu(X,0)\)</span> for every person, regardless of their observed treatment.</p>
 <p>Here are the fitted values for four people, one with each combination of <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span>.</p>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 20%">
-</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: right;"><span class="math inline">\(X\)</span></th>
-<th style="text-align: right;">Recorded <span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
 <th style="text-align: right;"><span class="math inline">\(\hat\mu(X,A)\)</span></th>
 <th style="text-align: right;"><span class="math inline">\(\hat\mu(X,1)\)</span></th>
 <th style="text-align: right;"><span class="math inline">\(\hat\mu(X,0)\)</span></th>
@@ -726,7 +749,7 @@ E\left[Y\mid X,A=a\right]
 </tr>
 </tbody>
 </table>
-<p>The fitted value <span class="math inline">\(\hat\mu(X,A)\)</span> uses the recorded treatment. The other two columns use the same recorded <span class="math inline">\(X\)</span> but substitute <span class="math inline">\(1\)</span> or <span class="math inline">\(0\)</span> for the treatment input. People with the same <span class="math inline">\(X\)</span> therefore receive the same pair of predictions, even when their recorded treatments differ.</p>
+<p>The fitted value <span class="math inline">\(\hat\mu(X,A)\)</span> uses the observed treatment. The other two columns use the same observed <span class="math inline">\(X\)</span> but substitute <span class="math inline">\(1\)</span> or <span class="math inline">\(0\)</span> for the treatment input. People with the same <span class="math inline">\(X\)</span> therefore receive the same pair of predictions, even when their observed treatments differ.</p>
 </section>
 <section id="linear-regression" class="level3">
 <h3 class="anchored" data-anchor-id="linear-regression">Linear regression</h3>
@@ -1583,8 +1606,8 @@ document.addEventListener("DOMContentLoaded", () => {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./03-exercises.html" class="pagination-link" aria-label="Exercises">
-        <span class="nav-page-text"><span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./03b-matching.html" class="pagination-link" aria-label="Matching">
+        <span class="nav-page-text"><span class="chapter-title">Matching</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
