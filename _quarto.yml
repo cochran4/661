@@ -27,6 +27,7 @@ book:
     - part: "Measured confounding"
       chapters:
         - 03a-outcome-regression.qmd
+        - 03b-matching.qmd
         - 03-exercises.qmd
     - part: "Unmeasured confounding"
       chapters: []
@@ -80,6 +81,8 @@ book:
         menu:
           - text: "Outcome regression"
             file: 03a-outcome-regression.qmd
+          - text: "Matching"
+            file: 03b-matching.qmd
           - text: "Exercises"
             file: 03-exercises.qmd
       - text: "Back matter"

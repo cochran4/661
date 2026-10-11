@@ -2,6 +2,8 @@
 title: "Outcome regression"
 ---
 
+![](images/03a-squirrel-predictions.png){width=700 fig-align="center" fig-alt="The familiar squirrel in a checked cap and waistcoat sorts paired prediction cards into two piles beside a calculator. Four squirrels each hold cards labeled 1 and 0, representing predictions under two treatment settings. Vintage paperback-style ink illustration."}
+
 ## Introduction
 
 We now have the tools to answer our first identification question. Imagine we have an exposure $A$, an outcome $Y$, and a collection of common causes of $A$ and $Y$. And that's it. We collect those common causes in $X$. When all of them are measured, we call this [measured confounding]{.glossary-term}.  It is the default setup for observational research. Most analyses you will read, and most you will run, assume it, whether or not they say so out loud.
@@ -117,9 +119,13 @@ $$
 
 The left side concerns a potential outcome. The right side uses only original variables, so it is a feature of the observed-data distribution. 
 
-There is a small aside we need to make. We need $E\left[Y\mid X,A=a\right]$ to be defined. This relates to the positivity condition we saw for randomized trials, but now it is conditional on $X$. In practice, it means that for patients with similar values of $X$, there is a positive chance of getting a treatment close to $a$. It does not follow direcly from the SCM, so it is a condition we have to add.
+::: {.callout-note title="Technical note: conditional positivity" collapse="true"}
+We need $E\left[Y\mid X,A=a\right]$ to be defined at the covariate values over which we average. This relates to the positivity condition we saw for randomized trials, but now it is conditional on $X$.
 
-But we have to remember what we were after. It was $E\left[Y(a)\right]$, not $E\left[Y(a)\mid X\right]$. Fortunately, we have a standard probability trick for getting from one to the other, the law of iterated expectations. Averaging over the distribution of $X$ gives us
+For a discrete exposure, conditional positivity requires $P(A=a\mid X)>0$ almost surely. For a continuous exposure, we look for support near $a$, rather than a positive probability of observing exactly $A=a$. In practice, patients with similar covariates must have a chance of receiving treatment values near the one we want to study. This support requirement does not follow from the SCM alone.
+:::
+
+Remember we are after $E\left[Y(a)\right]$, not $E\left[Y(a)\mid X\right]$. Fortunately, we have a standard probability trick for getting from one to the other, the law of iterated expectations. Averaging over the distribution of $X$ gives us
 
 $$
 E\left[Y(a)\right]=E\big[E\left[Y(a)\mid X\right]\big].
@@ -164,7 +170,7 @@ These identify the two means needed to calculate the ATE and, for a binary outco
 
 ## Estimating the conditional mean
 
-Identification tells us that $E\{Y(a)\}$ can be written using only the distribution of the data we actually observe. No potential outcomes appear on the right-hand side. But we do not know that distribution; all we have is a sample. So the next question is one of estimation. *How do we recover the pieces of that expression from data?*
+Identification tells us that $E[Y(a)]$ can be written using only the distribution of the data we actually observe. No potential outcomes appear on the right-hand side. But we do not know that distribution; all we have is a sample. So the next question is one of estimation. *How do we recover the pieces of that expression from data?*
 
 There are two pieces to estimate, one nested inside the other. Let's start with the inner one. It will help to give it a name. Define
 
@@ -265,18 +271,18 @@ $$
 
 We estimate that 39.1% of people in this group would have asthma symptoms under the stay-indoors intervention, compared with 49.5% under the do-not-stay-indoors intervention.
 
-In each case, we keep $X$ fixed and change the treatment input. This gives us both $\hat\mu(X,1)$ and $\hat\mu(X,0)$ for every person, regardless of their recorded treatment. 
+In each case, we keep $X$ fixed and change the treatment input. This gives us both $\hat\mu(X,1)$ and $\hat\mu(X,0)$ for every person, regardless of their observed treatment. 
 
 Here are the fitted values for four people, one with each combination of $X$ and $A$.
 
-| $X$ | Recorded $A$ | $\hat\mu(X,A)$ | $\hat\mu(X,1)$ | $\hat\mu(X,0)$ |
+| $X$ | $A$ | $\hat\mu(X,A)$ | $\hat\mu(X,1)$ | $\hat\mu(X,0)$ |
 |---:|---:|---:|---:|---:|
 | 0 | 0 | 0.303 | 0.195 | 0.303 |
 | 0 | 1 | 0.195 | 0.195 | 0.303 |
 | 1 | 0 | 0.495 | 0.391 | 0.495 |
 | 1 | 1 | 0.391 | 0.391 | 0.495 |
 
-The fitted value $\hat\mu(X,A)$ uses the recorded treatment. The other two columns use the same recorded $X$ but substitute $1$ or $0$ for the treatment input. People with the same $X$ therefore receive the same pair of predictions, even when their recorded treatments differ.
+The fitted value $\hat\mu(X,A)$ uses the observed treatment. The other two columns use the same observed $X$ but substitute $1$ or $0$ for the treatment input. People with the same $X$ therefore receive the same pair of predictions, even when their observed treatments differ.
 
 
 ### Linear regression
