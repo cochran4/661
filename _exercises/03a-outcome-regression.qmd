@@ -1,4 +1,4 @@
-For these exercises, assume the measured-confounding SCM with baseline covariates $X$, exposure $A$, outcome $Y$, and mutually independent noise terms. Assume observations are i.i.d. and the relevant conditional means are defined. You may use a calculator. Keep additional digits during calculations and report your final answers to two decimal places.
+For these exercises, assume the measured-confounding SCM with covariates $X$, exposure $A$, and outcome $Y$. Assume observations related to different units are i.i.d. and the relevant conditional means are defined. You may use a calculator. Keep additional digits during calculations and report your final answers to two decimal places.
 
 ### 1. Estimating means from counts
 
@@ -11,7 +11,7 @@ Both $X$ and $A$ are binary, and $Y$ indicates an adverse outcome. The dataset h
 | 1 | 0 | 20 | 12 |
 | 1 | 1 | 40 | 16 |
 
-a. Estimate $\mu(x,a)$ for all four combinations of $x$ and $a$.
+a. Estimate $\mu(X,A)$ for all four combinations of $X$ and $A$.
 
 b. Find $\hat\mu(X,1)$ and $\hat\mu(X,0)$ for someone whose recorded values are $X=1,A=0$.
 
@@ -59,12 +59,12 @@ The odds under intervention $1$ are about 0.43 times the odds under intervention
 For a continuous outcome, the fitted conditional mean is
 
 $$
-\hat\mu(x,a)=10+2x-3a-ax.
+\hat\mu(X,A)=10+2X-3A-AX.
 $$
 
-The sample contains four people:
+For the sake of simple computations, suppose the sample contains only four people:
 
-| $X$ | Recorded $A$ |
+| $X$ | $A$ |
 |---:|---:|
 | 1 | 0 |
 | 2 | 1 |
@@ -101,12 +101,12 @@ c. The interaction makes the fitted treatment difference $-3-x$. The coefficient
 For a binary outcome, the fitted logistic regression is
 
 $$
-\operatorname{logit}\{\hat\mu(x,a)\}=-1+x-a.
+\operatorname{logit}\{\hat\mu(X,A)\}=-1+X-A.
 $$
 
-The sample contains two people with $X=0$ and two with $X=1$. To convert log odds $\eta$ to a probability, use $\exp(\eta)/(1+\exp(\eta))$.
+Like the last problem, assume - for simplicity - that the sample contains two people with $X=0$ and two with $X=1$. To convert log odds $\eta$ to a probability, use $\exp(\eta)/(1+\exp(\eta))$.
 
-a. Calculate $\hat\mu(x,a)$ for each combination of $x=0,1$ and $a=0,1$.
+a. Calculate $\hat\mu(X,A)$ for each combination of $X=0,1$ and $A=0,1$.
 
 b. Estimate $E\left[Y(1)\right]$ and $E\left[Y(0)\right]$.
 
@@ -140,7 +140,7 @@ d. The fitted conditional odds ratio is $\exp(-1)\approx0.37$. It compares odds 
 For a continuous exposure $A$ and continuous outcome $Y$, the fitted conditional mean is
 
 $$
-\hat\mu(x,a)=20+2x-a-0.5ax.
+\hat\mu(X,A)=20+2X-A-0.5AX.
 $$
 
 The sample contains four people with $X$ values $1,2,3,4$.

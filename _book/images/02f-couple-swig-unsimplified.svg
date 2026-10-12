@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 700" width="760" height="700" role="img" aria-labelledby="title">
+<title id="title">Couple-vaccination SWIG before causal irrelevance</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#315C43" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)">
+<path d="M 348.9,216.2 L 179.6,315.2"/>
+<path d="M 411.1,216.2 L 580.4,315.2"/>
+<path d="M 348.9,483.8 L 179.6,384.8"/>
+<path d="M 411.1,483.8 L 580.4,384.8"/>
+</g>
+<circle cx="380" cy="90" r="64" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="380" y="90" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="21" fill="#244635">A₁(a₁,a₂)</text>
+<circle cx="380" cy="198" r="34" fill="#FFFDF9" stroke="#315C43" stroke-width="1.8"/>
+<text x="380" y="198" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">a₁</text>
+<circle cx="380" cy="610" r="64" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="380" y="610" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="21" fill="#244635">A₂(a₁,a₂)</text>
+<circle cx="380" cy="502" r="34" fill="#FFFDF9" stroke="#315C43" stroke-width="1.8"/>
+<text x="380" y="502" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">a₂</text>
+<circle cx="120" cy="350" r="64" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="120" y="350" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="21" fill="#244635">Y₁(a₁,a₂)</text>
+<circle cx="640" cy="350" r="64" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="640" y="350" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="21" fill="#244635">Y₂(a₁,a₂)</text>
+</svg>

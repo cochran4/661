@@ -2,493 +2,764 @@
 title: "Matching"
 ---
 
+![](images/03b-squirrels-twinsies-v4.png){width=700 fig-align="center" fig-alt="Two distinct squirrels wear matching checked caps, waistcoats, and bow ties. The taller squirrel proudly holds out its waistcoat lapels with a delighted ta-da expression, while the familiar shorter squirrel gives it a skeptical sideways look. Vintage paperback-style ink illustration."}
 
-Let's contemplate our two estimation approaches so far.
+## Introduction
 
-On one hand, direct standardization avoids modeling assumptions about the conditional mean
+In the previous section, we estimated the conditional mean 
 
-$$E[Y|A=a,X]$$
+$$\mu(X,A) = E[Y|X,A]$$ 
 
-but suffers from vanishingly small strata.
+using a regression model. This let us predict outcomes at different treatment values, even when few people had exactly the same covariates. But we could get that model wrong. We might miss a nonlinear relationship or an interaction, and those errors can carry through to our estimated causal effect.
 
-On the other, outcome regression avoids vanishingly small strata, but imposes modeling assumptions on the conditional mean.
+We could avoid specifying a regression model by averaging outcomes separately for every combination of $X$ and $A$, as we did in our binary example. But with more covariates, those groups become vanishingly small. Some might contain no one at all.
 
-Matching offers another way to estimate the causal contrast: compare outcomes for individuals with similar baseline covariates. It avoids specifying an outcome-regression model, but finding good matches can still be difficult when covariate combinations are sparse.
+Matching looks for a middle ground. Rather than specify an outcome-regression model or require a large group at every covariate combination, we compare people with similar values of $X$. The idea is that their conditional means should be similar too. Finding such people can still be difficult, and using approximate matches requires us to consider how much the conditional mean might change between them.
 
+Here, we focus on a binary exposure and two causal contrasts we have already defined: the average treatment effect (ATE) and the average treatment effect among the treated (ATT).
 
-Learning objectives:
+## The idea
 
-- Implement exact matching algorithms
-- Implement inexact matching algorithms
-- Propose ways to measure similarity between individuals
-- Identify pros and cons of various matching algorithms
-- Relate matching estimates to causal estimands (when possible)
-- Recognize how matching can reveal problems with positivity
-
-
-## Motivation
-
-Consider the same set-up as the previous section:
-
-* Variables$(X,A,Y)$
-* Well-defined potential outcomes $Y(a)$ ($a=0,1$).
-* Vector-valued $X$ satisfies backdoor criteria relative to $(A,Y)$.
-
-We know, for example, then that
-
-$$E[Y(a) | X=x ] = E[Y | A=a, X=x]$$
-
-whenever $P(A=a | X=x) >0$.
-
-In words: a person assigned $A=1$ is _exchangeable_ with a person assigned $A=0$ when they have identical $X=x$.
-
-Let's look at exchangeability from a different angle.
-
-Draw two samples independently - call them $Y^{(1)}$ and $Y^{(2)}$. The first is drawn from the distribution of $Y$ conditional on $X=x$ and $A=1$; the second from $Y$ conditional on $X=x$ and $A=0$.  Their expected difference is
+Under the measured-confounding SCM, we identified the ATE as
 
 $$
-E\left[Y^{(1)}-Y^{(2)}\right]
-=E\left[Y(1)-Y(0)\mid X=x\right].
+E\left[Y(1)-Y(0)\right]
+=E\left[\mu(X,1)-\mu(X,0)\right].
 $$
 
-This is a statement about the mean difference, not the distribution of an individual's treatment effect. The two sampled outcomes belong to different individuals.
+For an independent and identically distributed sample of $n$ people, we can approximate the outer expectation by a sample mean:
 
-_This observation gives the idea behind matching:_
+$$
+E\left[Y(1)-Y(0)\right]
+\approx \frac{1}{n}\sum_{i=1}^{n}
+\left\{\mu(x_i,1)-\mu(x_i,0)\right\}.
+$$
+
+Outcome regression estimated both conditional means using a fitted model. Matching takes a different approach: we use a person's observed outcome and the outcome of someone with similar covariates in the other exposure group. Let's see how this works.
+
+::: {.example-intro}
+<span class="example-label">Example.</span> Take the following data:
+
+| Person | $X$ | $A$ | $Y$ |
+| ------ | --- | --- | --- |
+| Acorn   | 4   | 1   | 3   |
+| Hazel  | 4   | 0   | 6   |
+| Chestnut  | 7   | 1   | 5   |
+| Maple   | 7   | 0   | 9   |
+| Juniper | 7   | 1   | 9   |
+:::
+
+For each person $i$, write their observed covariates, exposure, and outcome as $x_i,a_i,y_i$. We want to estimate $\mu(x_i,1)-\mu(x_i,0)$ for each of our five people.
+
+Start with Acorn, whose observed values are $x_i=4$, $a_i=1$, and $y_i=3$. Acorn's outcome, $3$, estimates $\mu(4,1)$. We need an untreated match to estimate $\mu(4,0)$. Hazel has the same covariates and did not receive treatment, so we use Hazel's outcome, $6$. Acorn's estimated difference is
+
+$$
+3-6=-3.
+$$
+
+Now consider Hazel, whose observed values are $x_i=4$, $a_i=0$, and $y_i=6$. Hazel's own outcome, $6$, estimates $\mu(4,0)$. This time, we need a treated match to estimate $\mu(4,1)$. Acorn provides that match, with outcome $3$. Hazel's estimated difference is
+
+$$
+3-6=-3.
+$$
+
+Next is Chestnut, whose observed values are $x_i=7$, $a_i=1$, and $y_i=5$. Chestnut's outcome, $5$, estimates $\mu(7,1)$. Maple has the same covariates and did not receive treatment, so Maple's outcome, $9$, estimates $\mu(7,0)$. Chestnut's estimated difference is
+
+$$
+5-9=-4.
+$$
+
+Maple has observed values $x_i=7$, $a_i=0$, and $y_i=9$. Maple's own outcome, $9$, estimates $\mu(7,0)$. This time, two treated people have the same covariates: Chestnut and Juniper. We can average their outcomes to estimate $\mu(7,1)$:
+
+$$
+\frac{5+9}{2}=7.
+$$
+
+Maple's estimated difference is therefore $7-9=-2$.
+
+Finally, Juniper has observed values $x_i=7$, $a_i=1$, and $y_i=9$. Juniper's own outcome estimates $\mu(7,1)$, and Maple's outcome estimates $\mu(7,0)$. Juniper's estimated difference is
+
+$$
+9-9=0.
+$$
+
+Here is what we constructed:
+
+| Person   | Match             | Estimate of $\mu(x_i,1)$ | Estimate of $\mu(x_i,0)$ | Difference |
+| -------- | ----------------- | ------------------------ | ------------------------ | ---------- |
+| Acorn    | Hazel             | 3                        | 6                        | $-3$       |
+| Hazel    | Acorn             | 3                        | 6                        | $-3$       |
+| Chestnut | Maple             | 5                        | 9                        | $-4$       |
+| Maple    | Chestnut, Juniper | 7                        | 9                        | $-2$       |
+| Juniper  | Maple             | 9                        | 9                        | $0$        |
+
+We always subtract the untreated outcome from the treated outcome. Averaging these differences over all five people gives our estimate of the ATE:
+
+$$
+E\left[Y(1)-Y(0)\right]
+\approx \frac{-3+(-3)+(-4)+(-2)+0}{5}=-2.40.
+$$
+
+These matched differences estimate differences in conditional means. They are not individual treatment effects: the two outcomes in each comparison come from different people.
 
 ::: {.definition-box}
-**Matching** is the process of matching individuals in one intervention condition with individuals in another intervention condition who have similar values of $X=x$.  Differences in outcomes between matched individuals are then used to estimate various causal estimands.
+**Matching** pairs individuals in different exposure groups who have the same or similar baseline covariates. Comparisons of their outcomes are used to estimate causal contrasts.
 :::
 
-Matching is not an exact process. One has an overwhelming number of questions to answer in order to perform matching:
+## Why matching works
 
-* Match exactly on $X=x$?
-* If not matching exactly, how to measure similarity?
-* Focus on providing matches to a specific intervention group?
-* Allow a person to be matched more than once?
-* Allow a person to have more than 1 match?
-* Drop some observations?
-
-Each answer leads to different algorithms - we illustrate a few.  Regardless:
-
-#### _The thing to keep in mind is that matching is a pre-processing step: outcome data should not be factored in. Instead, we are guided by the quality and amount of matches._
-
-**References:**
-
-* Abadie, A., & Imbens, G. W. (2006). [Large sample properties of matching estimators for average treatment effects](https://users.nber.org/~rdehejia/!@$AEM/Topic%2009%20Matching%20Advanced/Abadie_Imbens_2006.pdf). _econometrica_, _74_(1), 235-267.
-* Greifer, N. (2022, May 18). Matching methods. Retrieved October 23, 2022, from [https://cran.r-project.org/web/packages/MatchIt/vignettes/matching-methods.html](https://cran.r-project.org/web/packages/MatchIt/vignettes/matching-methods.html)
-* King, G., & Nielsen, R. (2019). [Why propensity scores should not be used for matching](https://www.cambridge.org/core/services/aop-cambridge-core/content/view/94DDE7ED8E2A796B693096EB714BE68B/S1047198719000111a.pdf/why-propensity-scores-should-not-be-used-for-matching.pdf). _Political Analysis_, _27_(4), 435-454.
-
-
-## Exact matching
-
-### Case 1: 1-to-1 exact matching
-
-Our first algorithm is called 1-to-1 exact matching _with replacement_. We break down these qualifiers:
-
-* _1-to-1_: only one person is matched to an individual
-* _Exact:_  people are only matched if they have identical $X$
-* _With replacement:_ a person can be matched as many times as needed
-
-For exact matching, we often start by focusing on one intervention group, usually the treated. We then iterate through individuals in the focal group (in some order). For each individual, we pick one person in the other intervention group who has the exact same value as $X$.  Once we find a match, we take the sample average of the difference in outcomes between matched pairs.
-
-The resulting algorithm is described as follows:
-
-```text
-// 1-1 exact matching with replacement
-
-// Input arguments
-Require Xi,Ai,Yi
-Require focal group a (a=0 or a=1)
-
-// Initialize
-diff  = 0
-count = 0
-
-// Loop through people in focal group
-for each individual i with Ai = a
-    // Find possible matches
-    J := { j : Xi = Xj & Aj = 1-a }
-    
-    // Check if match exists
-    if ~isempty(J)
-    
-        // Update match count
-        count := count + 1
-    
-        // Choose one at random to be match
-        j ~ Uniform(J)
-    
-        // Add difference in outcomes to sum
-        diff := diff + (Yi - Yj)
-                
-    end
-end
-
-// Sample average of difference
-Return diff/count;
-// For focal group a=0, negate this result to report treatment 1 minus 0.
-```
-
-
-<span class="example-label">Example 1.</span>
-
-Let's revisit our smoking and weight gain example from the NHEFS data. Focus on the group that quit smoking.
-
-<details class="lesson-question">
-
-<summary>Q. Use exact matching to adjust for biological sex</summary>
-
-**A.** We implement the algorithm (1-to-1, exact, with replacement) described above.  One run of the algorithm results in an estimated average weight gain of 2.05 kilograms.
-
-</details>
-
-<details class="lesson-question">
-
-<summary>Q. Use exact matching to adjust for biological sex and education</summary>
-
-**A.**  Repeating the algorithm (1-to-1, exact, with replacement), we recover an estimated average weight gain of 2.31 kilograms.
-
-</details>
-
-It is important to note that, since we are randomly choosing matches, we can get different answers on each run. In addition, our estimates might not reflect everyone from the group that did not quit smoking.
-
-### Case 2: k-to-1, exact, with replacement
-
-One small change would be to allow for more than one person to match to a given individual. In place of the outcome of the match in the 1-to-1 case, we put the sample average outcome of all k matches. In this case, the algorithm would be the same as above but with the following change:
-
-```text
-        Require k
-        
-        ...
-        
-        // Choose k individuals at random to be match
-        matched_ave := 0
-        for 1:k
-        
-           // Choose individual uniformly
-           j ~ Uniform(J)
-           
-           // Update
-           matched_ave := matched_ave + Yj/k
-           
-           // Remove individual from set
-           J := J - { j };
-        end
-        // Add difference in outcomes to sum
-        diff := diff + (Yi - matched_ave)
-        
-        ...
-```
-
-
-<span class="example-label">Example 1 (revisited).</span>
-
-Consider the same setting as described above.
-
-<details class="lesson-question">
-
-<summary>Q. Use 8-to-1 exact matching to adjust for education and sex</summary>
-
-**A.** We recover an estimate of 2.27 kilograms.
-
-</details>
-
-<details class="lesson-question">
-
-<summary>Q. Provide empirical support that estimates are less variable for 8-to-1 exact matching than 1-to-1 exact matching in this example</summary>
-
-**A.**  We can just repeat the matching process a number of times for each matching case and plot a histogram of the estimates.  After 70 iterations, we get a histogram like the following.
-
-</details>
-
-![Repeated matching estimates comparing one-to-one and eight-to-one matching.](images/03b-matching-histogram.png){width=700 fig-align="center"}
-
-### Case 3: Variable exact matching
-
-As opposed to 1-to-1 or k-to-1, it may be beneficial to allow individuals in an intervention group to match to a variable number of individuals in the opposite intervention group.
-
-We illustrate this with an example.
-
-
-<span class="example-label">Example 2.</span>
-
-Below shows the number of samples with a certain $(X,A)$ combination.
-
-|     | A=0 | A=1 |
-| --- | --- | --- |
-| X=0 | 10  | 20  |
-| X=1 | 40  | 30  |
-| X=2 | 80  | 10  |
-
-<details class="lesson-question">
-
-<summary>Q. How might you use variable matching with $A=1$ being the focal group?</summary>
-
-**A.**  We might require that every person with $A=1$ is matched to at least one individual and at most eight individuals. Hence,
-
-* Each of the 20 individuals with $(X,A)=(0,1)$ could be matched (with replacement) to 1 individual with $(X,A) = (0,0)$
-* 20 of the 30 individuals with $(X,A)=(1,1)$ could each be matched (without replacement) to 1 individual with $(X,A)=(1,0)$; the remaining 10 could be matched (without replacement) to 2 individuals of the remaining unmatched individuals with $(X,A)=(1,0)$
-* Each of the 10 individuals with $(X,A)=(2,1)$ could be matched (without replacement) to 8 individuals with $(X,A)=(2,0)$
-
-</details>
-
-### Case 4: Coarsened exact matching
-
-Despite our efforts to improve upon direct standardization, exact matching runs into the exact same issue: vanishingly small strata. Some individuals might not have an exact match. This is especially troublesome when adjusting for continuous variables. 
-
-There are two paths forward:
-
-* Weaken our requirement of an exact match
-* _Coarsen_ the variables: i.e. first clump variable values together before performing exact matching.
-
-We illustrate this latter situation with an example.
-
-
-<span class="example-label">Example 1 (revisited part deux).</span>
-
-Consider the same setting as described above.
-
-Divide age into the following categories:
-
-* 1: 25-34 years
-* 2: 35-44 years
-* 3: 45-54 years
-* 4: 55-64 years
-* 5: 65-74 years
-
-<details class="lesson-question">
-
-<summary>Q. Apply 8-to-1 (coarsened) exact sampling to adjust for age, education, and sex</summary>
-
-**A.**  One estimate we get is 2.53 kilograms.
-
-</details>
-
-
-## (Inexact) matching
-
-### Case 3: nearest-neighbor matching
-
-As alluded to, rather than coarsen $X$, we could simply match approximately on $X$.
-
-This is accomplished by introducing a function $d$ to measure "similarity" or "distance" between values of $X$:
-
-$$d: {\cal X} \times {\cal X} \mapsto [0, \infty)$$
-
-where ${\cal X}$ is the domain of $X$. Individual $i$ could be matched to individual $j$ when $d(X^{(i)},X^{(j)})$ is sufficiently small.
-
-Our 1-to-1 exact matching algorithm needs slight modification to allow for distance-based matching:
-
-```text
-    ...
-    
-    Require distance function d
-    
-    ...
-    
-    // Find closest match    
-    j := argmin{ d(Xi,Xj) | i != j & Ai != Aj }
-    
-    // Add difference in outcomes to sum
-    diff := diff + (Yi - Yj)
-    
-    
-    ....
-```
-
-_But_ what function $d$ do we use?
-
-There are several popular choices.  One is to use a function of the form:
-
-$$d(x,y)=\sqrt{(x-y)'S^{-1}(x-y)}$$
-
-for some positive-definite $S$.  Examples of $S$ could be
-
-* The identity matrix
-*   Sample covariance matrix:
-
-    $$(S)_{ij} = E_N[ (X-E_N[X])(Y-E_N[Y])]$$
-*   Diagonal matrix with sample variances:
-
-    $$(S)_{ii} = E_N[ (X-E_N[X])^2]$$
-
-In addition, it is also common to replace each entry $X$ after subtracting its mean or with its rank among the corresponding entries in $X^{(1)},\ldots,X^{(N)}$ before applying $d$.
-
-Another popular choice for $d$ - which we will revisit in the next section - is propensity scores.
-
-
-<span class="example-label">Example 1 (revisited part tres).</span>
-
-Again we consider the smoking and weight gain example from the NHEFS dataset.
-
-<details class="lesson-question">
-
-<summary>Q. Use nearest-neighbor matching to adjust for age, education, and sex.  </summary>
-
-**A.** Using
-
-$$d(x,y)=\sqrt{(x-y)'S^{-1}(x-y)}$$
-
-with $S$ as the sample covariance, we get an estimate of 3.53 kilograms.
-
-</details>
-
-### Case 4: optimal matching
-
-If we did not allow for replacement, then nearest-neighbor matching can be considered greedy: in the sense we always choose the best match, regardless of what happens to subsequent matches. 
-
-One consequence is the matching process can be sensitive to the order in which we match individuals.
-
-Optimal matching overcomes this issue. The idea is to find an optimal matching scheme that minimizes the sum of the measures of "similarly/distance" over the matches, subject to various constraints on the matches.
-
-Mathematically, we can let $D$ be the matrix of distances:
-
-$$(D)_{ij} = d(i,j)$$
-
-and $E$ be a matrix of zeros and ones for which
-
-$$(E)_{ij} = \begin{cases} 1 & i \text{ is matched to } j \\ 0 & i \text{ is not matched to } j \end{cases}$$
-
-We can thus try to solve
-
-$$\min_{E} \sum_{i,j: A^{(i)} = 1, A^{(j)}=0} E_{ij} D_{ij}$$
-
-subject to constraints on $E$.
-
-Examples for constraints might be
-
-*   (**Pair matching**) Ensure each individual in focal group has a match:
-
-    $$\sum_{j : A^{(j)}=0} E_{ij} = 1$$
-
-    for each treated individual $i$.
-
-    and each individual in opposite group is matched only once:
-
-    $$\sum_{i : A^{(i)}=1} E_{ij} \leq 1$$
-
-    for each untreated individual $j$.
-
-Or
-
-*   (**Full matching**) Form matched sets containing either one treated individual and one or more untreated individuals, or one untreated individual and one or more treated individuals. Every retained individual belongs to one matched set. This requires additional constraints beyond the pair-matching example above.
-
-<details class="lesson-question">
-
-<summary>Q. What type of mathematical problem is optimal (either pair or full) matching?</summary>
-
-**A.** It can be formulated as an integer linear program: minimize a linear sum of matching costs subject to linear constraints and integer-valued decisions about the matches. Specialized matching algorithms can also exploit the structure of this problem.
-
-</details>
-
-<span class="example-label">Example 1 (revisited part quatre).</span>
-
-Again we consider the smoking and weight gain example from the NHEFS dataset.
-
-<details class="lesson-question">
-
-<summary>Q. Use optimal full matching to adjust for age, education, and sex.</summary>
-
-**A.**  We used the same distance measure $d$ as we did in the last example. Through some serious work to set-up the integer linear program, we arrive at an estimate of  0.86 kilograms.
-
-</details>
-
-### What are we even estimating?
-
-We can view k-to-1 matching with replacement as imputing on the unknown potential outcome:
-
-$$\tilde{Y}^{(i)}(a) = \begin{cases} Y^{(i)} & A^{(i)}=a \\ \frac{1}{k}\sum_{j \in J(i)} Y^{(j)} & A^{(i)} \neq a \end{cases}$$
-
-where $J(i)$ is the set of $k$ matches to individual $i$. 
-
-We can estimate the ATE by taking the sample average of each (imputed) individual treatment effect:
-
-$$E[Y(1)-Y(0)] \approx \frac1N \sum_{i} (\tilde{Y}^{(i)}(1) - \tilde{Y}^{(i)}(0) )$$
-
-We can also estimate the average treatment effect among the treated (ATT) by taking the sample average of each (imputed) individual treatment effect _among the treated:_
-
-$$E[Y(1)-Y(0)| A=1] \approx \frac1{|\{ i : A^{(i)}=1\}|} \sum_{i : A^{(i)}=1} (\tilde{Y}^{(i)}(1) - \tilde{Y}^{(i)}(0) )$$
-
-In light of these observations, we see matching estimates the
-
-* ATE when everyone is given a match
-* ATT when the treated group is the focal group
-* Average treatment among the untreated when the untreated group is the focal group
-
-::: {.callout-note title="Technical note: mismatch between covariate values" collapse="true"}
-Let $J(i)$ be the matches for individual $i$, all with treatment $a$, and suppose individual $i$ received the other treatment. Write $\mu(x,a)=E[Y\mid X=x,A=a]$. The average matched outcome can be decomposed as
+Let's spell out why these matched outcomes estimate the conditional means we need. Focus on one person with covariates $x_i$, observed exposure $a_i$, and observed outcome $y_i$. We want to estimate
 
 $$
-\frac{1}{|J(i)|}\sum_{j\in J(i)}Y_j
-=\mu(X_i,a)
-+\frac{1}{|J(i)|}\sum_{j\in J(i)}\{Y_j-\mu(X_j,a)\}
-+\frac{1}{|J(i)|}\sum_{j\in J(i)}\{\mu(X_j,a)-\mu(X_i,a)\}.
+\mu(x_i,1)-\mu(x_i,0).
 $$
 
-The second term averages outcome residuals. The third measures the discrepancy between the conditional means at the matched covariate values and the focal individual's covariates. With exact matching, the third term is zero. With approximate matching, it need not be zero. Smaller covariate distances help when the conditional mean changes smoothly with the covariates.
+Suppose this person received treatment, so $a_i=1$. Their observed outcome gives us a noisy estimate of $\mu(x_i,1)$:
+
+$$
+\mu(x_i,1)\approx y_i.
+$$
+
+This estimate is unbiased because, by definition,
+
+$$
+E\left[Y-\mu(x_i,1)\mid X=x_i,A=1\right]=0.
+$$
+
+Their outcome may fall above or below the conditional mean, but its expected error is zero. Our comparison therefore becomes
+
+$$
+\mu(x_i,1)-\mu(x_i,0)
+\approx y_i-\mu(x_i,0).
+$$
+
+We still need $\mu(x_i,0)$. Look for another person, indexed by $j$, whose covariates $x_j$ equal $x_i$ and who **did not receive treatment**. Their observed outcome $y_j$ is an unbiased estimate of $\mu(x_j,0)$. Because $x_j=x_i$, this is exactly the conditional mean we need.
+
+If no exact match exists, we look for an untreated person with similar covariates, using a measure of distance that we will discuss shortly. We then rely on the conditional mean changing little over that distance, so that
+
+$$
+\mu(x_i,0)\approx\mu(x_j,0).
+$$
+
+There are now two approximations: using the conditional mean at nearby covariates, and estimating that mean with the matched person's outcome. Together, they give
+
+$$
+\mu(x_i,1)-\mu(x_i,0)
+\approx y_i-\mu(x_j,0)
+\approx y_i-y_j.
+$$
+
+Person $j$ is the **match** for person $i$. An exact match removes the first approximation; the observed outcomes still vary around their conditional means.
+
+If person $i$ was untreated instead, their own outcome estimates $\mu(x_i,0)$. We find a treated match $j$ whose outcome estimates $\mu(x_i,1)$, giving
+
+$$
+\mu(x_i,1)-\mu(x_i,0)
+\approx \mu(x_j,1)-y_i
+\approx y_j-y_i.
+$$
+
+Either way, we subtract the untreated outcome from the treated outcome.
+
+::: {.callout-note title="Technical note: outcome noise and covariate mismatch" collapse="true"}
+Suppose person $i$ received the opposite exposure from $a$, and let $J(i)$ contain their $k_i$ matches, all with exposure $a$. Their average matched outcome satisfies
+
+$$
+\begin{aligned}
+\frac{1}{k_i}\sum_{j\in J(i)}y_j
+&=\mu(x_i,a)\\
+&\quad+\frac{1}{k_i}\sum_{j\in J(i)}\left[y_j-\mu(x_j,a)\right]\\
+&\quad+\frac{1}{k_i}\sum_{j\in J(i)}\left[\mu(x_j,a)-\mu(x_i,a)\right].
+\end{aligned}
+$$
+
+The second line is outcome noise around each match's own conditional mean. Selecting matches using covariates and exposure, without using outcomes, preserves its zero conditional mean under i.i.d. sampling. The third line is the mismatch between the conditional mean we need and those of the matches. Exact matching makes this last term zero. Approximate matching need not.
 :::
 
-## Practical considerations
+## Finding matches
 
-### Positivity (revisited)
+Our five squirrels made this easy: everyone had a match with exactly the same covariates, and Maple had two. What if there are several possible matches? What if there are none with exactly the same covariates? Before using any outcomes, we need to decide how we will find matches.
 
-_What if we don't find a match for everyone in our focal group?_
+### Exact matches
 
-Let's illustrate the consequences with examples.
+Acorn has observed covariates $x_i=4$. An exact match must have covariates $x_j=4$ and the opposite exposure value. If $X$ contains several variables, all their values must agree. For example, if we match on age and maternal weight, a 25-year-old mother weighing 120 pounds needs a match who is also 25 years old and weighs 120 pounds.
 
+::: {.definition-box}
+**Exact matching** requires matched individuals to have identical values of every covariate used for matching.
+:::
 
-<span class="example-label">Example 3.</span>
+If several people qualify, we can choose one, perhaps at random, or use several of them. We make this choice without looking at their outcomes.
 
-Consider the following data:
+### Nearby matches
 
-|     | A=0 | A=1 |
-| --- | --- | --- |
-| X=1 | 0   | 20  |
-| X=2 | 20  | 30  |
-| X=3 | 40  | 10  |
+For Acorn, the distances to the two untreated squirrels are
+
+$$
+|4-4|=0,
+\qquad |4-7|=3.
+$$
+
+Hazel is closer, so we choose Hazel. When no exact match exists, we can use the same idea and choose the person whose covariates are closest. This is nearest-neighbor matching.
+
+::: {.definition-box}
+**Nearest-neighbor matching** selects matches from the opposite exposure group with the smallest covariate distance among the eligible individuals.
+:::
+
+For one numerical covariate, absolute difference is a simple distance measure:
+
+$$
+d(x_i,x_j)=|x_i-x_j|.
+$$
+
+With several covariates, we need to decide how to combine the differences. Consider a mother aged 25 who weighs 120 pounds. Two possible matches are aged 27 and 35, with weights 130 and 121 pounds, respectively. Their differences from her are
+
+| Possible match | Difference in age | Difference in weight |
+| -------------- | ----------------- | -------------------- |
+| First          | 2 years           | 10 pounds            |
+| Second         | 10 years          | 1 pound              |
+
+If we simply square the differences, add them, and take a square root, the distances are
+
+$$
+\sqrt{2^2+10^2}\approx10.20,
+\qquad
+\sqrt{10^2+1^2}\approx10.05.
+$$
+
+This Euclidean distance chooses the second match. But one year and one pound are different units. Changing pounds to kilograms could change which match wins.
+
+One approach is to divide each difference by that covariate's sample standard deviation before combining them. Suppose the standard deviations are 5 years and 20 pounds. The distances become
+
+$$
+\sqrt{\left(\frac{2}{5}\right)^2+\left(\frac{10}{20}\right)^2}
+\approx0.64,
+\qquad
+\sqrt{\left(\frac{10}{5}\right)^2+\left(\frac{1}{20}\right)^2}
+\approx2.00.
+$$
+
+Now the first match is closer. This standardized distance compares differences relative to how much each covariate varies in our sample.
+
+Mahalanobis distance also accounts for how the covariates vary together. If two covariates contain much of the same information, it adjusts for that overlap when measuring distance.
+
+::: {.callout-note title="Technical note: distance with several covariates" collapse="true"}
+Write $x_i$ and $x_j$ as vectors. Distances of the form
+
+$$
+d(x_i,x_j)=\sqrt{(x_i-x_j)^\mathsf{T}S^{-1}(x_i-x_j)}
+$$
+
+include Euclidean distance when $S$ is the identity matrix, standardized Euclidean distance when $S$ is diagonal with the sample variances, and Mahalanobis distance when $S$ is the sample covariance matrix. The inverse requires $S$ to be nonsingular.
+:::
+
+### Calipers
+
+The nearest person is not necessarily a good match. Even the smallest available distance could be large, and we might not want to use that person's outcome to estimate the conditional mean we need. We can restrict how far apart matches are allowed to be.
+
+::: {.definition-box}
+A **caliper** is a maximum acceptable distance between matched individuals.
+:::
+
+For Acorn, a caliper of $1$ on $X$ accepts Hazel, whose distance is $0$, and rejects Maple, whose distance is $3$. If no eligible person falls within the caliper, the person has no match under this rule.
+
+### One match or several?
+
+We used one match for Acorn, Hazel, Chestnut, and Juniper, but two for Maple. When several people qualify, we can use their average outcome to estimate the conditional mean we need.
 
 <details class="lesson-question">
+<summary>Maple has two treated matches, Chestnut and Juniper, with outcomes $5$ and $9$. How do these matches enter Maple's comparison?</summary>
 
-<summary>Q.  Could we use exact matching to estimate the ATT?</summary>
+Average their outcomes to estimate $\mu(7,1)$:
 
-**A.**  No! 
+$$
+\frac{5+9}{2}=7.
+$$
 
-Individuals in the treated group A=1 with X=1 could not be matched exactly to an individual in the untreated group A=0.  They would have to be dropped from analysis.
+Maple's own outcome estimates $\mu(7,0)$, so the estimated difference is $7-9=-2$.
 
 </details>
 
+Using several matches can reduce outcome noise. But with approximate matching, adding more people may mean accepting matches who are farther away. We have to weigh the additional outcomes against the additional covariate mismatch.
+
+The number of matches can also vary from person to person. Consider these counts:
+
+|     | $A=0$ | $A=1$ |
+| --- | ----- | ----- |
+| $X=0$ | 10  | 20    |
+| $X=1$ | 40  | 30    |
+| $X=2$ | 80  | 10    |
+
+There are many untreated matches available per treated person at $X=2$, but fewer at $X=0$.
+
 <details class="lesson-question">
+<summary>Suppose we want matches for each treated person. How could the number of exact matches vary across these covariate values?</summary>
 
-<summary>Q.  Could we use exact matching? If so, what would be estimating?</summary>
+At $X=0$, each of the 20 treated people could receive one untreated match, but some of the 10 untreated people would need to be used more than once.
 
-**A.**  We can still use exact matching with the treated group as the focal group.  Since individuals with X=1 are dropped from the analysis, we are estimating the ATT among treated individuals with $X\neq1$.
+At $X=1$, we could give one untreated match to each of 20 treated people and two untreated matches to each of the remaining 10. This uses all $20+2(10)=40$ untreated people without reuse.
+
+At $X=2$, each of the 10 treated people could receive eight untreated matches, using all 80 untreated people without reuse.
+
+For a person with several matches, use the average of their matches' outcomes in the comparison.
 
 </details>
 
+When a person can be used as a match more than once, we call this matching with replacement. Without replacement, once someone has been used as a match, they are unavailable as a match for the remaining people in the focal group. Allowing reuse can help when several people have the same best match, but it makes their estimated differences share an outcome.
 
-<span class="example-label">Example 4.</span>
+### Choosing matches together
 
-Suppose your data, adjusting for continuous X, looks something like:
+Choosing the nearest available match one person at a time is a greedy procedure: it makes the best available choice for the person currently being matched. Without replacement, that choice makes the match unavailable to later people. Someone who comes later might be left with a poor match, and changing the order could change the result.
 
-![](images/03b-matching-overlap.svg){width=700 fig-align="center" fig-alt="Illustration of limited treatment overlap across covariate values."}
+We can instead choose the matches together. Optimal pair matching chooses pairs to minimize their total distance under the matching restrictions. This considers how one person's match affects the matches available to everyone else.
+
+We can also choose a partition into matched sets. In full matching, every retained person belongs to exactly one set, and every set contains both exposure groups. Each set has either one treated person and one or more untreated people, or one untreated person and one or more treated people. Optimal full matching chooses these sets together, allowing their sizes to vary while seeking close matches.
+
+Our five squirrels form two such sets:
+
+| Matched set | Treated members    | Untreated members |
+| ----------- | ------------------ | ----------------- |
+| First       | Acorn              | Hazel             |
+| Second      | Chestnut, Juniper  | Maple             |
+
+All five squirrels belong to exactly one set. In the second set, Maple supplies the untreated comparison for Chestnut and Juniper, and their average supplies Maple's treated comparison.
+
+## Checking the matches
+
+Before matching, the treated and untreated groups may have different covariates. Their outcomes could therefore differ because of treatment, because of those covariates, or both. Matching tries to remove the covariate differences as a possible explanation by comparing people with the same or similar covariates.
+
+Exact matching makes the covariates agree within every comparison. With approximate matching, some differences remain. Checking covariate balance helps us see how much remains, on average.
+
+We do this using the same calculation we will use for outcomes. For each person, replace the outcome with the value of a covariate. Compare their value with their match's value—or the average across their matches—always subtracting untreated from treated. Then average these differences across the people whose effects we are trying to estimate. Repeat this for each covariate.
+
+Let's do this for our squirrels. Before matching, the treated squirrels have covariate values $4,7,7$, and the untreated squirrels have values $4,7$. Their means are
+
+$$
+\begin{aligned}
+\text{Treated mean of }X&=\frac{4+7+7}{3}=6,\\
+\text{Untreated mean of }X&=\frac{4+7}{2}=5.50.
+\end{aligned}
+$$
+
+The treated mean is $0.50$ higher. Now replace the outcomes in our five matched comparisons with $X$:
+
+| Person   | Treated covariate value | Untreated covariate value | Difference |
+| -------- | ----------------------- | ------------------------- | ---------- |
+| Acorn    | 4                       | 4                         | 0          |
+| Hazel    | 4                       | 4                         | 0          |
+| Chestnut | 7                       | 7                         | 0          |
+| Maple    | $(7+7)/2=7$             | 7                         | 0          |
+| Juniper  | 7                       | 7                         | 0          |
+
+Both sides contribute $4,4,7,7,7$. Their means are
+
+$$
+\begin{aligned}
+\text{Treated mean of }X\text{ in the comparisons}
+&=\frac{4+4+7+7+7}{5}=5.80,\\
+\text{Untreated mean of }X\text{ in the comparisons}
+&=\frac{4+4+7+7+7}{5}=5.80.
+\end{aligned}
+$$
+
+The means agree, and the average covariate difference is zero. Here, we used exact matches. With approximate matches, the differences need not be zero.
+
+But the size of a covariate difference depends on its units. The same difference in maternal weight looks numerically larger in pounds than in kilograms. We do not want a covariate to look more or less balanced simply because of the scale on which we recorded it.
+
+We therefore divide the mean difference by a standard deviation. The units cancel, expressing the difference relative to how much that covariate varies. This standardized mean difference gives us a common scale for comparing balance across covariates and across studies.
+
+Write $s_1^2$ and $s_0^2$ for the sample variances of $X$ in the original treated and untreated groups. Here,
+
+$$
+\begin{aligned}
+s_1^2&=\frac{(4-6)^2+(7-6)^2+(7-6)^2}{3-1}=3,\\
+s_0^2&=\frac{(4-5.50)^2+(7-5.50)^2}{2-1}=4.50.
+\end{aligned}
+$$
+
+We use the square root of their average as our denominator:
+
+$$
+\sqrt{\frac{s_1^2+s_0^2}{2}}
+=\sqrt{\frac{3+4.50}{2}}
+\approx1.94.
+$$
+
+This is an ordinary average of the two variances; we do not weight them by the group sizes. We use this same denominator before and after matching, so the comparison scale stays fixed. Our standardized mean differences are therefore
+
+$$
+\begin{aligned}
+\text{Before matching}&=\frac{6-5.50}{\sqrt{3.75}}\approx0.26,\\
+\text{After matching}&=\frac{5.80-5.80}{\sqrt{3.75}}=0.
+\end{aligned}
+$$
+
+|                            | Treated mean of $X$ | Untreated mean of $X$ | Standardized mean difference |
+| -------------------------- | ------------------- | --------------------- | ---------------------------- |
+| Before matching            | 6                   | 5.50                  | 0.26                         |
+| Matched comparisons for the ATE | 5.80            | 5.80                  | 0                            |
+
+In this example, the covariate distributions in our comparisons agree too: two of the five comparisons have $X=4$ on each side, and three have $X=7$. With other data, equal means need not imply similar distributions. We also inspect their spread and whether one group contains more people at the extremes.
+
+## Combining the comparisons
+
+The procedure is now the same for each person:
+
+1. Find one or more matches with the opposite exposure value, using the chosen rule for comparing covariates.
+2. Average the outcomes of those matches. With one match, this is just that person's outcome.
+3. Use the person's own outcome for their observed exposure and the average matched outcome for the other exposure. Subtract the untreated estimate from the treated estimate.
+4. To estimate the ATE, average these differences over everyone in the sample.
+
+These steps require a match for every person whose difference we include. We will return to what happens when some people have no suitable match.
+
+We can also average the estimated outcomes under each treatment value first, then subtract. Use the estimates from our squirrel table:
+
+$$
+\begin{aligned}
+E\left[Y(1)\right]
+&\approx\frac{3+3+5+7+9}{5}=5.40,\\
+E\left[Y(0)\right]
+&\approx\frac{6+6+9+9+9}{5}=7.80.
+\end{aligned}
+$$
+
+Their difference, $5.40-7.80=-2.40$, is exactly the ATE estimate we obtained by averaging all five matched differences.
+
+It might feel like double-dipping to match Acorn to Hazel and then Hazel to Acorn. These comparisons share outcomes, so they are not independent.
+
+We can instead focus on finding matches for one exposure group. If we match each treated person and average their differences, we estimate the ATT. The treated squirrels are Acorn, Chestnut, and Juniper, whose estimated differences are $-3,-4,0$:
+
+$$
+E\left[Y(1)-Y(0)\mid A=1\right]
+\approx \frac{-3+(-4)+0}{3}\approx-2.33.
+$$
+
+If we match each untreated person to treated people and average their differences, we estimate the average treatment effect among the untreated (ATC). Hazel and Maple have estimated differences $-3$ and $-2$:
+
+$$
+E\left[Y(1)-Y(0)\mid A=0\right]
+\approx \frac{-3+(-2)}{2}=-2.50.
+$$
+
+The ATE, ATT, and ATC estimates differ because they average over different groups. Focusing on one exposure group simplifies the matching procedure, but it changes the causal question. It also does not eliminate shared outcomes or the need for care with standard errors.
+
+We choose the target before selecting matches. For the ATT, each treated person needs an untreated match. For the ATC, each untreated person needs a treated match. For the ATE procedure above, everyone needs a match from the other group.
+
+::: {.callout-note title="Technical note: matching weights and uncertainty" collapse="true"}
+Our matching estimates of $E\left[Y(a)\right]$ can also be written as weighted means of the observed outcomes. The weights collect each outcome's contributions to the comparisons we already constructed.
+
+For the treated estimate, Acorn contributes twice: once for Acorn and once for Hazel. Chestnut and Juniper each contribute their own outcome and half of Maple's treated estimate, giving weights of $1.50$ each. For the untreated estimate, Hazel contributes twice and Maple contributes three times.
+
+| Person   | $A$ | ATE weight |
+| -------- | --- | ---------- |
+| Acorn    | 1   | 2          |
+| Hazel    | 0   | 2          |
+| Chestnut | 1   | 1.50       |
+| Maple    | 0   | 3          |
+| Juniper  | 1   | 1.50       |
+
+Using these weights gives the same estimates:
+
+$$
+\begin{aligned}
+E\left[Y(1)\right]
+&\approx\frac{2(3)+1.50(5)+1.50(9)}{5}=5.40,\\
+E\left[Y(0)\right]
+&\approx\frac{2(6)+3(9)}{5}=7.80.
+\end{aligned}
+$$
+
+In general, the weighted mean for exposure value $a$ is
+
+$$
+\frac{\sum_{i:a_i=a}w_i y_i}{\sum_{i:a_i=a}w_i}.
+$$
+
+For full matching with an ATE target, each person's weight is proportional to the size of their matched set divided by the number with their exposure value in that set. The weights depend on the target. For our ATT calculation, each treated squirrel contributes once, Hazel contributes once, and Maple contributes twice. Multiplying all weights in an exposure group by the same constant does not change its weighted mean.
+
+The same weights reproduce our covariate-balance calculation when we replace $Y$ with $X$.
+
+Unequal weights can make a mean rely heavily on a few outcomes. The effective sample size summarizes this concentration within an exposure group:
+
+$$
+\frac{\left(\sum_i w_i\right)^2}{\sum_i w_i^2}.
+$$
+
+With equal weights, this equals the number of people in that group. Our treated ATE weights give $25/(4+2.25+2.25)\approx2.94$, compared with three distinct treated squirrels. The untreated weights give $25/(4+9)\approx1.92$, compared with two distinct untreated squirrels.
+
+These numbers summarize the unequal contributions. They do not provide a standard error. Our five comparisons still use only five people's outcomes, and several comparisons share the same outcome. Standard errors must account for the matching procedure and this reuse; treating the comparisons as independent would give misleading uncertainty estimates.
+:::
+
+## A worked analysis with MatchIt
+
+Let's use MatchIt to find matches and cobalt to check balance in the birth-weight data. We will estimate the ATT with nearest-neighbor matching and the ATE with full matching.
+
+Install the packages once, if needed:
+
+```{r}
+#| eval: false
+install.packages(c("MatchIt", "cobalt", "optmatch"))
+```
+
+::: {.example-intro}
+<span class="example-label">Example: Smoking and birth weight</span>
+
+Let $A$ indicate smoking during pregnancy and $Y$ be infant birth weight in grams. This time, collect maternal age and maternal weight at the last menstrual period into the baseline vector $X$. As before, $A=1$ means smoking and $A=0$ means not smoking.
+:::
+
+Assume the births are i.i.d. and use the measured-confounding SCM with these two baseline covariates.
+
+```{r}
+#| label: prepare-birthweight-matching
+birthwt_matching <- if (file.exists("data/birthwt.csv")) {
+  read.csv("data/birthwt.csv")
+} else {
+  MASS::birthwt
+}
+rownames(birthwt_matching) <- NULL
+```
+
+There are 74 mothers who smoked and 115 who did not.
+
+### Finding matches
+
+Find one nonsmoking match for each mother who smoked, using Mahalanobis distance on maternal age and weight:
+
+```{r}
+#| label: nearest-birthweight-matching
+birthwt_nearest <- MatchIt::matchit(
+  smoke ~ age + lwt,
+  data = birthwt_matching,
+  method = "nearest",
+  distance = "mahalanobis",
+  estimand = "ATT",
+  ratio = 1,
+  replace = TRUE,
+  m.order = "data"
+)
+```
+
+The formula lists the exposure and matching covariates; infant birth weight does not appear. `ratio = 1` requests one match per smoker, and `replace = TRUE` allows a nonsmoker to be reused. `m.order = "data"` visits smokers in their row order.
+
+Inspect the first four pairs without looking at birth weight. The row numbers identify the mothers:
+
+```{r}
+#| label: inspect-birthweight-pairs
+smoker_rows <- as.integer(rownames(birthwt_nearest$match.matrix))[1:4]
+nonsmoker_rows <- as.integer(birthwt_nearest$match.matrix[1:4, 1])
+
+birthwt_pairs <- data.frame(
+  Smoker = smoker_rows,
+  Matched_nonsmoker = nonsmoker_rows,
+  Smoker_age = birthwt_matching$age[smoker_rows],
+  Match_age = birthwt_matching$age[nonsmoker_rows],
+  Smoker_weight = birthwt_matching$lwt[smoker_rows],
+  Match_weight = birthwt_matching$lwt[nonsmoker_rows]
+)
+knitr::kable(birthwt_pairs)
+```
+
+MatchIt's nearest-neighbor method targets the ATT or ATC. For the ATE, use full matching with the same covariate distance:
+
+```{r}
+#| label: full-birthweight-matching
+birthwt_full <- MatchIt::matchit(
+  smoke ~ age + lwt,
+  data = birthwt_matching,
+  method = "full",
+  distance = "mahalanobis",
+  estimand = "ATE"
+)
+```
+
+### Checking the matches
+
+Use cobalt to calculate standardized mean differences before and after matching, with the pooled standard deviation as the denominator:
+
+```{r}
+#| label: check-birthweight-balance
+birthwt_nearest_balance <- cobalt::bal.tab(
+  birthwt_nearest, un = TRUE, s.d.denom = "pooled"
+)
+birthwt_full_balance <- cobalt::bal.tab(
+  birthwt_full, un = TRUE, s.d.denom = "pooled"
+)
+
+birthwt_balance_table <- data.frame(
+  Covariate = c("Maternal age", "Maternal weight"),
+  Before = birthwt_nearest_balance$Balance$Diff.Un,
+  After_nearest = birthwt_nearest_balance$Balance$Diff.Adj,
+  After_full = birthwt_full_balance$Balance$Diff.Adj
+)
+knitr::kable(birthwt_balance_table, digits = 2)
+```
+
+`un = TRUE` includes the original comparison. Both procedures bring the mean differences closer to zero. The signs indicate which group has the larger mean; the absolute values indicate how far apart the means are.
+
+::: {.callout-note title="More ways to inspect balance" collapse="true"}
+A balance plot displays the absolute standardized mean differences:
+
+```{r}
+#| label: plot-birthweight-balance
+#| fig-width: 7
+#| fig-height: 4
+#| fig-alt: "Absolute standardized differences in maternal age and weight before and after full matching."
+cobalt::love.plot(
+  birthwt_full_balance,
+  abs = TRUE,
+  thresholds = c(m = 0.10),
+  var.names = c(age = "Maternal age", lwt = "Maternal weight"),
+  sample.names = c("Before matching", "After full matching")
+)
+```
+
+The line at $0.10$ is a common guide for inspecting balance. We can also compare covariate distributions, since similar means can hide other differences:
+
+```{r}
+#| label: plot-matched-birthweight-covariates
+#| fig-width: 7
+#| fig-height: 4
+#| fig-alt: "Maternal weight distributions in the smoking and nonsmoking groups before and after full matching."
+cobalt::bal.plot(birthwt_full, var.name = "lwt", which = "both")
+```
+:::
+
+### Comparing outcomes
+
+MatchIt supplies weights that combine our matched comparisons into group means, as explained in the optional technical note above. Obtain the matched data and their weights:
+
+```{r}
+#| label: extract-birthweight-matches
+birthwt_nearest_data <- MatchIt::match_data(birthwt_nearest)
+birthwt_full_data <- MatchIt::match_data(birthwt_full)
+```
+
+For the first pair, both mothers are aged 20 and weigh 105 pounds. Their infant birth-weight difference is
+
+$$
+`r birthwt_matching$bwt[smoker_rows[1]]`
+-`r birthwt_matching$bwt[nonsmoker_rows[1]]`
+=`r birthwt_matching$bwt[smoker_rows[1]] - birthwt_matching$bwt[nonsmoker_rows[1]]`\text{ grams}.
+$$
+
+This is one noisy estimate of the difference in conditional means at those covariates. To combine all 74 comparisons, calculate the weighted outcome mean in each group and subtract:
+
+```{r}
+#| label: estimate-matched-birthweight-att
+birthwt_nearest_mean_1 <- with(
+  birthwt_nearest_data,
+  weighted.mean(bwt[smoke == 1], weights[smoke == 1])
+)
+birthwt_nearest_mean_0 <- with(
+  birthwt_nearest_data,
+  weighted.mean(bwt[smoke == 0], weights[smoke == 0])
+)
+birthwt_nearest_mean_1 - birthwt_nearest_mean_0
+```
+
+The weighted means are approximately `r sprintf("%.2f", birthwt_nearest_mean_1)` grams for smoking and `r sprintf("%.2f", birthwt_nearest_mean_0)` grams for not smoking. Their difference is
+
+$$
+E\left[Y(1)-Y(0)\mid A=1\right]
+\approx `r sprintf("%.2f", birthwt_nearest_mean_1 - birthwt_nearest_mean_0)`\text{ grams}.
+$$
+
+Under our working SCM, this estimates birth weight under smoking minus birth weight under not smoking, on average, among the mothers who originally smoked. The negative estimate indicates lower birth weight under smoking.
+
+For the full-matching ATE analysis, the calculation is the same but uses the full-matching weights:
+
+```{r}
+#| label: estimate-full-matching-birthweight-ate
+birthwt_full_mean_1 <- with(
+  birthwt_full_data,
+  weighted.mean(bwt[smoke == 1], weights[smoke == 1])
+)
+birthwt_full_mean_0 <- with(
+  birthwt_full_data,
+  weighted.mean(bwt[smoke == 0], weights[smoke == 0])
+)
+birthwt_full_mean_1 - birthwt_full_mean_0
+```
+
+This gives
+
+$$
+E\left[Y(1)-Y(0)\right]
+\approx `r sprintf("%.2f", birthwt_full_mean_1 - birthwt_full_mean_0)`\text{ grams}.
+$$
+
+This estimates the average change under smoking versus not smoking for the group represented by our sample.
+
+## Overlap and the causal target
+
+What if people in one exposure group have covariate values we rarely see in the other group?
+
+![](images/03b-matching-overlap.svg){width=700 fig-align="center" fig-alt="Illustration of limited overlap in covariate values between the exposure groups."}
+
+Where the groups overlap, we can find people with similar covariates. Outside that region, even the nearest match may be far away. A caliper can rule out these distant matches, but then some people have no comparison. If we leave them out, we may change whose causal effect we estimate.
+
+::: {.example-intro}
+<span class="example-label">Example.</span> Consider these counts:
+
+|     | $A=0$ | $A=1$ |
+| --- | ----- | ----- |
+| $X=1$ | 0   | 20    |
+| $X=2$ | 20  | 30    |
+| $X=3$ | 40  | 10    |
+:::
+
+The 20 treated people with $x_i=1$ have no exact untreated match. The other 40 treated people do.
 
 <details class="lesson-question">
+<summary>If we drop the treated people with $x_i=1$ and average matched differences over the remaining treated people, what causal effect are we trying to estimate?</summary>
 
-<summary>Q. Why might you be suspicious of an estimate of an ATE?</summary>
+We are targeting the treatment effect among treated people whose covariates are not $1$:
 
-**A.**  At low X values, we only see treated individuals. At high X values, we only see untreated individuals. Therefore, we have limited information on what the ATE conditional on X being in one of these regions really is. 
+$$
+E\left[Y(1)-Y(0)\mid A=1,X\neq1\right].
+$$
 
-Our only hope is to generalize our information on the ATE for middle values of X to extreme values of X.  (We learned on the previous subpage that bias is introduced with larger mismatch between X values.) It may be safer to simply drop the extreme X values from the analysis.  
+This is different from the ATT for all treated people. Dropping the unmatched group changes whom we average over.
 
 </details>
 
-#### _**Matching makes violations of positivity more apparent.**_
+The same issue arises when we drop untreated people while targeting the ATC, or average over a smaller retained group while targeting the ATE.
 
+Return to the birth-weight data. Require identical ages and maternal weights for exact matching:
 
-### Final considerations
+```{r}
+#| label: exact-birthweight-matching
+birthwt_exact <- MatchIt::matchit(
+  smoke ~ age + lwt,
+  data = birthwt_matching,
+  method = "exact",
+  estimand = "ATT"
+)
+```
 
-On one hand, dropping ill-matched data can be a good thing - it helps prevent overgeneralization of conditional average treatment effects.
+Compare who remains under the three matching procedures:
 
-On the other, dropping ill-matched data can be bad - it reduces our sample size.
+```{r}
+#| label: count-retained-birthweight-observations
+birthwt_exact_data <- MatchIt::match_data(birthwt_exact)
 
-Therefore, before analyzing outcome data, you will want to try different matching strategies and evaluate quality of the matches vs. an effective sample size.
+birthwt_retained <- data.frame(
+  Method = c("Exact", "Nearest neighbor", "Full"),
+  Smokers = c(sum(birthwt_exact_data$smoke == 1),
+              sum(birthwt_nearest_data$smoke == 1),
+              sum(birthwt_full_data$smoke == 1)),
+  Nonsmokers = c(sum(birthwt_exact_data$smoke == 0),
+                 sum(birthwt_nearest_data$smoke == 0),
+                 sum(birthwt_full_data$smoke == 0))
+)
+knitr::kable(birthwt_retained)
+```
+
+Exact matching retains only 9 of the 74 smokers. Although we requested `estimand = "ATT"`, the comparison concerns those 9 smokers, not all 74. Perfect covariate agreement in this smaller group does not tell us the effects for the mothers left out.
+
+Nearest-neighbor matching retains all 74 smokers and uses 47 nonsmokers as matches. The other 68 nonsmokers are unused, but every smoker has a comparison, so this does not by itself change the ATT target. Full matching retains all 189 mothers and uses ATE weights to represent the original group.
+
+Check who would be left out before comparing outcomes. Better balance among the retained people can come at the cost of changing the causal question.
+
+::: {.callout-note title="The overall idea"}
+Matching estimates the conditional means we need using outcomes from people with the same or similar baseline covariates. Find matches, check their covariates, and average their outcome comparisons over the people relevant to the causal question. Keep track of anyone left out, because excluding them can change that question.
+:::

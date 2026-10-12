@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 340" width="680" height="340" role="img" aria-labelledby="title">
+<title id="title">Appointment-reminder causal graph</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#315C43" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)">
+<path d="M 145.0,255.0 L 292.0,255.0"/>
+<path d="M 201.4,112.3 L 306.6,220.6"/>
+<path d="M 214.7,74.7 C 340,60 570,70 577.4,207.1"/>
+<path d="M 385.0,255.0 L 532.0,255.0"/>
+</g>
+<circle cx="100" cy="255" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="100" y="255" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">A</text>
+<circle cx="170" cy="80" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="170" y="80" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">X</text>
+<circle cx="340" cy="255" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="340" y="255" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">M</text>
+<circle cx="580" cy="255" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="580" y="255" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">Y</text>
+</svg>

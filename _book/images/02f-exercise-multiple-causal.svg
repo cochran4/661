@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 450" width="900" height="450" role="img" aria-labelledby="title">
+<title id="title">Exercise 28 multiple-intervention causal graph</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#315C43" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)">
+<path d="M 100.0,135.0 L 100.0,252.0"/>
+<path d="M 142.8,76.2 C 410,-10 790,10 790.0,252.0"/>
+<path d="M 145.0,300.0 L 282.0,300.0"/>
+<path d="M 370.2,279.9 L 527.1,201.5"/>
+<path d="M 361.1,332.5 C 445,420 670,420 756.1,333.9"/>
+<path d="M 609.5,201.5 L 747.9,277.0"/>
+</g>
+<circle cx="100" cy="90" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="100" y="90" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">X</text>
+<circle cx="100" cy="300" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="100" y="300" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">A</text>
+<circle cx="330" cy="300" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="330" y="300" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">M</text>
+<circle cx="570" cy="180" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="570" y="180" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">B</text>
+<circle cx="790" cy="300" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="790" y="300" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">Y</text>
+</svg>

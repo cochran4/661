@@ -179,7 +179,30 @@ window.Quarto = {
  <span class="dropdown-text">Potential outcomes</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./02f-single-world-intervention-graphs.html">
+ <span class="dropdown-text">Single-world intervention graphs</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./02-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-measured-confounding" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Measured confounding</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-measured-confounding">    
+        <li>
+    <a class="dropdown-item" href="./03a-outcome-regression.html">
+ <span class="dropdown-text">Outcome regression</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03b-matching.html">
+ <span class="dropdown-text">Matching</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03-exercises.html">
  <span class="dropdown-text">Exercises</span></a>
   </li>  
     </ul>
@@ -304,14 +327,41 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./02f-single-world-intervention-graphs.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Single-world intervention graphs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./02-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-      <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text">Measured confounding</span></span>
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Measured confounding</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03a-outcome-regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Outcome regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03b-matching.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Matching</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  </div>
+</li>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
@@ -841,7 +891,7 @@ A\perp\!\!\!\perp Y\mid S.
 <h2 class="anchored" data-anchor-id="multiple-paths">Multiple paths</h2>
 <p>What happens when there is more than one path between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>? A blocked path is no longer enough to guarantee independence: another path may remain open. We need to consider all of them.</p>
 <p>Consider the following causal graph.</p>
-<div id="fig-dsep-five-paths" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Arrows B to A, C, and Y; A to C and D; C to F; F to Y; Y to D; and D to E.">
+<div id="fig-dsep-five-paths" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Arrows B to A, C, and Y; A to C and D; C to F; F to Y; Y to D; and D to E." data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-dsep-five-paths-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="images/02d-five-paths.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Arrows B to A, C, and Y; A to C and D; C to F; F to Y; Y to D; and D to E." width="700">

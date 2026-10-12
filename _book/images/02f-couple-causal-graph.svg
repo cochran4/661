@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 410" width="620" height="410" role="img" aria-labelledby="title">
+<title id="title">Causal graph for vaccination and influenza in a couple</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#315C43" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)">
+<path d="M 272.1,94.3 L 140.4,179.0"/>
+<path d="M 347.9,94.3 L 479.6,179.0"/>
+<path d="M 272.1,315.7 L 140.4,231.0"/>
+<path d="M 347.9,315.7 L 479.6,231.0"/>
+</g>
+<circle cx="310" cy="70" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="310" y="70" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">A₁</text>
+<circle cx="310" cy="340" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="310" y="340" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">A₂</text>
+<circle cx="100" cy="205" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="100" y="205" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">Y₁</text>
+<circle cx="520" cy="205" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="520" y="205" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">Y₂</text>
+</svg>

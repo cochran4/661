@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 410" width="760" height="410" role="img" aria-labelledby="title">
+<title id="title">Exercise 28 single-intervention causal graph</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#315C43" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)">
+<path d="M 130.0,135.0 L 130.0,252.0"/>
+<path d="M 171.8,73.4 C 370,-5 645,5 649.2,252.0"/>
+<path d="M 175.0,300.0 L 342.0,300.0"/>
+<path d="M 435.0,300.0 L 602.0,300.0"/>
+<path d="M 390.0,135.0 L 390.0,252.0"/>
+</g>
+<circle cx="130" cy="90" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="130" y="90" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">X</text>
+<circle cx="130" cy="300" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="130" y="300" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">A</text>
+<circle cx="390" cy="300" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="390" y="300" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">M</text>
+<circle cx="650" cy="300" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="650" y="300" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">Y</text>
+<circle cx="390" cy="90" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="390" y="90" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">Z</text>
+</svg>

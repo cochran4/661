@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 350" width="700" height="350" role="img" aria-labelledby="title">
+<title id="title">ED SWIG after causal irrelevance</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#315C43" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)">
+<path d="M 209.5,190.8 L 329.4,115.5"/>
+<path d="M 409.5,111.5 L 547.9,187.0"/>
+<path d="M 204.6,235.3 C 285,315 485,315 556.1,243.9"/>
+</g>
+<circle cx="90" cy="210" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="90" y="210" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">A</text>
+<circle cx="179" cy="210" r="34" fill="#FFFDF9" stroke="#315C43" stroke-width="1.8"/>
+<text x="179" y="210" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">a</text>
+<circle cx="370" cy="90" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="370" y="90" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">H(a)</text>
+<circle cx="590" cy="210" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="590" y="210" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">Y(a)</text>
+</svg>

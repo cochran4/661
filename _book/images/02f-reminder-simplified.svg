@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 365" width="750" height="365" role="img" aria-labelledby="title">
+<title id="title">Appointment-reminder SWIG after causal irrelevance</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#315C43" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" marker-end="url(#arrow)">
+<path d="M 213.4,115.2 L 354.4,242.8"/>
+<path d="M 224.8,80.3 C 370,65 610,65 633.2,227.5"/>
+<path d="M 225.0,275.0 L 342.0,275.0"/>
+<path d="M 435.0,275.0 L 592.0,275.0"/>
+</g>
+<circle cx="180" cy="85" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="180" y="85" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">X</text>
+<circle cx="100" cy="275" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="100" y="275" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">A</text>
+<circle cx="189" cy="275" r="34" fill="#FFFDF9" stroke="#315C43" stroke-width="1.8"/>
+<text x="189" y="275" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">a</text>
+<circle cx="390" cy="275" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="390" y="275" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">M(a)</text>
+<circle cx="640" cy="275" r="43" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="640" y="275" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">Y(a)</text>
+</svg>
