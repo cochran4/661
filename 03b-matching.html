@@ -26,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -433,445 +468,1027 @@ window.Quarto = {
 </header>
 
 
-<p>Let’s contemplate our two estimation approaches so far.</p>
-<p>On one hand, direct standardization avoids modeling assumptions about the conditional mean</p>
-<p><span class="math display">\[E[Y|A=a,X]\]</span></p>
-<p>but suffers from vanishingly small strata.</p>
-<p>On the other, outcome regression avoids vanishingly small strata, but imposes modeling assumptions on the conditional mean.</p>
-<p>Matching offers another way to estimate the causal contrast: compare outcomes for individuals with similar baseline covariates. It avoids specifying an outcome-regression model, but finding good matches can still be difficult when covariate combinations are sparse.</p>
-<p>Learning objectives:</p>
-<ul>
-<li>Implement exact matching algorithms</li>
-<li>Implement inexact matching algorithms</li>
-<li>Propose ways to measure similarity between individuals</li>
-<li>Identify pros and cons of various matching algorithms</li>
-<li>Relate matching estimates to causal estimands (when possible)</li>
-<li>Recognize how matching can reveal problems with positivity</li>
-</ul>
-<section id="motivation" class="level2">
-<h2 class="anchored" data-anchor-id="motivation">Motivation</h2>
-<p>Consider the same set-up as the previous section:</p>
-<ul>
-<li>Variables<span class="math inline">\((X,A,Y)\)</span></li>
-<li>Well-defined potential outcomes <span class="math inline">\(Y(a)\)</span> (<span class="math inline">\(a=0,1\)</span>).</li>
-<li>Vector-valued <span class="math inline">\(X\)</span> satisfies backdoor criteria relative to <span class="math inline">\((A,Y)\)</span>.</li>
-</ul>
-<p>We know, for example, then that</p>
-<p><span class="math display">\[E[Y(a) | X=x ] = E[Y | A=a, X=x]\]</span></p>
-<p>whenever <span class="math inline">\(P(A=a | X=x) &gt;0\)</span>.</p>
-<p>In words: a person assigned <span class="math inline">\(A=1\)</span> is <em>exchangeable</em> with a person assigned <span class="math inline">\(A=0\)</span> when they have identical <span class="math inline">\(X=x\)</span>.</p>
-<p>Let’s look at exchangeability from a different angle.</p>
-<p>Draw two samples independently - call them <span class="math inline">\(Y^{(1)}\)</span> and <span class="math inline">\(Y^{(2)}\)</span>. The first is drawn from the distribution of <span class="math inline">\(Y\)</span> conditional on <span class="math inline">\(X=x\)</span> and <span class="math inline">\(A=1\)</span>; the second from <span class="math inline">\(Y\)</span> conditional on <span class="math inline">\(X=x\)</span> and <span class="math inline">\(A=0\)</span>. Their expected difference is</p>
-<p><span class="math display">\[
-E\left[Y^{(1)}-Y^{(2)}\right]
-=E\left[Y(1)-Y(0)\mid X=x\right].
-\]</span></p>
-<p>This is a statement about the mean difference, not the distribution of an individual’s treatment effect. The two sampled outcomes belong to different individuals.</p>
-<p><em>This observation gives the idea behind matching:</em></p>
-<div class="definition-box">
-<p><strong>Matching</strong> is the process of matching individuals in one intervention condition with individuals in another intervention condition who have similar values of <span class="math inline">\(X=x\)</span>. Differences in outcomes between matched individuals are then used to estimate various causal estimands.</p>
-</div>
-<p>Matching is not an exact process. One has an overwhelming number of questions to answer in order to perform matching:</p>
-<ul>
-<li>Match exactly on <span class="math inline">\(X=x\)</span>?</li>
-<li>If not matching exactly, how to measure similarity?</li>
-<li>Focus on providing matches to a specific intervention group?</li>
-<li>Allow a person to be matched more than once?</li>
-<li>Allow a person to have more than 1 match?</li>
-<li>Drop some observations?</li>
-</ul>
-<p>Each answer leads to different algorithms - we illustrate a few. Regardless:</p>
-<section id="the-thing-to-keep-in-mind-is-that-matching-is-a-pre-processing-step-outcome-data-should-not-be-factored-in.-instead-we-are-guided-by-the-quality-and-amount-of-matches." class="level4">
-<h4 class="anchored" data-anchor-id="the-thing-to-keep-in-mind-is-that-matching-is-a-pre-processing-step-outcome-data-should-not-be-factored-in.-instead-we-are-guided-by-the-quality-and-amount-of-matches."><em>The thing to keep in mind is that matching is a pre-processing step: outcome data should not be factored in. Instead, we are guided by the quality and amount of matches.</em></h4>
-<p><strong>References:</strong></p>
-<ul>
-<li>Abadie, A., &amp; Imbens, G. W. (2006). <a href="https://users.nber.org/~rdehejia/!@$AEM/Topic%2009%20Matching%20Advanced/Abadie_Imbens_2006.pdf">Large sample properties of matching estimators for average treatment effects</a>. <em>econometrica</em>, <em>74</em>(1), 235-267.</li>
-<li>Greifer, N. (2022, May 18). Matching methods. Retrieved October 23, 2022, from <a href="https://cran.r-project.org/web/packages/MatchIt/vignettes/matching-methods.html">https://cran.r-project.org/web/packages/MatchIt/vignettes/matching-methods.html</a></li>
-<li>King, G., &amp; Nielsen, R. (2019). <a href="https://www.cambridge.org/core/services/aop-cambridge-core/content/view/94DDE7ED8E2A796B693096EB714BE68B/S1047198719000111a.pdf/why-propensity-scores-should-not-be-used-for-matching.pdf">Why propensity scores should not be used for matching</a>. <em>Political Analysis</em>, <em>27</em>(4), 435-454.</li>
-</ul>
-</section>
-</section>
-<section id="exact-matching" class="level2">
-<h2 class="anchored" data-anchor-id="exact-matching">Exact matching</h2>
-<section id="case-1-1-to-1-exact-matching" class="level3">
-<h3 class="anchored" data-anchor-id="case-1-1-to-1-exact-matching">Case 1: 1-to-1 exact matching</h3>
-<p>Our first algorithm is called 1-to-1 exact matching <em>with replacement</em>. We break down these qualifiers:</p>
-<ul>
-<li><em>1-to-1</em>: only one person is matched to an individual</li>
-<li><em>Exact:</em> people are only matched if they have identical <span class="math inline">\(X\)</span></li>
-<li><em>With replacement:</em> a person can be matched as many times as needed</li>
-</ul>
-<p>For exact matching, we often start by focusing on one intervention group, usually the treated. We then iterate through individuals in the focal group (in some order). For each individual, we pick one person in the other intervention group who has the exact same value as <span class="math inline">\(X\)</span>. Once we find a match, we take the sample average of the difference in outcomes between matched pairs.</p>
-<p>The resulting algorithm is described as follows:</p>
-<pre class="text"><code>// 1-1 exact matching with replacement
-
-// Input arguments
-Require Xi,Ai,Yi
-Require focal group a (a=0 or a=1)
-
-// Initialize
-diff  = 0
-count = 0
-
-// Loop through people in focal group
-for each individual i with Ai = a
-    // Find possible matches
-    J := { j : Xi = Xj &amp; Aj = 1-a }
-    
-    // Check if match exists
-    if ~isempty(J)
-    
-        // Update match count
-        count := count + 1
-    
-        // Choose one at random to be match
-        j ~ Uniform(J)
-    
-        // Add difference in outcomes to sum
-        diff := diff + (Yi - Yj)
-                
-    end
-end
-
-// Sample average of difference
-Return diff/count;
-// For focal group a=0, negate this result to report treatment 1 minus 0.</code></pre>
-<p><span class="example-label">Example 1.</span></p>
-<p>Let’s revisit our smoking and weight gain example from the NHEFS data. Focus on the group that quit smoking.</p>
-<details class="lesson-question">
-<summary>
-Q. Use exact matching to adjust for biological sex
-</summary>
-<p><strong>A.</strong> We implement the algorithm (1-to-1, exact, with replacement) described above. One run of the algorithm results in an estimated average weight gain of 2.05 kilograms.</p>
-</details>
-<details class="lesson-question">
-<summary>
-Q. Use exact matching to adjust for biological sex and education
-</summary>
-<p><strong>A.</strong> Repeating the algorithm (1-to-1, exact, with replacement), we recover an estimated average weight gain of 2.31 kilograms.</p>
-</details>
-<p>It is important to note that, since we are randomly choosing matches, we can get different answers on each run. In addition, our estimates might not reflect everyone from the group that did not quit smoking.</p>
-</section>
-<section id="case-2-k-to-1-exact-with-replacement" class="level3">
-<h3 class="anchored" data-anchor-id="case-2-k-to-1-exact-with-replacement">Case 2: k-to-1, exact, with replacement</h3>
-<p>One small change would be to allow for more than one person to match to a given individual. In place of the outcome of the match in the 1-to-1 case, we put the sample average outcome of all k matches. In this case, the algorithm would be the same as above but with the following change:</p>
-<pre class="text"><code>        Require k
-        
-        ...
-        
-        // Choose k individuals at random to be match
-        matched_ave := 0
-        for 1:k
-        
-           // Choose individual uniformly
-           j ~ Uniform(J)
-           
-           // Update
-           matched_ave := matched_ave + Yj/k
-           
-           // Remove individual from set
-           J := J - { j };
-        end
-        // Add difference in outcomes to sum
-        diff := diff + (Yi - matched_ave)
-        
-        ...</code></pre>
-<p><span class="example-label">Example 1 (revisited).</span></p>
-<p>Consider the same setting as described above.</p>
-<details class="lesson-question">
-<summary>
-Q. Use 8-to-1 exact matching to adjust for education and sex
-</summary>
-<p><strong>A.</strong> We recover an estimate of 2.27 kilograms.</p>
-</details>
-<details class="lesson-question">
-<summary>
-Q. Provide empirical support that estimates are less variable for 8-to-1 exact matching than 1-to-1 exact matching in this example
-</summary>
-<p><strong>A.</strong> We can just repeat the matching process a number of times for each matching case and plot a histogram of the estimates. After 70 iterations, we get a histogram like the following.</p>
-</details>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/03b-matching-histogram.png" class="img-fluid figure-img" width="700"></p>
-<figcaption>Repeated matching estimates comparing one-to-one and eight-to-one matching.</figcaption>
+<p><img src="images/03b-squirrels-twinsies-v4.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Two distinct squirrels wear matching checked caps, waistcoats, and bow ties. The taller squirrel proudly holds out its waistcoat lapels with a delighted ta-da expression, while the familiar shorter squirrel gives it a skeptical sideways look. Vintage paperback-style ink illustration." width="700"></p>
 </figure>
 </div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>In the previous section, we estimated the conditional mean</p>
+<p><span class="math display">\[\mu(X,A) = E[Y|X,A]\]</span></p>
+<p>using a regression model. This let us predict outcomes at different treatment values, even when few people had exactly the same covariates. But we could get that model wrong. We might miss a nonlinear relationship or an interaction, and those errors can carry through to our estimated causal effect.</p>
+<p>We could avoid specifying a regression model by averaging outcomes separately for every combination of <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span>, as we did in our binary example. But with more covariates, those groups become vanishingly small. Some might contain no one at all.</p>
+<p>Matching looks for a middle ground. Rather than specify an outcome-regression model or require a large group at every covariate combination, we compare people with similar values of <span class="math inline">\(X\)</span>. The idea is that their conditional means should be similar too. Finding such people can still be difficult, and using approximate matches requires us to consider how much the conditional mean might change between them.</p>
+<p>Here, we focus on a binary exposure and two causal contrasts we have already defined: the average treatment effect (ATE) and the average treatment effect among the treated (ATT).</p>
 </section>
-<section id="case-3-variable-exact-matching" class="level3">
-<h3 class="anchored" data-anchor-id="case-3-variable-exact-matching">Case 3: Variable exact matching</h3>
-<p>As opposed to 1-to-1 or k-to-1, it may be beneficial to allow individuals in an intervention group to match to a variable number of individuals in the opposite intervention group.</p>
-<p>We illustrate this with an example.</p>
-<p><span class="example-label">Example 2.</span></p>
-<p>Below shows the number of samples with a certain <span class="math inline">\((X,A)\)</span> combination.</p>
+<section id="the-idea" class="level2">
+<h2 class="anchored" data-anchor-id="the-idea">The idea</h2>
+<p>Under the measured-confounding SCM, we identified the ATE as</p>
+<p><span class="math display">\[
+E\left[Y(1)-Y(0)\right]
+=E\left[\mu(X,1)-\mu(X,0)\right].
+\]</span></p>
+<p>For an independent and identically distributed sample of <span class="math inline">\(n\)</span> people, we can approximate the outer expectation by a sample mean:</p>
+<p><span class="math display">\[
+E\left[Y(1)-Y(0)\right]
+\approx \frac{1}{n}\sum_{i=1}^{n}
+\left\{\mu(x_i,1)-\mu(x_i,0)\right\}.
+\]</span></p>
+<p>Outcome regression estimated both conditional means using a fitted model. Matching takes a different approach: we use a person’s observed outcome and the outcome of someone with similar covariates in the other exposure group. Let’s see how this works.</p>
+<div class="example-intro">
+<p><span class="example-label">Example.</span> Take the following data:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
-<th></th>
-<th>A=0</th>
-<th>A=1</th>
+<th>Person</th>
+<th><span class="math inline">\(X\)</span></th>
+<th><span class="math inline">\(A\)</span></th>
+<th><span class="math inline">\(Y\)</span></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>X=0</td>
-<td>10</td>
-<td>20</td>
+<td>Acorn</td>
+<td>4</td>
+<td>1</td>
+<td>3</td>
 </tr>
 <tr class="even">
-<td>X=1</td>
-<td>40</td>
-<td>30</td>
+<td>Hazel</td>
+<td>4</td>
+<td>0</td>
+<td>6</td>
 </tr>
 <tr class="odd">
-<td>X=2</td>
-<td>80</td>
-<td>10</td>
+<td>Chestnut</td>
+<td>7</td>
+<td>1</td>
+<td>5</td>
+</tr>
+<tr class="even">
+<td>Maple</td>
+<td>7</td>
+<td>0</td>
+<td>9</td>
+</tr>
+<tr class="odd">
+<td>Juniper</td>
+<td>7</td>
+<td>1</td>
+<td>9</td>
 </tr>
 </tbody>
 </table>
-<details class="lesson-question">
-<summary>
-Q. How might you use variable matching with <span class="math inline">\(A=1\)</span> being the focal group?
-</summary>
-<p><strong>A.</strong> We might require that every person with <span class="math inline">\(A=1\)</span> is matched to at least one individual and at most eight individuals. Hence,</p>
-<ul>
-<li>Each of the 20 individuals with <span class="math inline">\((X,A)=(0,1)\)</span> could be matched (with replacement) to 1 individual with <span class="math inline">\((X,A) = (0,0)\)</span></li>
-<li>20 of the 30 individuals with <span class="math inline">\((X,A)=(1,1)\)</span> could each be matched (without replacement) to 1 individual with <span class="math inline">\((X,A)=(1,0)\)</span>; the remaining 10 could be matched (without replacement) to 2 individuals of the remaining unmatched individuals with <span class="math inline">\((X,A)=(1,0)\)</span></li>
-<li>Each of the 10 individuals with <span class="math inline">\((X,A)=(2,1)\)</span> could be matched (without replacement) to 8 individuals with <span class="math inline">\((X,A)=(2,0)\)</span></li>
-</ul>
-</details>
+</div>
+<p>For each person <span class="math inline">\(i\)</span>, write their observed covariates, exposure, and outcome as <span class="math inline">\(x_i,a_i,y_i\)</span>. We want to estimate <span class="math inline">\(\mu(x_i,1)-\mu(x_i,0)\)</span> for each of our five people.</p>
+<p>Start with Acorn, whose observed values are <span class="math inline">\(x_i=4\)</span>, <span class="math inline">\(a_i=1\)</span>, and <span class="math inline">\(y_i=3\)</span>. Acorn’s outcome, <span class="math inline">\(3\)</span>, estimates <span class="math inline">\(\mu(4,1)\)</span>. We need an untreated match to estimate <span class="math inline">\(\mu(4,0)\)</span>. Hazel has the same covariates and did not receive treatment, so we use Hazel’s outcome, <span class="math inline">\(6\)</span>. Acorn’s estimated difference is</p>
+<p><span class="math display">\[
+3-6=-3.
+\]</span></p>
+<p>Now consider Hazel, whose observed values are <span class="math inline">\(x_i=4\)</span>, <span class="math inline">\(a_i=0\)</span>, and <span class="math inline">\(y_i=6\)</span>. Hazel’s own outcome, <span class="math inline">\(6\)</span>, estimates <span class="math inline">\(\mu(4,0)\)</span>. This time, we need a treated match to estimate <span class="math inline">\(\mu(4,1)\)</span>. Acorn provides that match, with outcome <span class="math inline">\(3\)</span>. Hazel’s estimated difference is</p>
+<p><span class="math display">\[
+3-6=-3.
+\]</span></p>
+<p>Next is Chestnut, whose observed values are <span class="math inline">\(x_i=7\)</span>, <span class="math inline">\(a_i=1\)</span>, and <span class="math inline">\(y_i=5\)</span>. Chestnut’s outcome, <span class="math inline">\(5\)</span>, estimates <span class="math inline">\(\mu(7,1)\)</span>. Maple has the same covariates and did not receive treatment, so Maple’s outcome, <span class="math inline">\(9\)</span>, estimates <span class="math inline">\(\mu(7,0)\)</span>. Chestnut’s estimated difference is</p>
+<p><span class="math display">\[
+5-9=-4.
+\]</span></p>
+<p>Maple has observed values <span class="math inline">\(x_i=7\)</span>, <span class="math inline">\(a_i=0\)</span>, and <span class="math inline">\(y_i=9\)</span>. Maple’s own outcome, <span class="math inline">\(9\)</span>, estimates <span class="math inline">\(\mu(7,0)\)</span>. This time, two treated people have the same covariates: Chestnut and Juniper. We can average their outcomes to estimate <span class="math inline">\(\mu(7,1)\)</span>:</p>
+<p><span class="math display">\[
+\frac{5+9}{2}=7.
+\]</span></p>
+<p>Maple’s estimated difference is therefore <span class="math inline">\(7-9=-2\)</span>.</p>
+<p>Finally, Juniper has observed values <span class="math inline">\(x_i=7\)</span>, <span class="math inline">\(a_i=1\)</span>, and <span class="math inline">\(y_i=9\)</span>. Juniper’s own outcome estimates <span class="math inline">\(\mu(7,1)\)</span>, and Maple’s outcome estimates <span class="math inline">\(\mu(7,0)\)</span>. Juniper’s estimated difference is</p>
+<p><span class="math display">\[
+9-9=0.
+\]</span></p>
+<p>Here is what we constructed:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 20%">
+<col style="width: 28%">
+<col style="width: 28%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Person</th>
+<th>Match</th>
+<th>Estimate of <span class="math inline">\(\mu(x_i,1)\)</span></th>
+<th>Estimate of <span class="math inline">\(\mu(x_i,0)\)</span></th>
+<th>Difference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Acorn</td>
+<td>Hazel</td>
+<td>3</td>
+<td>6</td>
+<td><span class="math inline">\(-3\)</span></td>
+</tr>
+<tr class="even">
+<td>Hazel</td>
+<td>Acorn</td>
+<td>3</td>
+<td>6</td>
+<td><span class="math inline">\(-3\)</span></td>
+</tr>
+<tr class="odd">
+<td>Chestnut</td>
+<td>Maple</td>
+<td>5</td>
+<td>9</td>
+<td><span class="math inline">\(-4\)</span></td>
+</tr>
+<tr class="even">
+<td>Maple</td>
+<td>Chestnut, Juniper</td>
+<td>7</td>
+<td>9</td>
+<td><span class="math inline">\(-2\)</span></td>
+</tr>
+<tr class="odd">
+<td>Juniper</td>
+<td>Maple</td>
+<td>9</td>
+<td>9</td>
+<td><span class="math inline">\(0\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>We always subtract the untreated outcome from the treated outcome. Averaging these differences over all five people gives our estimate of the ATE:</p>
+<p><span class="math display">\[
+E\left[Y(1)-Y(0)\right]
+\approx \frac{-3+(-3)+(-4)+(-2)+0}{5}=-2.40.
+\]</span></p>
+<p>These matched differences estimate differences in conditional means. They are not individual treatment effects: the two outcomes in each comparison come from different people.</p>
+<div class="definition-box">
+<p><strong>Matching</strong> pairs individuals in different exposure groups who have the same or similar baseline covariates. Comparisons of their outcomes are used to estimate causal contrasts.</p>
+</div>
 </section>
-<section id="case-4-coarsened-exact-matching" class="level3">
-<h3 class="anchored" data-anchor-id="case-4-coarsened-exact-matching">Case 4: Coarsened exact matching</h3>
-<p>Despite our efforts to improve upon direct standardization, exact matching runs into the exact same issue: vanishingly small strata. Some individuals might not have an exact match. This is especially troublesome when adjusting for continuous variables.</p>
-<p>There are two paths forward:</p>
-<ul>
-<li>Weaken our requirement of an exact match</li>
-<li><em>Coarsen</em> the variables: i.e.&nbsp;first clump variable values together before performing exact matching.</li>
-</ul>
-<p>We illustrate this latter situation with an example.</p>
-<p><span class="example-label">Example 1 (revisited part deux).</span></p>
-<p>Consider the same setting as described above.</p>
-<p>Divide age into the following categories:</p>
-<ul>
-<li>1: 25-34 years</li>
-<li>2: 35-44 years</li>
-<li>3: 45-54 years</li>
-<li>4: 55-64 years</li>
-<li>5: 65-74 years</li>
-</ul>
-<details class="lesson-question">
-<summary>
-Q. Apply 8-to-1 (coarsened) exact sampling to adjust for age, education, and sex
-</summary>
-<p><strong>A.</strong> One estimate we get is 2.53 kilograms.</p>
-</details>
-</section>
-</section>
-<section id="inexact-matching" class="level2">
-<h2 class="anchored" data-anchor-id="inexact-matching">(Inexact) matching</h2>
-<section id="case-3-nearest-neighbor-matching" class="level3">
-<h3 class="anchored" data-anchor-id="case-3-nearest-neighbor-matching">Case 3: nearest-neighbor matching</h3>
-<p>As alluded to, rather than coarsen <span class="math inline">\(X\)</span>, we could simply match approximately on <span class="math inline">\(X\)</span>.</p>
-<p>This is accomplished by introducing a function <span class="math inline">\(d\)</span> to measure “similarity” or “distance” between values of <span class="math inline">\(X\)</span>:</p>
-<p><span class="math display">\[d: {\cal X} \times {\cal X} \mapsto [0, \infty)\]</span></p>
-<p>where <span class="math inline">\({\cal X}\)</span> is the domain of <span class="math inline">\(X\)</span>. Individual <span class="math inline">\(i\)</span> could be matched to individual <span class="math inline">\(j\)</span> when <span class="math inline">\(d(X^{(i)},X^{(j)})\)</span> is sufficiently small.</p>
-<p>Our 1-to-1 exact matching algorithm needs slight modification to allow for distance-based matching:</p>
-<pre class="text"><code>    ...
-    
-    Require distance function d
-    
-    ...
-    
-    // Find closest match    
-    j := argmin{ d(Xi,Xj) | i != j &amp; Ai != Aj }
-    
-    // Add difference in outcomes to sum
-    diff := diff + (Yi - Yj)
-    
-    
-    ....</code></pre>
-<p><em>But</em> what function <span class="math inline">\(d\)</span> do we use?</p>
-<p>There are several popular choices. One is to use a function of the form:</p>
-<p><span class="math display">\[d(x,y)=\sqrt{(x-y)'S^{-1}(x-y)}\]</span></p>
-<p>for some positive-definite <span class="math inline">\(S\)</span>. Examples of <span class="math inline">\(S\)</span> could be</p>
-<ul>
-<li><p>The identity matrix</p></li>
-<li><p>Sample covariance matrix:</p>
-<p><span class="math display">\[(S)_{ij} = E_N[ (X-E_N[X])(Y-E_N[Y])]\]</span></p></li>
-<li><p>Diagonal matrix with sample variances:</p>
-<p><span class="math display">\[(S)_{ii} = E_N[ (X-E_N[X])^2]\]</span></p></li>
-</ul>
-<p>In addition, it is also common to replace each entry <span class="math inline">\(X\)</span> after subtracting its mean or with its rank among the corresponding entries in <span class="math inline">\(X^{(1)},\ldots,X^{(N)}\)</span> before applying <span class="math inline">\(d\)</span>.</p>
-<p>Another popular choice for <span class="math inline">\(d\)</span> - which we will revisit in the next section - is propensity scores.</p>
-<p><span class="example-label">Example 1 (revisited part tres).</span></p>
-<p>Again we consider the smoking and weight gain example from the NHEFS dataset.</p>
-<details class="lesson-question">
-<summary>
-Q. Use nearest-neighbor matching to adjust for age, education, and sex.
-</summary>
-<p><strong>A.</strong> Using</p>
-<p><span class="math display">\[d(x,y)=\sqrt{(x-y)'S^{-1}(x-y)}\]</span></p>
-<p>with <span class="math inline">\(S\)</span> as the sample covariance, we get an estimate of 3.53 kilograms.</p>
-</details>
-</section>
-<section id="case-4-optimal-matching" class="level3">
-<h3 class="anchored" data-anchor-id="case-4-optimal-matching">Case 4: optimal matching</h3>
-<p>If we did not allow for replacement, then nearest-neighbor matching can be considered greedy: in the sense we always choose the best match, regardless of what happens to subsequent matches.</p>
-<p>One consequence is the matching process can be sensitive to the order in which we match individuals.</p>
-<p>Optimal matching overcomes this issue. The idea is to find an optimal matching scheme that minimizes the sum of the measures of “similarly/distance” over the matches, subject to various constraints on the matches.</p>
-<p>Mathematically, we can let <span class="math inline">\(D\)</span> be the matrix of distances:</p>
-<p><span class="math display">\[(D)_{ij} = d(i,j)\]</span></p>
-<p>and <span class="math inline">\(E\)</span> be a matrix of zeros and ones for which</p>
-<p><span class="math display">\[(E)_{ij} = \begin{cases} 1 &amp; i \text{ is matched to } j \\ 0 &amp; i \text{ is not matched to } j \end{cases}\]</span></p>
-<p>We can thus try to solve</p>
-<p><span class="math display">\[\min_{E} \sum_{i,j: A^{(i)} = 1, A^{(j)}=0} E_{ij} D_{ij}\]</span></p>
-<p>subject to constraints on <span class="math inline">\(E\)</span>.</p>
-<p>Examples for constraints might be</p>
-<ul>
-<li><p>(<strong>Pair matching</strong>) Ensure each individual in focal group has a match:</p>
-<p><span class="math display">\[\sum_{j : A^{(j)}=0} E_{ij} = 1\]</span></p>
-<p>for each treated individual <span class="math inline">\(i\)</span>.</p>
-<p>and each individual in opposite group is matched only once:</p>
-<p><span class="math display">\[\sum_{i : A^{(i)}=1} E_{ij} \leq 1\]</span></p>
-<p>for each untreated individual <span class="math inline">\(j\)</span>.</p></li>
-</ul>
-<p>Or</p>
-<ul>
-<li>(<strong>Full matching</strong>) Form matched sets containing either one treated individual and one or more untreated individuals, or one untreated individual and one or more treated individuals. Every retained individual belongs to one matched set. This requires additional constraints beyond the pair-matching example above.</li>
-</ul>
-<details class="lesson-question">
-<summary>
-Q. What type of mathematical problem is optimal (either pair or full) matching?
-</summary>
-<p><strong>A.</strong> It can be formulated as an integer linear program: minimize a linear sum of matching costs subject to linear constraints and integer-valued decisions about the matches. Specialized matching algorithms can also exploit the structure of this problem.</p>
-</details>
-<p><span class="example-label">Example 1 (revisited part quatre).</span></p>
-<p>Again we consider the smoking and weight gain example from the NHEFS dataset.</p>
-<details class="lesson-question">
-<summary>
-Q. Use optimal full matching to adjust for age, education, and sex.
-</summary>
-<p><strong>A.</strong> We used the same distance measure <span class="math inline">\(d\)</span> as we did in the last example. Through some serious work to set-up the integer linear program, we arrive at an estimate of 0.86 kilograms.</p>
-</details>
-</section>
-<section id="what-are-we-even-estimating" class="level3">
-<h3 class="anchored" data-anchor-id="what-are-we-even-estimating">What are we even estimating?</h3>
-<p>We can view k-to-1 matching with replacement as imputing on the unknown potential outcome:</p>
-<p><span class="math display">\[\tilde{Y}^{(i)}(a) = \begin{cases} Y^{(i)} &amp; A^{(i)}=a \\ \frac{1}{k}\sum_{j \in J(i)} Y^{(j)} &amp; A^{(i)} \neq a \end{cases}\]</span></p>
-<p>where <span class="math inline">\(J(i)\)</span> is the set of <span class="math inline">\(k\)</span> matches to individual <span class="math inline">\(i\)</span>.</p>
-<p>We can estimate the ATE by taking the sample average of each (imputed) individual treatment effect:</p>
-<p><span class="math display">\[E[Y(1)-Y(0)] \approx \frac1N \sum_{i} (\tilde{Y}^{(i)}(1) - \tilde{Y}^{(i)}(0) )\]</span></p>
-<p>We can also estimate the average treatment effect among the treated (ATT) by taking the sample average of each (imputed) individual treatment effect <em>among the treated:</em></p>
-<p><span class="math display">\[E[Y(1)-Y(0)| A=1] \approx \frac1{|\{ i : A^{(i)}=1\}|} \sum_{i : A^{(i)}=1} (\tilde{Y}^{(i)}(1) - \tilde{Y}^{(i)}(0) )\]</span></p>
-<p>In light of these observations, we see matching estimates the</p>
-<ul>
-<li>ATE when everyone is given a match</li>
-<li>ATT when the treated group is the focal group</li>
-<li>Average treatment among the untreated when the untreated group is the focal group</li>
-</ul>
-<div class="callout callout-style-default callout-note callout-titled" title="Technical note: mismatch between covariate values">
+<section id="why-matching-works" class="level2">
+<h2 class="anchored" data-anchor-id="why-matching-works">Why matching works</h2>
+<p>Let’s spell out why these matched outcomes estimate the conditional means we need. Focus on one person with covariates <span class="math inline">\(x_i\)</span>, observed exposure <span class="math inline">\(a_i\)</span>, and observed outcome <span class="math inline">\(y_i\)</span>. We want to estimate</p>
+<p><span class="math display">\[
+\mu(x_i,1)-\mu(x_i,0).
+\]</span></p>
+<p>Suppose this person received treatment, so <span class="math inline">\(a_i=1\)</span>. Their observed outcome gives us a noisy estimate of <span class="math inline">\(\mu(x_i,1)\)</span>:</p>
+<p><span class="math display">\[
+\mu(x_i,1)\approx y_i.
+\]</span></p>
+<p>This estimate is unbiased because, by definition,</p>
+<p><span class="math display">\[
+E\left[Y-\mu(x_i,1)\mid X=x_i,A=1\right]=0.
+\]</span></p>
+<p>Their outcome may fall above or below the conditional mean, but its expected error is zero. Our comparison therefore becomes</p>
+<p><span class="math display">\[
+\mu(x_i,1)-\mu(x_i,0)
+\approx y_i-\mu(x_i,0).
+\]</span></p>
+<p>We still need <span class="math inline">\(\mu(x_i,0)\)</span>. Look for another person, indexed by <span class="math inline">\(j\)</span>, whose covariates <span class="math inline">\(x_j\)</span> equal <span class="math inline">\(x_i\)</span> and who <strong>did not receive treatment</strong>. Their observed outcome <span class="math inline">\(y_j\)</span> is an unbiased estimate of <span class="math inline">\(\mu(x_j,0)\)</span>. Because <span class="math inline">\(x_j=x_i\)</span>, this is exactly the conditional mean we need.</p>
+<p>If no exact match exists, we look for an untreated person with similar covariates, using a measure of distance that we will discuss shortly. We then rely on the conditional mean changing little over that distance, so that</p>
+<p><span class="math display">\[
+\mu(x_i,0)\approx\mu(x_j,0).
+\]</span></p>
+<p>There are now two approximations: using the conditional mean at nearby covariates, and estimating that mean with the matched person’s outcome. Together, they give</p>
+<p><span class="math display">\[
+\mu(x_i,1)-\mu(x_i,0)
+\approx y_i-\mu(x_j,0)
+\approx y_i-y_j.
+\]</span></p>
+<p>Person <span class="math inline">\(j\)</span> is the <strong>match</strong> for person <span class="math inline">\(i\)</span>. An exact match removes the first approximation; the observed outcomes still vary around their conditional means.</p>
+<p>If person <span class="math inline">\(i\)</span> was untreated instead, their own outcome estimates <span class="math inline">\(\mu(x_i,0)\)</span>. We find a treated match <span class="math inline">\(j\)</span> whose outcome estimates <span class="math inline">\(\mu(x_i,1)\)</span>, giving</p>
+<p><span class="math display">\[
+\mu(x_i,1)-\mu(x_i,0)
+\approx \mu(x_j,1)-y_i
+\approx y_j-y_i.
+\]</span></p>
+<p>Either way, we subtract the untreated outcome from the treated outcome.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note: outcome noise and covariate mismatch">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Technical note: mismatch between covariate values
+<span class="screen-reader-only">Note</span>Technical note: outcome noise and covariate mismatch
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>Let <span class="math inline">\(J(i)\)</span> be the matches for individual <span class="math inline">\(i\)</span>, all with treatment <span class="math inline">\(a\)</span>, and suppose individual <span class="math inline">\(i\)</span> received the other treatment. Write <span class="math inline">\(\mu(x,a)=E[Y\mid X=x,A=a]\)</span>. The average matched outcome can be decomposed as</p>
+<p>Suppose person <span class="math inline">\(i\)</span> received the opposite exposure from <span class="math inline">\(a\)</span>, and let <span class="math inline">\(J(i)\)</span> contain their <span class="math inline">\(k_i\)</span> matches, all with exposure <span class="math inline">\(a\)</span>. Their average matched outcome satisfies</p>
 <p><span class="math display">\[
-\frac{1}{|J(i)|}\sum_{j\in J(i)}Y_j
-=\mu(X_i,a)
-+\frac{1}{|J(i)|}\sum_{j\in J(i)}\{Y_j-\mu(X_j,a)\}
-+\frac{1}{|J(i)|}\sum_{j\in J(i)}\{\mu(X_j,a)-\mu(X_i,a)\}.
+\begin{aligned}
+\frac{1}{k_i}\sum_{j\in J(i)}y_j
+&amp;=\mu(x_i,a)\\
+&amp;\quad+\frac{1}{k_i}\sum_{j\in J(i)}\left[y_j-\mu(x_j,a)\right]\\
+&amp;\quad+\frac{1}{k_i}\sum_{j\in J(i)}\left[\mu(x_j,a)-\mu(x_i,a)\right].
+\end{aligned}
 \]</span></p>
-<p>The second term averages outcome residuals. The third measures the discrepancy between the conditional means at the matched covariate values and the focal individual’s covariates. With exact matching, the third term is zero. With approximate matching, it need not be zero. Smaller covariate distances help when the conditional mean changes smoothly with the covariates.</p>
+<p>The second line is outcome noise around each match’s own conditional mean. Selecting matches using covariates and exposure, without using outcomes, preserves its zero conditional mean under i.i.d. sampling. The third line is the mismatch between the conditional mean we need and those of the matches. Exact matching makes this last term zero. Approximate matching need not.</p>
 </div>
 </div>
 </div>
 </section>
+<section id="finding-matches" class="level2">
+<h2 class="anchored" data-anchor-id="finding-matches">Finding matches</h2>
+<p>Our five squirrels made this easy: everyone had a match with exactly the same covariates, and Maple had two. What if there are several possible matches? What if there are none with exactly the same covariates? Before using any outcomes, we need to decide how we will find matches.</p>
+<section id="exact-matches" class="level3">
+<h3 class="anchored" data-anchor-id="exact-matches">Exact matches</h3>
+<p>Acorn has observed covariates <span class="math inline">\(x_i=4\)</span>. An exact match must have covariates <span class="math inline">\(x_j=4\)</span> and the opposite exposure value. If <span class="math inline">\(X\)</span> contains several variables, all their values must agree. For example, if we match on age and maternal weight, a 25-year-old mother weighing 120 pounds needs a match who is also 25 years old and weighs 120 pounds.</p>
+<div class="definition-box">
+<p><strong>Exact matching</strong> requires matched individuals to have identical values of every covariate used for matching.</p>
+</div>
+<p>If several people qualify, we can choose one, perhaps at random, or use several of them. We make this choice without looking at their outcomes.</p>
 </section>
-<section id="practical-considerations" class="level2">
-<h2 class="anchored" data-anchor-id="practical-considerations">Practical considerations</h2>
-<section id="positivity-revisited" class="level3">
-<h3 class="anchored" data-anchor-id="positivity-revisited">Positivity (revisited)</h3>
-<p><em>What if we don’t find a match for everyone in our focal group?</em></p>
-<p>Let’s illustrate the consequences with examples.</p>
-<p><span class="example-label">Example 3.</span></p>
-<p>Consider the following data:</p>
+<section id="nearby-matches" class="level3">
+<h3 class="anchored" data-anchor-id="nearby-matches">Nearby matches</h3>
+<p>For Acorn, the distances to the two untreated squirrels are</p>
+<p><span class="math display">\[
+|4-4|=0,
+\qquad |4-7|=3.
+\]</span></p>
+<p>Hazel is closer, so we choose Hazel. When no exact match exists, we can use the same idea and choose the person whose covariates are closest. This is nearest-neighbor matching.</p>
+<div class="definition-box">
+<p><strong>Nearest-neighbor matching</strong> selects matches from the opposite exposure group with the smallest covariate distance among the eligible individuals.</p>
+</div>
+<p>For one numerical covariate, absolute difference is a simple distance measure:</p>
+<p><span class="math display">\[
+d(x_i,x_j)=|x_i-x_j|.
+\]</span></p>
+<p>With several covariates, we need to decide how to combine the differences. Consider a mother aged 25 who weighs 120 pounds. Two possible matches are aged 27 and 35, with weights 130 and 121 pounds, respectively. Their differences from her are</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
-<th></th>
-<th>A=0</th>
-<th>A=1</th>
+<th>Possible match</th>
+<th>Difference in age</th>
+<th>Difference in weight</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>X=1</td>
+<td>First</td>
+<td>2 years</td>
+<td>10 pounds</td>
+</tr>
+<tr class="even">
+<td>Second</td>
+<td>10 years</td>
+<td>1 pound</td>
+</tr>
+</tbody>
+</table>
+<p>If we simply square the differences, add them, and take a square root, the distances are</p>
+<p><span class="math display">\[
+\sqrt{2^2+10^2}\approx10.20,
+\qquad
+\sqrt{10^2+1^2}\approx10.05.
+\]</span></p>
+<p>This Euclidean distance chooses the second match. But one year and one pound are different units. Changing pounds to kilograms could change which match wins.</p>
+<p>One approach is to divide each difference by that covariate’s sample standard deviation before combining them. Suppose the standard deviations are 5 years and 20 pounds. The distances become</p>
+<p><span class="math display">\[
+\sqrt{\left(\frac{2}{5}\right)^2+\left(\frac{10}{20}\right)^2}
+\approx0.64,
+\qquad
+\sqrt{\left(\frac{10}{5}\right)^2+\left(\frac{1}{20}\right)^2}
+\approx2.00.
+\]</span></p>
+<p>Now the first match is closer. This standardized distance compares differences relative to how much each covariate varies in our sample.</p>
+<p>Mahalanobis distance also accounts for how the covariates vary together. If two covariates contain much of the same information, it adjusts for that overlap when measuring distance.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note: distance with several covariates">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical note: distance with several covariates
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Write <span class="math inline">\(x_i\)</span> and <span class="math inline">\(x_j\)</span> as vectors. Distances of the form</p>
+<p><span class="math display">\[
+d(x_i,x_j)=\sqrt{(x_i-x_j)^\mathsf{T}S^{-1}(x_i-x_j)}
+\]</span></p>
+<p>include Euclidean distance when <span class="math inline">\(S\)</span> is the identity matrix, standardized Euclidean distance when <span class="math inline">\(S\)</span> is diagonal with the sample variances, and Mahalanobis distance when <span class="math inline">\(S\)</span> is the sample covariance matrix. The inverse requires <span class="math inline">\(S\)</span> to be nonsingular.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="calipers" class="level3">
+<h3 class="anchored" data-anchor-id="calipers">Calipers</h3>
+<p>The nearest person is not necessarily a good match. Even the smallest available distance could be large, and we might not want to use that person’s outcome to estimate the conditional mean we need. We can restrict how far apart matches are allowed to be.</p>
+<div class="definition-box">
+<p>A <strong>caliper</strong> is a maximum acceptable distance between matched individuals.</p>
+</div>
+<p>For Acorn, a caliper of <span class="math inline">\(1\)</span> on <span class="math inline">\(X\)</span> accepts Hazel, whose distance is <span class="math inline">\(0\)</span>, and rejects Maple, whose distance is <span class="math inline">\(3\)</span>. If no eligible person falls within the caliper, the person has no match under this rule.</p>
+</section>
+<section id="one-match-or-several" class="level3">
+<h3 class="anchored" data-anchor-id="one-match-or-several">One match or several?</h3>
+<p>We used one match for Acorn, Hazel, Chestnut, and Juniper, but two for Maple. When several people qualify, we can use their average outcome to estimate the conditional mean we need.</p>
+<details class="lesson-question">
+<summary>
+Maple has two treated matches, Chestnut and Juniper, with outcomes <span class="math inline">\(5\)</span> and <span class="math inline">\(9\)</span>. How do these matches enter Maple’s comparison?
+</summary>
+<p>Average their outcomes to estimate <span class="math inline">\(\mu(7,1)\)</span>:</p>
+<p><span class="math display">\[
+\frac{5+9}{2}=7.
+\]</span></p>
+<p>Maple’s own outcome estimates <span class="math inline">\(\mu(7,0)\)</span>, so the estimated difference is <span class="math inline">\(7-9=-2\)</span>.</p>
+</details>
+<p>Using several matches can reduce outcome noise. But with approximate matching, adding more people may mean accepting matches who are farther away. We have to weigh the additional outcomes against the additional covariate mismatch.</p>
+<p>The number of matches can also vary from person to person. Consider these counts:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><span class="math inline">\(A=0\)</span></th>
+<th><span class="math inline">\(A=1\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(X=0\)</span></td>
+<td>10</td>
+<td>20</td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(X=1\)</span></td>
+<td>40</td>
+<td>30</td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(X=2\)</span></td>
+<td>80</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<p>There are many untreated matches available per treated person at <span class="math inline">\(X=2\)</span>, but fewer at <span class="math inline">\(X=0\)</span>.</p>
+<details class="lesson-question">
+<summary>
+Suppose we want matches for each treated person. How could the number of exact matches vary across these covariate values?
+</summary>
+<p>At <span class="math inline">\(X=0\)</span>, each of the 20 treated people could receive one untreated match, but some of the 10 untreated people would need to be used more than once.</p>
+<p>At <span class="math inline">\(X=1\)</span>, we could give one untreated match to each of 20 treated people and two untreated matches to each of the remaining 10. This uses all <span class="math inline">\(20+2(10)=40\)</span> untreated people without reuse.</p>
+<p>At <span class="math inline">\(X=2\)</span>, each of the 10 treated people could receive eight untreated matches, using all 80 untreated people without reuse.</p>
+<p>For a person with several matches, use the average of their matches’ outcomes in the comparison.</p>
+</details>
+<p>When a person can be used as a match more than once, we call this matching with replacement. Without replacement, once someone has been used as a match, they are unavailable as a match for the remaining people in the focal group. Allowing reuse can help when several people have the same best match, but it makes their estimated differences share an outcome.</p>
+</section>
+<section id="choosing-matches-together" class="level3">
+<h3 class="anchored" data-anchor-id="choosing-matches-together">Choosing matches together</h3>
+<p>Choosing the nearest available match one person at a time is a greedy procedure: it makes the best available choice for the person currently being matched. Without replacement, that choice makes the match unavailable to later people. Someone who comes later might be left with a poor match, and changing the order could change the result.</p>
+<p>We can instead choose the matches together. Optimal pair matching chooses pairs to minimize their total distance under the matching restrictions. This considers how one person’s match affects the matches available to everyone else.</p>
+<p>We can also choose a partition into matched sets. In full matching, every retained person belongs to exactly one set, and every set contains both exposure groups. Each set has either one treated person and one or more untreated people, or one untreated person and one or more treated people. Optimal full matching chooses these sets together, allowing their sizes to vary while seeking close matches.</p>
+<p>Our five squirrels form two such sets:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Matched set</th>
+<th>Treated members</th>
+<th>Untreated members</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>First</td>
+<td>Acorn</td>
+<td>Hazel</td>
+</tr>
+<tr class="even">
+<td>Second</td>
+<td>Chestnut, Juniper</td>
+<td>Maple</td>
+</tr>
+</tbody>
+</table>
+<p>All five squirrels belong to exactly one set. In the second set, Maple supplies the untreated comparison for Chestnut and Juniper, and their average supplies Maple’s treated comparison.</p>
+</section>
+</section>
+<section id="checking-the-matches" class="level2">
+<h2 class="anchored" data-anchor-id="checking-the-matches">Checking the matches</h2>
+<p>Before matching, the treated and untreated groups may have different covariates. Their outcomes could therefore differ because of treatment, because of those covariates, or both. Matching tries to remove the covariate differences as a possible explanation by comparing people with the same or similar covariates.</p>
+<p>Exact matching makes the covariates agree within every comparison. With approximate matching, some differences remain. Checking covariate balance helps us see how much remains, on average.</p>
+<p>We do this using the same calculation we will use for outcomes. For each person, replace the outcome with the value of a covariate. Compare their value with their match’s value—or the average across their matches—always subtracting untreated from treated. Then average these differences across the people whose effects we are trying to estimate. Repeat this for each covariate.</p>
+<p>Let’s do this for our squirrels. Before matching, the treated squirrels have covariate values <span class="math inline">\(4,7,7\)</span>, and the untreated squirrels have values <span class="math inline">\(4,7\)</span>. Their means are</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{Treated mean of }X&amp;=\frac{4+7+7}{3}=6,\\
+\text{Untreated mean of }X&amp;=\frac{4+7}{2}=5.50.
+\end{aligned}
+\]</span></p>
+<p>The treated mean is <span class="math inline">\(0.50\)</span> higher. Now replace the outcomes in our five matched comparisons with <span class="math inline">\(X\)</span>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 12%">
+<col style="width: 34%">
+<col style="width: 37%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Person</th>
+<th>Treated covariate value</th>
+<th>Untreated covariate value</th>
+<th>Difference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Acorn</td>
+<td>4</td>
+<td>4</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>Hazel</td>
+<td>4</td>
+<td>4</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>Chestnut</td>
+<td>7</td>
+<td>7</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>Maple</td>
+<td><span class="math inline">\((7+7)/2=7\)</span></td>
+<td>7</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>Juniper</td>
+<td>7</td>
+<td>7</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>Both sides contribute <span class="math inline">\(4,4,7,7,7\)</span>. Their means are</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{Treated mean of }X\text{ in the comparisons}
+&amp;=\frac{4+4+7+7+7}{5}=5.80,\\
+\text{Untreated mean of }X\text{ in the comparisons}
+&amp;=\frac{4+4+7+7+7}{5}=5.80.
+\end{aligned}
+\]</span></p>
+<p>The means agree, and the average covariate difference is zero. Here, we used exact matches. With approximate matches, the differences need not be zero.</p>
+<p>But the size of a covariate difference depends on its units. The same difference in maternal weight looks numerically larger in pounds than in kilograms. We do not want a covariate to look more or less balanced simply because of the scale on which we recorded it.</p>
+<p>We therefore divide the mean difference by a standard deviation. The units cancel, expressing the difference relative to how much that covariate varies. This standardized mean difference gives us a common scale for comparing balance across covariates and across studies.</p>
+<p>Write <span class="math inline">\(s_1^2\)</span> and <span class="math inline">\(s_0^2\)</span> for the sample variances of <span class="math inline">\(X\)</span> in the original treated and untreated groups. Here,</p>
+<p><span class="math display">\[
+\begin{aligned}
+s_1^2&amp;=\frac{(4-6)^2+(7-6)^2+(7-6)^2}{3-1}=3,\\
+s_0^2&amp;=\frac{(4-5.50)^2+(7-5.50)^2}{2-1}=4.50.
+\end{aligned}
+\]</span></p>
+<p>We use the square root of their average as our denominator:</p>
+<p><span class="math display">\[
+\sqrt{\frac{s_1^2+s_0^2}{2}}
+=\sqrt{\frac{3+4.50}{2}}
+\approx1.94.
+\]</span></p>
+<p>This is an ordinary average of the two variances; we do not weight them by the group sizes. We use this same denominator before and after matching, so the comparison scale stays fixed. Our standardized mean differences are therefore</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{Before matching}&amp;=\frac{6-5.50}{\sqrt{3.75}}\approx0.26,\\
+\text{After matching}&amp;=\frac{5.80-5.80}{\sqrt{3.75}}=0.
+\end{aligned}
+\]</span></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 20%">
+<col style="width: 22%">
+<col style="width: 29%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Treated mean of <span class="math inline">\(X\)</span></th>
+<th>Untreated mean of <span class="math inline">\(X\)</span></th>
+<th>Standardized mean difference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Before matching</td>
+<td>6</td>
+<td>5.50</td>
+<td>0.26</td>
+</tr>
+<tr class="even">
+<td>Matched comparisons for the ATE</td>
+<td>5.80</td>
+<td>5.80</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>In this example, the covariate distributions in our comparisons agree too: two of the five comparisons have <span class="math inline">\(X=4\)</span> on each side, and three have <span class="math inline">\(X=7\)</span>. With other data, equal means need not imply similar distributions. We also inspect their spread and whether one group contains more people at the extremes.</p>
+</section>
+<section id="combining-the-comparisons" class="level2">
+<h2 class="anchored" data-anchor-id="combining-the-comparisons">Combining the comparisons</h2>
+<p>The procedure is now the same for each person:</p>
+<ol type="1">
+<li>Find one or more matches with the opposite exposure value, using the chosen rule for comparing covariates.</li>
+<li>Average the outcomes of those matches. With one match, this is just that person’s outcome.</li>
+<li>Use the person’s own outcome for their observed exposure and the average matched outcome for the other exposure. Subtract the untreated estimate from the treated estimate.</li>
+<li>To estimate the ATE, average these differences over everyone in the sample.</li>
+</ol>
+<p>These steps require a match for every person whose difference we include. We will return to what happens when some people have no suitable match.</p>
+<p>We can also average the estimated outcomes under each treatment value first, then subtract. Use the estimates from our squirrel table:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[Y(1)\right]
+&amp;\approx\frac{3+3+5+7+9}{5}=5.40,\\
+E\left[Y(0)\right]
+&amp;\approx\frac{6+6+9+9+9}{5}=7.80.
+\end{aligned}
+\]</span></p>
+<p>Their difference, <span class="math inline">\(5.40-7.80=-2.40\)</span>, is exactly the ATE estimate we obtained by averaging all five matched differences.</p>
+<p>It might feel like double-dipping to match Acorn to Hazel and then Hazel to Acorn. These comparisons share outcomes, so they are not independent.</p>
+<p>We can instead focus on finding matches for one exposure group. If we match each treated person and average their differences, we estimate the ATT. The treated squirrels are Acorn, Chestnut, and Juniper, whose estimated differences are <span class="math inline">\(-3,-4,0\)</span>:</p>
+<p><span class="math display">\[
+E\left[Y(1)-Y(0)\mid A=1\right]
+\approx \frac{-3+(-4)+0}{3}\approx-2.33.
+\]</span></p>
+<p>If we match each untreated person to treated people and average their differences, we estimate the average treatment effect among the untreated (ATC). Hazel and Maple have estimated differences <span class="math inline">\(-3\)</span> and <span class="math inline">\(-2\)</span>:</p>
+<p><span class="math display">\[
+E\left[Y(1)-Y(0)\mid A=0\right]
+\approx \frac{-3+(-2)}{2}=-2.50.
+\]</span></p>
+<p>The ATE, ATT, and ATC estimates differ because they average over different groups. Focusing on one exposure group simplifies the matching procedure, but it changes the causal question. It also does not eliminate shared outcomes or the need for care with standard errors.</p>
+<p>We choose the target before selecting matches. For the ATT, each treated person needs an untreated match. For the ATC, each untreated person needs a treated match. For the ATE procedure above, everyone needs a match from the other group.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note: matching weights and uncertainty">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical note: matching weights and uncertainty
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Our matching estimates of <span class="math inline">\(E\left[Y(a)\right]\)</span> can also be written as weighted means of the observed outcomes. The weights collect each outcome’s contributions to the comparisons we already constructed.</p>
+<p>For the treated estimate, Acorn contributes twice: once for Acorn and once for Hazel. Chestnut and Juniper each contribute their own outcome and half of Maple’s treated estimate, giving weights of <span class="math inline">\(1.50\)</span> each. For the untreated estimate, Hazel contributes twice and Maple contributes three times.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Person</th>
+<th><span class="math inline">\(A\)</span></th>
+<th>ATE weight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Acorn</td>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr class="even">
+<td>Hazel</td>
+<td>0</td>
+<td>2</td>
+</tr>
+<tr class="odd">
+<td>Chestnut</td>
+<td>1</td>
+<td>1.50</td>
+</tr>
+<tr class="even">
+<td>Maple</td>
+<td>0</td>
+<td>3</td>
+</tr>
+<tr class="odd">
+<td>Juniper</td>
+<td>1</td>
+<td>1.50</td>
+</tr>
+</tbody>
+</table>
+<p>Using these weights gives the same estimates:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[Y(1)\right]
+&amp;\approx\frac{2(3)+1.50(5)+1.50(9)}{5}=5.40,\\
+E\left[Y(0)\right]
+&amp;\approx\frac{2(6)+3(9)}{5}=7.80.
+\end{aligned}
+\]</span></p>
+<p>In general, the weighted mean for exposure value <span class="math inline">\(a\)</span> is</p>
+<p><span class="math display">\[
+\frac{\sum_{i:a_i=a}w_i y_i}{\sum_{i:a_i=a}w_i}.
+\]</span></p>
+<p>For full matching with an ATE target, each person’s weight is proportional to the size of their matched set divided by the number with their exposure value in that set. The weights depend on the target. For our ATT calculation, each treated squirrel contributes once, Hazel contributes once, and Maple contributes twice. Multiplying all weights in an exposure group by the same constant does not change its weighted mean.</p>
+<p>The same weights reproduce our covariate-balance calculation when we replace <span class="math inline">\(Y\)</span> with <span class="math inline">\(X\)</span>.</p>
+<p>Unequal weights can make a mean rely heavily on a few outcomes. The effective sample size summarizes this concentration within an exposure group:</p>
+<p><span class="math display">\[
+\frac{\left(\sum_i w_i\right)^2}{\sum_i w_i^2}.
+\]</span></p>
+<p>With equal weights, this equals the number of people in that group. Our treated ATE weights give <span class="math inline">\(25/(4+2.25+2.25)\approx2.94\)</span>, compared with three distinct treated squirrels. The untreated weights give <span class="math inline">\(25/(4+9)\approx1.92\)</span>, compared with two distinct untreated squirrels.</p>
+<p>These numbers summarize the unequal contributions. They do not provide a standard error. Our five comparisons still use only five people’s outcomes, and several comparisons share the same outcome. Standard errors must account for the matching procedure and this reuse; treating the comparisons as independent would give misleading uncertainty estimates.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="a-worked-analysis-with-matchit" class="level2">
+<h2 class="anchored" data-anchor-id="a-worked-analysis-with-matchit">A worked analysis with MatchIt</h2>
+<p>Let’s use MatchIt to find matches and cobalt to check balance in the birth-weight data. We will estimate the ATT with nearest-neighbor matching and the ATE with full matching.</p>
+<p>Install the packages once, if needed:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">"MatchIt"</span>, <span class="st">"cobalt"</span>, <span class="st">"optmatch"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="example-intro">
+<p><span class="example-label">Example: Smoking and birth weight</span></p>
+<p>Let <span class="math inline">\(A\)</span> indicate smoking during pregnancy and <span class="math inline">\(Y\)</span> be infant birth weight in grams. This time, collect maternal age and maternal weight at the last menstrual period into the baseline vector <span class="math inline">\(X\)</span>. As before, <span class="math inline">\(A=1\)</span> means smoking and <span class="math inline">\(A=0\)</span> means not smoking.</p>
+</div>
+<p>Assume the births are i.i.d. and use the measured-confounding SCM with these two baseline covariates.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>birthwt_matching <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="st">"data/birthwt.csv"</span>)) {</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read.csv</span>(<span class="st">"data/birthwt.csv"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  MASS<span class="sc">::</span>birthwt</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(birthwt_matching) <span class="ot">&lt;-</span> <span class="cn">NULL</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>There are 74 mothers who smoked and 115 who did not.</p>
+<section id="finding-matches-1" class="level3">
+<h3 class="anchored" data-anchor-id="finding-matches-1">Finding matches</h3>
+<p>Find one nonsmoking match for each mother who smoked, using Mahalanobis distance on maternal age and weight:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>birthwt_nearest <span class="ot">&lt;-</span> MatchIt<span class="sc">::</span><span class="fu">matchit</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  smoke <span class="sc">~</span> age <span class="sc">+</span> lwt,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> birthwt_matching,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"nearest"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">distance =</span> <span class="st">"mahalanobis"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimand =</span> <span class="st">"ATT"</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ratio =</span> <span class="dv">1</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">replace =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">m.order =</span> <span class="st">"data"</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The formula lists the exposure and matching covariates; infant birth weight does not appear. <code>ratio = 1</code> requests one match per smoker, and <code>replace = TRUE</code> allows a nonsmoker to be reused. <code>m.order = "data"</code> visits smokers in their row order.</p>
+<p>Inspect the first four pairs without looking at birth weight. The row numbers identify the mothers:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>smoker_rows <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">rownames</span>(birthwt_nearest<span class="sc">$</span>match.matrix))[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>nonsmoker_rows <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(birthwt_nearest<span class="sc">$</span>match.matrix[<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">1</span>])</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>birthwt_pairs <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Smoker =</span> smoker_rows,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Matched_nonsmoker =</span> nonsmoker_rows,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Smoker_age =</span> birthwt_matching<span class="sc">$</span>age[smoker_rows],</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">Match_age =</span> birthwt_matching<span class="sc">$</span>age[nonsmoker_rows],</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Smoker_weight =</span> birthwt_matching<span class="sc">$</span>lwt[smoker_rows],</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">Match_weight =</span> birthwt_matching<span class="sc">$</span>lwt[nonsmoker_rows]</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(birthwt_pairs)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 24%">
+<col style="width: 15%">
+<col style="width: 13%">
+<col style="width: 19%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Smoker</th>
+<th style="text-align: right;">Matched_nonsmoker</th>
+<th style="text-align: right;">Smoker_age</th>
+<th style="text-align: right;">Match_age</th>
+<th style="text-align: right;">Smoker_weight</th>
+<th style="text-align: right;">Match_weight</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">182</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">105</td>
+<td style="text-align: right;">105</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">149</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">108</td>
+<td style="text-align: right;">103</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">107</td>
+<td style="text-align: right;">103</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">29</td>
+<td style="text-align: right;">28</td>
+<td style="text-align: right;">123</td>
+<td style="text-align: right;">120</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>MatchIt’s nearest-neighbor method targets the ATT or ATC. For the ATE, use full matching with the same covariate distance:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>birthwt_full <span class="ot">&lt;-</span> MatchIt<span class="sc">::</span><span class="fu">matchit</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  smoke <span class="sc">~</span> age <span class="sc">+</span> lwt,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> birthwt_matching,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"full"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">distance =</span> <span class="st">"mahalanobis"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimand =</span> <span class="st">"ATE"</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="checking-the-matches-1" class="level3">
+<h3 class="anchored" data-anchor-id="checking-the-matches-1">Checking the matches</h3>
+<p>Use cobalt to calculate standardized mean differences before and after matching, with the pooled standard deviation as the denominator:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>birthwt_nearest_balance <span class="ot">&lt;-</span> cobalt<span class="sc">::</span><span class="fu">bal.tab</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  birthwt_nearest, <span class="at">un =</span> <span class="cn">TRUE</span>, <span class="at">s.d.denom =</span> <span class="st">"pooled"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>birthwt_full_balance <span class="ot">&lt;-</span> cobalt<span class="sc">::</span><span class="fu">bal.tab</span>(</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  birthwt_full, <span class="at">un =</span> <span class="cn">TRUE</span>, <span class="at">s.d.denom =</span> <span class="st">"pooled"</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>birthwt_balance_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Covariate =</span> <span class="fu">c</span>(<span class="st">"Maternal age"</span>, <span class="st">"Maternal weight"</span>),</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">Before =</span> birthwt_nearest_balance<span class="sc">$</span>Balance<span class="sc">$</span>Diff.Un,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">After_nearest =</span> birthwt_nearest_balance<span class="sc">$</span>Balance<span class="sc">$</span>Diff.Adj,</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">After_full =</span> birthwt_full_balance<span class="sc">$</span>Balance<span class="sc">$</span>Diff.Adj</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(birthwt_balance_table, <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Covariate</th>
+<th style="text-align: right;">Before</th>
+<th style="text-align: right;">After_nearest</th>
+<th style="text-align: right;">After_full</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Maternal age</td>
+<td style="text-align: right;">-0.09</td>
+<td style="text-align: right;">0.04</td>
+<td style="text-align: right;">-0.03</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Maternal weight</td>
+<td style="text-align: right;">-0.09</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">-0.02</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><code>un = TRUE</code> includes the original comparison. Both procedures bring the mean differences closer to zero. The signs indicate which group has the larger mean; the absolute values indicate how far apart the means are.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="More ways to inspect balance">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>More ways to inspect balance
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>A balance plot displays the absolute standardized mean differences:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>cobalt<span class="sc">::</span><span class="fu">love.plot</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  birthwt_full_balance,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">abs =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">thresholds =</span> <span class="fu">c</span>(<span class="at">m =</span> <span class="fl">0.10</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">var.names =</span> <span class="fu">c</span>(<span class="at">age =</span> <span class="st">"Maternal age"</span>, <span class="at">lwt =</span> <span class="st">"Maternal weight"</span>),</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">sample.names =</span> <span class="fu">c</span>(<span class="st">"Before matching"</span>, <span class="st">"After full matching"</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03b-matching_files/figure-html/plot-birthweight-balance-1.png" class="img-fluid figure-img" alt="Absolute standardized differences in maternal age and weight before and after full matching." width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The line at <span class="math inline">\(0.10\)</span> is a common guide for inspecting balance. We can also compare covariate distributions, since similar means can hide other differences:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cobalt<span class="sc">::</span><span class="fu">bal.plot</span>(birthwt_full, <span class="at">var.name =</span> <span class="st">"lwt"</span>, <span class="at">which =</span> <span class="st">"both"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03b-matching_files/figure-html/plot-matched-birthweight-covariates-1.png" class="img-fluid figure-img" alt="Maternal weight distributions in the smoking and nonsmoking groups before and after full matching." width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="comparing-outcomes" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-outcomes">Comparing outcomes</h3>
+<p>MatchIt supplies weights that combine our matched comparisons into group means, as explained in the optional technical note above. Obtain the matched data and their weights:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>birthwt_nearest_data <span class="ot">&lt;-</span> MatchIt<span class="sc">::</span><span class="fu">match_data</span>(birthwt_nearest)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>birthwt_full_data <span class="ot">&lt;-</span> MatchIt<span class="sc">::</span><span class="fu">match_data</span>(birthwt_full)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>For the first pair, both mothers are aged 20 and weigh 105 pounds. Their infant birth-weight difference is</p>
+<p><span class="math display">\[
+2557
+-2450
+=107\text{ grams}.
+\]</span></p>
+<p>This is one noisy estimate of the difference in conditional means at those covariates. To combine all 74 comparisons, calculate the weighted outcome mean in each group and subtract:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>birthwt_nearest_mean_1 <span class="ot">&lt;-</span> <span class="fu">with</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  birthwt_nearest_data,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">weighted.mean</span>(bwt[smoke <span class="sc">==</span> <span class="dv">1</span>], weights[smoke <span class="sc">==</span> <span class="dv">1</span>])</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>birthwt_nearest_mean_0 <span class="ot">&lt;-</span> <span class="fu">with</span>(</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  birthwt_nearest_data,</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">weighted.mean</span>(bwt[smoke <span class="sc">==</span> <span class="dv">0</span>], weights[smoke <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>birthwt_nearest_mean_1 <span class="sc">-</span> birthwt_nearest_mean_0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -176.1081</code></pre>
+</div>
+</div>
+<p>The weighted means are approximately 2771.92 grams for smoking and 2948.03 grams for not smoking. Their difference is</p>
+<p><span class="math display">\[
+E\left[Y(1)-Y(0)\mid A=1\right]
+\approx -176.11\text{ grams}.
+\]</span></p>
+<p>Under our working SCM, this estimates birth weight under smoking minus birth weight under not smoking, on average, among the mothers who originally smoked. The negative estimate indicates lower birth weight under smoking.</p>
+<p>For the full-matching ATE analysis, the calculation is the same but uses the full-matching weights:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>birthwt_full_mean_1 <span class="ot">&lt;-</span> <span class="fu">with</span>(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  birthwt_full_data,</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">weighted.mean</span>(bwt[smoke <span class="sc">==</span> <span class="dv">1</span>], weights[smoke <span class="sc">==</span> <span class="dv">1</span>])</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>birthwt_full_mean_0 <span class="ot">&lt;-</span> <span class="fu">with</span>(</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  birthwt_full_data,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">weighted.mean</span>(bwt[smoke <span class="sc">==</span> <span class="dv">0</span>], weights[smoke <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>birthwt_full_mean_1 <span class="sc">-</span> birthwt_full_mean_0</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] -254.2668</code></pre>
+</div>
+</div>
+<p>This gives</p>
+<p><span class="math display">\[
+E\left[Y(1)-Y(0)\right]
+\approx -254.27\text{ grams}.
+\]</span></p>
+<p>This estimates the average change under smoking versus not smoking for the group represented by our sample.</p>
+</section>
+</section>
+<section id="overlap-and-the-causal-target" class="level2">
+<h2 class="anchored" data-anchor-id="overlap-and-the-causal-target">Overlap and the causal target</h2>
+<p>What if people in one exposure group have covariate values we rarely see in the other group?</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03b-matching-overlap.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Illustration of limited overlap in covariate values between the exposure groups." width="700"></p>
+</figure>
+</div>
+<p>Where the groups overlap, we can find people with similar covariates. Outside that region, even the nearest match may be far away. A caliper can rule out these distant matches, but then some people have no comparison. If we leave them out, we may change whose causal effect we estimate.</p>
+<div class="example-intro">
+<p><span class="example-label">Example.</span> Consider these counts:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th></th>
+<th><span class="math inline">\(A=0\)</span></th>
+<th><span class="math inline">\(A=1\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(X=1\)</span></td>
 <td>0</td>
 <td>20</td>
 </tr>
 <tr class="even">
-<td>X=2</td>
+<td><span class="math inline">\(X=2\)</span></td>
 <td>20</td>
 <td>30</td>
 </tr>
 <tr class="odd">
-<td>X=3</td>
+<td><span class="math inline">\(X=3\)</span></td>
 <td>40</td>
 <td>10</td>
 </tr>
 </tbody>
 </table>
-<details class="lesson-question">
-<summary>
-<ol start="17" type="A">
-<li>Could we use exact matching to estimate the ATT?
-</li></ol></summary>
-
-<p><strong>A.</strong> No!</p>
-<p>Individuals in the treated group A=1 with X=1 could not be matched exactly to an individual in the untreated group A=0. They would have to be dropped from analysis.</p>
-</details>
-<details class="lesson-question">
-<summary>
-<ol start="17" type="A">
-<li>Could we use exact matching? If so, what would be estimating?
-</li></ol></summary>
-
-<p><strong>A.</strong> We can still use exact matching with the treated group as the focal group. Since individuals with X=1 are dropped from the analysis, we are estimating the ATT among treated individuals with <span class="math inline">\(X\neq1\)</span>.</p>
-</details>
-<p><span class="example-label">Example 4.</span></p>
-<p>Suppose your data, adjusting for continuous X, looks something like:</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/03b-matching-overlap.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Illustration of limited treatment overlap across covariate values." width="700"></p>
-</figure>
 </div>
+<p>The 20 treated people with <span class="math inline">\(x_i=1\)</span> have no exact untreated match. The other 40 treated people do.</p>
 <details class="lesson-question">
 <summary>
-Q. Why might you be suspicious of an estimate of an ATE?
+If we drop the treated people with <span class="math inline">\(x_i=1\)</span> and average matched differences over the remaining treated people, what causal effect are we trying to estimate?
 </summary>
-<p><strong>A.</strong> At low X values, we only see treated individuals. At high X values, we only see untreated individuals. Therefore, we have limited information on what the ATE conditional on X being in one of these regions really is.</p>
-<p>Our only hope is to generalize our information on the ATE for middle values of X to extreme values of X. (We learned on the previous subpage that bias is introduced with larger mismatch between X values.) It may be safer to simply drop the extreme X values from the analysis.</p>
+<p>We are targeting the treatment effect among treated people whose covariates are not <span class="math inline">\(1\)</span>:</p>
+<p><span class="math display">\[
+E\left[Y(1)-Y(0)\mid A=1,X\neq1\right].
+\]</span></p>
+<p>This is different from the ATT for all treated people. Dropping the unmatched group changes whom we average over.</p>
 </details>
-<section id="matching-makes-violations-of-positivity-more-apparent." class="level4">
-<h4 class="anchored" data-anchor-id="matching-makes-violations-of-positivity-more-apparent."><em><strong>Matching makes violations of positivity more apparent.</strong></em></h4>
-</section>
-</section>
-<section id="final-considerations" class="level3">
-<h3 class="anchored" data-anchor-id="final-considerations">Final considerations</h3>
-<p>On one hand, dropping ill-matched data can be a good thing - it helps prevent overgeneralization of conditional average treatment effects.</p>
-<p>On the other, dropping ill-matched data can be bad - it reduces our sample size.</p>
-<p>Therefore, before analyzing outcome data, you will want to try different matching strategies and evaluate quality of the matches vs.&nbsp;an effective sample size.</p>
+<p>The same issue arises when we drop untreated people while targeting the ATC, or average over a smaller retained group while targeting the ATE.</p>
+<p>Return to the birth-weight data. Require identical ages and maternal weights for exact matching:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>birthwt_exact <span class="ot">&lt;-</span> MatchIt<span class="sc">::</span><span class="fu">matchit</span>(</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  smoke <span class="sc">~</span> age <span class="sc">+</span> lwt,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> birthwt_matching,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"exact"</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimand =</span> <span class="st">"ATT"</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Compare who remains under the three matching procedures:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>birthwt_exact_data <span class="ot">&lt;-</span> MatchIt<span class="sc">::</span><span class="fu">match_data</span>(birthwt_exact)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>birthwt_retained <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Method =</span> <span class="fu">c</span>(<span class="st">"Exact"</span>, <span class="st">"Nearest neighbor"</span>, <span class="st">"Full"</span>),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Smokers =</span> <span class="fu">c</span>(<span class="fu">sum</span>(birthwt_exact_data<span class="sc">$</span>smoke <span class="sc">==</span> <span class="dv">1</span>),</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>              <span class="fu">sum</span>(birthwt_nearest_data<span class="sc">$</span>smoke <span class="sc">==</span> <span class="dv">1</span>),</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>              <span class="fu">sum</span>(birthwt_full_data<span class="sc">$</span>smoke <span class="sc">==</span> <span class="dv">1</span>)),</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">Nonsmokers =</span> <span class="fu">c</span>(<span class="fu">sum</span>(birthwt_exact_data<span class="sc">$</span>smoke <span class="sc">==</span> <span class="dv">0</span>),</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>                 <span class="fu">sum</span>(birthwt_nearest_data<span class="sc">$</span>smoke <span class="sc">==</span> <span class="dv">0</span>),</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>                 <span class="fu">sum</span>(birthwt_full_data<span class="sc">$</span>smoke <span class="sc">==</span> <span class="dv">0</span>))</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(birthwt_retained)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Method</th>
+<th style="text-align: right;">Smokers</th>
+<th style="text-align: right;">Nonsmokers</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Exact</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Nearest neighbor</td>
+<td style="text-align: right;">74</td>
+<td style="text-align: right;">47</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Full</td>
+<td style="text-align: right;">74</td>
+<td style="text-align: right;">115</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Exact matching retains only 9 of the 74 smokers. Although we requested <code>estimand = "ATT"</code>, the comparison concerns those 9 smokers, not all 74. Perfect covariate agreement in this smaller group does not tell us the effects for the mothers left out.</p>
+<p>Nearest-neighbor matching retains all 74 smokers and uses 47 nonsmokers as matches. The other 68 nonsmokers are unused, but every smoker has a comparison, so this does not by itself change the ATT target. Full matching retains all 189 mothers and uses ATE weights to represent the original group.</p>
+<p>Check who would be left out before comparing outcomes. Better balance among the retained people can come at the cost of changing the causal question.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="The overall idea">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>The overall idea
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Matching estimates the conditional means we need using outcomes from people with the same or similar baseline covariates. Find matches, check their covariates, and average their outcome comparisons over the people relevant to the causal question. Keep track of anyone left out, because excluding them can change that question.</p>
+</div>
+</div>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->

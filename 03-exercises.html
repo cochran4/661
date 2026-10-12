@@ -435,7 +435,7 @@ window.Quarto = {
 
 <section id="outcome-regression" class="level2 unnumbered">
 <h2 class="unnumbered anchored" data-anchor-id="outcome-regression">Outcome regression</h2>
-<p>For these exercises, assume the measured-confounding SCM with baseline covariates <span class="math inline">\(X\)</span>, exposure <span class="math inline">\(A\)</span>, outcome <span class="math inline">\(Y\)</span>, and mutually independent noise terms. Assume observations are i.i.d. and the relevant conditional means are defined. You may use a calculator. Keep additional digits during calculations and report your final answers to two decimal places.</p>
+<p>For these exercises, assume the measured-confounding SCM with covariates <span class="math inline">\(X\)</span>, exposure <span class="math inline">\(A\)</span>, and outcome <span class="math inline">\(Y\)</span>. Assume observations related to different units are i.i.d. and the relevant conditional means are defined. You may use a calculator. Keep additional digits during calculations and report your final answers to two decimal places.</p>
 <section id="estimating-means-from-counts" class="level3">
 <h3 class="anchored" data-anchor-id="estimating-means-from-counts">1. Estimating means from counts</h3>
 <p>Both <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span> are binary, and <span class="math inline">\(Y\)</span> indicates an adverse outcome. The dataset has the following counts:</p>
@@ -476,7 +476,7 @@ window.Quarto = {
 </tbody>
 </table>
 <ol type="a">
-<li><p>Estimate <span class="math inline">\(\mu(x,a)\)</span> for all four combinations of <span class="math inline">\(x\)</span> and <span class="math inline">\(a\)</span>.</p></li>
+<li><p>Estimate <span class="math inline">\(\mu(X,A)\)</span> for all four combinations of <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span>.</p></li>
 <li><p>Find <span class="math inline">\(\hat\mu(X,1)\)</span> and <span class="math inline">\(\hat\mu(X,0)\)</span> for someone whose recorded values are <span class="math inline">\(X=1,A=0\)</span>.</p></li>
 <li><p>Estimate <span class="math inline">\(E\left[Y(1)\right]\)</span> and <span class="math inline">\(E\left[Y(0)\right]\)</span> using everyone in the sample.</p></li>
 <li><p>Estimate and interpret the ATE, causal relative risk, and causal odds ratio for intervention value <span class="math inline">\(1\)</span> compared with <span class="math inline">\(0\)</span>.</p></li>
@@ -489,14 +489,14 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="linear-regression-with-an-interaction">2. Linear regression with an interaction</h3>
 <p>For a continuous outcome, the fitted conditional mean is</p>
 <p><span class="math display">\[
-\hat\mu(x,a)=10+2x-3a-ax.
+\hat\mu(X,A)=10+2X-3A-AX.
 \]</span></p>
-<p>The sample contains four people:</p>
+<p>For the sake of simple computations, suppose the sample contains only four people:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
 <th style="text-align: right;"><span class="math inline">\(X\)</span></th>
-<th style="text-align: right;">Recorded <span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
 </tr>
 </thead>
 <tbody>
@@ -531,11 +531,11 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="logistic-regression">3. Logistic regression</h3>
 <p>For a binary outcome, the fitted logistic regression is</p>
 <p><span class="math display">\[
-\operatorname{logit}\{\hat\mu(x,a)\}=-1+x-a.
+\operatorname{logit}\{\hat\mu(X,A)\}=-1+X-A.
 \]</span></p>
-<p>The sample contains two people with <span class="math inline">\(X=0\)</span> and two with <span class="math inline">\(X=1\)</span>. To convert log odds <span class="math inline">\(\eta\)</span> to a probability, use <span class="math inline">\(\exp(\eta)/(1+\exp(\eta))\)</span>.</p>
+<p>Like the last problem, assume - for simplicity - that the sample contains two people with <span class="math inline">\(X=0\)</span> and two with <span class="math inline">\(X=1\)</span>. To convert log odds <span class="math inline">\(\eta\)</span> to a probability, use <span class="math inline">\(\exp(\eta)/(1+\exp(\eta))\)</span>.</p>
 <ol type="a">
-<li><p>Calculate <span class="math inline">\(\hat\mu(x,a)\)</span> for each combination of <span class="math inline">\(x=0,1\)</span> and <span class="math inline">\(a=0,1\)</span>.</p></li>
+<li><p>Calculate <span class="math inline">\(\hat\mu(X,A)\)</span> for each combination of <span class="math inline">\(X=0,1\)</span> and <span class="math inline">\(A=0,1\)</span>.</p></li>
 <li><p>Estimate <span class="math inline">\(E\left[Y(1)\right]\)</span> and <span class="math inline">\(E\left[Y(0)\right]\)</span>.</p></li>
 <li><p>Estimate the ATE, causal relative risk, and causal odds ratio for intervention value <span class="math inline">\(1\)</span> compared with <span class="math inline">\(0\)</span>.</p></li>
 <li><p>Calculate <span class="math inline">\(\exp(-1)\)</span>, the fitted conditional odds ratio for treatment. Compare it with your causal odds ratio in part c and explain why they need not agree.</p></li>
@@ -548,7 +548,7 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="a-nonbinary-exposure">4. A nonbinary exposure</h3>
 <p>For a continuous exposure <span class="math inline">\(A\)</span> and continuous outcome <span class="math inline">\(Y\)</span>, the fitted conditional mean is</p>
 <p><span class="math display">\[
-\hat\mu(x,a)=20+2x-a-0.5ax.
+\hat\mu(X,A)=20+2X-A-0.5AX.
 \]</span></p>
 <p>The sample contains four people with <span class="math inline">\(X\)</span> values <span class="math inline">\(1,2,3,4\)</span>.</p>
 <ol type="a">
