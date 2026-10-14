@@ -20,21 +20,6 @@ Here, we focus on a binary exposure and two causal contrasts we have already def
 
 ## The idea
 
-Under the measured-confounding SCM, we identified the ATE as
-
-$$
-E\left[Y(1)-Y(0)\right]
-=E\left[\mu(X,1)-\mu(X,0)\right].
-$$
-
-For an independent and identically distributed sample of $n$ people, we can approximate the outer expectation by a sample mean:
-
-$$
-E\left[Y(1)-Y(0)\right]
-\approx \frac{1}{n}\sum_{i=1}^{n}
-\left\{\mu(x_i,1)-\mu(x_i,0)\right\}.
-$$
-
 Outcome regression estimated both conditional means using a fitted model. Matching takes a different approach: we use a person's observed outcome and the outcome of someone with similar covariates in the other exposure group. Let's see how this works.
 
 ::: {.example-intro}
@@ -108,58 +93,83 @@ These matched differences estimate differences in conditional means. They are no
 
 ## Why matching works
 
-Let's spell out why these matched outcomes estimate the conditional means we need. Focus on one person with covariates $x_i$, observed exposure $a_i$, and observed outcome $y_i$. We want to estimate
+Why did we estimate a difference for each person and then average? Under the measured-confounding SCM, we identified the ATE as
 
 $$
-\mu(x_i,1)-\mu(x_i,0).
+E\left[Y(1)-Y(0)\right]
+=E\left[\mu(X,1)-\mu(X,0)\right].
 $$
 
-Suppose this person received treatment, so $a_i=1$. Their observed outcome gives us a noisy estimate of $\mu(x_i,1)$:
+For an independent and identically distributed sample of $n$ people, we can estimate this expectation with a sample mean:
 
 $$
-\mu(x_i,1)\approx y_i.
+E\left[Y(1)-Y(0)\right]
+\approx \frac{1}{n}\sum_{i=1}^{n}
+\left[\mu(x_i,1)-\mu(x_i,0)\right].
 $$
 
-This estimate is unbiased because, by definition,
+This is the mean of $n$ i.i.d. random variables. It is unbiased for the ATE. If the conditional-mean differences have finite variance, its standard error is
 
 $$
-E\left[Y-\mu(x_i,1)\mid X=x_i,A=1\right]=0.
+\frac{\sqrt{\operatorname{Var}\left[\mu(X,1)-\mu(X,0)\right]}}{\sqrt{n}}.
 $$
 
-Their outcome may fall above or below the conditional mean, but its expected error is zero. Our comparison therefore becomes
+Unbiasedness follows from linearity of expectation. The central limit theorem gives an approximately normal distribution for this sample mean as $n$ grows.
+
+The difficulty is that we do not know the conditional means. Matching estimates them using observed outcomes. Let's see exactly what error this introduces.
+
+Focus on person $i$, with observed values $x_i,a_i,y_i$, and suppose $a_i=1$. Let $J(i)$ contain the untreated people matched to this person, and write $k_i=|J(i)|$ for the number of matches. With at least one match, our estimated difference is
+
+$$
+y_i-\frac{1}{k_i}\sum_{j\in J(i)}y_j.
+$$
+
+We can write the conditional-mean difference we want as this estimate plus three error terms. The following is an exact equality:
+
+$$
+\begin{aligned}
+\mu(x_i,1)-\mu(x_i,0)
+&=\left[y_i-\frac{1}{k_i}\sum_{j\in J(i)}y_j\right]\\
+&\quad-\left[y_i-\mu(x_i,a_i)\right]\\
+&\quad+\frac{1}{k_i}\sum_{j\in J(i)}
+\left[y_j-\mu(x_j,a_j)\right]\\
+&\quad+\frac{1}{k_i}\sum_{j\in J(i)}
+\left[\mu(x_j,0)-\mu(x_i,0)\right].
+\end{aligned}
+$$
+
+The first line is our matching estimate. The second is person $i$'s outcome noise: the difference between their observed outcome and their conditional mean. The third is the average outcome noise among their matches. Here, $a_i=1$ and every match has $a_j=0$.
+
+Both noise terms have mean zero. By the definition of $\mu$,
+
+$$
+E\left[Y-\mu(X,A)\mid X,A\right]=0.
+$$
+
+Taking expectations gives the same conclusion without conditioning:
+
+$$
+\begin{aligned}
+E\left[Y-\mu(X,A)\right]
+&=E\left[Y\right]-E\left[E\left[Y\mid X,A\right]\right]\\
+&=E\left[Y\right]-E\left[Y\right]=0,
+\end{aligned}
+$$
+
+where the last step uses iterated expectations. When we select matches using covariates and exposure, without using outcomes, the matched outcome noise also retains its zero conditional mean under i.i.d. sampling.
+
+Averaging outcomes can reduce this noise. But when people share a match, their comparisons share an outcome. The $1/\sqrt{n}$ calculation for the average of the true conditional-mean differences does not automatically describe the matching estimate.
+
+The fourth line is different: it reflects covariate mismatch. With exact matches, $x_j=x_i$ for every match, so every conditional-mean difference on that line is zero. With nearby matches, we rely on $\mu(x,0)$ varying smoothly enough that nearby covariates give similar conditional means. Matching tries to make this remaining error small by finding people close to person $i$.
+
+If person $i$ was untreated instead, their own outcome estimates $\mu(x_i,0)$. Their treated matches estimate $\mu(x_i,1)$, giving
 
 $$
 \mu(x_i,1)-\mu(x_i,0)
-\approx y_i-\mu(x_i,0).
+\approx\frac{1}{k_i}\sum_{j\in J(i)}y_j-y_i.
 $$
 
-We still need $\mu(x_i,0)$. Look for another person, indexed by $j$, whose covariates $x_j$ equal $x_i$ and who **did not receive treatment**. Their observed outcome $y_j$ is an unbiased estimate of $\mu(x_j,0)$. Because $x_j=x_i$, this is exactly the conditional mean we need.
-
-If no exact match exists, we look for an untreated person with similar covariates, using a measure of distance that we will discuss shortly. We then rely on the conditional mean changing little over that distance, so that
-
-$$
-\mu(x_i,0)\approx\mu(x_j,0).
-$$
-
-There are now two approximations: using the conditional mean at nearby covariates, and estimating that mean with the matched person's outcome. Together, they give
-
-$$
-\mu(x_i,1)-\mu(x_i,0)
-\approx y_i-\mu(x_j,0)
-\approx y_i-y_j.
-$$
-
-Person $j$ is the **match** for person $i$. An exact match removes the first approximation; the observed outcomes still vary around their conditional means.
-
-If person $i$ was untreated instead, their own outcome estimates $\mu(x_i,0)$. We find a treated match $j$ whose outcome estimates $\mu(x_i,1)$, giving
-
-$$
-\mu(x_i,1)-\mu(x_i,0)
-\approx \mu(x_j,1)-y_i
-\approx y_j-y_i.
-$$
-
-Either way, we subtract the untreated outcome from the treated outcome.
+The same distinction between outcome noise and covariate mismatch applies. Either way, we subtract the untreated estimate from the treated estimate.
 
 ::: {.callout-note title="Technical note: outcome noise and covariate mismatch" collapse="true"}
 Suppose person $i$ received the opposite exposure from $a$, and let $J(i)$ contain their $k_i$ matches, all with exposure $a$. Their average matched outcome satisfies
@@ -173,12 +183,14 @@ $$
 \end{aligned}
 $$
 
-The second line is outcome noise around each match's own conditional mean. Selecting matches using covariates and exposure, without using outcomes, preserves its zero conditional mean under i.i.d. sampling. The third line is the mismatch between the conditional mean we need and those of the matches. Exact matching makes this last term zero. Approximate matching need not.
+The second line is outcome noise around each match's own conditional mean. The third is the mismatch between the conditional mean we need and those of the matches. Exact matching makes this last term zero. Approximate matching need not.
+
+To see why selecting matches preserves the mean-zero noise, condition on all the observed covariates and exposure values. Under i.i.d. sampling, each outcome still has conditional mean $\mu(x_j,a_j)$. A matching rule that uses only these covariates and exposures has now fixed the match indices and their number. The selected residuals therefore each have conditional mean zero, and so does their average. Reusing a match changes dependence between comparisons, but it does not change this mean-zero property.
 :::
 
 ## Finding matches
 
-Our five squirrels made this easy: everyone had a match with exactly the same covariates, and Maple had two. What if there are several possible matches? What if there are none with exactly the same covariates? Before using any outcomes, we need to decide how we will find matches.
+Our five squirrels made this easy: everyone had a match with exactly the same covariates, and Maple had two. There are two basic approaches to finding matches: require the same covariates, or look for nearby covariates. In either case, matches come from the opposite exposure group, and we choose them without looking at outcomes.
 
 ### Exact matches
 
@@ -192,14 +204,27 @@ If several people qualify, we can choose one, perhaps at random, or use several 
 
 ### Nearby matches
 
-For Acorn, the distances to the two untreated squirrels are
+::: {.example-intro}
+<span class="example-label">Example: One continuous covariate</span>
+
+Consider a different dataset with one continuous covariate $X$. We only need $X$ and $A$ to find matches:
+
+| Person | $X$ | $A$ |
+| ------ | --- | --- |
+| 1      | 4.3 | 1   |
+| 2      | 7   | 0   |
+| 3      | 4   | 0   |
+| 4      | 3.8 | 1   |
+:::
+
+Start with Person 1. The possible untreated matches are Persons 2 and 3. Using absolute difference, their distances from Person 1 are
 
 $$
-|4-4|=0,
-\qquad |4-7|=3.
+|4.3-7|=2.70,
+\qquad |4.3-4|=0.30.
 $$
 
-Hazel is closer, so we choose Hazel. When no exact match exists, we can use the same idea and choose the person whose covariates are closest. This is nearest-neighbor matching.
+Person 3 is closer, so we choose Person 3. This is nearest-neighbor matching.
 
 ::: {.definition-box}
 **Nearest-neighbor matching** selects matches from the opposite exposure group with the smallest covariate distance among the eligible individuals.
@@ -211,12 +236,27 @@ $$
 d(x_i,x_j)=|x_i-x_j|.
 $$
 
-With several covariates, we need to decide how to combine the differences. Consider a mother aged 25 who weighs 120 pounds. Two possible matches are aged 27 and 35, with weights 130 and 121 pounds, respectively. Their differences from her are
+Now use the same data to find a match for Person 3. This person is untreated, so the possible matches are Persons 1 and 4. Their distances are
+
+$$
+|4-4.3|=0.30,
+\qquad |4-3.8|=0.20.
+$$
+
+We choose Person 4. Person 3 was the nearest match for Person 1, but Person 1 is not the nearest match for Person 3. Matching each person's nearest neighbor need not be symmetric, even though the distance between any two people is the same in either direction.
+
+With several covariates, we need to decide how to combine the differences.
+
+::: {.example-intro}
+<span class="example-label">Example: Two continuous covariates</span>
+
+Consider a mother aged 25 who weighs 120 pounds. Two eligible matches from the opposite exposure group are aged 27 and 35, with weights 130 and 121 pounds, respectively. Their differences from her are
 
 | Possible match | Difference in age | Difference in weight |
 | -------------- | ----------------- | -------------------- |
 | First          | 2 years           | 10 pounds            |
 | Second         | 10 years          | 1 pound              |
+:::
 
 If we simply square the differences, add them, and take a square root, the distances are
 
@@ -228,7 +268,7 @@ $$
 
 This Euclidean distance chooses the second match. But one year and one pound are different units. Changing pounds to kilograms could change which match wins.
 
-One approach is to divide each difference by that covariate's sample standard deviation before combining them. Suppose the standard deviations are 5 years and 20 pounds. The distances become
+Now try a standardized distance using the same covariates and candidates. Divide each difference by that covariate's sample standard deviation before combining them. Suppose the standard deviations in the full dataset are 5 years and 20 pounds. The distances become
 
 $$
 \sqrt{\left(\frac{2}{5}\right)^2+\left(\frac{10}{20}\right)^2}
@@ -238,7 +278,9 @@ $$
 \approx2.00.
 $$
 
-Now the first match is closer. This standardized distance compares differences relative to how much each covariate varies in our sample.
+Now the first match is closer. The same data give a different match because we changed how we measure similarity.
+
+Standardization also removes the choice of units from this calculation. If we convert pounds to kilograms, both the weight differences and their standard deviation change by the same factor. Their ratios stay the same, so the standardized distances stay the same. We compare differences relative to how much each covariate varies in our sample.
 
 Mahalanobis distance also accounts for how the covariates vary together. If two covariates contain much of the same information, it adjusts for that overlap when measuring distance.
 
@@ -252,7 +294,21 @@ $$
 include Euclidean distance when $S$ is the identity matrix, standardized Euclidean distance when $S$ is diagonal with the sample variances, and Mahalanobis distance when $S$ is the sample covariance matrix. The inverse requires $S$ to be nonsingular.
 :::
 
-### Calipers
+### Matching choices
+
+Exact and nearby matching give us two starting points, but many choices remain:
+
+- Which covariates must agree exactly, and which may differ? We can combine the approaches, for example by requiring the same diagnosis while allowing nearby ages.
+- How will we measure distance across covariates?
+- How many matches will each person receive?
+- Can someone be used as a match for several people?
+- In what order will we find matches, or will we choose them together?
+- Will we impose a caliper?
+- Which causal effect are we trying to estimate? This determines whose comparisons we need to average.
+
+Let's work through what some of these choices mean.
+
+#### Calipers
 
 The nearest person is not necessarily a good match. Even the smallest available distance could be large, and we might not want to use that person's outcome to estimate the conditional mean we need. We can restrict how far apart matches are allowed to be.
 
@@ -260,9 +316,9 @@ The nearest person is not necessarily a good match. Even the smallest available 
 A **caliper** is a maximum acceptable distance between matched individuals.
 :::
 
-For Acorn, a caliper of $1$ on $X$ accepts Hazel, whose distance is $0$, and rejects Maple, whose distance is $3$. If no eligible person falls within the caliper, the person has no match under this rule.
+For Acorn in our original squirrel dataset, a caliper of $1$ on $X$ accepts Hazel, whose distance is $0$, and rejects Maple, whose distance is $3$. If no eligible person falls within the caliper, the person has no match under this rule.
 
-### One match or several?
+#### One match or several?
 
 We used one match for Acorn, Hazel, Chestnut, and Juniper, but two for Maple. When several people qualify, we can use their average outcome to estimate the conditional mean we need.
 
@@ -306,7 +362,7 @@ For a person with several matches, use the average of their matches' outcomes in
 
 When a person can be used as a match more than once, we call this matching with replacement. Without replacement, once someone has been used as a match, they are unavailable as a match for the remaining people in the focal group. Allowing reuse can help when several people have the same best match, but it makes their estimated differences share an outcome.
 
-### Choosing matches together
+#### Choosing matches together
 
 Choosing the nearest available match one person at a time is a greedy procedure: it makes the best available choice for the person currently being matched. Without replacement, that choice makes the match unavailable to later people. Someone who comes later might be left with a poor match, and changing the order could change the result.
 
@@ -322,6 +378,8 @@ Our five squirrels form two such sets:
 | Second      | Chestnut, Juniper  | Maple             |
 
 All five squirrels belong to exactly one set. In the second set, Maple supplies the untreated comparison for Chestnut and Juniper, and their average supplies Maple's treated comparison.
+
+These choices can produce different matches for the same dataset. In an analysis, the key next step is to check how well the covariates match before using outcomes to estimate a causal effect.
 
 ## Checking the matches
 
@@ -397,6 +455,8 @@ $$
 | -------------------------- | ------------------- | --------------------- | ---------------------------- |
 | Before matching            | 6                   | 5.50                  | 0.26                         |
 | Matched comparisons for the ATE | 5.80            | 5.80                  | 0                            |
+
+A common rule of thumb is to seek absolute standardized mean differences below $0.10$ for every covariate, ideally closer still to zero. We report these differences before and after matching so we can see how much balance improved.
 
 In this example, the covariate distributions in our comparisons agree too: two of the five comparisons have $X=4$ on each side, and three have $X=7$. With other data, equal means need not imply similar distributions. We also inspect their spread and whether one group contains more people at the extremes.
 

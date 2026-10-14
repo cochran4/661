@@ -7,3 +7,7 @@ filters:
 ## Outcome regression {.unnumbered}
 
 {{< include _exercises/03a-outcome-regression.qmd >}}
+
+## Matching {.unnumbered}
+
+{{< include _exercises/03b-matching.qmd >}}

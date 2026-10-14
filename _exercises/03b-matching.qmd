@@ -1,0 +1,242 @@
+For Exercises 5 and 6, assume the measured-confounding SCM with covariate $X$, exposure $A$, and outcome $Y$, with i.i.d. observations. Use a person's own outcome to estimate the conditional mean at their observed exposure and the average matched outcome to estimate the conditional mean at the other exposure. You may use a calculator. Report final answers to two decimal places.
+
+### 5. Exact matching
+
+Consider these data:
+
+| Person | $X$ | $A$ | $Y$ |
+|---|---:|---:|---:|
+| 1 | 1 | 1 | 6 |
+| 2 | 1 | 1 | 8 |
+| 3 | 1 | 0 | 4 |
+| 4 | 3 | 1 | 12 |
+| 5 | 3 | 0 | 7 |
+| 6 | 3 | 0 | 9 |
+
+a. Match each person to everyone in the opposite exposure group with exactly the same $X$. Complete the table.
+
+| Person | Matched people | Estimate of $\mu(x_i,1)$ | Estimate of $\mu(x_i,0)$ | Difference |
+|---|---|---|---|---|
+| 1 | | | | |
+| 2 | | | | |
+| 3 | | | | |
+| 4 | | | | |
+| 5 | | | | |
+| 6 | | | | |
+
+b. Estimate the ATE, ATT, and ATC. State whose differences you average for each estimate.
+
+c. Compute the mean of $X$ in each exposure group before matching. Then replace $Y$ with $X$ in your matched comparisons and compute the mean on each side.
+
+d. Compute the standardized mean difference before and after matching. Use the supplied original pooled standard deviation, $s=1.15$, as the denominator in both calculations. What do your results say about balance in $X$?
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. Persons 1 and 2 each match to Person 3; Person 3 uses both Persons 1 and 2. Person 4 uses both Persons 5 and 6; Persons 5 and 6 each match to Person 4.
+
+| Person | Matched people | Estimate of $\mu(x_i,1)$ | Estimate of $\mu(x_i,0)$ | Difference |
+|---|---|---:|---:|---:|
+| 1 | 3 | 6 | 4 | 2 |
+| 2 | 3 | 8 | 4 | 4 |
+| 3 | 1, 2 | 7 | 4 | 3 |
+| 4 | 5, 6 | 12 | 8 | 4 |
+| 5 | 4 | 12 | 7 | 5 |
+| 6 | 4 | 12 | 9 | 3 |
+
+b. For the ATE, average over all six people. For the ATT, average over treated Persons 1, 2, and 4. For the ATC, average over untreated Persons 3, 5, and 6:
+
+$$
+\begin{aligned}
+E\left[Y(1)-Y(0)\right]
+&\approx\frac{2+4+3+4+5+3}{6}=3.50,\\
+E\left[Y(1)-Y(0)\mid A=1\right]
+&\approx\frac{2+4+4}{3}\approx3.33,\\
+E\left[Y(1)-Y(0)\mid A=0\right]
+&\approx\frac{3+5+3}{3}\approx3.67.
+\end{aligned}
+$$
+
+c. Before matching, the treated covariate mean is $(1+1+3)/3\approx1.67$, and the untreated mean is $(1+3+3)/3\approx2.33$.
+
+Replacing outcomes with covariates gives:
+
+| Person | Treated covariate value | Untreated covariate value | Difference |
+|---|---:|---:|---:|
+| 1 | 1 | 1 | 0 |
+| 2 | 1 | 1 | 0 |
+| 3 | 1 | 1 | 0 |
+| 4 | 3 | 3 | 0 |
+| 5 | 3 | 3 | 0 |
+| 6 | 3 | 3 | 0 |
+
+Both sides have mean $(1+1+1+3+3+3)/6=2.00$. Their average difference is zero.
+
+d. Using the supplied denominator and the unrounded means,
+
+$$
+\begin{aligned}
+\text{SMD before matching}
+&=\frac{5/3-7/3}{1.15}\approx-0.58,\\
+\text{SMD after matching}
+&=\frac{2-2}{1.15}=0.
+\end{aligned}
+$$
+
+The original mean difference disappears in the matched comparisons. Here, every comparison has exactly the same $X$ on both sides.
+:::
+
+### 6. Nearby matching
+
+Consider these data:
+
+| Person | $X$ | $A$ | $Y$ |
+|---|---:|---:|---:|
+| 1 | 1 | 1 | 8 |
+| 2 | 2 | 0 | 5 |
+| 3 | 4 | 1 | 15 |
+| 4 | 8 | 0 | 11 |
+
+a. Find one nearest match for each person in the opposite exposure group, using absolute difference in $X$. A person may be used as a match more than once. Complete the table.
+
+| Person | Matched person | Estimate of $\mu(x_i,1)$ | Estimate of $\mu(x_i,0)$ | Difference |
+|---|---|---|---|---|
+| 1 | | | | |
+| 2 | | | | |
+| 3 | | | | |
+| 4 | | | | |
+
+b. Estimate the ATE, ATT, and ATC. State whose differences you average for each estimate.
+
+c. Compute the mean of $X$ in each exposure group before matching. Then replace $Y$ with $X$ in your matched comparisons and compute the mean on each side.
+
+d. Compute the standardized mean difference before and after matching. Use the supplied original pooled standard deviation, $s=3.35$, as the denominator in both calculations. Did matching improve balance? Does the resulting absolute SMD meet the $0.10$ rule of thumb?
+
+e. Is nearest-neighbor matching symmetric in this example? Use a specific pair of people to explain your answer.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. The nearest matches are:
+
+| Person | Distances to eligible matches | Chosen match |
+|---|---|---|
+| 1 | Person 2: $1$; Person 4: $7$ | 2 |
+| 2 | Person 1: $1$; Person 3: $2$ | 1 |
+| 3 | Person 2: $2$; Person 4: $4$ | 2 |
+| 4 | Person 1: $7$; Person 3: $4$ | 3 |
+
+This gives:
+
+| Person | Matched person | Estimate of $\mu(x_i,1)$ | Estimate of $\mu(x_i,0)$ | Difference |
+|---|---|---:|---:|---:|
+| 1 | 2 | 8 | 5 | 3 |
+| 2 | 1 | 8 | 5 | 3 |
+| 3 | 2 | 15 | 5 | 10 |
+| 4 | 3 | 15 | 11 | 4 |
+
+b. Average all four differences for the ATE, those of treated Persons 1 and 3 for the ATT, and those of untreated Persons 2 and 4 for the ATC:
+
+$$
+\begin{aligned}
+E\left[Y(1)-Y(0)\right]
+&\approx\frac{3+3+10+4}{4}=5.00,\\
+E\left[Y(1)-Y(0)\mid A=1\right]
+&\approx\frac{3+10}{2}=6.50,\\
+E\left[Y(1)-Y(0)\mid A=0\right]
+&\approx\frac{3+4}{2}=3.50.
+\end{aligned}
+$$
+
+c. Before matching, the treated covariate mean is $(1+4)/2=2.50$, and the untreated mean is $(2+8)/2=5.00$.
+
+The matched covariate comparisons are:
+
+| Person | Treated covariate value | Untreated covariate value | Difference |
+|---|---:|---:|---:|
+| 1 | 1 | 2 | $-1$ |
+| 2 | 1 | 2 | $-1$ |
+| 3 | 4 | 2 | $2$ |
+| 4 | 4 | 8 | $-4$ |
+
+The treated side has mean $(1+1+4+4)/4=2.50$. The untreated side has mean $(2+2+2+8)/4=3.50$. Their difference is $-1.00$.
+
+d. The standardized mean differences are
+
+$$
+\begin{aligned}
+\text{SMD before matching}
+&=\frac{2.50-5.00}{3.35}\approx-0.75,\\
+\text{SMD after matching}
+&=\frac{2.50-3.50}{3.35}\approx-0.30.
+\end{aligned}
+$$
+
+Matching reduces the absolute SMD, but it remains above $0.10$. Finding a nearest match for everyone does not ensure adequate balance. Person 4's nearest match is still four covariate units away.
+
+e. No. Person 3's nearest match is Person 2, but Person 2's nearest match is Person 1. The distances are symmetric; the choice of nearest match need not be.
+:::
+
+### 7. Reading a balance plot
+
+The plot shows absolute standardized mean differences before and after matching. The dashed line marks $0.10$.
+
+![](images/03b-exercise-balance.svg){width=700 fig-align="center" fig-alt="Absolute standardized mean differences before and after matching: X1 changes from 0.40 to 0.03, X2 from 0.25 to 0.16, and X3 from 0.60 to 0.07. A dashed vertical line marks 0.10."}
+
+a. Which covariate shows the largest improvement in its absolute SMD?
+
+b. Which covariate still exceeds the $0.10$ rule of thumb after matching?
+
+c. Identify one matching choice you could reconsider to address the remaining imbalance. What would you check after changing it, before estimating a causal effect?
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. $X_3$ improves the most, from $0.60$ to $0.07$, a decrease of $0.53$. The decreases for $X_1$ and $X_2$ are $0.37$ and $0.09$.
+
+b. $X_2$ remains above the guide, with an absolute SMD of $0.16$.
+
+c. For example, impose a caliper on differences in $X_2$, or give $X_2$ more influence in the distance measure. After finding new matches, check balance for every covariate and inspect who would be left out. Improving $X_2$ should not be assessed in isolation from other covariates or a possible change in the causal target.
+:::
+
+### 8. Overlap and the causal target
+
+A study has 100 treated people and 200 untreated people. Some treated people have no untreated people with sufficiently similar covariates. A matching analysis retains 70 treated people and uses 50 untreated people as their matches. The software reports the requested target as "ATT."
+
+a. Whose treatment effect does the resulting estimate concern? Explain why it need not estimate the ATT for all 100 treated people.
+
+b. Suppose instead that all 100 treated people remain and the same 50 untreated people supply their matches, with reuse allowed. Does leaving out the 150 unused untreated people by itself change the ATT target? Explain.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. The comparison concerns the 70 retained treated people. The 30 excluded treated people have covariates for which acceptable matches were unavailable, and their effects need not be the same. Requesting "ATT" does not restore comparisons for them.
+
+b. No. Every treated person now contributes a comparison, so the target remains the ATT for all 100 treated people. The untreated people supply estimates of the missing conditional means; we do not average over them as the focal group. Reusing their outcomes affects dependence between comparisons, but does not by itself change whose effects we average.
+:::
+
+### 9. What matching establishes
+
+For each claim, state whether it is correct and explain your answer.
+
+a. "Every covariate has an SMD of zero, so the covariate distributions must agree."
+
+b. "We used one untreated person as a match five times, so we have five independent untreated outcomes."
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. Incorrect. An SMD of zero says the means agree. For example, covariate values $0,2$ in one group and $1,1$ in the other both have mean $1$, but different distributions. Similar means can hide differences in spread or other features.
+
+b. Incorrect. We have five uses of one person's outcome. These uses share the same outcome and do not create five independent observations. Uncertainty calculations must account for this reuse.
+:::

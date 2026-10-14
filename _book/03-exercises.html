@@ -554,6 +554,274 @@ window.Quarto = {
 <div class="response-space">
 
 </div>
+</section>
+</section>
+<section id="matching" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="matching">Matching</h2>
+<p>For Exercises 5 and 6, assume the measured-confounding SCM with covariate <span class="math inline">\(X\)</span>, exposure <span class="math inline">\(A\)</span>, and outcome <span class="math inline">\(Y\)</span>, with i.i.d. observations. Use a person’s own outcome to estimate the conditional mean at their observed exposure and the average matched outcome to estimate the conditional mean at the other exposure. You may use a calculator. Report final answers to two decimal places.</p>
+<section id="exact-matching" class="level3">
+<h3 class="anchored" data-anchor-id="exact-matching">5. Exact matching</h3>
+<p>Consider these data:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;"><span class="math inline">\(X\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Y\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">9</td>
+</tr>
+</tbody>
+</table>
+<ol type="a">
+<li>Match each person to everyone in the opposite exposure group with exactly the same <span class="math inline">\(X\)</span>. Complete the table.</li>
+</ol>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Person</th>
+<th>Matched people</th>
+<th>Estimate of <span class="math inline">\(\mu(x_i,1)\)</span></th>
+<th>Estimate of <span class="math inline">\(\mu(x_i,0)\)</span></th>
+<th>Difference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ol start="2" type="a">
+<li><p>Estimate the ATE, ATT, and ATC. State whose differences you average for each estimate.</p></li>
+<li><p>Compute the mean of <span class="math inline">\(X\)</span> in each exposure group before matching. Then replace <span class="math inline">\(Y\)</span> with <span class="math inline">\(X\)</span> in your matched comparisons and compute the mean on each side.</p></li>
+<li><p>Compute the standardized mean difference before and after matching. Use the supplied original pooled standard deviation, <span class="math inline">\(s=1.15\)</span>, as the denominator in both calculations. What do your results say about balance in <span class="math inline">\(X\)</span>?</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="nearby-matching" class="level3">
+<h3 class="anchored" data-anchor-id="nearby-matching">6. Nearby matching</h3>
+<p>Consider these data:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;"><span class="math inline">\(X\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Y\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">11</td>
+</tr>
+</tbody>
+</table>
+<ol type="a">
+<li>Find one nearest match for each person in the opposite exposure group, using absolute difference in <span class="math inline">\(X\)</span>. A person may be used as a match more than once. Complete the table.</li>
+</ol>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Person</th>
+<th>Matched person</th>
+<th>Estimate of <span class="math inline">\(\mu(x_i,1)\)</span></th>
+<th>Estimate of <span class="math inline">\(\mu(x_i,0)\)</span></th>
+<th>Difference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ol start="2" type="a">
+<li><p>Estimate the ATE, ATT, and ATC. State whose differences you average for each estimate.</p></li>
+<li><p>Compute the mean of <span class="math inline">\(X\)</span> in each exposure group before matching. Then replace <span class="math inline">\(Y\)</span> with <span class="math inline">\(X\)</span> in your matched comparisons and compute the mean on each side.</p></li>
+<li><p>Compute the standardized mean difference before and after matching. Use the supplied original pooled standard deviation, <span class="math inline">\(s=3.35\)</span>, as the denominator in both calculations. Did matching improve balance? Does the resulting absolute SMD meet the <span class="math inline">\(0.10\)</span> rule of thumb?</p></li>
+<li><p>Is nearest-neighbor matching symmetric in this example? Use a specific pair of people to explain your answer.</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="reading-a-balance-plot" class="level3">
+<h3 class="anchored" data-anchor-id="reading-a-balance-plot">7. Reading a balance plot</h3>
+<p>The plot shows absolute standardized mean differences before and after matching. The dashed line marks <span class="math inline">\(0.10\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03b-exercise-balance.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Absolute standardized mean differences before and after matching: X1 changes from 0.40 to 0.03, X2 from 0.25 to 0.16, and X3 from 0.60 to 0.07. A dashed vertical line marks 0.10." width="700"></p>
+</figure>
+</div>
+<ol type="a">
+<li><p>Which covariate shows the largest improvement in its absolute SMD?</p></li>
+<li><p>Which covariate still exceeds the <span class="math inline">\(0.10\)</span> rule of thumb after matching?</p></li>
+<li><p>Identify one matching choice you could reconsider to address the remaining imbalance. What would you check after changing it, before estimating a causal effect?</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="overlap-and-the-causal-target" class="level3">
+<h3 class="anchored" data-anchor-id="overlap-and-the-causal-target">8. Overlap and the causal target</h3>
+<p>A study has 100 treated people and 200 untreated people. Some treated people have no untreated people with sufficiently similar covariates. A matching analysis retains 70 treated people and uses 50 untreated people as their matches. The software reports the requested target as “ATT.”</p>
+<ol type="a">
+<li><p>Whose treatment effect does the resulting estimate concern? Explain why it need not estimate the ATT for all 100 treated people.</p></li>
+<li><p>Suppose instead that all 100 treated people remain and the same 50 untreated people supply their matches, with reuse allowed. Does leaving out the 150 unused untreated people by itself change the ATT target? Explain.</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="what-matching-establishes" class="level3">
+<h3 class="anchored" data-anchor-id="what-matching-establishes">9. What matching establishes</h3>
+<p>For each claim, state whether it is correct and explain your answer.</p>
+<ol type="a">
+<li><p>“Every covariate has an SMD of zero, so the covariate distributions must agree.”</p></li>
+<li><p>“We used one untreated person as a match five times, so we have five independent untreated outcomes.”</p></li>
+</ol>
+<div class="response-space">
+
+</div>
 
 
 </section>
