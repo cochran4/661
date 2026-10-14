@@ -484,17 +484,6 @@ window.Quarto = {
 </section>
 <section id="the-idea" class="level2">
 <h2 class="anchored" data-anchor-id="the-idea">The idea</h2>
-<p>Under the measured-confounding SCM, we identified the ATE as</p>
-<p><span class="math display">\[
-E\left[Y(1)-Y(0)\right]
-=E\left[\mu(X,1)-\mu(X,0)\right].
-\]</span></p>
-<p>For an independent and identically distributed sample of <span class="math inline">\(n\)</span> people, we can approximate the outer expectation by a sample mean:</p>
-<p><span class="math display">\[
-E\left[Y(1)-Y(0)\right]
-\approx \frac{1}{n}\sum_{i=1}^{n}
-\left\{\mu(x_i,1)-\mu(x_i,0)\right\}.
-\]</span></p>
 <p>Outcome regression estimated both conditional means using a fitted model. Matching takes a different approach: we use a person’s observed outcome and the outcome of someone with similar covariates in the other exposure group. Let’s see how this works.</p>
 <div class="example-intro">
 <p><span class="example-label">Example.</span> Take the following data:</p>
@@ -631,42 +620,61 @@ E\left[Y(1)-Y(0)\right]
 </section>
 <section id="why-matching-works" class="level2">
 <h2 class="anchored" data-anchor-id="why-matching-works">Why matching works</h2>
-<p>Let’s spell out why these matched outcomes estimate the conditional means we need. Focus on one person with covariates <span class="math inline">\(x_i\)</span>, observed exposure <span class="math inline">\(a_i\)</span>, and observed outcome <span class="math inline">\(y_i\)</span>. We want to estimate</p>
+<p>Why did we estimate a difference for each person and then average? Under the measured-confounding SCM, we identified the ATE as</p>
 <p><span class="math display">\[
-\mu(x_i,1)-\mu(x_i,0).
+E\left[Y(1)-Y(0)\right]
+=E\left[\mu(X,1)-\mu(X,0)\right].
 \]</span></p>
-<p>Suppose this person received treatment, so <span class="math inline">\(a_i=1\)</span>. Their observed outcome gives us a noisy estimate of <span class="math inline">\(\mu(x_i,1)\)</span>:</p>
+<p>For an independent and identically distributed sample of <span class="math inline">\(n\)</span> people, we can estimate this expectation with a sample mean:</p>
 <p><span class="math display">\[
-\mu(x_i,1)\approx y_i.
+E\left[Y(1)-Y(0)\right]
+\approx \frac{1}{n}\sum_{i=1}^{n}
+\left[\mu(x_i,1)-\mu(x_i,0)\right].
 \]</span></p>
-<p>This estimate is unbiased because, by definition,</p>
+<p>This is the mean of <span class="math inline">\(n\)</span> i.i.d. random variables. It is unbiased for the ATE. If the conditional-mean differences have finite variance, its standard error is</p>
 <p><span class="math display">\[
-E\left[Y-\mu(x_i,1)\mid X=x_i,A=1\right]=0.
+\frac{\sqrt{\operatorname{Var}\left[\mu(X,1)-\mu(X,0)\right]}}{\sqrt{n}}.
 \]</span></p>
-<p>Their outcome may fall above or below the conditional mean, but its expected error is zero. Our comparison therefore becomes</p>
+<p>Unbiasedness follows from linearity of expectation. The central limit theorem gives an approximately normal distribution for this sample mean as <span class="math inline">\(n\)</span> grows.</p>
+<p>The difficulty is that we do not know the conditional means. Matching estimates them using observed outcomes. Let’s see exactly what error this introduces.</p>
+<p>Focus on person <span class="math inline">\(i\)</span>, with observed values <span class="math inline">\(x_i,a_i,y_i\)</span>, and suppose <span class="math inline">\(a_i=1\)</span>. Let <span class="math inline">\(J(i)\)</span> contain the untreated people matched to this person, and write <span class="math inline">\(k_i=|J(i)|\)</span> for the number of matches. With at least one match, our estimated difference is</p>
+<p><span class="math display">\[
+y_i-\frac{1}{k_i}\sum_{j\in J(i)}y_j.
+\]</span></p>
+<p>We can write the conditional-mean difference we want as this estimate plus three error terms. The following is an exact equality:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\mu(x_i,1)-\mu(x_i,0)
+&amp;=\left[y_i-\frac{1}{k_i}\sum_{j\in J(i)}y_j\right]\\
+&amp;\quad-\left[y_i-\mu(x_i,a_i)\right]\\
+&amp;\quad+\frac{1}{k_i}\sum_{j\in J(i)}
+\left[y_j-\mu(x_j,a_j)\right]\\
+&amp;\quad+\frac{1}{k_i}\sum_{j\in J(i)}
+\left[\mu(x_j,0)-\mu(x_i,0)\right].
+\end{aligned}
+\]</span></p>
+<p>The first line is our matching estimate. The second is person <span class="math inline">\(i\)</span>’s outcome noise: the difference between their observed outcome and their conditional mean. The third is the average outcome noise among their matches. Here, <span class="math inline">\(a_i=1\)</span> and every match has <span class="math inline">\(a_j=0\)</span>.</p>
+<p>Both noise terms have mean zero. By the definition of <span class="math inline">\(\mu\)</span>,</p>
+<p><span class="math display">\[
+E\left[Y-\mu(X,A)\mid X,A\right]=0.
+\]</span></p>
+<p>Taking expectations gives the same conclusion without conditioning:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[Y-\mu(X,A)\right]
+&amp;=E\left[Y\right]-E\left[E\left[Y\mid X,A\right]\right]\\
+&amp;=E\left[Y\right]-E\left[Y\right]=0,
+\end{aligned}
+\]</span></p>
+<p>where the last step uses iterated expectations. When we select matches using covariates and exposure, without using outcomes, the matched outcome noise also retains its zero conditional mean under i.i.d. sampling.</p>
+<p>Averaging outcomes can reduce this noise. But when people share a match, their comparisons share an outcome. The <span class="math inline">\(1/\sqrt{n}\)</span> calculation for the average of the true conditional-mean differences does not automatically describe the matching estimate.</p>
+<p>The fourth line is different: it reflects covariate mismatch. With exact matches, <span class="math inline">\(x_j=x_i\)</span> for every match, so every conditional-mean difference on that line is zero. With nearby matches, we rely on <span class="math inline">\(\mu(x,0)\)</span> varying smoothly enough that nearby covariates give similar conditional means. Matching tries to make this remaining error small by finding people close to person <span class="math inline">\(i\)</span>.</p>
+<p>If person <span class="math inline">\(i\)</span> was untreated instead, their own outcome estimates <span class="math inline">\(\mu(x_i,0)\)</span>. Their treated matches estimate <span class="math inline">\(\mu(x_i,1)\)</span>, giving</p>
 <p><span class="math display">\[
 \mu(x_i,1)-\mu(x_i,0)
-\approx y_i-\mu(x_i,0).
+\approx\frac{1}{k_i}\sum_{j\in J(i)}y_j-y_i.
 \]</span></p>
-<p>We still need <span class="math inline">\(\mu(x_i,0)\)</span>. Look for another person, indexed by <span class="math inline">\(j\)</span>, whose covariates <span class="math inline">\(x_j\)</span> equal <span class="math inline">\(x_i\)</span> and who <strong>did not receive treatment</strong>. Their observed outcome <span class="math inline">\(y_j\)</span> is an unbiased estimate of <span class="math inline">\(\mu(x_j,0)\)</span>. Because <span class="math inline">\(x_j=x_i\)</span>, this is exactly the conditional mean we need.</p>
-<p>If no exact match exists, we look for an untreated person with similar covariates, using a measure of distance that we will discuss shortly. We then rely on the conditional mean changing little over that distance, so that</p>
-<p><span class="math display">\[
-\mu(x_i,0)\approx\mu(x_j,0).
-\]</span></p>
-<p>There are now two approximations: using the conditional mean at nearby covariates, and estimating that mean with the matched person’s outcome. Together, they give</p>
-<p><span class="math display">\[
-\mu(x_i,1)-\mu(x_i,0)
-\approx y_i-\mu(x_j,0)
-\approx y_i-y_j.
-\]</span></p>
-<p>Person <span class="math inline">\(j\)</span> is the <strong>match</strong> for person <span class="math inline">\(i\)</span>. An exact match removes the first approximation; the observed outcomes still vary around their conditional means.</p>
-<p>If person <span class="math inline">\(i\)</span> was untreated instead, their own outcome estimates <span class="math inline">\(\mu(x_i,0)\)</span>. We find a treated match <span class="math inline">\(j\)</span> whose outcome estimates <span class="math inline">\(\mu(x_i,1)\)</span>, giving</p>
-<p><span class="math display">\[
-\mu(x_i,1)-\mu(x_i,0)
-\approx \mu(x_j,1)-y_i
-\approx y_j-y_i.
-\]</span></p>
-<p>Either way, we subtract the untreated outcome from the treated outcome.</p>
+<p>The same distinction between outcome noise and covariate mismatch applies. Either way, we subtract the untreated estimate from the treated estimate.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="Technical note: outcome noise and covariate mismatch">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
@@ -688,14 +696,15 @@ E\left[Y-\mu(x_i,1)\mid X=x_i,A=1\right]=0.
 &amp;\quad+\frac{1}{k_i}\sum_{j\in J(i)}\left[\mu(x_j,a)-\mu(x_i,a)\right].
 \end{aligned}
 \]</span></p>
-<p>The second line is outcome noise around each match’s own conditional mean. Selecting matches using covariates and exposure, without using outcomes, preserves its zero conditional mean under i.i.d. sampling. The third line is the mismatch between the conditional mean we need and those of the matches. Exact matching makes this last term zero. Approximate matching need not.</p>
+<p>The second line is outcome noise around each match’s own conditional mean. The third is the mismatch between the conditional mean we need and those of the matches. Exact matching makes this last term zero. Approximate matching need not.</p>
+<p>To see why selecting matches preserves the mean-zero noise, condition on all the observed covariates and exposure values. Under i.i.d. sampling, each outcome still has conditional mean <span class="math inline">\(\mu(x_j,a_j)\)</span>. A matching rule that uses only these covariates and exposures has now fixed the match indices and their number. The selected residuals therefore each have conditional mean zero, and so does their average. Reusing a match changes dependence between comparisons, but it does not change this mean-zero property.</p>
 </div>
 </div>
 </div>
 </section>
 <section id="finding-matches" class="level2">
 <h2 class="anchored" data-anchor-id="finding-matches">Finding matches</h2>
-<p>Our five squirrels made this easy: everyone had a match with exactly the same covariates, and Maple had two. What if there are several possible matches? What if there are none with exactly the same covariates? Before using any outcomes, we need to decide how we will find matches.</p>
+<p>Our five squirrels made this easy: everyone had a match with exactly the same covariates, and Maple had two. There are two basic approaches to finding matches: require the same covariates, or look for nearby covariates. In either case, matches come from the opposite exposure group, and we choose them without looking at outcomes.</p>
 <section id="exact-matches" class="level3">
 <h3 class="anchored" data-anchor-id="exact-matches">Exact matches</h3>
 <p>Acorn has observed covariates <span class="math inline">\(x_i=4\)</span>. An exact match must have covariates <span class="math inline">\(x_j=4\)</span> and the opposite exposure value. If <span class="math inline">\(X\)</span> contains several variables, all their values must agree. For example, if we match on age and maternal weight, a 25-year-old mother weighing 120 pounds needs a match who is also 25 years old and weighs 120 pounds.</p>
@@ -706,12 +715,47 @@ E\left[Y-\mu(x_i,1)\mid X=x_i,A=1\right]=0.
 </section>
 <section id="nearby-matches" class="level3">
 <h3 class="anchored" data-anchor-id="nearby-matches">Nearby matches</h3>
-<p>For Acorn, the distances to the two untreated squirrels are</p>
+<div class="example-intro">
+<p><span class="example-label">Example: One continuous covariate</span></p>
+<p>Consider a different dataset with one continuous covariate <span class="math inline">\(X\)</span>. We only need <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span> to find matches:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Person</th>
+<th><span class="math inline">\(X\)</span></th>
+<th><span class="math inline">\(A\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>4.3</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>7</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>4</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>3.8</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Start with Person 1. The possible untreated matches are Persons 2 and 3. Using absolute difference, their distances from Person 1 are</p>
 <p><span class="math display">\[
-|4-4|=0,
-\qquad |4-7|=3.
+|4.3-7|=2.70,
+\qquad |4.3-4|=0.30.
 \]</span></p>
-<p>Hazel is closer, so we choose Hazel. When no exact match exists, we can use the same idea and choose the person whose covariates are closest. This is nearest-neighbor matching.</p>
+<p>Person 3 is closer, so we choose Person 3. This is nearest-neighbor matching.</p>
 <div class="definition-box">
 <p><strong>Nearest-neighbor matching</strong> selects matches from the opposite exposure group with the smallest covariate distance among the eligible individuals.</p>
 </div>
@@ -719,7 +763,16 @@ E\left[Y-\mu(x_i,1)\mid X=x_i,A=1\right]=0.
 <p><span class="math display">\[
 d(x_i,x_j)=|x_i-x_j|.
 \]</span></p>
-<p>With several covariates, we need to decide how to combine the differences. Consider a mother aged 25 who weighs 120 pounds. Two possible matches are aged 27 and 35, with weights 130 and 121 pounds, respectively. Their differences from her are</p>
+<p>Now use the same data to find a match for Person 3. This person is untreated, so the possible matches are Persons 1 and 4. Their distances are</p>
+<p><span class="math display">\[
+|4-4.3|=0.30,
+\qquad |4-3.8|=0.20.
+\]</span></p>
+<p>We choose Person 4. Person 3 was the nearest match for Person 1, but Person 1 is not the nearest match for Person 3. Matching each person’s nearest neighbor need not be symmetric, even though the distance between any two people is the same in either direction.</p>
+<p>With several covariates, we need to decide how to combine the differences.</p>
+<div class="example-intro">
+<p><span class="example-label">Example: Two continuous covariates</span></p>
+<p>Consider a mother aged 25 who weighs 120 pounds. Two eligible matches from the opposite exposure group are aged 27 and 35, with weights 130 and 121 pounds, respectively. Their differences from her are</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -741,6 +794,7 @@ d(x_i,x_j)=|x_i-x_j|.
 </tr>
 </tbody>
 </table>
+</div>
 <p>If we simply square the differences, add them, and take a square root, the distances are</p>
 <p><span class="math display">\[
 \sqrt{2^2+10^2}\approx10.20,
@@ -748,7 +802,7 @@ d(x_i,x_j)=|x_i-x_j|.
 \sqrt{10^2+1^2}\approx10.05.
 \]</span></p>
 <p>This Euclidean distance chooses the second match. But one year and one pound are different units. Changing pounds to kilograms could change which match wins.</p>
-<p>One approach is to divide each difference by that covariate’s sample standard deviation before combining them. Suppose the standard deviations are 5 years and 20 pounds. The distances become</p>
+<p>Now try a standardized distance using the same covariates and candidates. Divide each difference by that covariate’s sample standard deviation before combining them. Suppose the standard deviations in the full dataset are 5 years and 20 pounds. The distances become</p>
 <p><span class="math display">\[
 \sqrt{\left(\frac{2}{5}\right)^2+\left(\frac{10}{20}\right)^2}
 \approx0.64,
@@ -756,7 +810,8 @@ d(x_i,x_j)=|x_i-x_j|.
 \sqrt{\left(\frac{10}{5}\right)^2+\left(\frac{1}{20}\right)^2}
 \approx2.00.
 \]</span></p>
-<p>Now the first match is closer. This standardized distance compares differences relative to how much each covariate varies in our sample.</p>
+<p>Now the first match is closer. The same data give a different match because we changed how we measure similarity.</p>
+<p>Standardization also removes the choice of units from this calculation. If we convert pounds to kilograms, both the weight differences and their standard deviation change by the same factor. Their ratios stay the same, so the standardized distances stay the same. We compare differences relative to how much each covariate varies in our sample.</p>
 <p>Mahalanobis distance also accounts for how the covariates vary together. If two covariates contain much of the same information, it adjusts for that overlap when measuring distance.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="Technical note: distance with several covariates">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
@@ -779,16 +834,29 @@ d(x_i,x_j)=\sqrt{(x_i-x_j)^\mathsf{T}S^{-1}(x_i-x_j)}
 </div>
 </div>
 </section>
-<section id="calipers" class="level3">
-<h3 class="anchored" data-anchor-id="calipers">Calipers</h3>
+<section id="matching-choices" class="level3">
+<h3 class="anchored" data-anchor-id="matching-choices">Matching choices</h3>
+<p>Exact and nearby matching give us two starting points, but many choices remain:</p>
+<ul>
+<li>Which covariates must agree exactly, and which may differ? We can combine the approaches, for example by requiring the same diagnosis while allowing nearby ages.</li>
+<li>How will we measure distance across covariates?</li>
+<li>How many matches will each person receive?</li>
+<li>Can someone be used as a match for several people?</li>
+<li>In what order will we find matches, or will we choose them together?</li>
+<li>Will we impose a caliper?</li>
+<li>Which causal effect are we trying to estimate? This determines whose comparisons we need to average.</li>
+</ul>
+<p>Let’s work through what some of these choices mean.</p>
+<section id="calipers" class="level4">
+<h4 class="anchored" data-anchor-id="calipers">Calipers</h4>
 <p>The nearest person is not necessarily a good match. Even the smallest available distance could be large, and we might not want to use that person’s outcome to estimate the conditional mean we need. We can restrict how far apart matches are allowed to be.</p>
 <div class="definition-box">
 <p>A <strong>caliper</strong> is a maximum acceptable distance between matched individuals.</p>
 </div>
-<p>For Acorn, a caliper of <span class="math inline">\(1\)</span> on <span class="math inline">\(X\)</span> accepts Hazel, whose distance is <span class="math inline">\(0\)</span>, and rejects Maple, whose distance is <span class="math inline">\(3\)</span>. If no eligible person falls within the caliper, the person has no match under this rule.</p>
+<p>For Acorn in our original squirrel dataset, a caliper of <span class="math inline">\(1\)</span> on <span class="math inline">\(X\)</span> accepts Hazel, whose distance is <span class="math inline">\(0\)</span>, and rejects Maple, whose distance is <span class="math inline">\(3\)</span>. If no eligible person falls within the caliper, the person has no match under this rule.</p>
 </section>
-<section id="one-match-or-several" class="level3">
-<h3 class="anchored" data-anchor-id="one-match-or-several">One match or several?</h3>
+<section id="one-match-or-several" class="level4">
+<h4 class="anchored" data-anchor-id="one-match-or-several">One match or several?</h4>
 <p>We used one match for Acorn, Hazel, Chestnut, and Juniper, but two for Maple. When several people qualify, we can use their average outcome to estimate the conditional mean we need.</p>
 <details class="lesson-question">
 <summary>
@@ -840,8 +908,8 @@ Suppose we want matches for each treated person. How could the number of exact m
 </details>
 <p>When a person can be used as a match more than once, we call this matching with replacement. Without replacement, once someone has been used as a match, they are unavailable as a match for the remaining people in the focal group. Allowing reuse can help when several people have the same best match, but it makes their estimated differences share an outcome.</p>
 </section>
-<section id="choosing-matches-together" class="level3">
-<h3 class="anchored" data-anchor-id="choosing-matches-together">Choosing matches together</h3>
+<section id="choosing-matches-together" class="level4">
+<h4 class="anchored" data-anchor-id="choosing-matches-together">Choosing matches together</h4>
 <p>Choosing the nearest available match one person at a time is a greedy procedure: it makes the best available choice for the person currently being matched. Without replacement, that choice makes the match unavailable to later people. Someone who comes later might be left with a poor match, and changing the order could change the result.</p>
 <p>We can instead choose the matches together. Optimal pair matching chooses pairs to minimize their total distance under the matching restrictions. This considers how one person’s match affects the matches available to everyone else.</p>
 <p>We can also choose a partition into matched sets. In full matching, every retained person belongs to exactly one set, and every set contains both exposure groups. Each set has either one treated person and one or more untreated people, or one untreated person and one or more treated people. Optimal full matching chooses these sets together, allowing their sizes to vary while seeking close matches.</p>
@@ -868,6 +936,8 @@ Suppose we want matches for each treated person. How could the number of exact m
 </tbody>
 </table>
 <p>All five squirrels belong to exactly one set. In the second set, Maple supplies the untreated comparison for Chestnut and Juniper, and their average supplies Maple’s treated comparison.</p>
+<p>These choices can produce different matches for the same dataset. In an analysis, the key next step is to check how well the covariates match before using outcomes to estimate a causal effect.</p>
+</section>
 </section>
 </section>
 <section id="checking-the-matches" class="level2">
@@ -993,6 +1063,7 @@ s_0^2&amp;=\frac{(4-5.50)^2+(7-5.50)^2}{2-1}=4.50.
 </tr>
 </tbody>
 </table>
+<p>A common rule of thumb is to seek absolute standardized mean differences below <span class="math inline">\(0.10\)</span> for every covariate, ideally closer still to zero. We report these differences before and after matching so we can see how much balance improved.</p>
 <p>In this example, the covariate distributions in our comparisons agree too: two of the five comparisons have <span class="math inline">\(X=4\)</span> on each side, and three have <span class="math inline">\(X=7\)</span>. With other data, equal means need not imply similar distributions. We also inspect their spread and whether one group contains more people at the extremes.</p>
 </section>
 <section id="combining-the-comparisons" class="level2">
