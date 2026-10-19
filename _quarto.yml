@@ -28,6 +28,8 @@ book:
       chapters:
         - 03a-outcome-regression.qmd
         - 03b-matching.qmd
+        - 03c-propensity-scores.qmd
+        - 03d-inverse-probability-weighting.qmd
         - 03-exercises.qmd
     - part: "Unmeasured confounding"
       chapters: []
@@ -83,6 +85,10 @@ book:
             file: 03a-outcome-regression.qmd
           - text: "Matching"
             file: 03b-matching.qmd
+          - text: "Propensity scores"
+            file: 03c-propensity-scores.qmd
+          - text: "Inverse probability weighting"
+            file: 03d-inverse-probability-weighting.qmd
           - text: "Exercises"
             file: 03-exercises.qmd
       - text: "Back matter"

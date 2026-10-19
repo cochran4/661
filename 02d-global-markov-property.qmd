@@ -480,7 +480,7 @@ The graph may contain other variables and branches. The important assumption is 
 
 We use two elementary facts about independence:
 
-- Functions of disjoint collections of mutually independent noise terms are independent.
+- Functions of disjoint collections of independent noise terms are independent.
 - If two collections of variables are conditionally independent given $V$, conditioning additionally on variables from each collection preserves independence between what remains in the two collections.
 
 For the second fact, imagine fixing $V=v$. The joint distribution of the two collections factors into a distribution for each collection. Conditioning separately on information from each collection preserves that factorization. The same statement applies without $V$ when the collections are independent to begin with.
@@ -531,7 +531,7 @@ Now remove $V$ and all its descendants. This removes neither endpoint nor any va
 
 It also leaves a valid system of assignments for the remaining variables. No removed variable can be a parent of a remaining variable: a child of $V$ or of one of its descendants would itself be a descendant and would have been removed. We can therefore generate all remaining variables without using any of the removed assignments or noise terms.
 
-The remaining graph has no path between $A$ and $Y$, because their unique path passed through $V$. They now belong to different connected pieces. Each piece is generated from its own collection of noise terms, and those noise collections are mutually independent. Thus, the collections of variables in the different pieces are independent.
+The remaining graph has no path between $A$ and $Y$, because their unique path passed through $V$. They now belong to different connected pieces. Each piece is generated from its own collection of noise terms, and those noise collections are independent. Thus, the collections of variables in the different pieces are independent.
 
 Every variable in $S$ belongs to one of these remaining pieces. Conditioning on variables within the separate pieces preserves their independence. In particular,
 
@@ -684,7 +684,7 @@ X_4&\leftarrow X_3-X_2+N_4,
 \end{aligned}
 $$
 
-where the noise terms are mutually independent.
+where the noise terms are independent.
 
 ![](images/02d-faithfulness.svg){width=600 fig-align="center" fig-alt="A diamond-shaped causal graph with arrows from X1 to X2 and X3, and arrows from X2 and X3 to X4."}
 

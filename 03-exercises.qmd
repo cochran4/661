@@ -11,3 +11,7 @@ filters:
 ## Matching {.unnumbered}
 
 {{< include _exercises/03b-matching.qmd >}}
+
+## Propensity scores {.unnumbered}
+
+{{< include _exercises/03c-propensity-scores.qmd >}}

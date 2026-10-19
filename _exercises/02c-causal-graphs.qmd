@@ -79,7 +79,7 @@ Y&\leftarrow f_Y(W,A,\epsilon_Y).
 \end{aligned}
 $$
 
-**c.** The noise terms $\epsilon_W$, $\epsilon_X$, $\epsilon_A$, and $\epsilon_Y$ must be mutually independent.
+**c.** The noise terms $\epsilon_W$, $\epsilon_X$, $\epsilon_A$, and $\epsilon_Y$ must be independent.
 :::
 
 ### 11. Cycles and topological orders

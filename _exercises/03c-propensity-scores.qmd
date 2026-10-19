@@ -1,0 +1,199 @@
+For these exercises, assume the measured-confounding SCM with binary exposure $A$, outcome $Y$, and covariates $X$. Assume the observations are i.i.d. and the relevant conditional means are defined. Write $E=e(X)$ for the true propensity score and $\hat E=\hat e(X)$ for its estimate. In the outcome models, $s$ denotes a numerical score value. You may use a calculator. Keep additional digits during calculations and report final answers to two decimal places.
+
+### 10. Understanding the propensity score
+
+Let $X=(X_1,X_2)$, where both covariates are binary. The true propensity score is
+
+$$
+e(X)=0.10+0.20X_1+0.20X_2.
+$$
+
+a. Calculate the propensity score for each covariate profile.
+
+| $X_1$ | $X_2$ | $E=e(X)$ |
+|---:|---:|---:|
+| 0 | 0 | |
+| 0 | 1 | |
+| 1 | 0 | |
+| 1 | 1 | |
+
+b. Identify two different covariate profiles with the same propensity score.
+
+c. Must two people with those profiles receive the same observed treatment? Explain.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. Substitute each covariate profile into the score function:
+
+| $X_1$ | $X_2$ | $E=e(X)$ |
+|---:|---:|---:|
+| 0 | 0 | 0.10 |
+| 0 | 1 | 0.30 |
+| 1 | 0 | 0.30 |
+| 1 | 1 | 0.50 |
+
+b. The profiles $(0,1)$ and $(1,0)$ both have propensity score $0.30$. Knowing this score does not tell us which of these two profiles a person has.
+
+c. No. Both people have a $0.30$ probability of receiving treatment. One can receive treatment while the other does not; the score records their treatment probability, rather than their realized treatment.
+:::
+
+### 11. Outcome regression with a continuous outcome
+
+Return to the four people in Exercise 2, now with estimated propensity scores added. A fitted outcome regression using the score and treatment gives
+
+$$
+\hat\mu(s,a)=10+2s-3a-as.
+$$
+
+a. Complete the prediction columns. Use each person's estimated score as the score input, keeping it fixed when changing the treatment value.
+
+| $X$ | $A$ | $\hat E$ | $\hat\mu(\hat E,A)$ | $\hat\mu(\hat E,1)$ | $\hat\mu(\hat E,0)$ |
+|---:|---:|---:|---:|---:|---:|
+| 1 | 0 | 0.20 | | | |
+| 2 | 1 | 0.40 | | | |
+| 3 | 0 | 0.60 | | | |
+| 4 | 1 | 0.80 | | | |
+
+b. Estimate $E\left[Y(1)\right]$, $E\left[Y(0)\right]$, and the ATE. Interpret the ATE in outcome units.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. Substitute the estimated score for $s$ and each treatment value for $a$:
+
+| $X$ | $A$ | $\hat E$ | $\hat\mu(\hat E,A)$ | $\hat\mu(\hat E,1)$ | $\hat\mu(\hat E,0)$ |
+|---:|---:|---:|---:|---:|---:|
+| 1 | 0 | 0.20 | 10.40 | 7.20 | 10.40 |
+| 2 | 1 | 0.40 | 7.40 | 7.40 | 10.80 |
+| 3 | 0 | 0.60 | 11.20 | 7.60 | 11.20 |
+| 4 | 1 | 0.80 | 7.80 | 7.80 | 11.60 |
+
+For example, the first person's prediction under treatment value $1$ is $10+2(0.20)-3-0.20=7.20$. Their original $X=1$ is represented in this model through the estimated score $0.20$.
+
+b. Average each intervention column over all four people:
+
+$$
+\begin{aligned}
+E\left[Y(1)\right]
+&\approx\frac{7.20+7.40+7.60+7.80}{4}=7.50,\\
+E\left[Y(0)\right]
+&\approx\frac{10.40+10.80+11.20+11.60}{4}=11.00.
+\end{aligned}
+$$
+
+The ATE is approximately $7.50-11.00=-3.50$. Under our working SCM and fitted model, setting treatment to $1$ rather than $0$ lowers the mean outcome by an estimated $3.50$ units.
+:::
+
+### 12. Outcome regression with a binary outcome
+
+As in Exercise 3, $Y$ is binary. A fitted outcome regression using the score and treatment gives
+
+$$
+\operatorname{logit}\{\hat\mu(s,a)\}=-1+s-a.
+$$
+
+Consider four people with the estimated propensity scores shown below. To convert fitted log odds $\eta$ to a probability, use $\exp(\eta)/(1+\exp(\eta))$.
+
+a. Complete the table. For each person, use their estimated score to predict the probability of $Y=1$ under each treatment value.
+
+| Person | $\hat E$ | $\hat\mu(\hat E,1)$ | $\hat\mu(\hat E,0)$ |
+|---|---:|---:|---:|
+| 1 | 0.25 | | |
+| 2 | 0.25 | | |
+| 3 | 0.75 | | |
+| 4 | 0.75 | | |
+
+b. Use the completed table to estimate $E\left[Y(1)\right]$ and $E\left[Y(0)\right]$ by averaging each prediction column.
+
+c. Estimate and interpret the ATE, causal relative risk, and causal odds ratio for intervention value $1$ compared with $0$.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. Substitute the score and treatment value to obtain log odds, then transform to probabilities:
+
+| Person | $\hat E$ | $\hat\mu(\hat E,1)$ | $\hat\mu(\hat E,0)$ |
+|---|---:|---:|---:|
+| 1 | 0.25 | 0.15 | 0.32 |
+| 2 | 0.25 | 0.15 | 0.32 |
+| 3 | 0.75 | 0.22 | 0.44 |
+| 4 | 0.75 | 0.22 | 0.44 |
+
+For example, $\hat\mu(0.25,1)=\exp(-1.75)/(1+\exp(-1.75))\approx0.15$.
+
+b. Use the probabilities before rounding. There are two people at each score, giving
+
+$$
+\begin{aligned}
+E\left[Y(1)\right]
+&\approx\frac{2\hat\mu(0.25,1)+2\hat\mu(0.75,1)}{4}\approx0.19,\\
+E\left[Y(0)\right]
+&\approx\frac{2\hat\mu(0.25,0)+2\hat\mu(0.75,0)}{4}\approx0.38.
+\end{aligned}
+$$
+
+c. Using the unrounded averages gives
+
+$$
+\begin{aligned}
+\operatorname{ATE}
+&=E\left[Y(1)\right]-E\left[Y(0)\right]\approx-0.19,\\
+\text{Causal relative risk}
+&=\frac{E\left[Y(1)\right]}{E\left[Y(0)\right]}\approx0.49,\\
+\text{Causal odds ratio}
+&=\frac{E\left[Y(1)\right]/\left(1-E\left[Y(1)\right]\right)}
+{E\left[Y(0)\right]/\left(1-E\left[Y(0)\right]\right)}\approx0.37.
+\end{aligned}
+$$
+
+Under our working SCM and fitted model, treatment $1$ lowers the risk of $Y=1$ by an estimated $19.39$ percentage points. The risk under treatment $1$ is approximately $0.49$ times the risk under $0$, and the odds are approximately $0.37$ times the odds under $0$.
+:::
+
+### 13. Propensity-score matching
+
+Return to the data from Exercise 6, with estimated propensity scores added:
+
+| Person | $X$ | $A$ | $Y$ | $\hat E$ |
+|---|---:|---:|---:|---:|
+| 1 | 1 | 1 | 8 | 0.20 |
+| 2 | 2 | 0 | 5 | 0.30 |
+| 3 | 4 | 1 | 15 | 0.80 |
+| 4 | 8 | 0 | 11 | 0.70 |
+
+a. Find one nearest untreated match for each treated person using absolute difference in estimated propensity scores. A person may be used as a match more than once. Complete the table using each treated person's own outcome and their match's outcome.
+
+| Treated person | Matched person | Estimate of $\mu(\hat E,1)$ | Estimate of $\mu(\hat E,0)$ | Difference |
+|---|---|---|---|---|
+| 1 | | | | |
+| 3 | | | | |
+
+b. Estimate and interpret the ATT.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. Person 1 has score distances $|0.20-0.30|=0.10$ to Person 2 and $|0.20-0.70|=0.50$ to Person 4, so the match is Person 2. Person 3 has distances $|0.80-0.30|=0.50$ to Person 2 and $|0.80-0.70|=0.10$ to Person 4, so the match is Person 4.
+
+| Treated person | Matched person | Estimate of $\mu(\hat E,1)$ | Estimate of $\mu(\hat E,0)$ | Difference |
+|---|---|---:|---:|---:|
+| 1 | 2 | 8 | 5 | 3 |
+| 3 | 4 | 15 | 11 | 4 |
+
+b. Average the two treated people's comparisons:
+
+$$
+E\left[Y(1)-Y(0)\mid A=1\right]
+\approx\frac{3+4}{2}=3.50.
+$$
+
+Under our working SCM, treatment $1$ increases the mean outcome by an estimated $3.50$ units among those who originally received treatment.
+:::

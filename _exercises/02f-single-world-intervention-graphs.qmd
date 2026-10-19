@@ -11,7 +11,7 @@ Y(a)&\leftarrow f_Y(a,M(a),\epsilon_Y).
 \end{aligned}
 $$
 
-The noise terms are mutually independent.
+The noise terms are independent.
 
 
 Draw its SWIG, including the fixed intervention value $a$.

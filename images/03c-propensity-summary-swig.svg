@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 300" role="img" aria-labelledby="title desc">
+<title id="title">SWIG of the new SCM</title>
+<desc id="desc">X points to E and Y of a. E points to natural treatment A. Separate fixed a points to Y of a. A and a are adjacent separate circles.</desc>
+<g fill="none" stroke="#315c43" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M 133 65 L 234 65"/>
+<path d="M 225.82 68.75 L 234 65 L 225.82 61.25"/>
+<path d="M 326 65 L 427 65"/>
+<path d="M 418.82 68.75 L 427 65 L 418.82 61.25"/>
+<path d="M 118 92 C 175 214 360 240 531 235"/>
+<path d="M 522.93 238.99 L 531 235 L 522.71 231.49"/>
+<path d="M 548 97 L 569 187"/>
+<path d="M 563.49 179.89 L 569 187 L 570.79 178.18"/>
+</g>
+<circle cx="100" cy="65" r="32" fill="#e6eedf" stroke="#315c43" stroke-width="1.8"/>
+<text x="100" y="65" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">X</text>
+<circle cx="280" cy="65" r="45" fill="#e6eedf" stroke="#315c43" stroke-width="1.8"/>
+<text x="280" y="65" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">E</text>
+<circle cx="460" cy="65" r="32" fill="#e6eedf" stroke="#315c43" stroke-width="1.8"/>
+<text x="460" y="65" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">A</text>
+<circle cx="540" cy="65" r="32" fill="#fffdf9" stroke="#315c43" stroke-width="1.8"/>
+<text x="540" y="65" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">a</text>
+<circle cx="580" cy="235" r="48" fill="#e6eedf" stroke="#315c43" stroke-width="1.8"/>
+<text x="580" y="235" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">Y(a)</text>
+</svg>
