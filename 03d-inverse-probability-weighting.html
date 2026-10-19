@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Inverse probability weighting – Causal inference (and other things)</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./03-exercises.html" rel="next">
+<link href="./03c-propensity-scores.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-a3414f3ffc8cedfe87f55cc0f2c68ceb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Causal inference (and other things)</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./00-syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-motivation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Motivation</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-motivation">    
+        <li>
+    <a class="dropdown-item" href="./01a-being-a-detective.html">
+ <span class="dropdown-text">Being a detective with data</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01b-why-probability-is-not-enough.html">
+ <span class="dropdown-text">Why probability is not enough</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01c-clinical-trials.html">
+ <span class="dropdown-text">Clinical trials as our exemplar</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01d-probability.html">
+ <span class="dropdown-text">Probability gives us a formal language</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-construction" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Construction</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-construction">    
+        <li>
+    <a class="dropdown-item" href="./02a-assignments.html">
+ <span class="dropdown-text">A list of assignments</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02b-structural-causal-models.html">
+ <span class="dropdown-text">Structural causal models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02c-causal-graphs.html">
+ <span class="dropdown-text">Causal graphs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02d-global-markov-property.html">
+ <span class="dropdown-text">Global Markov property</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02e-potential-outcomes.html">
+ <span class="dropdown-text">Potential outcomes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02f-single-world-intervention-graphs.html">
+ <span class="dropdown-text">Single-world intervention graphs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-measured-confounding" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Measured confounding</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-measured-confounding">    
+        <li>
+    <a class="dropdown-item" href="./03a-outcome-regression.html">
+ <span class="dropdown-text">Outcome regression</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03b-matching.html">
+ <span class="dropdown-text">Matching</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03c-propensity-scores.html">
+ <span class="dropdown-text">Propensity scores</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03d-inverse-probability-weighting.html">
+ <span class="dropdown-text">Inverse probability weighting</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-back-matter" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Back matter</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-back-matter">    
+        <li>
+    <a class="dropdown-item" href="./glossary.html">
+ <span class="dropdown-text">Glossary</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./references.html">
+ <span class="dropdown-text">References</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03a-outcome-regression.html">Measured confounding</a></li><li class="breadcrumb-item"><a href="./03d-inverse-probability-weighting.html"><span class="chapter-title">Inverse probability weighting</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">index.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-syllabus.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Syllabus</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Motivation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01a-being-a-detective.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Being a detective with data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01b-why-probability-is-not-enough.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Why probability is not enough</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01c-clinical-trials.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Clinical trials as our exemplar</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01d-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Probability gives us a formal language</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Construction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02a-assignments.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">A list of assignments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02b-structural-causal-models.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Structural causal models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02c-causal-graphs.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Causal graphs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02d-global-markov-property.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Global Markov property</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02e-potential-outcomes.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Potential outcomes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02f-single-world-intervention-graphs.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Single-world intervention graphs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Measured confounding</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03a-outcome-regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Outcome regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03b-matching.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Matching</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03c-propensity-scores.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Propensity scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03d-inverse-probability-weighting.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Inverse probability weighting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Unmeasured confounding</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Sensitivity analysis</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Missing data</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Complex surveys</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Back matter</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Glossary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">References</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03a-outcome-regression.html">Measured confounding</a></li><li class="breadcrumb-item"><a href="./03d-inverse-probability-weighting.html"><span class="chapter-title">Inverse probability weighting</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">Inverse probability weighting</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03d-squirrel-weights.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="The familiar squirrel attaches a comically large weight to one acorn while other acorns carry small weights. Vintage paperback-style ink illustration." width="700"></p>
+</figure>
+</div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>We have already identified <span class="math inline">\(E\left[Y(a)\right]\)</span> using outcome regression. Does that mean we should stop looking? Another expression for the same causal quantity might suggest another way to estimate it. We might prefer to model a different part of the data-generating process. Or we might find that the approaches work especially well together.</p>
+<p>Propensity scores give us such an alternative. Instead of modeling the conditional outcome mean, we can estimate each person’s probability of receiving their observed exposure. We then use those probabilities to weight their observed outcomes. Someone who received an exposure that was uncommon among people with their covariates receives more weight.</p>
+<p>This is inverse probability weighting, or IPW. We will first see how the weighting works, then use our SCM and SWIG to establish why it answers our causal question. After that, we will combine weighting with outcome regression. The combination has a useful property that neither approach has on its own.</p>
+</section>
+<section id="weighting-a-concrete-example" class="level2">
+<h2 class="anchored" data-anchor-id="weighting-a-concrete-example">Weighting a concrete example</h2>
+<div class="example-intro">
+<p><span class="example-label">Example.</span></p>
+<p>Return to the NHEFS smoking and weight-gain example in <a href="./03c-propensity-scores.html">Propensity scores</a>. Let <span class="math inline">\(A=1\)</span> mean quitting smoking, let <span class="math inline">\(A=0\)</span> mean not quitting, and let <span class="math inline">\(Y\)</span> be weight gain in kilograms. For now, collect only sex in <span class="math inline">\(X\)</span>.</p>
+<p>Here are the counts and mean outcomes we used before.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Sex</th>
+<th style="text-align: right;">Quit smoking</th>
+<th style="text-align: right;">Did not quit</th>
+<th style="text-align: right;">Mean weight gain among those who quit</th>
+<th style="text-align: right;">Mean weight gain among those who did not quit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Male</td>
+<td style="text-align: right;">220</td>
+<td style="text-align: right;">542</td>
+<td style="text-align: right;">4.83</td>
+<td style="text-align: right;">2.00</td>
+</tr>
+<tr class="even">
+<td>Female</td>
+<td style="text-align: right;">183</td>
+<td style="text-align: right;">621</td>
+<td style="text-align: right;">4.16</td>
+<td style="text-align: right;">1.97</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>There are <span class="math inline">\(762\)</span> men and <span class="math inline">\(804\)</span> women, for a total of <span class="math inline">\(1566\)</span> people. The estimated probabilities of quitting are</p>
+<p><span class="math display">\[
+\hat e(\text{male})=\frac{220}{762},
+\qquad
+\hat e(\text{female})=\frac{183}{804}.
+\]</span></p>
+<p>For each person, take the reciprocal of the estimated probability of receiving their observed exposure. This gives the following weights.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 36%">
+<col style="width: 36%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Sex</th>
+<th style="text-align: right;">Weight for someone who quit</th>
+<th style="text-align: right;">Weight for someone who did not quit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Male</td>
+<td style="text-align: right;"><span class="math inline">\(762/220\approx3.46\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(762/542\approx1.41\)</span></td>
+</tr>
+<tr class="even">
+<td>Female</td>
+<td style="text-align: right;"><span class="math inline">\(804/183\approx4.39\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(804/621\approx1.29\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>For example, each of the <span class="math inline">\(220\)</span> men who quit receives weight <span class="math inline">\(762/220\)</span>. Their weights add to <span class="math inline">\(762\)</span>. The weights of the <span class="math inline">\(542\)</span> men who did not quit also add to <span class="math inline">\(762\)</span>. The same operation gives a total weight of <span class="math inline">\(804\)</span> for women in each exposure group.</p>
+<p>After weighting, both groups therefore have the same representation of sex as the full sample. That is the point of these weights. We are trying to remove differences in the measured covariates as an explanation for differences in the outcomes.</p>
+<p>To estimate the mean weight gain under quitting, multiply each quitter’s outcome by their weight, add, and divide by <span class="math inline">\(1566\)</span>. Using the group means to carry out that calculation gives</p>
+<p><span class="math display">\[
+E\left[Y(1)\right]
+\approx
+\frac{(762/220)(220\times4.83)+(804/183)(183\times4.16)}{1566}.
+\]</span></p>
+<p>For the intervention under which people do not quit, the calculation is</p>
+<p><span class="math display">\[
+E\left[Y(0)\right]
+\approx
+\frac{(762/542)(542\times2.00)+(804/621)(621\times1.97)}{1566}.
+\]</span></p>
+<p>Subtracting the two expressions gives</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[Y(1)-Y(0)\right]
+&amp;\approx
+\frac{762}{1566}(4.83-2.00)
++\frac{804}{1566}(4.16-1.97)\\
+&amp;\approx2.50\text{ kilograms}.
+\end{aligned}
+\]</span></p>
+<p>This is the same answer we obtained by direct standardization. With a separate estimated propensity for every observed covariate combination, these calculations agree. We have rearranged the calculation, rather than changed the causal question.</p>
+<p>This example adjusts only for sex. Interpreting the result causally requires an SCM in which sex is sufficient to account for the common causes of quitting and weight gain. The arithmetic cannot establish that this is an adequate causal model.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note: why direct standardization and IPW agree here">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical note: why direct standardization and IPW agree here
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Suppose <span class="math inline">\(X\)</span> takes finitely many values. Let <span class="math inline">\(n_x\)</span> be the number of people with <span class="math inline">\(X=x\)</span>, and let <span class="math inline">\(n_{xa}&gt;0\)</span> be the number with both <span class="math inline">\(X=x\)</span> and <span class="math inline">\(A=a\)</span>. Write <span class="math inline">\(\bar y_{xa}\)</span> for their mean outcome.</p>
+<p>The estimated exposure probability in that stratum is <span class="math inline">\(n_{xa}/n_x\)</span>. Thus, the IPW contribution from that stratum is</p>
+<p><span class="math display">\[
+\frac{1}{n}
+\frac{n_x}{n_{xa}}
+\sum_{i:x_i=x,\,a_i=a}y_i
+=\frac{n_x}{n}\bar y_{xa}.
+\]</span></p>
+<p>Summing over <span class="math inline">\(x\)</span> gives direct standardization. This equality uses the empirical exposure proportions within each stratum. It need not hold when we replace those proportions with probabilities from a restricted regression model.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="identification-and-estimation" class="level2">
+<h2 class="anchored" data-anchor-id="identification-and-estimation">Identification and estimation</h2>
+<p>We continue with the measured-confounding SCM from <a href="./03a-outcome-regression.html">Outcome regression</a>, with independent noise terms:</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow f_X(\epsilon_X),\\
+A&amp;\leftarrow f_A(X,\epsilon_A),\\
+Y&amp;\leftarrow f_Y(X,A,\epsilon_Y).
+\end{aligned}
+\]</span></p>
+<p>For an intervention value <span class="math inline">\(a\)</span>, causal irrelevance gives <span class="math inline">\(X(a)=X\)</span> and <span class="math inline">\(A(a)=A\)</span>. The resulting SWIG is the one we have already used.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03a-measured-confounding-swig-simplified.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="The measured-confounding SWIG after causal irrelevance. X points to A and Y(a). The fixed intervention value a points to Y(a), with no arrow from random A to Y(a)." width="620"></p>
+</figure>
+</div>
+<p>The global Markov property gives</p>
+<p><span class="math display">\[
+A\mathrel{\perp\!\!\!\perp}Y(a)\mid X.
+\]</span></p>
+<p>We are using a consequence of the same SCM, rather than adding a new exchangeability assumption. Consistency still tells us that <span class="math inline">\(Y=Y(a)\)</span> whenever <span class="math inline">\(A=a\)</span>.</p>
+<p>For a binary exposure, write <span class="math inline">\(e(X)=P(A=1\mid X)\)</span>. More generally, for a discrete exposure, write</p>
+<p><span class="math display">\[
+p_a(X)=P(A=a\mid X).
+\]</span></p>
+<p>For binary <span class="math inline">\(A\)</span>, <span class="math inline">\(p_1(X)=e(X)\)</span> and <span class="math inline">\(p_0(X)=1-e(X)\)</span>. The notation <span class="math inline">\(1_{A=a}\)</span> is an indicator. It equals <span class="math inline">\(1\)</span> when <span class="math inline">\(A=a\)</span> and <span class="math inline">\(0\)</span> otherwise.</p>
+<div class="proposition-box">
+<p><strong>Identification by inverse probability weighting.</strong> Under the SCM above, for a discrete exposure and an intervention value <span class="math inline">\(a\)</span> with <span class="math inline">\(p_a(X)&gt;0\)</span> almost surely,</p>
+<p><span class="math display">\[
+E\left[Y(a)\right]
+=E\left[\frac{1_{A=a}Y}{p_a(X)}\right],
+\]</span></p>
+<p>provided the outcome mean is defined.</p>
+</div>
+<p>In the smoking example, this says</p>
+<p><span class="math display">\[
+E\left[Y(1)\right]
+=E\left[\frac{AY}{e(X)}\right],
+\qquad
+E\left[Y(0)\right]
+=E\left[\frac{(1-A)Y}{1-e(X)}\right].
+\]</span></p>
+<p>The indicators select the relevant exposure group, and the reciprocal probabilities supply the weights. These are the same intervention means we identified using outcome regression. We have another way to recover them from the observed-data distribution.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note: proof of the IPW identity">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical note: proof of the IPW identity
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Fix <span class="math inline">\(a\)</span> and abbreviate <span class="math inline">\(p_a(X)\)</span> by <span class="math inline">\(p\)</span>. Consistency gives</p>
+<p><span class="math display">\[
+1_{A=a}Y=1_{A=a}Y(a).
+\]</span></p>
+<p>Conditional exchangeability from the SWIG then gives</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[\frac{1_{A=a}Y}{p}\mid X\right]
+&amp;=\frac{1}{p}E\left[1_{A=a}Y(a)\mid X\right]\\
+&amp;=\frac{1}{p}P(A=a\mid X)E\left[Y(a)\mid X\right]\\
+&amp;=E\left[Y(a)\mid X\right].
+\end{aligned}
+\]</span></p>
+<p>Taking expectations and using iterated expectations completes the proof. Conditional positivity makes the division valid. For example, <span class="math inline">\(E\left[|Y(a)|\right]&lt;\infty\)</span> ensures that the means in this argument are well defined.</p>
+</div>
+</div>
+</div>
+<p>The estimation step follows the pattern we have used before. Estimate the unknown function, evaluate it for each person, and take a sample mean. If the observed values for person <span class="math inline">\(i\)</span> are <span class="math inline">\((x_i,a_i,y_i)\)</span>, then</p>
+<p><span class="math display">\[
+E\left[Y(1)\right]
+\approx\frac{1}{n}\sum_{i=1}^n
+\frac{a_i y_i}{\hat e(x_i)},
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+E\left[Y(0)\right]
+\approx\frac{1}{n}\sum_{i=1}^n
+\frac{(1-a_i)y_i}{1-\hat e(x_i)}.
+\]</span></p>
+<p>Subtract the estimated means to estimate the ATE. With a binary outcome, their ratio instead gives an estimated causal relative risk, provided the denominator is positive. We have changed how we estimate the intervention means, but we can combine them to form the same causal contrasts.</p>
+<div class="example-intro">
+<p><span class="example-label">Example.</span></p>
+<p>Return to smoking and weight gain, now collecting sex, education, and age in <span class="math inline">\(X\)</span>. Estimate the probability of quitting using the logistic regression in <a href="./03c-propensity-scores.html">Propensity scores</a>. Predict a quitting probability for each person. Someone who quit receives weight <span class="math inline">\(1/\hat e(X)\)</span>; someone who did not receives weight <span class="math inline">\(1/[1-\hat e(X)]\)</span>.</p>
+</div>
+<p>Using these weights in the two sample means gives a reported ATE estimate of <span class="math inline">\(2.98\)</span> kilograms. Under the proposed measured-confounding SCM, this estimates the difference in mean weight gain under quitting versus not quitting, adjusting for sex, education, and age.</p>
+<!-- The 2.98 kg estimate is retained from the source textbook. It has not been refitted in this rewrite. -->
+</section>
+<section id="checking-the-weights" class="level2">
+<h2 class="anchored" data-anchor-id="checking-the-weights">Checking the weights</h2>
+<p>Estimating exposure probabilities does not guarantee that the resulting weights do what we want. Before comparing weighted outcomes, inspect the weights and check balance in the original covariates.</p>
+<p>For example, calculate the weighted mean of age in each exposure group, just as we calculated weighted means of the outcome. Do the same for each measured covariate. Standardized mean differences and balance plots can summarize the comparisons, as they did for matching. With estimated propensities, weighted covariate balance will generally be approximate.</p>
+<p>Also look for very large weights. If someone’s estimated probability of receiving their observed exposure is <span class="math inline">\(0.02\)</span>, their weight is <span class="math inline">\(50\)</span>. Their outcome can then have a large influence on the estimated mean. Large weights can reflect limited overlap, a poorly fitting propensity model, or both. Neither an elaborate model nor normalization can create comparable people where the data contain none.</p>
+<p>Conditional positivity is especially visible here because we divide by <span class="math inline">\(p_a(X)\)</span>. The SCM describes which variables determine others; it does not guarantee that every exposure value is possible at every covariate profile. If people with certain covariates never receive an exposure, IPW cannot recover their mean outcome under that exposure from these data alone.</p>
+<p>We can also calculate a normalized weighted mean. Instead of dividing the weighted outcome total by <span class="math inline">\(n\)</span>, divide by the sum of the weights in that exposure group:</p>
+<p><span class="math display">\[
+E\left[Y(1)\right]
+\approx
+\frac{\sum_{i=1}^n a_i y_i/\hat e(x_i)}
+{\sum_{i=1}^n a_i/\hat e(x_i)},
+\]</span></p>
+<p><span class="math display">\[
+E\left[Y(0)\right]
+\approx
+\frac{\sum_{i=1}^n (1-a_i)y_i/[1-\hat e(x_i)]}
+{\sum_{i=1}^n (1-a_i)/[1-\hat e(x_i)]}.
+\]</span></p>
+<p>These are normalized IPW estimators, also called Hájek estimators. They are ordinary weighted averages within each exposure group. They often behave better in finite samples, although they do not remove the influence of extreme relative weights. Normalizing weights is distinct from constructing stabilized weights, which introduce a numerator such as the marginal probability of the observed exposure.</p>
+<p>In the sex-only example, each exposure group’s weights already sum to <span class="math inline">\(1566\)</span>. The original and normalized calculations therefore agree exactly. With probabilities from a fitted regression model, the sums need not equal <span class="math inline">\(n\)</span>, so the two estimates can differ.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note: what if the propensity model is wrong?">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical note: what if the propensity model is wrong?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Write</p>
+<p><span class="math display">\[
+\mu_a(X)=E\left[Y\mid X,A=a\right],
+\qquad p_a(X)=P(A=a\mid X).
+\]</span></p>
+<p>First consider a fixed positive function <span class="math inline">\(q_a(X)\)</span> that we use in place of <span class="math inline">\(p_a(X)\)</span>. Iterated expectations give</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[\frac{1_{A=a}Y}{q_a(X)}\right]
+&amp;=E\left[\frac{p_a(X)\mu_a(X)}{q_a(X)}\right]\\
+&amp;=E\left[Y(a)\right]
++E\left[\mu_a(X)\frac{p_a(X)-q_a(X)}{q_a(X)}\right].
+\end{aligned}
+\]</span></p>
+<p>Thus, a wrong exposure-probability function can change the target of the unnormalized weighted mean. If a fitted propensity model approaches <span class="math inline">\(q_a\)</span>, and the corresponding sample averages converge to the expectation displayed above, that expression is the estimator’s probability limit. When <span class="math inline">\(q_a=p_a\)</span>, the extra term is zero.</p>
+<p>The identity is stated for fixed functions deliberately. A fitted propensity score is random and may use the same observations being averaged. We cannot simply treat it as fixed to claim that a same-sample estimator is unbiased. Establishing consistency requires conditions on both the fitted function and the sample average. For finite-dimensional propensity models, a detailed treatment appears in Chapter 13 of <span class="citation" data-cites="tsiatis_2006">Tsiatis (<a href="references.html#ref-tsiatis_2006" role="doc-biblioref">2006</a>)</span>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="augmented-inverse-probability-weighting" class="level2">
+<h2 class="anchored" data-anchor-id="augmented-inverse-probability-weighting">Augmented inverse probability weighting</h2>
+<p>Outcome regression estimates the conditional outcome mean. IPW uses estimated exposure probabilities. We do not have to choose between them. We can start with outcome predictions and then use weighting to correct their prediction errors.</p>
+<p>For a concrete example, consider estimating mean weight gain under quitting. Suppose a person has predicted weight gain <span class="math inline">\(\hat\mu(X,1)=5\)</span> kilograms and estimated quitting probability <span class="math inline">\(\hat e(X)=0.25\)</span>.</p>
+<p>If that person quit and gained <span class="math inline">\(7\)</span> kilograms, their observed outcome exceeds the prediction by <span class="math inline">\(7-5=2\)</span> kilograms. Weight that error by <span class="math inline">\(1/0.25\)</span> and add it to the original prediction. Their contribution is</p>
+<p><span class="math display">\[
+5+\frac{1}{0.25}(7-5)=13.
+\]</span></p>
+<p>The contribution is not itself a prediction of this person’s potential outcome. It combines a prediction with a weighted correction. A person who did not quit contributes their prediction under quitting, without a correction, because their observed outcome cannot reveal a prediction error under quitting.</p>
+<p>More generally, to estimate <span class="math inline">\(E\left[Y(a)\right]\)</span>, we do three things:</p>
+<ol type="1">
+<li>Predict <span class="math inline">\(\hat\mu(x_i,a)\)</span> for everyone.</li>
+<li>For people with <span class="math inline">\(a_i=a\)</span>, calculate their observed prediction error <span class="math inline">\(y_i-\hat\mu(x_i,a)\)</span> and weight it by <span class="math inline">\(1/\hat p_a(x_i)\)</span>.</li>
+<li>Add each person’s correction to their prediction and average the contributions.</li>
+</ol>
+<div class="definition-box">
+<p><strong>Augmented inverse probability weighting.</strong> The augmented inverse probability weighting (AIPW) estimator of <span class="math inline">\(E\left[Y(a)\right]\)</span> is the sample mean</p>
+<p><span class="math display">\[
+\frac{1}{n}\sum_{i=1}^n
+\left\{
+\hat\mu(x_i,a)
++\frac{1_{a_i=a}}{\hat p_a(x_i)}
+\left[y_i-\hat\mu(x_i,a)\right]
+\right\},
+\]</span></p>
+<p>where <span class="math inline">\(\hat\mu(x,a)\)</span> estimates <span class="math inline">\(E\left[Y\mid X=x,A=a\right]\)</span> and <span class="math inline">\(\hat p_a(x)\)</span> estimates <span class="math inline">\(P(A=a\mid X=x)\)</span>.</p>
+</div>
+<div class="example-intro">
+<p><span class="example-label">Example.</span></p>
+<p>In the NHEFS example, use the fitted probabilities of quitting based on sex, education, and age. Also fit a linear regression for weight gain using quitting status, sex, education, and age, without interactions.</p>
+</div>
+<p>For <span class="math inline">\(a=1\)</span>, predict each person’s weight gain under quitting, add the weighted prediction errors of those who quit, and average. For <span class="math inline">\(a=0\)</span>, predict weight gain under not quitting, add the weighted prediction errors of those who did not quit, and average. Subtracting the resulting means gives a reported AIPW estimate of <span class="math inline">\(3.02\)</span> kilograms.</p>
+<!-- The 3.02 kg estimate is retained from the source textbook. The source describes the outcome regression incompletely; it must include exposure (or fit separate outcome models by exposure) to provide predictions under both interventions. The original analysis should be rerun before these model details are treated as a reproducible specification. -->
+<p>Why does this combination work? With the true conditional mean, the observed prediction error has mean zero within each exposure and covariate group. The correction then has mean zero too. With the true exposure probabilities, weighting can instead correct a wrong conditional-mean function. Either route can lead to the same intervention mean.</p>
+<div class="proposition-box">
+<p><strong>The augmented identification formula.</strong> Under the measured-confounding SCM and the conditions for IPW identification, let <span class="math inline">\(\mu_a(X)=E\left[Y\mid X,A=a\right]\)</span>. Then</p>
+<p><span class="math display">\[
+E\left[Y(a)\right]
+=E\left[
+\mu_a(X)
++\frac{1_{A=a}}{p_a(X)}\left\{Y-\mu_a(X)\right\}
+\right].
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note: proof of the augmented identity">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical note: proof of the augmented identity
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Conditioning on <span class="math inline">\(X\)</span> gives</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[
+\frac{1_{A=a}}{p_a(X)}\{Y-\mu_a(X)\}\mid X
+\right]
+&amp;=\frac{P(A=a\mid X)}{p_a(X)}
+E\left[Y-\mu_a(X)\mid X,A=a\right]\\
+&amp;=0.
+\end{aligned}
+\]</span></p>
+<p>Thus, the outer expectation of the correction is zero. The remaining term is <span class="math inline">\(E\left[\mu_a(X)\right]\)</span>, which equals <span class="math inline">\(E\left[Y(a)\right]\)</span> by the identification result from outcome regression.</p>
+</div>
+</div>
+</div>
+<p>This estimator is called doubly robust. Under the conditions that make the fitted functions and sample averages converge appropriately, it is consistent if the propensity model is correct or the outcome-mean model is correct. Both models may be correct, but both do not have to be correct for consistency.</p>
+<p>This does not protect against a wrong SCM. If important common causes are missing from <span class="math inline">\(X\)</span>, the exchangeability relationship supplied by our SWIG may fail, and neither model can restore it. Double robustness concerns the two statistical models we use after identification.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note: the product of the two errors">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical note: the product of the two errors
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Fix <span class="math inline">\(a\)</span>. Write <span class="math inline">\(\mu_a(X)=E\left[Y\mid X,A=a\right]\)</span> and <span class="math inline">\(p_a(X)=P(A=a\mid X)\)</span>. Consider fixed functions <span class="math inline">\(m_a(X)\)</span> and <span class="math inline">\(q_a(X)&gt;0\)</span> in place of the true functions. The expected augmented contribution is</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[m_a(X)+\frac{1_{A=a}}{q_a(X)}\{Y-m_a(X)\}\right]
+&amp;=E\left[m_a(X)+\frac{p_a(X)}{q_a(X)}\{\mu_a(X)-m_a(X)\}\right]\\
+&amp;=E\left[Y(a)\right]
++E\left[
+\{\mu_a(X)-m_a(X)\}
+\frac{p_a(X)-q_a(X)}{q_a(X)}
+\right].
+\end{aligned}
+\]</span></p>
+<p>The first equality follows by conditioning on <span class="math inline">\(X\)</span>. The second follows by adding and subtracting <span class="math inline">\(\mu_a(X)\)</span> and using <span class="math inline">\(E\left[\mu_a(X)\right]=E\left[Y(a)\right]\)</span>.</p>
+<p>The extra term is a product of an outcome-mean error and an exposure-probability error. It vanishes if <span class="math inline">\(m_a=\mu_a\)</span>, or if <span class="math inline">\(q_a=p_a\)</span>. It can also be small when both errors are small.</p>
+<p>For estimated functions, suppose <span class="math inline">\(\hat\mu(X,a)\)</span> and <span class="math inline">\(\hat p_a(X)\)</span> approach limits <span class="math inline">\(m_a(X)\)</span> and <span class="math inline">\(q_a(X)\)</span>, and the sample average approaches the expectation above. The same formula describes the probability limit of the AIPW estimator. These convergence statements require integrability, control of the denominators, and appropriate conditions on how the functions are fitted. They are not claims of exact unbiasedness for arbitrary models fitted to the same sample.</p>
+<p>One useful approach is cross-fitting. Fit the functions using one part of the data and evaluate their augmented contributions in another part, repeating this across parts so that each observation contributes to the final average. This separates each evaluated observation from the data used to fit its predictions and helps establish the required convergence results.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note: comparing variances with the true functions">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical note: comparing variances with the true functions
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-6" class="callout-6-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>There is a useful variance comparison when the functions are known. It is distinct from a claim that any fitted AIPW estimator has lower variance than any fitted IPW estimator.</p>
+<p>Fix <span class="math inline">\(a\)</span> and abbreviate <span class="math inline">\(I=1_{A=a}\)</span>, <span class="math inline">\(p=p_a(X)\)</span>, and <span class="math inline">\(\mu=\mu_a(X)\)</span>. Define</p>
+<p><span class="math display">\[
+U=\mu+\frac{I}{p}(Y-\mu),
+\qquad V=\frac{IY}{p},
+\qquad \sigma_a^2(X)=\operatorname{Var}(Y\mid X,A=a).
+\]</span></p>
+<p>Both <span class="math inline">\(U\)</span> and <span class="math inline">\(V\)</span> have conditional mean <span class="math inline">\(\mu\)</span> given <span class="math inline">\(X\)</span>. Their conditional variances are</p>
+<p><span class="math display">\[
+\operatorname{Var}(U\mid X)=\frac{\sigma_a^2(X)}{p}
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+\operatorname{Var}(V\mid X)
+=\frac{\sigma_a^2(X)}{p}+\mu^2\left(\frac{1}{p}-1\right).
+\]</span></p>
+<p>For the first equality, the conditional second moment of <span class="math inline">\(I(Y-\mu)/p\)</span> is <span class="math inline">\(p\sigma_a^2(X)/p^2\)</span>, and its conditional mean is zero. For the second, the conditional second moment of <span class="math inline">\(IY/p\)</span> is <span class="math inline">\(\{\sigma_a^2(X)+\mu^2\}/p\)</span>; subtract the squared conditional mean <span class="math inline">\(\mu^2\)</span>.</p>
+<p>Provided the variances are finite, the law of total variance gives</p>
+<p><span class="math display">\[
+\operatorname{Var}(V)-\operatorname{Var}(U)
+=E\left[\mu^2\left(\frac{1}{p}-1\right)\right]\geq0.
+\]</span></p>
+<p>Averaging independent copies divides each variance by <span class="math inline">\(n\)</span>, preserving the comparison for estimators using the true functions. Estimating the functions changes the analysis and requires additional arguments.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note: targeted maximum likelihood estimation">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical note: targeted maximum likelihood estimation
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>There is another way to bring outcome regression and propensity scores together. Targeted maximum likelihood estimation (TMLE) starts with outcome predictions and then updates those predictions using information from the propensity score. The update targets the particular causal quantity being estimated. We then average the updated predictions under each intervention.</p>
+<p>The connection to AIPW is that both approaches use a correction based on the same influence function. Their computations differ. AIPW adds a weighted correction to the final average; TMLE updates the outcome model before taking that average. Van der Laan and Rubin introduced the general targeted-estimation approach in <span class="citation" data-cites="van_der_laan_rubin_2006">Laan and Rubin (<a href="references.html#ref-van_der_laan_rubin_2006" role="doc-biblioref">2006</a>)</span>.</p>
+<!-- TODO: Add a worked binary-outcome example, the targeted update, and its connection to the AIPW estimating equation. -->
+<p>A worked update and its connection to the AIPW formula will be developed here.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note: semiparametric efficiency">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical note: semiparametric efficiency
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Once a causal quantity is identified, we can ask another question. How precise could an estimator be without imposing additional restrictions on the observed-data distribution?</p>
+<p>Semiparametric efficiency supplies a benchmark for this question. For <span class="math inline">\(E\left[Y(a)\right]\)</span>, the efficient influence function in the unrestricted observed-data model is</p>
+<p><span class="math display">\[
+\phi_a(X,A,Y)
+=\mu_a(X)
++\frac{1_{A=a}}{p_a(X)}\{Y-\mu_a(X)\}
+-E\left[Y(a)\right].
+\]</span></p>
+<p>It is the augmented contribution, centered at the target mean. Its variance gives the asymptotic variance bound for regular estimators; for a sample of size <span class="math inline">\(n\)</span>, the corresponding variance scale is <span class="math inline">\(\operatorname{Var}(\phi_a)/n\)</span>. For the ATE, the efficient influence function is <span class="math inline">\(\phi_1-\phi_0\)</span>.</p>
+<p>Under suitable conditions, an AIPW estimator attains this bound. Both fitted functions must be sufficiently accurate, with their errors converging fast enough in combination, and we need control of small exposure probabilities and finite variances. Cross-fitting helps accommodate flexible fitted models. Consistency of just one model is not, by itself, a guarantee of efficiency or valid usual standard errors.</p>
+<p>Kennedy gives an accessible account of influence functions, efficiency, and the role of the product of the two estimation errors in <span class="citation" data-cites="kennedy_2022">Kennedy (<a href="references.html#ref-kennedy_2022" role="doc-biblioref">2022</a>)</span>.</p>
+<!-- TODO: Derive the influence function and efficiency bound, then give the error-rate conditions and an interval-estimation example. -->
+<p>The derivation and a worked standard-error calculation will be added here.</p>
+</div>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-kennedy_2022" class="csl-entry" role="listitem">
+Kennedy, Edward H. 2022. <em>Semiparametric Doubly Robust Targeted Double Machine Learning: A Review</em>. <a href="https://arxiv.org/abs/2203.06469">https://arxiv.org/abs/2203.06469</a>.
+</div>
+<div id="ref-van_der_laan_rubin_2006" class="csl-entry" role="listitem">
+Laan, Mark J. van der, and Daniel Rubin. 2006. <span>“Targeted Maximum Likelihood Learning.”</span> <em>The International Journal of Biostatistics</em> 2 (1). <a href="https://doi.org/10.2202/1557-4679.1043">https://doi.org/10.2202/1557-4679.1043</a>.
+</div>
+<div id="ref-tsiatis_2006" class="csl-entry" role="listitem">
+Tsiatis, Anastasios A. 2006. <em>Semiparametric Theory and Missing Data</em>. Springer. <a href="https://doi.org/10.1007/0-387-37345-4">https://doi.org/10.1007/0-387-37345-4</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((element) => {
+    new bootstrap.Tooltip(element, {
+      placement: "top",
+      trigger: "hover focus"
+    });
+  });
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./03c-propensity-scores.html" class="pagination-link" aria-label="Propensity scores">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Propensity scores</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./03-exercises.html" class="pagination-link" aria-label="Exercises">
+        <span class="nav-page-text"><span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

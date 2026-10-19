@@ -207,6 +207,14 @@ window.Quarto = {
  <span class="dropdown-text">Matching</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./03c-propensity-scores.html">
+ <span class="dropdown-text">Propensity scores</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03d-inverse-probability-weighting.html">
+ <span class="dropdown-text">Inverse probability weighting</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./03-exercises.html">
  <span class="dropdown-text">Exercises</span></a>
   </li>  
@@ -359,6 +367,16 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./03b-matching.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Matching</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03c-propensity-scores.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Propensity scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03d-inverse-probability-weighting.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Inverse probability weighting</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -847,7 +865,7 @@ A\perp\!\!\!\perp Y\mid S.
 <p>The graph may contain other variables and branches. The important assumption is that there is only one path between the two endpoints.</p>
 <p>We use two elementary facts about independence:</p>
 <ul>
-<li>Functions of disjoint collections of mutually independent noise terms are independent.</li>
+<li>Functions of disjoint collections of independent noise terms are independent.</li>
 <li>If two collections of variables are conditionally independent given <span class="math inline">\(V\)</span>, conditioning additionally on variables from each collection preserves independence between what remains in the two collections.</li>
 </ul>
 <p>For the second fact, imagine fixing <span class="math inline">\(V=v\)</span>. The joint distribution of the two collections factors into a distribution for each collection. Conditioning separately on information from each collection preserves that factorization. The same statement applies without <span class="math inline">\(V\)</span> when the collections are independent to begin with.</p>
@@ -878,7 +896,7 @@ A\perp\!\!\!\perp Y\mid S.
 <p>First, neither endpoint can be a descendant of <span class="math inline">\(V\)</span>. A directed path from <span class="math inline">\(V\)</span> to either endpoint would give a second route to that endpoint: it cannot follow the original path, whose adjacent arrow points into <span class="math inline">\(V\)</span>. Combining that route with the original path would contradict uniqueness of the path between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>.</p>
 <p>Now remove <span class="math inline">\(V\)</span> and all its descendants. This removes neither endpoint nor any variable in <span class="math inline">\(S\)</span>.</p>
 <p>It also leaves a valid system of assignments for the remaining variables. No removed variable can be a parent of a remaining variable: a child of <span class="math inline">\(V\)</span> or of one of its descendants would itself be a descendant and would have been removed. We can therefore generate all remaining variables without using any of the removed assignments or noise terms.</p>
-<p>The remaining graph has no path between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>, because their unique path passed through <span class="math inline">\(V\)</span>. They now belong to different connected pieces. Each piece is generated from its own collection of noise terms, and those noise collections are mutually independent. Thus, the collections of variables in the different pieces are independent.</p>
+<p>The remaining graph has no path between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>, because their unique path passed through <span class="math inline">\(V\)</span>. They now belong to different connected pieces. Each piece is generated from its own collection of noise terms, and those noise collections are independent. Thus, the collections of variables in the different pieces are independent.</p>
 <p>Every variable in <span class="math inline">\(S\)</span> belongs to one of these remaining pieces. Conditioning on variables within the separate pieces preserves their independence. In particular,</p>
 <p><span class="math display">\[
 A\perp\!\!\!\perp Y\mid S.
@@ -1042,7 +1060,7 @@ X_3&amp;\leftarrow X_1+N_3,\\
 X_4&amp;\leftarrow X_3-X_2+N_4,
 \end{aligned}
 \]</span></p>
-<p>where the noise terms are mutually independent.</p>
+<p>where the noise terms are independent.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="images/02d-faithfulness.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A diamond-shaped causal graph with arrows from X1 to X2 and X3, and arrows from X2 and X3 to X4." width="600"></p>

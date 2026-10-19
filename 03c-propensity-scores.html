@@ -1,0 +1,1763 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Propensity scores – Causal inference (and other things)</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./03d-inverse-probability-weighting.html" rel="next">
+<link href="./03b-matching.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-a3414f3ffc8cedfe87f55cc0f2c68ceb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Causal inference (and other things)</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./00-syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-motivation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Motivation</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-motivation">    
+        <li>
+    <a class="dropdown-item" href="./01a-being-a-detective.html">
+ <span class="dropdown-text">Being a detective with data</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01b-why-probability-is-not-enough.html">
+ <span class="dropdown-text">Why probability is not enough</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01c-clinical-trials.html">
+ <span class="dropdown-text">Clinical trials as our exemplar</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01d-probability.html">
+ <span class="dropdown-text">Probability gives us a formal language</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-construction" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Construction</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-construction">    
+        <li>
+    <a class="dropdown-item" href="./02a-assignments.html">
+ <span class="dropdown-text">A list of assignments</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02b-structural-causal-models.html">
+ <span class="dropdown-text">Structural causal models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02c-causal-graphs.html">
+ <span class="dropdown-text">Causal graphs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02d-global-markov-property.html">
+ <span class="dropdown-text">Global Markov property</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02e-potential-outcomes.html">
+ <span class="dropdown-text">Potential outcomes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02f-single-world-intervention-graphs.html">
+ <span class="dropdown-text">Single-world intervention graphs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-measured-confounding" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Measured confounding</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-measured-confounding">    
+        <li>
+    <a class="dropdown-item" href="./03a-outcome-regression.html">
+ <span class="dropdown-text">Outcome regression</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03b-matching.html">
+ <span class="dropdown-text">Matching</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03c-propensity-scores.html">
+ <span class="dropdown-text">Propensity scores</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03d-inverse-probability-weighting.html">
+ <span class="dropdown-text">Inverse probability weighting</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-back-matter" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Back matter</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-back-matter">    
+        <li>
+    <a class="dropdown-item" href="./glossary.html">
+ <span class="dropdown-text">Glossary</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./references.html">
+ <span class="dropdown-text">References</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03a-outcome-regression.html">Measured confounding</a></li><li class="breadcrumb-item"><a href="./03c-propensity-scores.html"><span class="chapter-title">Propensity scores</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">index.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-syllabus.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Syllabus</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Motivation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01a-being-a-detective.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Being a detective with data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01b-why-probability-is-not-enough.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Why probability is not enough</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01c-clinical-trials.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Clinical trials as our exemplar</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01d-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Probability gives us a formal language</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Construction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02a-assignments.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">A list of assignments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02b-structural-causal-models.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Structural causal models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02c-causal-graphs.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Causal graphs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02d-global-markov-property.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Global Markov property</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02e-potential-outcomes.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Potential outcomes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02f-single-world-intervention-graphs.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Single-world intervention graphs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Measured confounding</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03a-outcome-regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Outcome regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03b-matching.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Matching</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03c-propensity-scores.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Propensity scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03d-inverse-probability-weighting.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Inverse probability weighting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Unmeasured confounding</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Sensitivity analysis</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Missing data</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Complex surveys</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Back matter</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Glossary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">References</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03a-outcome-regression.html">Measured confounding</a></li><li class="breadcrumb-item"><a href="./03c-propensity-scores.html"><span class="chapter-title">Propensity scores</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">Propensity scores</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03c-squirrel-propensity.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="The familiar squirrel struggles to fit an enormous patient file into a tiny wallet, with one card marked 0.30 sticking out. Vintage paperback-style ink illustration." width="700"></p>
+</figure>
+</div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>So far, we have adjusted for the full covariate vector <span class="math inline">\(X\)</span>. But <span class="math inline">\(X\)</span> may contain dozens, hundreds, or even thousands of variables. How much of it do we actually need? Must we carry every covariate along, or can we compress the information that matters for adjustment into something much smaller?</p>
+<p>Think about the RHC study. A patient’s age, diagnosis, blood pressure, and laboratory results may all help explain whether they receive RHC, and a realistic analysis would include many more. Two patients can differ substantially on nearly every one of these covariates and still have exactly the same probability of receiving the procedure. Remarkably, that single number, the probability of treatment given covariates, can be enough for adjustment.</p>
+<p>Take a binary exposure <span class="math inline">\(A\)</span>, and start with our measured-confounding SCM,</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow f_X(\epsilon_X),\\
+A&amp;\leftarrow f_A(X,\epsilon_A),\\
+Y&amp;\leftarrow f_Y(A,X,\epsilon_Y),
+\end{aligned}
+\]</span></p>
+<p>with independent noise terms. Our question is whether we can rewrite the assignment for <span class="math inline">\(A\)</span> using a summary of <span class="math inline">\(X\)</span>.</p>
+</section>
+<section id="propensity-score" class="level2">
+<h2 class="anchored" data-anchor-id="propensity-score">Propensity score</h2>
+<p>Consider each person’s probability of receiving treatment.</p>
+<div class="definition-box">
+<p>The <strong>propensity score</strong> is the probability of receiving treatment conditional on the baseline covariates:</p>
+<p><span class="math display">\[
+e(X)=P(A=1\mid X).
+\]</span></p>
+<p>We write <span class="math inline">\(E=e(X)\)</span> for the variable that records this probability.</p>
+</div>
+<p>Regardless of how many variables we collect in <span class="math inline">\(X\)</span>, the propensity score is one number. Different covariate profiles can have exactly the same propensity score.</p>
+<div class="example-intro">
+<p><span class="example-label">Example.</span> Suppose the propensity score for a hypothetical SCM is</p>
+<p><span class="math display">\[
+e(X)=0.10+0.001\,\text{age}+0.001\,\text{blood pressure},
+\]</span></p>
+<p>where <span class="math inline">\(X = (\text{age},\text{blood pressure})\)</span>.</p>
+</div>
+<p>For a 40-year-old patient with blood pressure 160, the probability of receiving treatment is</p>
+<p><span class="math display">\[
+e(40,160)=0.10+0.04+0.16=0.30.
+\]</span></p>
+<p>Now consider a 60-year-old patient with blood pressure 140. This patient is older but has lower blood pressure. Under our model, those differences offset one another:</p>
+<p><span class="math display">\[
+e(60,140)=0.10+0.06+0.14=0.30.
+\]</span></p>
+<p>Both patients have the same propensity-score value, <span class="math inline">\(E=0.30\)</span>, despite having different values of both covariates.</p>
+<p>This is dimension reduction. We started with two numbers describing each patient and summarized them with one. Knowing that the score is <span class="math inline">\(0.30\)</span> does not tell us which age and blood pressure produced it.</p>
+<details class="lesson-question">
+<summary>
+A third patient is 50 years old. What blood pressure would give this patient the same propensity score, <span class="math inline">\(E=0.30\)</span>?
+</summary>
+<p>A blood pressure of 150 gives the 50-year-old patient a propensity score of <span class="math inline">\(0.30\)</span>.</p>
+<p>Another possibility is a 70-year-old patient with blood pressure 130. In this model, increasing age by ten years and decreasing blood pressure by ten leaves the treatment probability unchanged.</p>
+<p>These patients need not have the same covariates to have the same propensity score.</p>
+</details>
+<p>With more covariates, the reduction could be much larger: dozens of measurements summarized by one probability.</p>
+</section>
+<section id="identification-with-the-propensity-score" class="level2">
+<h2 class="anchored" data-anchor-id="identification-with-the-propensity-score">Identification with the propensity score</h2>
+<p>We have compressed covariates into a single number, the propensity score <span class="math inline">\(E=e(X)\)</span>. Our goal is to show that the propensity score can take the place of the covariates in the identification formula. We will do this by constructing a treatment assignment that uses only <span class="math inline">\(E\)</span>, then following the resulting SCM through to its potential outcomes.</p>
+<p>First, add <span class="math inline">\(E\)</span> to the original SCM:</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow f_X(\epsilon_X),\\
+E&amp;\leftarrow e(X),\\
+A&amp;\leftarrow f_A(X,\epsilon_A),\\
+Y&amp;\leftarrow f_Y(A,X,\epsilon_Y).
+\end{aligned}
+\]</span></p>
+<p>The original noise terms are independent. The assignment for <span class="math inline">\(E\)</span> simply calculates the propensity score from <span class="math inline">\(X\)</span>. It requires no additional noise and leaves the original assignments unchanged.</p>
+<p>Now consider another way to generate treatment. Because <span class="math inline">\(A\)</span> is binary, its conditional distribution is determined by its probability of being <span class="math inline">\(1\)</span>. For patients with a given value of <span class="math inline">\(X\)</span>, that probability is <span class="math inline">\(e(X)\)</span>, which we have recorded in <span class="math inline">\(E\)</span>.</p>
+<p>Draw a new noise variable <span class="math inline">\(U_A\)</span> uniformly from <span class="math inline">\([0,1]\)</span>, independently of <span class="math inline">\(\epsilon_X\)</span> and <span class="math inline">\(\epsilon_Y\)</span>. Assign treatment when this number is at most <span class="math inline">\(E\)</span>, and assign no treatment otherwise. For example, when <span class="math inline">\(E=0.30\)</span>, the first <span class="math inline">\(30\%\)</span> of the interval produces treatment and the remaining <span class="math inline">\(70\%\)</span> produces no treatment. This procedure gives the required treatment probability.</p>
+<p>We write <span class="math inline">\(A^*\)</span> for the treatment generated by this new procedure. We also give the resulting outcome a new name, <span class="math inline">\(Y^*\)</span>, because its assignment now receives <span class="math inline">\(A^*\)</span> as its treatment input. The full SCM is</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow f_X(\epsilon_X),\\
+E&amp;\leftarrow e(X),\\
+A^*&amp;\leftarrow
+\begin{cases}
+1,&amp; U_A\leq E,\\
+0,&amp; U_A&gt;E,
+\end{cases}\\
+Y^*&amp;\leftarrow f_Y(A^*,X,\epsilon_Y).
+\end{aligned}
+\]</span></p>
+<p>The variables <span class="math inline">\((X,E,A,Y)\)</span> and <span class="math inline">\((X,E,A^*,Y^*)\)</span> have the same joint distribution. To see why, fix a covariate value <span class="math inline">\(X=x\)</span>. Both treatment assignments produce treatment with probability <span class="math inline">\(e(x)\)</span> and no treatment with probability <span class="math inline">\(1-e(x)\)</span>. Both also use treatment noise that is independent of the outcome noise. Once the treatment value is supplied, the outcome is generated using the same function <span class="math inline">\(f_Y\)</span> and the same outcome-noise distribution.</p>
+<p>Since these joint distributions agree, we will work with the new representation and write <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> in place of <span class="math inline">\(A^*\)</span> and <span class="math inline">\(Y^*\)</span> from now on.</p>
+<p>Its causal graph is</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03c-propensity-rewritten-graph.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Causal graph of the new SCM. X points to E and Y. E points to A, and A points to Y." width="700"></p>
+</figure>
+</div>
+<p>The treatment assignment now receives the information from <span class="math inline">\(X\)</span> through <span class="math inline">\(E\)</span>. The outcome assignment still uses <span class="math inline">\(X\)</span> directly. Compressing the information used for treatment has not removed the covariates from the outcome assignment.</p>
+<p>Next, define potential outcomes for an intervention on <span class="math inline">\(A\)</span> with value <span class="math inline">\(a\)</span>. We use the same procedure as before: rename the variables and substitute <span class="math inline">\(a\)</span> wherever the intervened treatment would be used on the right-hand side. Causal irrelevance lets us simplify the baseline variables and the naturally generated treatment, giving <span class="math inline">\(X(a)=X\)</span>, <span class="math inline">\(E(a)=E\)</span>, and <span class="math inline">\(A(a)=A\)</span>. The assignments become</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow f_X(\epsilon_X),\\
+E&amp;\leftarrow e(X),\\
+A&amp;\leftarrow
+\begin{cases}
+1,&amp; U_A\leq E,\\
+0,&amp; U_A&gt;E,
+\end{cases}\\
+Y(a)&amp;\leftarrow f_Y(a,X,\epsilon_Y).
+\end{aligned}
+\]</span></p>
+<p>We still generate the natural treatment <span class="math inline">\(A\)</span>, but the outcome assignment now receives the fixed value <span class="math inline">\(a\)</span>.</p>
+<p>The outcome assignment under intervention is unchanged from the original SCM. It uses the same function, covariates, intervention value, and outcome noise. Thus, the new representation preserves the potential outcome we originally wanted to study.</p>
+<p>We can now construct its SWIG:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03c-propensity-summary-swig.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="SWIG of the new SCM after causal irrelevance. X points to E and Y of a. E points to natural treatment A. The separate fixed value a points to Y of a. A and a are adjacent circles with a gap." width="700"></p>
+</figure>
+</div>
+<p>The arrow from the natural treatment to the outcome is gone. The fixed intervention value <span class="math inline">\(a\)</span> supplies that input instead. The remaining path between <span class="math inline">\(A\)</span> and <span class="math inline">\(Y(a)\)</span> runs through <span class="math inline">\(E\)</span> and <span class="math inline">\(X\)</span>. Conditioning on <span class="math inline">\(E\)</span> blocks this path, so the global Markov property gives</p>
+<p><span class="math display">\[
+A\mathrel{\perp\!\!\!\perp}Y(a)\mid E.
+\]</span></p>
+<p>Among people with the same propensity score, learning their naturally generated treatment provides no additional information about their potential outcome. We have obtained conditional exchangeability using one number, even though <span class="math inline">\(X\)</span> may contain many covariates.</p>
+<p>The rest follows the identification argument we used for outcome regression. Conditional exchangeability allows us to condition additionally on <span class="math inline">\(A=a\)</span> without changing the conditional mean of <span class="math inline">\(Y(a)\)</span>. Among people with that treatment value, consistency then lets us use their observed outcome <span class="math inline">\(Y\)</span>. In equations,</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[Y(a)\mid E\right]
+&amp;=E\left[Y(a)\mid E,A=a\right]\\
+&amp;=E\left[Y\mid E,A=a\right].
+\end{aligned}
+\]</span></p>
+<p>Finally, average over the propensity score using iterated expectations. Since the new representation preserves both the potential outcome and the observed-data distribution, this identifies our original causal quantity.</p>
+<div class="proposition-box">
+<p>Under the measured-confounding SCM, with the relevant conditional means defined,</p>
+<p><span class="math display">\[
+E\left[Y(a)\right]
+=E\left[E\left[Y\mid E,A=a\right]\right].
+\]</span></p>
+</div>
+<p>The inner mean describes the outcome at a particular propensity score and treatment value. The outer expectation averages these means over the propensity scores. This has the same form as our earlier identification result, with <span class="math inline">\(E\)</span> taking the place of <span class="math inline">\(X\)</span>.</p>
+</section>
+<section id="estimating-the-propensity-score" class="level2">
+<h2 class="anchored" data-anchor-id="estimating-the-propensity-score">Estimating the propensity score</h2>
+<p>We estimate <span class="math inline">\(e(X)\)</span> by treating the binary exposure <span class="math inline">\(A\)</span> as the response. As with outcome regression, we can count within covariate groups or fit a regression model.</p>
+<p>Write <span class="math inline">\(\hat e(x)\)</span> for the estimated probability at covariates <span class="math inline">\(x\)</span>. The <code>score</code> column in our data records <span class="math inline">\(\hat E=\hat e(X)\)</span>, an estimate of the true propensity-score variable <span class="math inline">\(E=e(X)\)</span>.</p>
+<div class="example-intro">
+<p><span class="example-label">Example: Wildfire smoke and asthma</span></p>
+<p>Return to our 10,000 generated observations, with <span class="math inline">\(X\)</span> indicating unhealthy wildfire smoke, <span class="math inline">\(A\)</span> staying indoors, and <span class="math inline">\(Y\)</span> asthma symptoms. As before, assume the people are i.i.d.</p>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">X</th>
+<th style="text-align: right;">Untreated</th>
+<th style="text-align: right;">Treated</th>
+<th style="text-align: right;">Total</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3038</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: right;">5036</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1944</td>
+<td style="text-align: right;">3020</td>
+<td style="text-align: right;">4964</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>For each value of <span class="math inline">\(X\)</span>, estimate the probability of staying indoors by dividing the number who stayed indoors by the group total:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat e(0)&amp;=\frac{1998}{5036}\approx 0.40,\\
+\hat e(1)&amp;=\frac{3020}{4964}\approx 0.61.
+\end{aligned}
+\]</span></p>
+<p>Assign each person the score for their value of <span class="math inline">\(X\)</span>. Add that score to our four combinations of <span class="math inline">\(X\)</span> and <span class="math inline">\(A\)</span>:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;"><span class="math inline">\(X\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat E\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.40</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.40</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.61</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.61</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>People with the same <span class="math inline">\(X\)</span> receive the same score, whether or not they stayed indoors.</p>
+<p>With more covariates or continuous covariates, we may have few observations at each combination. We can use logistic regression instead.</p>
+<div class="example-intro">
+<p><span class="example-label">Example: Smoking and birth weight</span></p>
+<p>Use the same 189 births. Let <span class="math inline">\(A\)</span> indicate smoking during pregnancy, with <span class="math inline">\(1\)</span> for smoking and <span class="math inline">\(0\)</span> for not smoking. As in matching, collect maternal age and weight into <span class="math inline">\(X\)</span>. Retain our i.i.d. and measured-confounding assumptions.</p>
+</div>
+<p>Regress smoking on maternal age and weight. Each mother contributes her recorded covariates and smoking status. The fitted model estimates the probability of smoking for a given combination of age and weight:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ps_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(smoke <span class="sc">~</span> age <span class="sc">+</span> lwt, <span class="at">family =</span> <span class="fu">binomial</span>(), <span class="at">data =</span> birthwt_ps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The fitted equation is</p>
+<p><span class="math display">\[
+\log\left[\frac{\hat e(X)}{1-\hat e(X)}\right]
+\approx 0.23
+-0.0147\,\text{age}
+-0.0026\,\text{weight}.
+\]</span></p>
+<p>Age is in years and weight in pounds. Plug the covariates of a 20-year-old mother weighing 120 pounds into the fitted model.</p>
+<p>The fitted log odds are approximately -0.37. Transforming back gives her estimated probability of smoking:</p>
+<p><span class="math display">\[
+\hat e(20,120)
+\approx\frac{\exp\left(-0.37\right)}
+{1+\exp\left(-0.37\right)}
+\approx 0.41.
+\]</span></p>
+<p>Repeat this calculation for each mother using her recorded age and weight. The <span class="math inline">\(\hat E\)</span> column contains her estimated probability of smoking. Here are the first four:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Mother</th>
+<th style="text-align: right;">Age</th>
+<th style="text-align: right;">Weight</th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat E\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">182</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.37</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.34</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">105</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.42</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">108</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.41</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="using-the-propensity-score" class="level2">
+<h2 class="anchored" data-anchor-id="using-the-propensity-score">Using the propensity score</h2>
+<p>We can use propensity scores for standardization, outcome regression, or matching. We will work through outcome regression and matching using the birth-weight data.</p>
+<p>We now need the expected outcome at a given score and treatment value. Write this conditional mean as</p>
+<p><span class="math display">\[
+\mu(s,a)=E\left[Y\mid E=s,A=a\right].
+\]</span></p>
+<p>Here, <span class="math inline">\(s\)</span> is a particular numerical score, such as <span class="math inline">\(0.41\)</span>, and <span class="math inline">\(a\)</span> is a treatment value. To recover the mean potential outcome, our identification result tells us to average these conditional means over the scores:</p>
+<p><span class="math display">\[
+E\left[Y(a)\right]=E\left[\mu(E,a)\right].
+\]</span></p>
+<p>In the data, we use <span class="math inline">\(\hat E\)</span> in place of the unknown <span class="math inline">\(E\)</span>. For person <span class="math inline">\(i\)</span> with observed covariates <span class="math inline">\(x_i\)</span>, the estimated score is the number <span class="math inline">\(\hat e(x_i)\)</span>. We plug that number into the fitted outcome model at each treatment value, then average the predictions over people’s estimated scores.</p>
+<section id="outcome-regression" class="level3">
+<h3 class="anchored" data-anchor-id="outcome-regression">Outcome regression</h3>
+<p>We have estimated each mother’s probability of smoking. We can now use that probability in the outcome regression.</p>
+<div class="main-point">
+<p>Replace the original covariates <span class="math inline">\(X\)</span> with the estimated propensity score <span class="math inline">\(\hat e(X)\)</span> in the outcome regression. Then proceed as before: predict under each treatment value, keeping each person’s score fixed, and average the predictions.</p>
+</div>
+<div class="example-intro">
+<p><span class="example-label">Example: Smoking and birth weight</span></p>
+<p>Return to the 189 mothers in the birth-weight dataset. As in our matching analysis, collect maternal age and weight in <span class="math inline">\(X\)</span>. We have estimated each mother’s probability of smoking from these two covariates. Let <span class="math inline">\(A\)</span> indicate smoking during pregnancy and <span class="math inline">\(Y\)</span> be infant birth weight in grams.</p>
+</div>
+<p>For these mothers, regress birth weight on the estimated score and smoking. The score summarizes age and weight, so those covariates enter the regression through the score. The fitted model describes mean birth weight at each score and smoking value:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>birthwt_score_fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(bwt <span class="sc">~</span> score <span class="sc">+</span> smoke, <span class="at">data =</span> birthwt_ps)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The fitted conditional mean is</p>
+<p><span class="math display">\[
+\hat\mu(s,a)
+\approx 4761.53
+-4371.60s
+-268.97a.
+\]</span></p>
+<p>Consider the 20-year-old mother weighing 120 pounds from our propensity-score calculation. Her estimated score is <span class="math inline">\(\hat e(20,120)\approx 0.41\)</span>. Keep that score fixed and substitute each smoking value. The prediction dataset <code>mother_score_120</code> contains two rows with the same score and smoking set to <span class="math inline">\(1\)</span> or <span class="math inline">\(0\)</span>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>birthwt_score_120 <span class="ot">&lt;-</span> <span class="fu">predict</span>(birthwt_score_fit, <span class="at">newdata =</span> mother_score_120)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>These are the same substitutions we used with the original covariates:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\hat\mu\left(\hat e(20,120),1\right)
+&amp;\approx 4761.53
+-4371.60\hat e(20,120)
+-268.97(1)
+\approx 2706.25,\\
+\hat\mu\left(\hat e(20,120),0\right)
+&amp;\approx 4761.53
+-4371.60\hat e(20,120)
+-268.97(0)
+\approx 2975.23.
+\end{aligned}
+\]</span></p>
+<p>These estimate mean infant birth weights under smoking and not smoking for mothers with this score. By using the score in place of the original covariates, we give everyone with the same estimated score the same pair of predictions.</p>
+<p>Repeat the operation for everyone. Keep each mother’s score and change only the smoking value.</p>
+<p>Here are the predictions for the same first four mothers we used earlier. We retain their observed smoking status and infant birth weight for comparison. The last two columns give the predictions under smoking and not smoking, using each mother’s same score in both calculations:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 4%">
+<col style="width: 7%">
+<col style="width: 3%">
+<col style="width: 10%">
+<col style="width: 5%">
+<col style="width: 22%">
+<col style="width: 22%">
+<col style="width: 22%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Age</th>
+<th style="text-align: right;">Weight</th>
+<th style="text-align: right;">A</th>
+<th style="text-align: right;"><span class="math inline">\(\hat E\)</span></th>
+<th style="text-align: right;">Y</th>
+<th style="text-align: right;"><span class="math inline">\(\hat\mu(\hat E,A)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat\mu(\hat E,1)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat\mu(\hat E,0)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">182</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.37</td>
+<td style="text-align: right;">2523</td>
+<td style="text-align: right;">3125.04</td>
+<td style="text-align: right;">2856.07</td>
+<td style="text-align: right;">3125.04</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">2551</td>
+<td style="text-align: right;">3262.89</td>
+<td style="text-align: right;">2993.91</td>
+<td style="text-align: right;">3262.89</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">105</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.42</td>
+<td style="text-align: right;">2557</td>
+<td style="text-align: right;">2665.57</td>
+<td style="text-align: right;">2665.57</td>
+<td style="text-align: right;">2934.54</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">108</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.41</td>
+<td style="text-align: right;">2594</td>
+<td style="text-align: right;">2689.35</td>
+<td style="text-align: right;">2689.35</td>
+<td style="text-align: right;">2958.33</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>For each treatment value, <span class="math inline">\(\hat\mu(\hat E,a)\)</span> is a function of the estimated score. Estimate its mean by averaging the predictions over all 189 mothers. Using everyone in both averages keeps the distribution of scores the same for the two smoking values.</p>
+<p>This gives</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[Y(1)\right]&amp;\approx 2780.93\text{ grams},\\
+E\left[Y(0)\right]&amp;\approx 3049.90\text{ grams},\\
+\operatorname{ATE}&amp;\approx -268.97\text{ grams}.
+\end{aligned}
+\]</span></p>
+<p>Under our working SCM and regression model, smoking lowers mean infant birth weight by an estimated 268.97 grams. As before, the ATE equals the smoking coefficient because this is a linear model without treatment interactions.</p>
+<div class="example-intro">
+<p><span class="example-label">Example: Smoking and low birth weight</span></p>
+<p>Now use <code>low</code> as the outcome, indicating infant birth weight below 2,500 grams. Keep the same estimated propensity scores and smoking variable.</p>
+</div>
+<p>Fit logistic regression with low birth weight as the response. Because this outcome is either <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span>, its conditional mean is the probability of low birth weight. We keep smoking and the estimated score as the predictors:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>birthwt_score_logistic_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  low <span class="sc">~</span> score <span class="sc">+</span> smoke,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> birthwt_ps</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The fitted equation is on the log-odds scale:</p>
+<p><span class="math display">\[
+\operatorname{logit}\{\hat\mu(s,a)\}
+\approx -7.14
++15.40s
++0.67a.
+\]</span></p>
+<p>For our 20-year-old, 120-pound mother, substituting her score and <span class="math inline">\(a=1\)</span> gives fitted log odds of approximately -0.17. Transform back to obtain the probability:</p>
+<p><span class="math display">\[
+\hat\mu\left(\hat e(20,120),1\right)
+\approx\frac{\exp(-0.17)}
+{1+\exp(-0.17)}
+\approx 0.46.
+\]</span></p>
+<p>For the nonsmoking prediction, keep her score fixed and substitute <span class="math inline">\(a=0\)</span>. Her score was calculated from her age and weight, which remain the same. We change the smoking input to the outcome model, giving</p>
+<p><span class="math display">\[
+\hat\mu\left(\hat e(20,120),0\right)
+\approx\frac{\exp(-0.85)}
+{1+\exp(-0.85)}
+\approx 0.30.
+\]</span></p>
+<p>Under our working model, these are estimated probabilities of low birth weight under smoking and not smoking for mothers with her score. Repeat the calculations for every mother.</p>
+<p>For the same four mothers, the estimated conditional means are now probabilities. Each mother’s observed outcome is <span class="math inline">\(0\)</span> or <span class="math inline">\(1\)</span>, while the prediction columns describe her estimated probability of low birth weight under each smoking value:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 4%">
+<col style="width: 8%">
+<col style="width: 3%">
+<col style="width: 10%">
+<col style="width: 3%">
+<col style="width: 23%">
+<col style="width: 23%">
+<col style="width: 23%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;">Age</th>
+<th style="text-align: right;">Weight</th>
+<th style="text-align: right;">A</th>
+<th style="text-align: right;"><span class="math inline">\(\hat E\)</span></th>
+<th style="text-align: right;">Y</th>
+<th style="text-align: right;"><span class="math inline">\(\hat\mu(\hat E,A)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat\mu(\hat E,1)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat\mu(\hat E,0)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">182</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.37</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">0.33</td>
+<td style="text-align: right;">0.20</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.34</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.13</td>
+<td style="text-align: right;">0.23</td>
+<td style="text-align: right;">0.13</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">105</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.42</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.49</td>
+<td style="text-align: right;">0.49</td>
+<td style="text-align: right;">0.33</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">108</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.41</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.47</td>
+<td style="text-align: right;">0.47</td>
+<td style="text-align: right;">0.31</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Average each prediction column across all 189 mothers, then compare the two averages.</p>
+<p>The estimated risks are <span class="math inline">\(E\left[Y(1)\right]\approx 0.40\)</span> and <span class="math inline">\(E\left[Y(0)\right]\approx 0.26\)</span>. Therefore,</p>
+<p><span class="math display">\[
+\begin{aligned}
+\operatorname{ATE}
+&amp;=E\left[Y(1)\right]-E\left[Y(0)\right]
+\approx 0.14,\\
+\text{Causal relative risk}
+&amp;=\frac{E\left[Y(1)\right]}{E\left[Y(0)\right]}
+\approx 1.55,\\
+\text{Causal odds ratio}
+&amp;=\frac{E\left[Y(1)\right]/\left(1-E\left[Y(1)\right]\right)}
+{E\left[Y(0)\right]/\left(1-E\left[Y(0)\right]\right)}
+\approx 1.92.
+\end{aligned}
+\]</span></p>
+<p>We estimate that smoking increases the risk of low birth weight by 14.2 percentage points. The risk is approximately 1.55 times as large under smoking, and the odds are approximately 1.92 times as large.</p>
+</section>
+<section id="matching" class="level3">
+<h3 class="anchored" data-anchor-id="matching">Matching</h3>
+<p>Matching uses a distance to decide which people are similar. Once we have estimated their treatment probabilities, we can measure that distance using the scores.</p>
+<div class="main-point">
+<p>Use the difference between estimated propensity scores as the distance between two people:</p>
+<p><span class="math display">\[
+d(x_i,x_j)=\left|\hat e(x_i)-\hat e(x_j)\right|.
+\]</span></p>
+<p>Find matches in the opposite exposure group using this distance. Then check balance in the original covariates and combine the outcome comparisons as before.</p>
+</div>
+<div class="example-intro">
+<p><span class="example-label">Example: Smoking and birth weight</span></p>
+<p>Use the same 189 mothers, with smoking as <span class="math inline">\(A\)</span>, infant birth weight as <span class="math inline">\(Y\)</span>, and maternal age and weight collected in <span class="math inline">\(X\)</span>. We will find one nonsmoking match for each mother who smoked to estimate the ATT, allowing a nonsmoker to be reused.</p>
+</div>
+<p>Consider mother 4, who smoked during pregnancy. She is 21 years old and weighs 108 pounds. Her estimated probability of smoking is 0.41248.</p>
+<p>We need a nonsmoking comparison. Search among the nonsmokers for the person whose estimated probability of smoking is closest to hers. This selects mother 135:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Mother</th>
+<th style="text-align: right;">Age</th>
+<th style="text-align: right;">Weight</th>
+<th style="text-align: right;">Smoking</th>
+<th style="text-align: right;">Estimated propensity score</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">108</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.41248</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">135</td>
+<td style="text-align: right;">25</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.41246</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Their ages and weights differ, but their estimated treatment probabilities are almost identical. We selected the match using the difference between those probabilities.</p>
+<p>Mother 4’s infant weighed 2594 grams. Her matched nonsmoker’s infant weighed 1474 grams. Her own outcome supplies the smoking side of the comparison, and the matched nonsmoker supplies the nonsmoking side. Their difference is</p>
+<p><span class="math display">\[
+2594
+-1474
+=1120\text{ grams}.
+\]</span></p>
+<p>This is one noisy comparison of smoking versus not smoking. Repeat the procedure for each of the 74 mothers who smoked, then average their matched outcome differences. That average estimates the ATT.</p>
+<p>In R, use the same MatchIt call as before, supplying our scores as the distance. This automates the search we just performed for mother 4, selecting a nonsmoking match for every smoker:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>birthwt_ps_nearest <span class="ot">&lt;-</span> MatchIt<span class="sc">::</span><span class="fu">matchit</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  smoke <span class="sc">~</span> age <span class="sc">+</span> lwt,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> birthwt_ps,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"nearest"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">distance =</span> birthwt_ps<span class="sc">$</span>score,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">estimand =</span> <span class="st">"ATT"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ratio =</span> <span class="dv">1</span>,</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">replace =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">m.order =</span> <span class="st">"data"</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>ratio = 1</code> requests one nonsmoking match per smoker, and <code>replace = TRUE</code> allows a nonsmoker to serve as a match more than once. For each selected pair, subtract the matched nonsmoker’s outcome from the smoker’s.</p>
+<p>Here are the first four outcome comparisons, in grams:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Smoker</th>
+<th style="text-align: right;">Match</th>
+<th style="text-align: right;">Smoker’s outcome</th>
+<th style="text-align: right;">Match’s outcome</th>
+<th style="text-align: right;">Difference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">182</td>
+<td style="text-align: right;">2557</td>
+<td style="text-align: right;">2450</td>
+<td style="text-align: right;">107</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">135</td>
+<td style="text-align: right;">2594</td>
+<td style="text-align: right;">1474</td>
+<td style="text-align: right;">1120</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">31</td>
+<td style="text-align: right;">2600</td>
+<td style="text-align: right;">2920</td>
+<td style="text-align: right;">-320</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">118</td>
+<td style="text-align: right;">2663</td>
+<td style="text-align: right;">3969</td>
+<td style="text-align: right;">-1306</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The positive and negative outcome differences all contribute to the average. A reused nonsmoker appears in each comparison for which she was selected, so we have one difference per smoker. After checking covariate balance as described in the next subsection, take the sample mean of all 74 differences.</p>
+<p>This gives</p>
+<p><span class="math display">\[
+E\left[Y(1)-Y(0)\mid A=1\right]
+\approx -96.38\text{ grams}.
+\]</span></p>
+<p>Under our SCM, we estimate that smoking lowers mean infant birth weight by 96.38 grams among the mothers who originally smoked.</p>
+</section>
+</section>
+<section id="balancing" class="level2">
+<h2 class="anchored" data-anchor-id="balancing">Balancing</h2>
+<p>Because the treatment assignment uses <span class="math inline">\(X\)</span> only through the propensity score <span class="math inline">\(E\)</span>, its causal graph implies</p>
+<p><span class="math display">\[
+A\mathrel{\perp\!\!\!\perp}X\mid E.
+\]</span></p>
+<p>In words: among people with the same propensity score, the treated and untreated groups have the same distribution of measured covariates. We say the propensity score balances the covariates.</p>
+<p>In practice, we never know the true score. We estimate it, and we compare people whose scores are close rather than identical. So we check whether balance actually holds in the original covariates, using the same calculations we used for matching.</p>
+<div class="example-intro">
+<p><span class="example-label">Example: Checking balance in the birth-weight data</span></p>
+<p>Return to our nearest-neighbor pairs. Compare maternal age and weight between smokers and nonsmokers before and after matching.</p>
+</div>
+<p>The plot compares covariate balance before and after matching. We selected matches using one score, but we check maternal age and weight separately. Values closer to zero indicate better balance; the line marks the usual <span class="math inline">\(0.10\)</span> guide.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03c-propensity-scores_files/figure-html/plot-birthweight-propensity-balance-1.png" class="img-fluid figure-img" alt="Absolute standardized differences in maternal age and weight before and after propensity-score matching." width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Matching brings the standardized mean differences for both maternal age and weight closer to zero.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note: propensity scores in practice">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical note: propensity scores in practice
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The balancing property is a theoretical result about the true propensity score. In practice, we must estimate that score and decide how to use it. Both choices affect the balance we achieve.</p>
+<ol type="1">
+<li><p>Estimating the score. We fitted logistic regression to describe smoking probabilities using maternal age and weight. The covariate balancing propensity score (CBPS) approach makes covariate balance part of estimating the model’s coefficients <span class="citation" data-cites="imai_ratkovic_2014">(<a href="references.html#ref-imai_ratkovic_2014" role="doc-biblioref">Imai and Ratkovic 2014</a>)</span>. For our example, this would mean using conditions that bring weighted mean age and weight closer together between smokers and nonsmokers. The model can still be logistic regression, and the target remains <span class="math inline">\(e(X)=P(A=1\mid X)\)</span>.</p></li>
+<li><p>Using the score for matching. Close propensity scores do not guarantee that our matched comparisons balance the original covariates. King and Nielsen <span class="citation" data-cites="king2019matching">(<a href="references.html#ref-king2019matching" role="doc-biblioref">2019</a>)</span> show that propensity-score matching can increase covariate imbalance and recommend other matching methods. Their critique gives us a reason to evaluate the actual comparisons we construct, rather than relying on closeness of the scores alone.</p></li>
+</ol>
+</div>
+</div>
+</div>
+<p>Other summaries of <span class="math inline">\(X\)</span> can also balance the covariates. We call them <em>balancing scores.</em></p>
+<div class="definition-box">
+<p>A variable <span class="math inline">\(B=b(X)\)</span> is a <strong>balancing score</strong> if we can represent the same joint distribution of <span class="math inline">\((X,B,A,Y)\)</span> using an SCM of the form</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow f_X(\epsilon_X),\\
+B&amp;\leftarrow b(X),\\
+A&amp;\leftarrow g_A(B,U_A),\\
+Y&amp;\leftarrow f_Y(A,X,\epsilon_Y),
+\end{aligned}
+\]</span></p>
+<p>where <span class="math inline">\(\epsilon_X,U_A,\epsilon_Y\)</span> are independent.</p>
+</div>
+<p>For example, <span class="math inline">\(b(X)=X\)</span> is a balancing score, as is <span class="math inline">\(b(X)=e(X)\)</span>.</p>
+<div class="proposition-box">
+<p>If <span class="math inline">\(b(X)\)</span> is a balancing score, then there is a function <span class="math inline">\(f\)</span> such that</p>
+<p><span class="math display">\[
+e(X)=f(b(X))
+\]</span></p>
+<p>almost surely <span class="citation" data-cites="rosenbaum_rubin_1983">(<a href="references.html#ref-rosenbaum_rubin_1983" role="doc-biblioref">Rosenbaum and Rubin 1983</a>)</span>.</p>
+</div>
+<p>Knowing <span class="math inline">\(b(X)\)</span> therefore lets us calculate <span class="math inline">\(e(X)\)</span>. A balancing score can retain more information, such as both the propensity score and age. This is the sense in which the propensity score is the smallest summary of <span class="math inline">\(X\)</span> that balances the covariates.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note: why balancing scores retain the propensity score">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical note: why balancing scores retain the propensity score
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>For a binary exposure, <span class="math inline">\(b(X)\)</span> is a balancing score if and only if there is a function <span class="math inline">\(f\)</span> such that <span class="math inline">\(e(X)=f(b(X))\)</span> with probability one <span class="citation" data-cites="rosenbaum_rubin_1983">(<a href="references.html#ref-rosenbaum_rubin_1983" role="doc-biblioref">Rosenbaum and Rubin 1983</a>)</span>.</p>
+<p>First suppose <span class="math inline">\(b(X)\)</span> is a balancing score. In its SCM representation, <span class="math inline">\(A\)</span> uses only <span class="math inline">\(b(X)\)</span> and noise independent of <span class="math inline">\(X\)</span>, giving <span class="math inline">\(A\mathrel{\perp\!\!\!\perp}X\mid b(X)\)</span>. Since <span class="math inline">\(b(X)\)</span> is determined by <span class="math inline">\(X\)</span>,</p>
+<p><span class="math display">\[
+\begin{aligned}
+P(A=1\mid b(X))
+&amp;=P(A=1\mid X,b(X))\\
+&amp;=P(A=1\mid X)\\
+&amp;=e(X).
+\end{aligned}
+\]</span></p>
+<p>The first equality uses balance. The left side is a function of <span class="math inline">\(b(X)\)</span>, so it supplies the required function <span class="math inline">\(f\)</span>.</p>
+<p>Conversely, suppose <span class="math inline">\(e(X)=f(b(X))\)</span>. By iterated expectations,</p>
+<p><span class="math display">\[
+\begin{aligned}
+P(A=1\mid b(X))
+&amp;=E\left[P(A=1\mid X,b(X))\mid b(X)\right]\\
+&amp;=E\left[e(X)\mid b(X)\right]\\
+&amp;=e(X).
+\end{aligned}
+\]</span></p>
+<p>The last equality holds because <span class="math inline">\(b(X)\)</span> determines <span class="math inline">\(e(X)\)</span>. Also, <span class="math inline">\(P(A=1\mid X,b(X))=e(X)\)</span>. Thus learning <span class="math inline">\(X\)</span> in addition to <span class="math inline">\(b(X)\)</span> does not change the conditional probability of <span class="math inline">\(A=1\)</span>. Because <span class="math inline">\(A\)</span> is binary, the same holds for <span class="math inline">\(A=0\)</span>. To obtain the SCM representation in our definition, draw <span class="math inline">\(U_A\)</span> uniformly from <span class="math inline">\([0,1]\)</span>, independently of the original covariate and outcome noise. Assign <span class="math inline">\(A=1\)</span> when <span class="math inline">\(U_A\leq f(b(X))\)</span> and <span class="math inline">\(A=0\)</span> otherwise. Retaining the original assignments for <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> then gives the same joint distribution, since the treatment probability is still <span class="math inline">\(e(X)\)</span>. Thus, <span class="math inline">\(b(X)\)</span> is a balancing score.</p>
+<p>Taking <span class="math inline">\(b(X)=e(X)\)</span> proves that the propensity score is itself a balancing score. A transformation of <span class="math inline">\(e(X)\)</span> also balances if it retains enough information to recover <span class="math inline">\(e(X)\)</span>; an arbitrary coarsening need not do so.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note: a parallel with prognostic scores">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical note: a parallel with prognostic scores
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The propensity score summarizes how <span class="math inline">\(X\)</span> relates to treatment. A prognostic score instead summarizes how <span class="math inline">\(X\)</span> relates to a potential outcome. For example, a prognostic score for the untreated potential outcome is a function <span class="math inline">\(r(X)\)</span> such that</p>
+<p><span class="math display">\[
+Y(0)\mathrel{\perp\!\!\!\perp}X\mid r(X).
+\]</span></p>
+<p>Knowing <span class="math inline">\(r(X)\)</span> leaves no additional information in <span class="math inline">\(X\)</span> about the distribution of <span class="math inline">\(Y(0)\)</span>. An outcome-regression mean <span class="math inline">\(E\left[Y(0)\mid X\right]\)</span> need not have this property: two covariate profiles can have the same mean and different outcome distributions. For a binary outcome, the mean determines the distribution, so this distinction disappears. Hansen <span class="citation" data-cites="hansen2008prognostic">(<a href="references.html#ref-hansen2008prognostic" role="doc-biblioref">2008</a>)</span> develops the prognostic-score approach.</p>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled" title="Estimated scores and uncertainty">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Warning</span>Estimated scores and uncertainty
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>We estimated the propensity scores from our data. In another sample, the fitted scores would change, along with the outcome predictions or matches we construct from them. Standard errors and confidence intervals for our causal-effect estimates should account for this estimation step, using a method appropriate to the regression or matching procedure. Treating the estimated scores as known can give misleading measures of uncertainty <span class="citation" data-cites="abadie_imbens_2016">(<a href="references.html#ref-abadie_imbens_2016" role="doc-biblioref">Abadie and Imbens 2016</a>)</span>.</p>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-abadie_imbens_2016" class="csl-entry" role="listitem">
+Abadie, Alberto, and Guido W. Imbens. 2016. <span>“Matching on the Estimated Propensity Score.”</span> <em>Econometrica</em> 84 (2): 781–807. <a href="https://doi.org/10.3982/ECTA11293">https://doi.org/10.3982/ECTA11293</a>.
+</div>
+<div id="ref-hansen2008prognostic" class="csl-entry" role="listitem">
+Hansen, Ben B. 2008. <span>“The Prognostic Analogue of the Propensity Score.”</span> <em>Biometrika</em> 95 (2): 481–88. <a href="https://doi.org/10.1093/biomet/asn004">https://doi.org/10.1093/biomet/asn004</a>.
+</div>
+<div id="ref-imai_ratkovic_2014" class="csl-entry" role="listitem">
+Imai, Kosuke, and Marc Ratkovic. 2014. <span>“Covariate Balancing Propensity Score.”</span> <em>Journal of the Royal Statistical Society: Series B (Statistical Methodology)</em> 76 (1): 243–63. <a href="https://imai.fas.harvard.edu/research/files/CBPS.pdf">https://imai.fas.harvard.edu/research/files/CBPS.pdf</a>.
+</div>
+<div id="ref-king2019matching" class="csl-entry" role="listitem">
+King, Gary, and Richard Nielsen. 2019. <span>“Why Propensity Scores Should Not Be Used for Matching.”</span> <em>Political Analysis</em> 27 (4): 435–54. <a href="https://doi.org/10.1017/pan.2019.11">https://doi.org/10.1017/pan.2019.11</a>.
+</div>
+<div id="ref-rosenbaum_rubin_1983" class="csl-entry" role="listitem">
+Rosenbaum, Paul R., and Donald B. Rubin. 1983. <span>“The Central Role of the Propensity Score in Observational Studies for Causal Effects.”</span> <em>Biometrika</em> 70 (1): 41–55. <a href="https://doi.org/10.1093/biomet/70.1.41">https://doi.org/10.1093/biomet/70.1.41</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((element) => {
+    new bootstrap.Tooltip(element, {
+      placement: "top",
+      trigger: "hover focus"
+    });
+  });
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./03b-matching.html" class="pagination-link" aria-label="Matching">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Matching</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./03d-inverse-probability-weighting.html" class="pagination-link" aria-label="Inverse probability weighting">
+        <span class="nav-page-text"><span class="chapter-title">Inverse probability weighting</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

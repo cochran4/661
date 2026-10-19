@@ -36,7 +36,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./glossary.html" rel="next">
-<link href="./03b-matching.html" rel="prev">
+<link href="./03d-inverse-probability-weighting.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -207,6 +207,14 @@ window.Quarto = {
  <span class="dropdown-text">Matching</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./03c-propensity-scores.html">
+ <span class="dropdown-text">Propensity scores</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03d-inverse-probability-weighting.html">
+ <span class="dropdown-text">Inverse probability weighting</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./03-exercises.html">
  <span class="dropdown-text">Exercises</span></a>
   </li>  
@@ -359,6 +367,16 @@ window.Quarto = {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./03b-matching.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Matching</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03c-propensity-scores.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Propensity scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03d-inverse-probability-weighting.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Inverse probability weighting</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -827,6 +845,270 @@ window.Quarto = {
 <div class="response-space">
 
 </div>
+</section>
+</section>
+<section id="propensity-scores" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="propensity-scores">Propensity scores</h2>
+<p>For these exercises, assume the measured-confounding SCM with binary exposure <span class="math inline">\(A\)</span>, outcome <span class="math inline">\(Y\)</span>, and covariates <span class="math inline">\(X\)</span>. Assume the observations are i.i.d. and the relevant conditional means are defined. Write <span class="math inline">\(E=e(X)\)</span> for the true propensity score and <span class="math inline">\(\hat E=\hat e(X)\)</span> for its estimate. In the outcome models, <span class="math inline">\(s\)</span> denotes a numerical score value. You may use a calculator. Keep additional digits during calculations and report final answers to two decimal places.</p>
+<section id="understanding-the-propensity-score" class="level3">
+<h3 class="anchored" data-anchor-id="understanding-the-propensity-score">10. Understanding the propensity score</h3>
+<p>Let <span class="math inline">\(X=(X_1,X_2)\)</span>, where both covariates are binary. The true propensity score is</p>
+<p><span class="math display">\[
+e(X)=0.10+0.20X_1+0.20X_2.
+\]</span></p>
+<ol type="a">
+<li>Calculate the propensity score for each covariate profile.</li>
+</ol>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;"><span class="math inline">\(X_1\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(X_2\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(E=e(X)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"></td>
+</tr>
+</tbody>
+</table>
+<ol start="2" type="a">
+<li><p>Identify two different covariate profiles with the same propensity score.</p></li>
+<li><p>Must two people with those profiles receive the same observed treatment? Explain.</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="outcome-regression-with-a-continuous-outcome" class="level3">
+<h3 class="anchored" data-anchor-id="outcome-regression-with-a-continuous-outcome">11. Outcome regression with a continuous outcome</h3>
+<p>Return to the four people in Exercise 2, now with estimated propensity scores added. A fitted outcome regression using the score and treatment gives</p>
+<p><span class="math display">\[
+\hat\mu(s,a)=10+2s-3a-as.
+\]</span></p>
+<ol type="a">
+<li>Complete the prediction columns. Use each person’s estimated score as the score input, keeping it fixed when changing the treatment value.</li>
+</ol>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: right;"><span class="math inline">\(X\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat E\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat\mu(\hat E,A)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat\mu(\hat E,1)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat\mu(\hat E,0)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.40</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.60</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+</tbody>
+</table>
+<ol start="2" type="a">
+<li>Estimate <span class="math inline">\(E\left[Y(1)\right]\)</span>, <span class="math inline">\(E\left[Y(0)\right]\)</span>, and the ATE. Interpret the ATE in outcome units.</li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="outcome-regression-with-a-binary-outcome" class="level3">
+<h3 class="anchored" data-anchor-id="outcome-regression-with-a-binary-outcome">12. Outcome regression with a binary outcome</h3>
+<p>As in Exercise 3, <span class="math inline">\(Y\)</span> is binary. A fitted outcome regression using the score and treatment gives</p>
+<p><span class="math display">\[
+\operatorname{logit}\{\hat\mu(s,a)\}=-1+s-a.
+\]</span></p>
+<p>Consider four people with the estimated propensity scores shown below. To convert fitted log odds <span class="math inline">\(\eta\)</span> to a probability, use <span class="math inline">\(\exp(\eta)/(1+\exp(\eta))\)</span>.</p>
+<ol type="a">
+<li>Complete the table. For each person, use their estimated score to predict the probability of <span class="math inline">\(Y=1\)</span> under each treatment value.</li>
+</ol>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;"><span class="math inline">\(\hat E\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat\mu(\hat E,1)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat\mu(\hat E,0)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td style="text-align: right;">0.75</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td style="text-align: right;">0.75</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+</tbody>
+</table>
+<ol start="2" type="a">
+<li><p>Use the completed table to estimate <span class="math inline">\(E\left[Y(1)\right]\)</span> and <span class="math inline">\(E\left[Y(0)\right]\)</span> by averaging each prediction column.</p></li>
+<li><p>Estimate and interpret the ATE, causal relative risk, and causal odds ratio for intervention value <span class="math inline">\(1\)</span> compared with <span class="math inline">\(0\)</span>.</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="propensity-score-matching" class="level3">
+<h3 class="anchored" data-anchor-id="propensity-score-matching">13. Propensity-score matching</h3>
+<p>Return to the data from Exercise 6, with estimated propensity scores added:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;"><span class="math inline">\(X\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Y\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat E\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0.20</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.30</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">15</td>
+<td style="text-align: right;">0.80</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0.70</td>
+</tr>
+</tbody>
+</table>
+<ol type="a">
+<li>Find one nearest untreated match for each treated person using absolute difference in estimated propensity scores. A person may be used as a match more than once. Complete the table using each treated person’s own outcome and their match’s outcome.</li>
+</ol>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Treated person</th>
+<th>Matched person</th>
+<th>Estimate of <span class="math inline">\(\mu(\hat E,1)\)</span></th>
+<th>Estimate of <span class="math inline">\(\mu(\hat E,0)\)</span></th>
+<th>Difference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>3</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<ol start="2" type="a">
+<li>Estimate and interpret the ATT.</li>
+</ol>
+<div class="response-space">
+
+</div>
 
 
 </section>
@@ -1245,8 +1527,8 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./03b-matching.html" class="pagination-link" aria-label="Matching">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Matching</span></span>
+      <a href="./03d-inverse-probability-weighting.html" class="pagination-link" aria-label="Inverse probability weighting">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Inverse probability weighting</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
