@@ -35,6 +35,8 @@ jobs:
             any::MatchIt
             any::cobalt
             any::optmatch
+            any::ggplot2
+            any::dbarts
 
       - name: Render and publish to GitHub Pages
         uses: quarto-dev/quarto-actions/publish@v2
