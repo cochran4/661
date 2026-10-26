@@ -1109,6 +1109,199 @@ e(X)=0.10+0.20X_1+0.20X_2.
 <div class="response-space">
 
 </div>
+</section>
+</section>
+<section id="inverse-probability-weighting" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="inverse-probability-weighting">Inverse probability weighting</h2>
+<p>For these exercises, use the measured-confounding SCM with binary treatment <span class="math inline">\(A\)</span>. Use weighted means to estimate the intervention means. You may use a calculator; report final answers to two decimal places.</p>
+<section id="who-gets-more-weight" class="level3">
+<h3 class="anchored" data-anchor-id="who-gets-more-weight">14. Who gets more weight?</h3>
+<p>For each study, say which person receives more weight for the specified intervention mean. Explain your reasoning without calculating weights.</p>
+<ol type="a">
+<li><p>In a study of a job-training program, people who are unemployed are more likely to enroll than people who are employed. Among two people who enrolled, one unemployed and one employed, whose outcome receives more weight when estimating mean earnings if everyone enrolled, <span class="math inline">\(E[Y(1)]\)</span>?</p></li>
+<li><p>In the same study, consider two people who did not enroll, one unemployed and one employed. Whose outcome receives more weight when estimating mean earnings if nobody enrolled, <span class="math inline">\(E[Y(0)]\)</span>?</p></li>
+<li><p>In a study of blood-pressure medication, people with more severe hypertension are more likely to receive medication. Among two people who received medication, whose outcome receives more weight when estimating mean blood pressure if everyone received medication, <span class="math inline">\(E[Y(1)]\)</span>: the person with more severe or less severe hypertension? Who receives more weight in estimating <span class="math inline">\(E[Y(0)]\)</span> among two people who did not receive medication?</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="computing-an-ipw-estimate" class="level3">
+<h3 class="anchored" data-anchor-id="computing-an-ipw-estimate">15. Computing an IPW estimate</h3>
+<p>Consider these four people, with true propensity scores supplied:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;"><span class="math inline">\(X\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Y\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(e(X)\)</span></th>
+<th style="text-align: right;">Weight for <span class="math inline">\(E[Y(1)]\)</span></th>
+<th style="text-align: right;">Weight for <span class="math inline">\(E[Y(0)]\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hickory</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td>Hazel</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="odd">
+<td>Willow</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td>Chestnut</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+</tbody>
+</table>
+<ol type="a">
+<li><p>Complete both weight columns, including the zero weights.</p></li>
+<li><p>Estimate <span class="math inline">\(E[Y(1)]\)</span>, <span class="math inline">\(E[Y(0)]\)</span>, and the ATE using weighted means. Interpret the ATE.</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="using-a-fitted-propensity-model" class="level3">
+<h3 class="anchored" data-anchor-id="using-a-fitted-propensity-model">16. Using a fitted propensity model</h3>
+<p>In a study of a training program, <span class="math inline">\(A=1\)</span> denotes enrollment, <span class="math inline">\(X\)</span> is the number of years unemployed before the program, and <span class="math inline">\(Y\)</span> is earnings in thousands of dollars afterward. A fitted propensity model gives</p>
+<p><span class="math display">\[
+\operatorname{logit}\{\hat e(X)\}=X.
+\]</span></p>
+<p>Convert fitted log odds <span class="math inline">\(\eta\)</span> to a probability using <span class="math inline">\(\exp(\eta)/(1+\exp(\eta))\)</span>.</p>
+<ol type="a">
+<li>Use the fitted model to complete the estimated-score and weight columns, including zero weights.</li>
+</ol>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;"><span class="math inline">\(X\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Y\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat e(X)\)</span></th>
+<th style="text-align: right;">Weight for <span class="math inline">\(E[Y(1)]\)</span></th>
+<th style="text-align: right;">Weight for <span class="math inline">\(E[Y(0)]\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hickory</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td>Hazel</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="odd">
+<td>Willow</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td>Chestnut</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+</tbody>
+</table>
+<ol start="2" type="a">
+<li>Use weighted means to estimate <span class="math inline">\(E[Y(1)]\)</span>, <span class="math inline">\(E[Y(0)]\)</span>, and the ATE. Interpret the ATE.</li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="checking-the-scores-and-balance" class="level3">
+<h3 class="anchored" data-anchor-id="checking-the-scores-and-balance">17. Checking the scores and balance</h3>
+<p>The two panels below show estimated propensity score distributions in two studies. Each bar counts people in a score interval of width <span class="math inline">\(0.10\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03d-exercise-score-distributions.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Study A: treated and untreated scores overlap between 0.10 and 0.90, with no scores in the outermost intervals. Study B: untreated scores concentrate below 0.50 and treated scores above 0.50; two treated people have score 0.01 and two untreated people have score 0.99." width="800"></p>
+</figure>
+</div>
+<ol type="a">
+<li><p>Which study has a more reassuring score distribution for IPW? In the other study, what should you watch out for?</p></li>
+<li><p>In Study B, two treated people have estimated scores of <span class="math inline">\(0.01\)</span> and two untreated people have estimated scores of <span class="math inline">\(0.99\)</span>. What weights do these people receive for estimating <span class="math inline">\(E[Y(1)]\)</span> and <span class="math inline">\(E[Y(0)]\)</span>, respectively?</p></li>
+<li><p>The balance plots below compare two fitted propensity models for the same study. Which model produces better covariate balance after IPW? Explain using the plotted values.</p></li>
+</ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03d-exercise-balance.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Absolute standardized mean differences for age, income, and prior health. Before weighting: 0.40, 0.30, 0.50. After weighting with Model 1: 0.03, 0.04, 0.02. After weighting with Model 2: 0.18, 0.08, 0.25. Dashed lines mark 0.10." width="800"></p>
+</figure>
+</div>
+<div class="response-space">
+
+</div>
+</section>
+<section id="a-different-denominator" class="level3">
+<h3 class="anchored" data-anchor-id="a-different-denominator">18. A different denominator</h3>
+<p>Return to Exercise 15. Compute the Horvitz–Thompson estimates of <span class="math inline">\(E[Y(1)]\)</span>, <span class="math inline">\(E[Y(0)]\)</span>, and the ATE by dividing each weighted outcome total by the number of people. Compare these with the weighted-mean estimates from Exercise 15.</p>
+<div class="response-space">
+
+</div>
 
 
 </section>
