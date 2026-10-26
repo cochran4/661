@@ -6,420 +6,1094 @@ title: "Inverse probability weighting"
 
 ## Introduction
 
-We have already identified $E\left[Y(a)\right]$ using outcome regression. Does that mean we should stop looking? Another expression for the same causal quantity might suggest another way to estimate it. We might prefer to model a different part of the data-generating process. Or we might find that the approaches work especially well together.
 
-Propensity scores give us such an alternative. Instead of modeling the conditional outcome mean, we can estimate each person's probability of receiving their observed exposure. We then use those probabilities to weight their observed outcomes. Someone who received an exposure that was uncommon among people with their covariates receives more weight.
+A causal effect can have more than one identification formula. We have already seen this. We first adjusted for the full covariate vector $X$, then found that we could adjust for the propensity score $e(X)$ instead. The causal question stayed the same. Only the expression we used to answer it changed.
 
-This is inverse probability weighting, or IPW. We will first see how the weighting works, then use our SCM and SWIG to establish why it answers our causal question. After that, we will combine weighting with outcome regression. The combination has a useful property that neither approach has on its own.
+Why should we care? Each identification formula suggests its own estimators, and those estimators trade off bias, noise, and computation differently. A different formula changes where the error can come from and how much noise we must tolerate to avoid it. So when we find a new identification formula, we gain a new set of estimators and a new set of tradeoffs to choose from. 
 
-## Weighting a concrete example
+Let’s look for another one. 
 
-::: {.example-intro}
-<span class="example-label">Example.</span>
-
-Return to the NHEFS smoking and weight-gain example in [Propensity scores](03c-propensity-scores.qmd). Let $A=1$ mean quitting smoking, let $A=0$ mean not quitting, and let $Y$ be weight gain in kilograms. For now, collect only sex in $X$.
-
-Here are the counts and mean outcomes we used before.
-
-| Sex | Quit smoking | Did not quit | Mean weight gain among those who quit | Mean weight gain among those who did not quit |
-| --- | ---: | ---: | ---: | ---: |
-| Male | 220 | 542 | 4.83 | 2.00 |
-| Female | 183 | 621 | 4.16 | 1.97 |
-:::
-
-There are $762$ men and $804$ women, for a total of $1566$ people. The estimated probabilities of quitting are
-
-$$
-\hat e(\text{male})=\frac{220}{762},
-\qquad
-\hat e(\text{female})=\frac{183}{804}.
-$$
-
-For each person, take the reciprocal of the estimated probability of receiving their observed exposure. This gives the following weights.
-
-| Sex | Weight for someone who quit | Weight for someone who did not quit |
-| --- | ---: | ---: |
-| Male | $762/220\approx3.46$ | $762/542\approx1.41$ |
-| Female | $804/183\approx4.39$ | $804/621\approx1.29$ |
-
-For example, each of the $220$ men who quit receives weight $762/220$. Their weights add to $762$. The weights of the $542$ men who did not quit also add to $762$. The same operation gives a total weight of $804$ for women in each exposure group.
-
-After weighting, both groups therefore have the same representation of sex as the full sample. That is the point of these weights. We are trying to remove differences in the measured covariates as an explanation for differences in the outcomes.
-
-To estimate the mean weight gain under quitting, multiply each quitter's outcome by their weight, add, and divide by $1566$. Using the group means to carry out that calculation gives
-
-$$
-E\left[Y(1)\right]
-\approx
-\frac{(762/220)(220\times4.83)+(804/183)(183\times4.16)}{1566}.
-$$
-
-For the intervention under which people do not quit, the calculation is
-
-$$
-E\left[Y(0)\right]
-\approx
-\frac{(762/542)(542\times2.00)+(804/621)(621\times1.97)}{1566}.
-$$
-
-Subtracting the two expressions gives
-
-$$
-\begin{aligned}
-E\left[Y(1)-Y(0)\right]
-&\approx
-\frac{762}{1566}(4.83-2.00)
-+\frac{804}{1566}(4.16-1.97)\\
-&\approx2.50\text{ kilograms}.
-\end{aligned}
-$$
-
-This is the same answer we obtained by direct standardization. With a separate estimated propensity for every observed covariate combination, these calculations agree. We have rearranged the calculation, rather than changed the causal question.
-
-This example adjusts only for sex. Interpreting the result causally requires an SCM in which sex is sufficient to account for the common causes of quitting and weight gain. The arithmetic cannot establish that this is an adequate causal model.
-
-::: {.callout-note title="Technical note: why direct standardization and IPW agree here" collapse="true"}
-Suppose $X$ takes finitely many values. Let $n_x$ be the number of people with $X=x$, and let $n_{xa}>0$ be the number with both $X=x$ and $A=a$. Write $\bar y_{xa}$ for their mean outcome.
-
-The estimated exposure probability in that stratum is $n_{xa}/n_x$. Thus, the IPW contribution from that stratum is
-
-$$
-\frac{1}{n}
-\frac{n_x}{n_{xa}}
-\sum_{i:x_i=x,\,a_i=a}y_i
-=\frac{n_x}{n}\bar y_{xa}.
-$$
-
-Summing over $x$ gives direct standardization. This equality uses the empirical exposure proportions within each stratum. It need not hold when we replace those proportions with probabilities from a restricted regression model.
-:::
-
-## Identification and estimation
-
-We continue with the measured-confounding SCM from [Outcome regression](03a-outcome-regression.qmd), with independent noise terms:
+Again, focus on a binary exposure $A$ and our measured-confounding SCM:
 
 $$
 \begin{aligned}
 X&\leftarrow f_X(\epsilon_X),\\
 A&\leftarrow f_A(X,\epsilon_A),\\
-Y&\leftarrow f_Y(X,A,\epsilon_Y).
+Y&\leftarrow f_Y(A,X,\epsilon_Y),
 \end{aligned}
 $$
 
-For an intervention value $a$, causal irrelevance gives $X(a)=X$ and $A(a)=A$. The resulting SWIG is the one we have already used.
+with independent noise terms. 
 
-![](images/03a-measured-confounding-swig-simplified.svg){width=620 fig-align="center" fig-alt="The measured-confounding SWIG after causal irrelevance. X points to A and Y(a). The fixed intervention value a points to Y(a), with no arrow from random A to Y(a)."}
 
-The global Markov property gives
+## Weighting
+
+Think about estimating $E[Y(1)]$ using 1:1 propensity-score
+matching with replacement. Here are three people from a
+larger dataset:
+
+| Person | $A$ | $e(X)$ | $Y$ |
+|---|---:|---:|---:|
+| Hickory | 1 | 0.20 | 6 |
+| Hazel | 0 | 0.20 | 2 |
+| Willow | 0 | 0.20 | 4 |
+
+Hickory received treatment, so he supplies his own outcome.
+For each untreated person, we choose exactly one treated
+person with a similar propensity score to supply a surrogate
+outcome. Matching with replacement means the same treated
+person can be chosen again for another untreated person.
+
+Hazel and Willow have the same propensity score as Hickory.
+Suppose we choose him as the match for each of them. Their
+estimated outcomes under treatment 1 are then both six.
+The completed matching estimates are:
+
+| Person | $A$ | $e(X)$ | $Y$ | Treated match | $\hat\mu(X,1)$ |
+|---|---:|---:|---:|---|---:|
+| Hickory | 1 | 0.20 | 6 | n/a | 6 |
+| Hazel | 0 | 0.20 | 2 | Hickory | 6 |
+| Willow | 0 | 0.20 | 4 | Hickory | 6 |
+
+Hickory supplies the estimated outcome under treatment for
+himself, Hazel, and Willow. His outcome enters our average
+three times:
 
 $$
-A\mathrel{\perp\!\!\!\perp}Y(a)\mid X.
+E[Y(1)]
+\approx
+\frac{6+6+6+\cdots}{1+1+1+\cdots}
+=
+\frac{3(6)+\cdots}{3+\cdots}.
 $$
 
-We are using a consequence of the same SCM, rather than adding a new exchangeability assumption. Consistency still tells us that $Y=Y(a)$ whenever $A=a$.
-
-For a binary exposure, write $e(X)=P(A=1\mid X)$. More generally, for a discrete exposure, write
+The dots represent the remaining people in the dataset.
+Hickory's outcome contributes $3(6)$ to the numerator and weight
+three to the denominator. More generally, each treated person's
+outcome appears once for themselves, plus once for every
+untreated person who uses them as a match. Untreated outcomes
+receive weight zero. Writing
 
 $$
-p_a(X)=P(A=a\mid X).
+w_i=
+\begin{cases}
+1+\text{number of times person }i\text{ is used as a match}, & a_i=1,\\
+0, & a_i=0,
+\end{cases}
 $$
 
-For binary $A$, $p_1(X)=e(X)$ and $p_0(X)=1-e(X)$. The notation $1_{A=a}$ is an indicator. It equals $1$ when $A=a$ and $0$ otherwise.
+we can sum over everyone to write our matching estimate as
+a weighted mean:
+
+$$
+E[Y(1)]
+\approx
+\frac{\sum_i w_i y_i}
+{\sum_i w_i}.
+$$
+
+Do we have to find matches to get these weights? Could we
+get them directly from the propensity scores?
+
+Hickory's propensity score of 0.20 means a one-in-five
+chance of receiving treatment. Over many people with this
+score, we would see about four untreated people for every
+treated person. This suggests giving each treated person
+weight five: one for themselves and four for the untreated
+people they represent. For a general propensity score,
+the same reasoning gives
+
+$$
+1+\frac{1-e(X)}{e(X)}=\frac{1}{e(X)}.
+$$
+
+Another way to think about this is to follow Hickory.
+He has probability 0.20 of receiving treatment, so his outcome
+has probability 0.20 of entering our treated-outcome average.
+Giving it weight five restores one person's representation
+on average:
+
+$$
+0.20(5)+0.80(0)=1.
+$$
+
+More generally,
+
+$$
+e(X)\frac{1}{e(X)}+\{1-e(X)\}(0)=1.
+$$
+
+
+This is inverse probability weighting, or IPW. Matching
+determined Hickory's weight by counting his uses as a
+surrogate. IPW assigns him weight five directly from his
+treatment probability.
+
+![](images/03d-matching-to-ipw.svg){width=900 fig-align="center" fig-alt="Acorn icons represent individuals. Left: two outlined untreated acorns each choose the filled treated acorn, Hickory, as their single match with replacement, giving him weight 3. Right: Hickory and four faded copies show five units of representation at propensity score 0.20, giving weight 5. The faded copies represent additional weight, not additional observations."}
+
+
+<details class="lesson-question">
+<summary>Suppose a person has propensity score 0.05. Over many people with this score, how many untreated people would we see per treated person? What weight should a treated person receive? Check that this restores one person's representation on average.</summary>
+
+We would see about 19 untreated people for every treated person.
+Each treated person represents themselves plus 19 untreated
+people on average, giving weight
+
+$$
+1+\frac{0.95}{0.05}=20=\frac{1}{0.05}.
+$$
+
+Following one person, their outcome receives weight $20$ if
+they are treated and zero otherwise. Their average representation is
+
+$$
+0.05(20)+0.95(0)=1.
+$$
+
+</details>
+
+<details class="lesson-question">
+<summary>In a study of a depression treatment, suppose women are more likely than men to receive treatment at the same values of the other covariates. Compare a treated woman and a treated man whose other covariates agree. Without knowing their propensity scores, who should receive more weight?</summary>
+
+The man. His propensity score is smaller, so his weight
+$1/e(X)$ is larger. There are more untreated people per treated
+person at his covariate values, so his outcome has to represent
+more people.
+
+</details>
+
+## Identification
+
+Our intuition was that the weight $1/e(X)$ lets each treated person stand in for everyone with their covariates, treated or not. Writing the weight as $A/e(X)$ (equal to $1/e(X)$ for treated people and zero for untreated people), the weighted contribution to the outcome is
+
+$$
+\frac{A}{e(X)} \times Y.
+$$
+
+What is its average among people with the same $X$? Holding covariates fixed, treatment and outcome still vary, so we split the average by treatment value and weight each piece by its probability:
+
+$$
+\begin{aligned}
+E\left[\frac{YA}{e(X)}\Bigm| X\right]
+&=E\left[\frac{YA}{e(X)}\Bigm| X,A=1\right]P(A=1\mid X)\\
+&\quad+E\left[\frac{YA}{e(X)}\Bigm| X,A=0\right]P(A=0\mid X).
+\end{aligned}
+$$
+
+By definition of the propensity score, $P(A=1\mid X)=e(X)$ and $P(A=0\mid X)=1-e(X).$ Also, $YA=Y$ when $A=1$ and $YA=0$ when $A=0$, so the untreated term vanishes:
+
+$$
+E\left[\frac{YA}{e(X)}\Bigm| X\right]
+=
+E\left[\frac{Y}{e(X)}\Bigm| X,A=1\right]e(X).
+$$
+
+Because $e(X)$ is constant once we condition on $X$, it comes out of the expectation and cancels:
+
+$$
+E\left[\frac{YA}{e(X)}\Bigm| X\right]
+=\frac{1}{e(X)}\,E[Y\mid X,A=1]\,e(X)
+=E[Y\mid X,A=1].
+$$
+
+This is the observed mean among treated people with covariates $X.$ Under our measured-confounding SCM,
+
+$$
+E[Y\mid X,A=1]=E[Y(1)\mid X].
+$$
+
+Combining the two results,
+
+$$
+E\left[\frac{YA}{e(X)}\Bigm| X\right]=E[Y(1)\mid X].
+$$
+
+The weighted outcome recovers the mean potential outcome under treatment at each value of $X$, including for people who were actually untreated.
+
+So far we have held $X$ fixed. To get the overall mean, we average over the covariate distribution using iterated expectations:
+
+$$
+E\left[\frac{YA}{e(X)}\right]
+=E\left[E\left[\frac{YA}{e(X)}\Bigm| X\right]\right]
+=E\left[E[Y(1)\mid X]\right]
+=E[Y(1)].
+$$
+
+For $E[Y(0)]$, reverse the roles. Untreated people supply the outcomes with weight $1/\{1-e(X)\}$, and treated people receive weight zero. Each untreated person represents themselves plus, on average, $e(X)/\{1-e(X)\}$ treated people, for a total weight of
+
+$$
+1+\frac{e(X)}{1-e(X)}=\frac{1}{1-e(X)}.
+$$
+
+Repeating the argument with $(1-A)/\{1-e(X)\}$ gives
+
+$$
+E\left[\frac{Y(1-A)}{1-e(X)}\right]=E[Y(0)].
+$$
+
+Both derivations divide by $e(X)$ or $1-e(X)$, so neither can be zero. This is the conditional positivity assumption from earlier. Collecting the two derivations, we can state the following result:
 
 ::: {.proposition-box}
-**Identification by inverse probability weighting.** Under the SCM above, for a discrete exposure and an intervention value $a$ with $p_a(X)>0$ almost surely,
+Under the measured-confounding SCM, if $0<e(X)<1$ with probability one and the expectations below exist, then
 
 $$
-E\left[Y(a)\right]
-=E\left[\frac{1_{A=a}Y}{p_a(X)}\right],
-$$
-
-provided the outcome mean is defined.
-:::
-
-In the smoking example, this says
-
-$$
-E\left[Y(1)\right]
+E[Y(1)]
 =E\left[\frac{AY}{e(X)}\right],
-\qquad
-E\left[Y(0)\right]
+$$
+
+and
+
+$$
+E[Y(0)]
 =E\left[\frac{(1-A)Y}{1-e(X)}\right].
 $$
+:::
 
-The indicators select the relevant exposure group, and the reciprocal probabilities supply the weights. These are the same intervention means we identified using outcome regression. We have another way to recover them from the observed-data distribution.
-
-::: {.callout-note title="Technical note: proof of the IPW identity" collapse="true"}
-Fix $a$ and abbreviate $p_a(X)$ by $p$. Consistency gives
+::: {.callout-note title="Technical note: the proof for treatment 0" collapse="true"}
+An untreated person receives weight $1/\{1-e(X)\}$, and a treated
+person receives weight zero. We can write both cases as
+$(1-A)/\{1-e(X)\}.$ Applying that weight to the outcome gives
 
 $$
-1_{A=a}Y=1_{A=a}Y(a).
+\frac{Y(1-A)}{1-e(X)}.
 $$
 
-Conditional exchangeability from the SWIG then gives
+What does this give us on average for people with the same
+$X$? We want to calculate
+
+$$
+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right].
+$$
+
+First, break the average into the two possible treatment values:
 
 $$
 \begin{aligned}
-E\left[\frac{1_{A=a}Y}{p}\mid X\right]
-&=\frac{1}{p}E\left[1_{A=a}Y(a)\mid X\right]\\
-&=\frac{1}{p}P(A=a\mid X)E\left[Y(a)\mid X\right]\\
-&=E\left[Y(a)\mid X\right].
+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right]
+&=E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X,A=0\right]P(A=0\mid X)\\
+&\quad+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X,A=1\right]P(A=1\mid X).
 \end{aligned}
 $$
 
-Taking expectations and using iterated expectations completes the proof. Conditional positivity makes the division valid. For example, $E\left[|Y(a)|\right]<\infty$ ensures that the means in this argument are well defined.
+Substitute $P(A=0\mid X)=1-e(X)$ and
+$P(A=1\mid X)=e(X)$:
+
+$$
+\begin{aligned}
+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right]
+&=E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X,A=0\right]\{1-e(X)\}\\
+&\quad+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X,A=1\right]e(X).
+\end{aligned}
+$$
+
+When $A=0$, $Y(1-A)=Y.$ When $A=1$, $Y(1-A)=0.$ This leaves
+
+$$
+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right]
+=E\left[\frac{Y}{1-e(X)}\Bigm|X,A=0\right]\{1-e(X)\}.
+$$
+
+Since we are conditioning on $X$, $1-e(X)$ is fixed. Pull it
+outside the conditional expectation and cancel:
+
+$$
+\begin{aligned}
+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right]
+&=\frac{1}{1-e(X)}E[Y\mid X,A=0]\{1-e(X)\}\\
+&=E[Y\mid X,A=0].
+\end{aligned}
+$$
+
+Now use consistency. Among untreated people, $Y=Y(0)$, so
+
+$$
+E[Y\mid X,A=0]=E[Y(0)\mid X,A=0].
+$$
+
+Our measured-confounding SCM and the global Markov property
+give $A\mathrel{\perp\!\!\!\perp}Y(0)\mid X.$ Therefore,
+
+$$
+E[Y(0)\mid X,A=0]=E[Y(0)\mid X].
+$$
+
+We have shown that
+
+$$
+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right]=E[Y(0)\mid X].
+$$
+
+Only now do we average over $X$, using iterated expectations:
+
+$$
+\begin{aligned}
+E\left[\frac{Y(1-A)}{1-e(X)}\right]
+&=E\left[E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right]\right]\\
+&=E\left[E[Y(0)\mid X]\right]\\
+&=E[Y(0)].
+\end{aligned}
+$$
 :::
 
-The estimation step follows the pattern we have used before. Estimate the unknown function, evaluate it for each person, and take a sample mean. If the observed values for person $i$ are $(x_i,a_i,y_i)$, then
 
-$$
-E\left[Y(1)\right]
-\approx\frac{1}{n}\sum_{i=1}^n
-\frac{a_i y_i}{\hat e(x_i)},
-$$
+## Estimating the effect
 
-and
+We have identified the intervention means. Now let's estimate
+them from data, starting with a small example.
 
-$$
-E\left[Y(0)\right]
-\approx\frac{1}{n}\sum_{i=1}^n
-\frac{(1-a_i)y_i}{1-\hat e(x_i)}.
-$$
-
-Subtract the estimated means to estimate the ATE. With a binary outcome, their ratio instead gives an estimated causal relative risk, provided the denominator is positive. We have changed how we estimate the intervention means, but we can combine them to form the same causal contrasts.
 
 ::: {.example-intro}
-<span class="example-label">Example.</span>
+<span class="example-label">Example: Four people.</span>
 
-Return to smoking and weight gain, now collecting sex, education, and age in $X$. Estimate the probability of quitting using the logistic regression in [Propensity scores](03c-propensity-scores.qmd). Predict a quitting probability for each person. Someone who quit receives weight $1/\hat e(X)$; someone who did not receives weight $1/[1-\hat e(X)]$.
+Suppose we observe the following covariates, treatments, and
+outcomes. The true propensity scores are supplied.
+
+| Person | $X$ | $A$ | $Y$ | $e(X)$ |
+|---|---:|---:|---:|---:|
+| 1 | 0 | 1 | 6 | 0.25 |
+| 2 | 0 | 0 | 2 | 0.25 |
+| 3 | 1 | 1 | 10 | 0.75 |
+| 4 | 1 | 0 | 4 | 0.75 |
 :::
 
-Using these weights in the two sample means gives a reported ATE estimate of $2.98$ kilograms. Under the proposed measured-confounding SCM, this estimates the difference in mean weight gain under quitting versus not quitting, adjusting for sex, education, and age.
+We need two sets of weights. To estimate the mean under
+treatment 1, use $A/e(X).$ To estimate the mean under
+treatment 0, use $(1-A)/\{1-e(X)\}.$ Each person supplies
+an observed outcome under only one treatment value, so one
+of their two weights will be zero.
 
-<!-- The 2.98 kg estimate is retained from the source textbook. It has not been refitted in this rewrite. -->
+Person 1 received treatment. His weight for estimating the mean
+under treatment 1 is $1/0.25=4$, and his weight for estimating
+the mean under treatment 0 is zero. Person 2 did not receive
+treatment. Her weight for the first mean is zero, and her weight
+for the second is $1/(1-0.25)=4/3.$ Repeating these calculations
+for Persons 3 and 4 completes the table:
 
-## Checking the weights
+| Person | Weight for $Y(1)$: $A/e(X)$ | Weight for $Y(0)$: $(1-A)/\{1-e(X)\}$ |
+|---|---:|---:|
+| 1 | $1/0.25=4$ | $0/0.75=0$ |
+| 2 | $0/0.25=0$ | $1/0.75=4/3$ |
+| 3 | $1/0.75=4/3$ | $0/0.25=0$ |
+| 4 | $0/0.75=0$ | $1/0.25=4$ |
 
-Estimating exposure probabilities does not guarantee that the resulting weights do what we want. Before comparing weighted outcomes, inspect the weights and check balance in the original covariates.
-
-For example, calculate the weighted mean of age in each exposure group, just as we calculated weighted means of the outcome. Do the same for each measured covariate. Standardized mean differences and balance plots can summarize the comparisons, as they did for matching. With estimated propensities, weighted covariate balance will generally be approximate.
-
-Also look for very large weights. If someone's estimated probability of receiving their observed exposure is $0.02$, their weight is $50$. Their outcome can then have a large influence on the estimated mean. Large weights can reflect limited overlap, a poorly fitting propensity model, or both. Neither an elaborate model nor normalization can create comparable people where the data contain none.
-
-Conditional positivity is especially visible here because we divide by $p_a(X)$. The SCM describes which variables determine others; it does not guarantee that every exposure value is possible at every covariate profile. If people with certain covariates never receive an exposure, IPW cannot recover their mean outcome under that exposure from these data alone.
-
-We can also calculate a normalized weighted mean. Instead of dividing the weighted outcome total by $n$, divide by the sum of the weights in that exposure group:
+For the mean under treatment 1, Persons 1 and 3 supply the
+outcomes. Person 1's outcome receives weight four, while
+Person 3's outcome receives weight $4/3.$ Multiply each outcome
+by its weight, add, and divide by the total weight:
 
 $$
-E\left[Y(1)\right]
-\approx
-\frac{\sum_{i=1}^n a_i y_i/\hat e(x_i)}
+E[Y(1)]
+\approx\frac{4(6)+(4/3)(10)}{4+4/3}
+=\frac{112/3}{16/3}
+=7.
+$$
+
+For the mean under treatment 0, Persons 2 and 4 supply the
+outcomes. This time their weights are $4/3$ and four,
+respectively. The same weighted-mean calculation gives
+
+$$
+E[Y(0)]
+\approx\frac{(4/3)(2)+4(4)}{4/3+4}
+=\frac{56/3}{16/3}
+=3.5.
+$$
+
+Subtract the estimated mean under treatment 0 from the estimated
+mean under treatment 1:
+
+$$
+\operatorname{ATE}\approx7-3.5=3.5.
+$$
+
+The estimated effect of treatment is an increase of 3.5 outcome
+units. We used the propensity scores to construct weights, then
+calculated a weighted mean in each treatment group.
+
+::: {.main-point}
+To estimate the ATE using IPW:
+
+1. Estimate each person's propensity score.
+2. Compute two weights to each person, $A/\hat e(X)$ and $(1-A)/\{1-\hat e(X)\}.$
+3. Calculate the weighted mean outcome separately for each set of weights
+
+:::
+
+The weighted means we just calculated are **normalized IPW
+estimators**, also called **Hájek estimators** [@hajek_1971]. For $n$ people,
+we can write the same calculations as
+
+$$
+E[Y(1)]
+\approx\frac{\sum_{i=1}^n a_i y_i/\hat e(x_i)}
 {\sum_{i=1}^n a_i/\hat e(x_i)},
+\qquad
+E[Y(0)]
+\approx\frac{\sum_{i=1}^n (1-a_i)y_i/\{1-\hat e(x_i)\}}
+{\sum_{i=1}^n (1-a_i)/\{1-\hat e(x_i)\}}.
 $$
 
-$$
-E\left[Y(0)\right]
-\approx
-\frac{\sum_{i=1}^n (1-a_i)y_i/[1-\hat e(x_i)]}
-{\sum_{i=1}^n (1-a_i)/[1-\hat e(x_i)]}.
-$$
 
-These are normalized IPW estimators, also called Hájek estimators. They are ordinary weighted averages within each exposure group. They often behave better in finite samples, although they do not remove the influence of extreme relative weights. Normalizing weights is distinct from constructing stabilized weights, which introduce a numerator such as the marginal probability of the observed exposure.
-
-In the sex-only example, each exposure group's weights already sum to $1566$. The original and normalized calculations therefore agree exactly. With probabilities from a fitted regression model, the sums need not equal $n$, so the two estimates can differ.
-
-::: {.callout-note title="Technical note: what if the propensity model is wrong?" collapse="true"}
-Write
-
-$$
-\mu_a(X)=E\left[Y\mid X,A=a\right],
-\qquad p_a(X)=P(A=a\mid X).
-$$
-
-First consider a fixed positive function $q_a(X)$ that we use in place of $p_a(X)$. Iterated expectations give
+How do these denominators connect to the identification result?
+The proposition gave us expectations of weighted outcomes.
+The corresponding weights have expectation one at every $X$:
 
 $$
 \begin{aligned}
-E\left[\frac{1_{A=a}Y}{q_a(X)}\right]
-&=E\left[\frac{p_a(X)\mu_a(X)}{q_a(X)}\right]\\
-&=E\left[Y(a)\right]
-+E\left[\mu_a(X)\frac{p_a(X)-q_a(X)}{q_a(X)}\right].
+E\left[\frac{A}{e(X)}\Bigm|X\right]
+&=\frac{E[A\mid X]}{e(X)}=1,\\
+E\left[\frac{1-A}{1-e(X)}\Bigm|X\right]
+&=\frac{E[1-A\mid X]}{1-e(X)}=1.
 \end{aligned}
 $$
 
-Thus, a wrong exposure-probability function can change the target of the unnormalized weighted mean. If a fitted propensity model approaches $q_a$, and the corresponding sample averages converge to the expectation displayed above, that expression is the estimator's probability limit. When $q_a=p_a$, the extra term is zero.
-
-The identity is stated for fixed functions deliberately. A fitted propensity score is random and may use the same observations being averaged. We cannot simply treat it as fixed to claim that a same-sample estimator is unbiased. Establishing consistency requires conditions on both the fitted function and the sample average. For finite-dimensional propensity models, a detailed treatment appears in Chapter 13 of @tsiatis_2006.
-:::
-
-## Augmented inverse probability weighting
-
-Outcome regression estimates the conditional outcome mean. IPW uses estimated exposure probabilities. We do not have to choose between them. We can start with outcome predictions and then use weighting to correct their prediction errors.
-
-For a concrete example, consider estimating mean weight gain under quitting. Suppose a person has predicted weight gain $\hat\mu(X,1)=5$ kilograms and estimated quitting probability $\hat e(X)=0.25$.
-
-If that person quit and gained $7$ kilograms, their observed outcome exceeds the prediction by $7-5=2$ kilograms. Weight that error by $1/0.25$ and add it to the original prediction. Their contribution is
+Averaging over $X$ therefore still gives one. Writing out
+that averaging with iterated expectations,
 
 $$
-5+\frac{1}{0.25}(7-5)=13.
-$$
-
-The contribution is not itself a prediction of this person's potential outcome. It combines a prediction with a weighted correction. A person who did not quit contributes their prediction under quitting, without a correction, because their observed outcome cannot reveal a prediction error under quitting.
-
-More generally, to estimate $E\left[Y(a)\right]$, we do three things:
-
-1. Predict $\hat\mu(x_i,a)$ for everyone.
-2. For people with $a_i=a$, calculate their observed prediction error $y_i-\hat\mu(x_i,a)$ and weight it by $1/\hat p_a(x_i)$.
-3. Add each person's correction to their prediction and average the contributions.
-
-::: {.definition-box}
-**Augmented inverse probability weighting.** The augmented inverse probability weighting (AIPW) estimator of $E\left[Y(a)\right]$ is the sample mean
-
-$$
-\frac{1}{n}\sum_{i=1}^n
-\left\{
-\hat\mu(x_i,a)
-+\frac{1_{a_i=a}}{\hat p_a(x_i)}
-\left[y_i-\hat\mu(x_i,a)\right]
-\right\},
-$$
-
-where $\hat\mu(x,a)$ estimates $E\left[Y\mid X=x,A=a\right]$ and $\hat p_a(x)$ estimates $P(A=a\mid X=x)$.
-:::
-
-::: {.example-intro}
-<span class="example-label">Example.</span>
-
-In the NHEFS example, use the fitted probabilities of quitting based on sex, education, and age. Also fit a linear regression for weight gain using quitting status, sex, education, and age, without interactions.
-:::
-
-For $a=1$, predict each person's weight gain under quitting, add the weighted prediction errors of those who quit, and average. For $a=0$, predict weight gain under not quitting, add the weighted prediction errors of those who did not quit, and average. Subtracting the resulting means gives a reported AIPW estimate of $3.02$ kilograms.
-
-<!-- The 3.02 kg estimate is retained from the source textbook. The source describes the outcome regression incompletely; it must include exposure (or fit separate outcome models by exposure) to provide predictions under both interventions. The original analysis should be rerun before these model details are treated as a reproducible specification. -->
-
-Why does this combination work? With the true conditional mean, the observed prediction error has mean zero within each exposure and covariate group. The correction then has mean zero too. With the true exposure probabilities, weighting can instead correct a wrong conditional-mean function. Either route can lead to the same intervention mean.
-
-::: {.proposition-box}
-**The augmented identification formula.** Under the measured-confounding SCM and the conditions for IPW identification, let $\mu_a(X)=E\left[Y\mid X,A=a\right]$. Then
-
-$$
-E\left[Y(a)\right]
-=E\left[
-\mu_a(X)
-+\frac{1_{A=a}}{p_a(X)}\left\{Y-\mu_a(X)\right\}
-\right].
-$$
-:::
-
-::: {.callout-note title="Technical note: proof of the augmented identity" collapse="true"}
-Conditioning on $X$ gives
-
-$$
-\begin{aligned}
-E\left[
-\frac{1_{A=a}}{p_a(X)}\{Y-\mu_a(X)\}\mid X
-\right]
-&=\frac{P(A=a\mid X)}{p_a(X)}
-E\left[Y-\mu_a(X)\mid X,A=a\right]\\
-&=0.
-\end{aligned}
-$$
-
-Thus, the outer expectation of the correction is zero. The remaining term is $E\left[\mu_a(X)\right]$, which equals $E\left[Y(a)\right]$ by the identification result from outcome regression.
-:::
-
-This estimator is called doubly robust. Under the conditions that make the fitted functions and sample averages converge appropriately, it is consistent if the propensity model is correct or the outcome-mean model is correct. Both models may be correct, but both do not have to be correct for consistency.
-
-This does not protect against a wrong SCM. If important common causes are missing from $X$, the exchangeability relationship supplied by our SWIG may fail, and neither model can restore it. Double robustness concerns the two statistical models we use after identification.
-
-::: {.callout-note title="Technical note: the product of the two errors" collapse="true"}
-Fix $a$. Write $\mu_a(X)=E\left[Y\mid X,A=a\right]$ and $p_a(X)=P(A=a\mid X)$. Consider fixed functions $m_a(X)$ and $q_a(X)>0$ in place of the true functions. The expected augmented contribution is
-
-$$
-\begin{aligned}
-E\left[m_a(X)+\frac{1_{A=a}}{q_a(X)}\{Y-m_a(X)\}\right]
-&=E\left[m_a(X)+\frac{p_a(X)}{q_a(X)}\{\mu_a(X)-m_a(X)\}\right]\\
-&=E\left[Y(a)\right]
-+E\left[
-\{\mu_a(X)-m_a(X)\}
-\frac{p_a(X)-q_a(X)}{q_a(X)}
-\right].
-\end{aligned}
-$$
-
-The first equality follows by conditioning on $X$. The second follows by adding and subtracting $\mu_a(X)$ and using $E\left[\mu_a(X)\right]=E\left[Y(a)\right]$.
-
-The extra term is a product of an outcome-mean error and an exposure-probability error. It vanishes if $m_a=\mu_a$, or if $q_a=p_a$. It can also be small when both errors are small.
-
-For estimated functions, suppose $\hat\mu(X,a)$ and $\hat p_a(X)$ approach limits $m_a(X)$ and $q_a(X)$, and the sample average approaches the expectation above. The same formula describes the probability limit of the AIPW estimator. These convergence statements require integrability, control of the denominators, and appropriate conditions on how the functions are fitted. They are not claims of exact unbiasedness for arbitrary models fitted to the same sample.
-
-One useful approach is cross-fitting. Fit the functions using one part of the data and evaluate their augmented contributions in another part, repeating this across parts so that each observation contributes to the final average. This separates each evaluated observation from the data used to fit its predictions and helps establish the required convergence results.
-:::
-
-::: {.callout-note title="Technical note: comparing variances with the true functions" collapse="true"}
-There is a useful variance comparison when the functions are known. It is distinct from a claim that any fitted AIPW estimator has lower variance than any fitted IPW estimator.
-
-Fix $a$ and abbreviate $I=1_{A=a}$, $p=p_a(X)$, and $\mu=\mu_a(X)$. Define
-
-$$
-U=\mu+\frac{I}{p}(Y-\mu),
-\qquad V=\frac{IY}{p},
-\qquad \sigma_a^2(X)=\operatorname{Var}(Y\mid X,A=a).
-$$
-
-Both $U$ and $V$ have conditional mean $\mu$ given $X$. Their conditional variances are
-
-$$
-\operatorname{Var}(U\mid X)=\frac{\sigma_a^2(X)}{p}
+E\left[\frac{A}{e(X)}\right]
+=E\left[E\left[\frac{A}{e(X)}\Bigm|X\right]\right]
+=1,
 $$
 
 and
 
 $$
-\operatorname{Var}(V\mid X)
-=\frac{\sigma_a^2(X)}{p}+\mu^2\left(\frac{1}{p}-1\right).
+E\left[\frac{1-A}{1-e(X)}\right]
+=E\left[E\left[\frac{1-A}{1-e(X)}\Bigm|X\right]\right]
+=1.
 $$
 
-For the first equality, the conditional second moment of $I(Y-\mu)/p$ is $p\sigma_a^2(X)/p^2$, and its conditional mean is zero. For the second, the conditional second moment of $IY/p$ is $\{\sigma_a^2(X)+\mu^2\}/p$; subtract the squared conditional mean $\mu^2$.
+Dividing each identified weighted outcome expectation by its
+expected weight leaves the intervention mean unchanged. This
+connects the weighted means to the expressions in the proposition.
+In our data, however, the mean weights need not be exactly one.
+In the four-person example, each set of weights sums to $16/3$,
+rather than four. Dividing by its own weight sum gives each
+estimated intervention mean the form of a weighted average.
 
-Provided the variances are finite, the law of total variance gives
+## A data example in R
 
-$$
-\operatorname{Var}(V)-\operatorname{Var}(U)
-=E\left[\mu^2\left(\frac{1}{p}-1\right)\right]\geq0.
-$$
+::: {.example-intro}
+<span class="example-label">Example: Smoking and birth weight.</span>
 
-Averaging independent copies divides each variance by $n$, preserving the comparison for estimators using the true functions. Estimating the functions changes the analysis and requires additional arguments.
+Return to the 189 births from the previous section. Let $A$ indicate smoking during pregnancy and let $Y$ be birth weight in grams. Collect maternal age and weight in $X$, using the same working SCM as before.
 :::
 
-::: {.callout-note title="Technical note: targeted maximum likelihood estimation" collapse="true"}
-There is another way to bring outcome regression and propensity scores together. Targeted maximum likelihood estimation (TMLE) starts with outcome predictions and then updates those predictions using information from the propensity score. The update targets the particular causal quantity being estimated. We then average the updated predictions under each intervention.
+```{r}
+#| label: ipw-birthweight-propensity
+#| include: false
+birthwt_ipw <- read.csv("data/birthwt.csv")
+rownames(birthwt_ipw) <- NULL
+ipw_ps_fit <- glm(smoke ~ age + lwt,
+                  family = binomial(), data = birthwt_ipw)
+```
 
-The connection to AIPW is that both approaches use a correction based on the same influence function. Their computations differ. AIPW adds a weighted correction to the final average; TMLE updates the outcome model before taking that average. Van der Laan and Rubin introduced the general targeted-estimation approach in @van_der_laan_rubin_2006.
-
-<!-- TODO: Add a worked binary-outcome example, the targeted update, and its connection to the AIPW estimating equation. -->
-
-A worked update and its connection to the AIPW formula will be developed here.
-:::
-
-::: {.callout-note title="Technical note: semiparametric efficiency" collapse="true"}
-Once a causal quantity is identified, we can ask another question. How precise could an estimator be without imposing additional restrictions on the observed-data distribution?
-
-Semiparametric efficiency supplies a benchmark for this question. For $E\left[Y(a)\right]$, the efficient influence function in the unrestricted observed-data model is
+Use the propensity model we fitted in the previous section:
 
 $$
-\phi_a(X,A,Y)
-=\mu_a(X)
-+\frac{1_{A=a}}{p_a(X)}\{Y-\mu_a(X)\}
--E\left[Y(a)\right].
+\log\left[\frac{\hat e(X)}{1-\hat e(X)}\right]
+\approx `r sprintf("%.2f", coef(ipw_ps_fit)[1])`
+`r sprintf("%+.4f", coef(ipw_ps_fit)["age"])`\,\text{age}
+`r sprintf("%+.4f", coef(ipw_ps_fit)["lwt"])`\,\text{weight}.
 $$
 
-It is the augmented contribution, centered at the target mean. Its variance gives the asymptotic variance bound for regular estimators; for a sample of size $n$, the corresponding variance scale is $\operatorname{Var}(\phi_a)/n$. For the ATE, the efficient influence function is $\phi_1-\phi_0$.
+Age is in years and weight in pounds.
 
-Under suitable conditions, an AIPW estimator attains this bound. Both fitted functions must be sufficiently accurate, with their errors converging fast enough in combination, and we need control of small exposure probabilities and finite variances. Cross-fitting helps accommodate flexible fitted models. Consistency of just one model is not, by itself, a guarantee of efficiency or valid usual standard errors.
+Both coefficients are negative: holding weight fixed, older
+mothers have a lower estimated probability of smoking.
+Holding age fixed, heavier mothers have a lower
+estimated probability of smoking.
 
-Kennedy gives an accessible account of influence functions, efficiency, and the role of the product of the two estimation errors in @kennedy_2022.
+To estimate mean birth weight under smoking, we weight the
+outcomes by $A/\hat e(X)$: mothers who smoked receive weight
+$1/\hat e(X)$, and mothers who did not smoke receive weight zero.
+Among mothers who smoked, older mothers'
+outcomes receive more weight, holding maternal weight fixed.
+Outcomes from heavier mothers receive more weight,
+holding age fixed.
 
-<!-- TODO: Derive the influence function and efficiency bound, then give the error-rate conditions and an interval-estimation example. -->
+<details class="lesson-question">
+<summary>To estimate mean birth weight under not smoking, we use outcomes from mothers who did not smoke. Holding the other covariate fixed, should older mothers' outcomes receive more or less weight? What about outcomes from heavier mothers?</summary>
 
-The derivation and a worked standard-error calculation will be added here.
+The weight is $(1-A)/\{1-\hat e(X)\}$: mothers who did not
+smoke receive weight $1/\{1-\hat e(X)\}$, and mothers who smoked
+receive weight zero. Among mothers who did not smoke, older mothers have a higher
+estimated probability of not smoking, so their outcomes
+receive less weight in estimating mean birth weight under
+not smoking. Heavier mothers have a higher estimated
+probability of not smoking, so their outcomes receive less
+weight in estimating that same mean.
+
+</details>
+
+Here are the first four mothers:
+
+```{r}
+#| label: ipw-birthweight-four-mothers
+#| echo: false
+knitr::kable(
+  data.frame(
+    Mother = 1:4,
+    Age = birthwt_ipw$age[1:4],
+    Weight = birthwt_ipw$lwt[1:4],
+    A = birthwt_ipw$smoke[1:4]
+  ),
+  col.names = c("Mother", "Age", "Weight", "$A$"),
+  escape = FALSE, row.names = FALSE
+)
+```
+
+Mother 1 is 19 years old and weighs 182 pounds. Substitute
+her covariates into the fitted model to get her estimated log odds:
+
+$$
+`r sprintf("%.4f", coef(ipw_ps_fit)[1])`
+`r sprintf("%+.6f", coef(ipw_ps_fit)["age"])`(19)
+`r sprintf("%+.6f", coef(ipw_ps_fit)["lwt"])`(182)
+\approx -0.5136.
+$$
+
+Transform back to a probability:
+
+$$
+\hat e(19,182)
+\approx\frac{\exp(-0.5136)}{1+\exp(-0.5136)}
+\approx0.3743.
+$$
+
+She did not smoke, so her weight for estimating mean birth
+weight under smoking is zero:
+
+$$
+\frac{0}{\hat e(19,182)}=0.
+$$
+
+Her weight for estimating mean birth weight under not smoking is
+
+$$
+\frac{1-0}{1-\hat e(19,182)}
+\approx\frac{1}{1-0.3743}\approx1.60.
+$$
+
+Mother 3 is 20 years old and weighs 105 pounds. The same
+substitution gives
+
+$$
+\hat e(20,105)
+\approx\frac{\exp\{0.2320-0.014732(20)-0.002559(105)\}}
+{1+\exp\{0.2320-0.014732(20)-0.002559(105)\}}
+\approx0.4179.
+$$
+
+She smoked, so her weight for estimating mean birth weight
+under smoking is
+
+$$
+\frac{1}{\hat e(20,105)}\approx\frac{1}{0.4179}\approx2.39.
+$$
+
+Her weight for estimating mean birth weight under not smoking is zero:
+
+$$
+\frac{1-1}{1-\hat e(20,105)}=0.
+$$
+
+Calculate the scores and weights for Mothers 2 and 4 in the
+same way. In R, `predict()` calculates the scores. We then
+calculate a separate set of weights for each intervention mean:
+
+```{r}
+#| label: ipw-birthweight-weights
+birthwt_ipw$score <- predict(ipw_ps_fit, type = "response")
+birthwt_ipw$weight1 <- with(birthwt_ipw, smoke / score)
+birthwt_ipw$weight0 <- with(birthwt_ipw, (1 - smoke) / (1 - score))
+```
+
+The completed calculations for these four mothers are:
+
+```{r}
+#| label: ipw-birthweight-four-weights
+#| echo: false
+knitr::kable(
+  data.frame(
+    Mother = 1:4,
+    A = birthwt_ipw$smoke[1:4],
+    Score = birthwt_ipw$score[1:4],
+    Weight1 = birthwt_ipw$weight1[1:4],
+    Weight0 = birthwt_ipw$weight0[1:4]
+  ),
+  col.names = c("Mother", "$A$", "$\\hat e(X)$",
+                "Weight for $Y(1)$", "Weight for $Y(0)$"),
+  digits = c(0, 0, 4, 2, 2), escape = FALSE, row.names = FALSE
+)
+```
+
+Use `weighted.mean()` with each set of weights. All 189 outcomes
+appear in each call, but nonsmokers receive weight zero when
+estimating the mean under smoking, and smokers receive weight
+zero when estimating the mean under not smoking:
+
+```{r}
+#| label: ipw-birthweight-means
+smoked <- birthwt_ipw$smoke == 1
+ipw_mean1 <- with(birthwt_ipw,
+  weighted.mean(bwt, weight1))
+ipw_mean0 <- with(birthwt_ipw,
+  weighted.mean(bwt, weight0))
+ipw_ate <- ipw_mean1 - ipw_mean0
+c(mean1 = ipw_mean1, mean0 = ipw_mean0, ATE = ipw_ate)
+```
+
+The estimated mean birth weights are `r sprintf("%.2f", ipw_mean1)` grams under smoking and `r sprintf("%.2f", ipw_mean0)` grams under not smoking. Their difference is `r sprintf("%.2f", ipw_ate)` grams. Under our working SCM, smoking lowers mean birth weight by an estimated `r sprintf("%.2f", -ipw_ate)` grams.
+
+```{r}
+#| label: ipw-compare-score-regression
+#| include: false
+ipw_compare1 <- ipw_compare0 <- birthwt_ipw
+ipw_compare1$smoke <- 1
+ipw_compare0$smoke <- 0
+ipw_score_regression <- lm(bwt ~ score + smoke, data = birthwt_ipw)
+ipw_score_regression_ate <- mean(
+  predict(ipw_score_regression, newdata = ipw_compare1) -
+  predict(ipw_score_regression, newdata = ipw_compare0)
+)
+```
+
+How does this compare with our earlier estimate? In
+[Propensity scores](03c-propensity-scores.qmd), outcome regression
+using the score and smoking gave an estimated decrease of
+`r sprintf("%.2f", -ipw_score_regression_ate)` grams. The estimates are reasonably close. 
+
+::: {.example-intro}
+<span class="example-label">Example: Smoking and low birth weight.</span>
+
+Now let $Y=1$ indicate infant birth weight below 2,500 grams
+and $Y=0$ otherwise, using the variable `low`. We keep the
+same mothers, smoking variable, and covariates.
 :::
+
+Our weights depend on treatment and covariates, so they stay
+the same when we change the outcome. Replace `bwt` by `low`
+in the two weighted means. Because the outcome is binary,
+each weighted mean estimates a risk:
+
+```{r}
+#| label: ipw-low-birthweight-risks
+ipw_low_mean1 <- with(birthwt_ipw, weighted.mean(low, weight1))
+ipw_low_mean0 <- with(birthwt_ipw, weighted.mean(low, weight0))
+ipw_low_ate <- ipw_low_mean1 - ipw_low_mean0
+ipw_low_rr <- ipw_low_mean1 / ipw_low_mean0
+ipw_low_or <- (ipw_low_mean1 / (1 - ipw_low_mean1)) /
+  (ipw_low_mean0 / (1 - ipw_low_mean0))
+c(risk1 = ipw_low_mean1, risk0 = ipw_low_mean0,
+  ATE = ipw_low_ate, relative_risk = ipw_low_rr, odds_ratio = ipw_low_or)
+```
+
+For the risk under smoking, nonsmokers still receive weight
+zero. For the risk under not smoking, smokers receive weight
+zero. Under our working SCM, the estimated risk of low birth
+weight is `r sprintf("%.1f", 100 * ipw_low_mean1)`% under smoking
+and `r sprintf("%.1f", 100 * ipw_low_mean0)`% under not smoking.
+Smoking therefore increases the risk by an estimated
+`r sprintf("%.1f", 100 * ipw_low_ate)` percentage points. The
+estimated causal relative risk is `r sprintf("%.2f", ipw_low_rr)`,
+and the causal odds ratio is `r sprintf("%.2f", ipw_low_or)`.
+
+```{r}
+#| label: ipw-compare-score-low-birthweight
+#| include: false
+ipw_score_low_regression <- glm(low ~ score + smoke,
+  family = binomial(), data = birthwt_ipw)
+ipw_score_low_ate <- mean(
+  predict(ipw_score_low_regression, newdata = ipw_compare1, type = "response") -
+  predict(ipw_score_low_regression, newdata = ipw_compare0, type = "response")
+)
+```
+
+In the previous section, logistic outcome regression using
+the score and smoking gave an estimated risk increase of
+`r sprintf("%.1f", 100 * ipw_score_low_ate)` percentage points.
+IPW gives `r sprintf("%.1f", 100 * ipw_low_ate)` percentage
+points. Again, these are two estimates of the same causal
+contrast, obtained using different estimators.
+
+## Things to think about in practice
+
+We have computed an estimate. Now look at the comparisons
+behind it and how much information supports them.
+
+### Positivity
+
+Our identification argument required conditional positivity:
+both treatment values must have positive probability given
+the covariates, $0<e(X)<1$. Do our data support the comparisons
+that this assumption requires? This question matters for
+propensity-score matching, adjustment, and weighting.
+
+Look at the distribution of estimated propensity scores,
+separately for treated and untreated people. Two warning
+signs are worth looking for:
+
+1. **Scores close to zero or one.** A score of 0.001 means
+   treatment is very unlikely at those covariate values.
+   Over many people with that score, we would expect about
+   999 untreated people per treated person. A score of 0.999
+   reverses the problem: untreated outcomes are scarce.
+   At these scores, a few outcomes supply most of the
+   comparison under one treatment value.
+2. **Regions with little or no overlap between the groups.**
+   Are there score ranges containing treated people but few
+   or no untreated people, or the reverse? We lack observed
+   comparisons in those regions.
+
+@westreich_etal_2011 explicitly connect non-overlapping
+propensity-score distributions to possible nonpositivity.
+
+For our birth-weight example, plot the estimated scores for
+mothers who smoked and mothers who did not:
+
+```{r}
+#| label: ipw-birthweight-overlap
+#| fig-width: 7
+#| fig-height: 4
+#| fig-alt: "Density histograms of estimated smoking probabilities for mothers who smoked and mothers who did not, using common bins."
+ipw_bins <- seq(0, 1, length.out = 21)
+ipw_hist0 <- hist(birthwt_ipw$score[!smoked], breaks = ipw_bins, plot = FALSE)
+ipw_hist1 <- hist(birthwt_ipw$score[smoked], breaks = ipw_bins, plot = FALSE)
+ipw_ylim <- c(0, 1.1 * max(ipw_hist0$density, ipw_hist1$density))
+plot(ipw_hist0, freq = FALSE, col = NA, border = "grey40",
+     ylim = ipw_ylim, xlab = "Estimated propensity score",
+     main = "Smoking probabilities by observed smoking status")
+plot(ipw_hist1, freq = FALSE, col = NA, border = "steelblue", add = TRUE)
+legend("topright", c("Did not smoke", "Smoked"),
+       col = c("grey40", "steelblue"), lty = 1, bty = "n")
+```
+
+Here, the scores in both groups range from about 0.31 to 0.44.
+The fitted scores are away from zero and one, and both groups
+are represented across a similar range.
+
+If warning signs appear, inspect the original covariates to
+identify the combinations behind them. Is one treatment
+impossible for those people, or simply rare in our sample?
+Restricting the analysis to a region with both treatment
+groups defines the causal effect for the people in that region.
+
+### Balance
+
+The positivity checks ask whether we have observations to compare.
+Balance asks whether weighting has made the covariate
+distributions similar between treatment groups. Check the
+original covariates, just as we did after matching.
+
+Use `cobalt`, as in the matching sections, to compare balance
+for the same 189 mothers across our methods. We will compare
+matching directly on age and maternal weight, propensity-score
+matching, full matching, and IPW.
+
+The labels show each method's target: ATT for nearest-neighbor
+matching and ATE for full matching and IPW. Use the original
+pooled standard deviation for each covariate throughout to
+put all the comparisons on the same scale.
+
+```{r}
+#| label: ipw-prepare-balance-comparison
+#| include: false
+birthwt_nearest <- MatchIt::matchit(
+  smoke ~ age + lwt, data = birthwt_ipw,
+  method = "nearest", distance = "mahalanobis", estimand = "ATT",
+  ratio = 1, replace = TRUE, m.order = "data"
+)
+birthwt_ps_nearest <- MatchIt::matchit(
+  smoke ~ age + lwt, data = birthwt_ipw,
+  method = "nearest", distance = birthwt_ipw$score, estimand = "ATT",
+  ratio = 1, replace = TRUE, m.order = "data"
+)
+birthwt_full <- MatchIt::matchit(
+  smoke ~ age + lwt, data = birthwt_ipw,
+  method = "full", distance = "mahalanobis", estimand = "ATE"
+)
+```
+
+Collect the matching weights from the earlier analyses.
+For the IPW balance check, `cobalt` uses one weight per mother:
+`weight1 + weight0` gives her nonzero weight for her observed
+treatment group. The intervention-mean calculations above
+use their separate sets of weights, including zeros.
+
+```{r}
+#| label: ipw-birthweight-balance
+ipw_comparison_weights <- data.frame(
+  Matching = birthwt_nearest$weights,
+  PS_matching = birthwt_ps_nearest$weights,
+  Full_matching = birthwt_full$weights,
+  IPW = birthwt_ipw$weight1 + birthwt_ipw$weight0
+)
+ipw_balance <- cobalt::bal.tab(
+  smoke ~ age + lwt, data = birthwt_ipw,
+  weights = ipw_comparison_weights,
+  un = TRUE, s.d.denom = "pooled"
+)
+```
+
+Here are the absolute standardized mean differences. Values
+closer to zero indicate closer balance in that covariate's mean:
+
+```{r}
+#| label: ipw-birthweight-balance-comparison-table
+#| echo: false
+ipw_balance_table <- data.frame(
+  Covariate = c("Maternal age", "Maternal weight"),
+  abs(ipw_balance$Balance[, c("Diff.Un", "Diff.Matching",
+    "Diff.PS_matching", "Diff.Full_matching", "Diff.IPW")])
+)
+knitr::kable(ipw_balance_table,
+  col.names = c("Covariate", "Before", "Matching (ATT)",
+    "PS matching (ATT)", "Full matching (ATE)", "IPW (ATE)"),
+  digits = 3, row.names = FALSE)
+```
+
+A single balance plot displays the same comparisons. The line
+at 0.10 is the common guide we used earlier:
+
+```{r}
+#| label: ipw-birthweight-balance-comparison-plot
+#| echo: false
+#| fig-width: 8
+#| fig-height: 4.5
+#| fig-alt: "Absolute standardized mean differences in maternal age and weight before adjustment and after covariate matching, propensity-score matching, full matching, and IPW, with ATT and ATE targets labeled."
+cobalt::love.plot(
+  ipw_balance, abs = TRUE,
+  thresholds = c(m = 0.10),
+  var.names = c(age = "Maternal age", lwt = "Maternal weight"),
+  sample.names = c("Before adjustment", "Matching (ATT)",
+    "PS matching (ATT)", "Full matching (ATE)", "IPW (ATE)"),
+  colors = c("#59636b", "#315c43", "#bd8442", "#6588a6", "#913e57"),
+  shapes = c(16, 17, 15, 18, 19),
+  position = "bottom", wrap = 24
+) + ggplot2::guides(
+  colour = ggplot2::guide_legend(nrow = 2, byrow = TRUE),
+  shape = ggplot2::guide_legend(nrow = 2, byrow = TRUE)
+)
+```
+
+All four methods bring these mean differences closer to zero.
+IPW gives the closest mean-age balance, while propensity-score
+matching gives the closest mean-weight balance. Also compare
+spread and relevant nonlinear features or interactions.
+
+If balance remains poor, revisit the propensity model.
+Perhaps the relationship with age bends, or the association
+with maternal weight differs by age. Revise the model and
+check balance again.
+
+Evaluate the propensity model through the weighted comparison
+it produces. Classification accuracy measures how well the
+model separates treated from untreated people; balance measures
+how closely the weighted covariate distributions agree.
+@brookhart_2006 discuss why selecting variables for a propensity
+model differs from selecting them solely to predict treatment.
+
+### Large weights
+
+Even with overlap, some outcomes may receive much more
+weight than others. For a mother who smoked, her weight
+when estimating mean birth weight under smoking is
+$1/\hat e(X)$:
+
+| Estimated propensity score | Weight under smoking, if she smoked |
+|---:|---:|
+| 0.50 | 2 |
+| 0.05 | 20 |
+| 0.001 | 1,000 |
+
+A mother who did not smoke still receives weight zero for
+this mean. For the mean under not smoking, the large weights
+arise among nonsmokers with scores close to one: a score of
+0.999 gives weight $1/(1-0.999)=1000$.
+
+Consider a different sample with four mothers who smoked.
+Their infants weigh 2,500, 3,000, 3,500, and 2,000 grams.
+Suppose their weights for estimating the mean under smoking
+are 2, 2, 2, and 1,000. The weighted mean is
+
+$$
+\frac{2(2500)+2(3000)+2(3500)+1000(2000)}{2+2+2+1000}
+=\frac{2018000}{1006}\approx2006\text{ grams}.
+$$
+
+The last infant's outcome carries about 99.4% of the total
+weight, so the weighted mean is almost that one infant's
+birth weight.
+
+One response is to cap the weights. Cap the last weight at
+20 and repeat the calculation:
+
+$$
+\frac{2(2500)+2(3000)+2(3500)+20(2000)}{2+2+2+20}
+=\frac{58000}{26}\approx2231\text{ grams}.
+$$
+
+The last outcome has less influence, and the estimate
+changes. Capping changes the weighting formula, so we trade
+possible bias for reduced variability.
+
+In our actual birth-weight data, inspect the nonzero weights
+for each intervention mean:
+
+```{r}
+#| label: ipw-birthweight-weight-summary
+summary(birthwt_ipw$weight1[smoked])
+summary(birthwt_ipw$weight0[!smoked])
+```
+
+The largest is about `r sprintf("%.2f", max(birthwt_ipw$weight1, birthwt_ipw$weight0))`.
+
+We can limit weights by truncating propensity scores before
+constructing them. For example, replacing scores below 0.05
+by 0.05 and above 0.95 by 0.95 caps each nonzero weight at 20:
+
+```{r}
+#| label: ipw-birthweight-truncation
+bounded_score <- pmin(pmax(birthwt_ipw$score, 0.05), 0.95)
+bounded_weight1 <- birthwt_ipw$smoke / bounded_score
+bounded_weight0 <- (1 - birthwt_ipw$smoke) / (1 - bounded_score)
+bounded_ate <- with(birthwt_ipw,
+  weighted.mean(bwt, bounded_weight1) -
+  weighted.mean(bwt, bounded_weight0))
+c(original_ATE = ipw_ate, bounded_ATE = bounded_ate)
+```
+
+No scores in our example cross these bounds, so the estimate
+is unchanged. When truncation does change weights, check how
+both the estimate and covariate balance change. Repeat the
+`cobalt` balance check using `bounded_weight1 + bounded_weight0`. Report the
+bounds used. @cole_hernan_2008 work through these choices.
+
+<details class="lesson-question">
+<summary>Would stabilized weights solve the domination in our four-infant example? Suppose 30% of mothers smoked, and multiply every weight for estimating the mean under smoking by 0.30.</summary>
+
+The weights become 0.6, 0.6, 0.6, and 300. Both the weighted
+outcome total and the weight sum are multiplied by 0.30, so
+
+$$
+\frac{0.30\{2(2500)+2(3000)+2(3500)+1000(2000)\}}
+{0.30\{2+2+2+1000\}}
+=\frac{2018000}{1006}\approx2006\text{ grams}.
+$$
+
+The last infant still carries 99.4% of the total weight.
+Multiplying by the marginal treatment probability gives
+**stabilized weights**. For the mean under not smoking, the
+corresponding factor is 0.70. Each constant cancels in its
+own weighted mean, so the two estimated intervention means
+and the ATE stay the same.
+
+</details>
+
+### Choosing a denominator
+
+We introduced IPW using weighted means, also called Hájek
+estimators. The **Horvitz–Thompson estimator** is another widely
+used choice [@horvitz_thompson_1952]. It divides the weighted
+outcome total by $n$, the number of people in the sample,
+including those with weight zero.
+
+Return to treatment 1 in our four-person example. The
+Horvitz–Thompson calculation gives
+
+$$
+\frac{4(6)+(4/3)(10)}{4}=\frac{28}{3}\approx9.33.
+$$
+
+The Hájek calculation uses the same numerator but divides by
+the weight sum:
+
+$$
+\frac{4(6)+(4/3)(10)}{4+4/3}=7.
+$$
+
+Why choose one over the other? When the true treatment
+probabilities are known, the Horvitz–Thompson estimator is
+unbiased: it directly averages the weighted contributions
+from our identification result. The Hájek estimator divides
+by a weight sum that varies across samples. That ratio can
+introduce finite-sample bias, but normalization can also
+reduce variability from sample to sample.
+
+The tradeoff concerns mean squared error:
+
+$$
+\operatorname{MSE}=\operatorname{Variance}+\operatorname{Bias}^2.
+$$
+
+A reduction in variance can outweigh the squared bias introduced
+by normalization. Estimating the propensity scores introduces
+another source of error into both procedures. Neither method
+universally minimizes MSE.
+@datta_polson_2026 discuss these estimators and their tradeoffs.
+
+We can also combine the denominator choices.
+@khan_ugander_2023 study **adaptive normalization**, using a
+denominator that combines $n$ and the sum of weights, with
+the combination chosen from the data to reduce variance.
+Their approach connects the two estimators and extends to
+ATE estimation. We will continue using Hájek weighted means
+in our worked examples.
+
+### Uncertainty
+
+As with our earlier propensity-score analyses, there are two
+sources of sampling uncertainty to account for. We estimated
+the propensity scores, so another sample would give different
+weights. We also used sampled outcomes to estimate the
+intervention means. These two steps use the same people;
+their uncertainties are connected.
+
+A bootstrap repeats both steps. Sample 189 mothers with
+replacement, keeping each mother's covariates, smoking status,
+and outcome together. Refit the propensity model, construct
+new weights, and calculate the difference of weighted means.
+Repeat this procedure to obtain a collection of estimates.
+
+```{r}
+#| label: ipw-birthweight-bootstrap
+set.seed(661)
+ipw_boot <- replicate(1000, {
+  boot_rows <- sample.int(nrow(birthwt_ipw), replace = TRUE)
+  boot_data <- birthwt_ipw[boot_rows, ]
+  boot_fit <- glm(smoke ~ age + lwt,
+    family = binomial(), data = boot_data)
+  boot_score <- predict(boot_fit, type = "response")
+  boot_weight1 <- boot_data$smoke / boot_score
+  boot_weight0 <- (1 - boot_data$smoke) / (1 - boot_score)
+  c(
+    grams = weighted.mean(boot_data$bwt, boot_weight1) -
+      weighted.mean(boot_data$bwt, boot_weight0),
+    risk_difference = weighted.mean(boot_data$low, boot_weight1) -
+      weighted.mean(boot_data$low, boot_weight0)
+  )
+})
+```
+
+The standard deviation of these estimates gives a bootstrap
+standard error. Their 2.5th and 97.5th percentiles give a
+percentile 95% confidence interval:
+
+```{r}
+#| label: ipw-birthweight-bootstrap-summary
+ipw_boot_summary <- data.frame(
+  Contrast = c("Mean difference (grams)", "Risk difference"),
+  Estimate = c(ipw_ate, ipw_low_ate),
+  SE = apply(ipw_boot, 1, sd),
+  Lower = apply(ipw_boot, 1, quantile, probs = 0.025),
+  Upper = apply(ipw_boot, 1, quantile, probs = 0.975)
+)
+knitr::kable(ipw_boot_summary, digits = c(0, 3, 3, 3, 3), row.names = FALSE)
+```
+
+@austin_2022 examines bootstrap uncertainty estimates for
+propensity weighting with continuous and binary outcomes.
+
+Next, we combine outcome regression and weighting in [Robust estimators](03e-robust-estimators.qmd).

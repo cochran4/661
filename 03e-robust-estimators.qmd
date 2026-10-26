@@ -1,0 +1,360 @@
+---
+title: "Robust estimators"
+---
+
+We begin with AIPW and ask how errors in the outcome and propensity models affect its estimate. We then use BART to model the outcome more flexibly.
+
+## Augmented inverse probability weighting
+
+IPW estimates the propensity score. Outcome regression estimates the conditional outcome mean. We can use both. Start with the predicted outcome under an intervention, then use weighting to correct the prediction errors we can observe.
+
+For example, suppose a person has predicted outcome $5$ under treatment 1 and propensity score $0.25.$ If they receive treatment 1 and their outcome is $7$, their prediction error is $7-5=2.$ Their augmented contribution is
+
+$$
+5+\frac{1}{0.25}(7-5)=13.
+$$
+
+If they receive treatment 0, their contribution under treatment 1 is just the prediction, $5.$ Their observed outcome does not supply a prediction error under treatment 1. Repeat this calculation for everyone, then take the ordinary mean of the contributions.
+
+::: {.definition-box}
+The **augmented inverse probability weighting (AIPW) estimator** of $E[Y(a)]$ is
+
+$$
+\widehat E\left[Y(a)\right]_{\mathrm{AIPW}}
+=
+\frac1n\sum_{i=1}^n
+\left[
+\hat\mu(x_i,a)
++\frac{1_{a_i=a}}{\hat p_a(x_i)}
+\{y_i-\hat\mu(x_i,a)\}
+\right],
+$$
+
+where $\hat\mu(x,a)$ estimates $E[Y\mid X=x,A=a]$ and $\hat p_a(x)$ estimates $P(A=a\mid X=x).$
+:::
+
+This is an average of predictions plus a weighted residual correction. The standard AIPW formula divides the residual total by $n.$ Our IPW estimates in the previous section divide weighted outcome totals by their weight sums. The two procedures use different denominators; we will retain the standard AIPW formula here, as in Technical Point 13.2 of @hernan_robins_2020.
+
+Return to the birth-weight example, using the same fitted propensity model as in the previous section.
+
+```{r}
+#| label: prepare-aipw-birthweight
+#| include: false
+birthwt_ipw <- read.csv("data/birthwt.csv")
+rownames(birthwt_ipw) <- NULL
+ipw_ps_fit <- glm(smoke ~ age + lwt,
+                  family = binomial(), data = birthwt_ipw)
+birthwt_ipw$score <- predict(ipw_ps_fit, type = "response")
+birthwt_ipw$weight1 <- with(birthwt_ipw, smoke / score)
+birthwt_ipw$weight0 <- with(birthwt_ipw, (1 - smoke) / (1 - score))
+ipw_ate <- with(birthwt_ipw,
+  weighted.mean(bwt, weight1) - weighted.mean(bwt, weight0))
+```
+
+Fit an outcome regression using smoking, maternal age, and maternal weight, then predict birth weight under each smoking value:
+
+```{r}
+#| label: aipw-birthweight-outcome
+ipw_outcome_fit <- lm(bwt ~ smoke + age + lwt, data = birthwt_ipw)
+birthwt_under1 <- birthwt_under0 <- birthwt_ipw
+birthwt_under1$smoke <- 1
+birthwt_under0$smoke <- 0
+birthwt_mu1 <- predict(ipw_outcome_fit, newdata = birthwt_under1)
+birthwt_mu0 <- predict(ipw_outcome_fit, newdata = birthwt_under0)
+```
+
+Add the residual corrections and average:
+
+```{r}
+#| label: aipw-birthweight-estimate
+birthwt_A <- birthwt_ipw$smoke
+birthwt_Y <- birthwt_ipw$bwt
+birthwt_e <- birthwt_ipw$score
+birthwt_aug1 <- birthwt_mu1 + birthwt_A / birthwt_e * (birthwt_Y - birthwt_mu1)
+birthwt_aug0 <- birthwt_mu0 + (1 - birthwt_A) / (1 - birthwt_e) *
+  (birthwt_Y - birthwt_mu0)
+birthwt_aipw <- mean(birthwt_aug1 - birthwt_aug0)
+c(mean1 = mean(birthwt_aug1), mean0 = mean(birthwt_aug0), ATE = birthwt_aipw)
+```
+
+The AIPW estimate is `r sprintf("%.2f", birthwt_aipw)` grams. For comparison, outcome regression gives `r sprintf("%.2f", mean(birthwt_mu1 - birthwt_mu0))` grams and IPW gives `r sprintf("%.2f", ipw_ate)` grams. All three estimates concern the same ATE.
+
+## Why the combination works
+
+Fix an intervention value $a.$ Write the true conditional outcome mean and treatment probability as
+
+$$
+\mu_a(X)=E[Y\mid X,A=a],
+\qquad
+p_a(X)=P(A=a\mid X).
+$$
+
+First suppose we use the true functions. Within each covariate and treatment group, the prediction error has mean zero. Thus,
+
+$$
+\begin{aligned}
+E\left[\frac{1_{A=a}}{p_a(X)}\{Y-\mu_a(X)\}\mid X\right]
+&=\frac{p_a(X)}{p_a(X)}
+E\left[Y-\mu_a(X)\mid X,A=a\right]\\
+&=0.
+\end{aligned}
+$$
+
+Adding the correction leaves the intervention mean unchanged:
+
+$$
+E\left[\mu_a(X)+\frac{1_{A=a}}{p_a(X)}\{Y-\mu_a(X)\}\right]
+=E[\mu_a(X)]=E[Y(a)].
+$$
+
+Now allow the two functions to be wrong. Use $m_a(X)$ for an outcome-mean function and $q_a(X)>0$ for a treatment-probability function, with the expectations below defined. Conditioning on $X$ gives
+
+$$
+\begin{aligned}
+E\left[m_a(X)+\frac{1_{A=a}}{q_a(X)}\{Y-m_a(X)\}\mid X\right]
+&=m_a(X)+\frac{p_a(X)}{q_a(X)}\{\mu_a(X)-m_a(X)\}.
+\end{aligned}
+$$
+
+Subtract the true conditional mean. Keep the terms visible:
+
+$$
+\begin{aligned}
+&m_a(X)+\frac{p_a(X)}{q_a(X)}\{\mu_a(X)-m_a(X)\}-\mu_a(X)\\
+&\quad=\{\mu_a(X)-m_a(X)\}
+\left\{\frac{p_a(X)}{q_a(X)}-1\right\}\\
+&\quad=\{\mu_a(X)-m_a(X)\}
+\frac{p_a(X)-q_a(X)}{q_a(X)}.
+\end{aligned}
+$$
+
+Finally, average over $X$:
+
+$$
+\begin{aligned}
+&E\left[m_a(X)+\frac{1_{A=a}}{q_a(X)}\{Y-m_a(X)\}\right]-E[Y(a)]\\
+&\qquad=
+E\left[
+\underbrace{\{\mu_a(X)-m_a(X)\}}_{\text{outcome-mean error}}
+\underbrace{\frac{p_a(X)-q_a(X)}{q_a(X)}}_{\text{relative probability error}}
+\right].
+\end{aligned}
+$$
+
+If the outcome-mean function is correct, the first error is zero. If the treatment-probability function is correct, the second error is zero. Either way, the whole extra term is zero.
+
+::: {.proposition-box}
+**Double robustness.** Under the identification conditions, if the fitted outcome and propensity functions and the corresponding sample averages converge appropriately, AIPW consistently estimates $E[Y(a)]$ when either the outcome-mean model or the treatment-probability model is correct.
+:::
+
+For example, suppose the true mean in a covariate group is $10$, but our outcome function gives $9.$ If the true treatment probability is $0.40$ and we use $0.50$, that group's extra term is
+
+$$
+(10-9)\frac{0.40-0.50}{0.50}=-0.20.
+$$
+
+Correct the outcome function to $10$, or correct the probability function to $0.40$, and the extra term becomes zero.
+
+There is an obvious objection: neither model is ever exactly right, so why care about double robustness? Look at the expression we just derived. The errors multiply. If the outcome error is $0.10$ and the relative probability error is $0.10$, their product is $0.01.$ Neither function is exact, but their combined error can be much smaller than either error on its own. Small denominators still matter because the probability error is divided by $q_a(X).$
+
+This is a major reason to combine AIPW with flexible modeling. We can try to estimate both functions well without insisting that either one belongs to a simple linear or logistic family. The product of their errors determines the remaining systematic error in the identity above.
+
+Double robustness concerns these two statistical functions. The measured-confounding SCM still supplies the causal identification argument.
+
+::: {.callout-note title="Technical note: fitted functions and cross-fitting" collapse="true"}
+The error identity above uses fixed functions $m_a$ and $q_a.$ To apply it to estimated functions, we also need the fitted functions and sample averages to behave appropriately. One useful device is cross-fitting: fit the models on one part of the data and evaluate their predictions and residual corrections on another part, repeating so every observation is evaluated once. This makes it easier to control the sample-average error when using flexible learners. We will return to this in [Choosing how much flexibility to use](#choosing-how-much-flexibility-to-use). @kennedy_2022 develops the product-error argument and its role in inference.
+:::
+
+A good outcome model can already give a good estimate through standardization. We do not need to add a propensity model merely to make an analysis look more sophisticated. But when we estimate complex functions from data, their errors need not disappear quickly. Flexible modeling and augmentation can work together. That is where we go next.
+
+## Flexible outcome models
+
+We have spent a lot of time deciding what to estimate. We identified causal effects, wrote them in terms of the observed-data distribution, and found several ways to estimate the pieces. But those pieces still have to be estimated well.
+
+Consider our birth-weight analysis. We used maternal age and weight to predict smoking, and we used smoking, age, and weight to predict infant birth weight. Logistic regression and linear regression made those calculations convenient. They also made choices for us. A straight-line outcome model says that another pound of maternal weight has the same association with mean birth weight at every age and smoking value. An additive model says that the smoking difference does not depend on either covariate. Those are modeling restrictions, not consequences of our SCM.
+
+This is where flexible modeling comes in. We can use a method that learns bends and interactions from the data instead of requiring us to specify each one in advance. We can do this for the conditional mean, the propensity score, or both. We will focus on the conditional mean: predict outcomes well, then use the averaging operation we already know.
+
+## Start with one tree
+
+Suppose we want to predict birth weight from smoking, maternal age, and maternal weight. One possible prediction rule is:
+
+1. If the mother does not smoke, predict 3200 grams.
+2. If she smokes and weighs less than 120 pounds, predict 2700 grams.
+3. If she smokes and weighs at least 120 pounds, predict 2900 grams.
+
+These numbers are made up to illustrate the rule. A 25-year-old nonsmoker weighing 110 pounds receives a prediction of 3200 grams. Change her smoking value to 1 and leave her age and weight alone. Now the prediction is 2700 grams. The predicted smoking difference is
+
+$$
+2700-3200=-500\text{ grams}.
+$$
+
+For a mother weighing 140 pounds, the same operation gives
+
+$$
+2900-3200=-300\text{ grams}.
+$$
+
+The rule allows the smoking difference to depend on maternal weight. It does not use age, even though age was available. A fitted tree chooses which variables to split on, where to split them, and the predicted value at the end of each path.
+
+::: {.definition-box}
+A **regression tree** partitions the predictor space through a sequence of splits and assigns a constant predicted mean to each resulting region.
+:::
+
+For example, our rule partitions mothers into three regions: nonsmokers, smokers weighing less than 120 pounds, and smokers weighing at least 120 pounds. The predicted means are 3200, 2700, and 2900 grams.
+
+One tree gives a fairly rough prediction surface. Everyone in the same region receives exactly the same prediction, and crossing a boundary can produce a large jump. We can build a much more flexible surface by adding together many trees.
+
+## Bayesian additive regression trees
+
+Imagine a second tree that contributes 50 grams for mothers younger than 25 and $-50$ grams for mothers aged 25 or older. Add its contribution to the first tree's prediction. Our 25-year-old nonsmoker weighing 110 pounds now receives a prediction of $3200-50=3150$ grams. Under smoking, her prediction becomes $2700-50=2650$ grams. Further trees can make further adjustments.
+
+Bayesian additive regression trees, or BART, uses this sum-of-trees idea, with a prior that favors small trees and limits the contribution of each tree. Many modest contributions together can describe a complicated conditional mean [@chipman_george_mcculloch_2010].
+
+::: {.definition-box}
+**Bayesian additive regression trees (BART)** models a regression function as a sum of trees,
+
+$$
+\mu(x,a)=\sum_{j=1}^{J}g_j(x,a),
+$$
+
+with prior distributions that regularize the trees and their predictions.
+:::
+
+For our two-tree example, $g_1$ supplies the smoking-and-weight prediction and $g_2$ supplies the age adjustment. Their sum is the predicted mean. In a fitted BART model, the data inform both the splits and the contributions, and we average predictions over draws from their posterior distribution.
+
+We will use BART to estimate $\mu(x,a)=E[Y\mid X=x,A=a]$, then predict each person's outcome under each treatment value and average. Hill [-@hill_2011] developed this use of BART for causal inference. BART-based approaches also performed well in the 2016 Atlantic Causal Inference Conference data analysis competition. Across the competing methods, a central finding was the value of flexibly modeling the outcome surface [@dorie_etal_2019]. That gives us a good reason to work through it.
+
+## Smoking and birth weight in R
+
+Return to the 189 mothers in the birth-weight dataset. Let $A$ indicate smoking during pregnancy, $Y$ be infant birth weight in grams, and $X$ collect maternal age and weight. We retain the working measured-confounding SCM from the preceding sections.
+
+Read the data and collect the three predictors. The `dbarts` package fits BART; install it once with `install.packages("dbarts")` if needed. Its [package manual](https://cran.r-project.org/web/packages/dbarts/dbarts.pdf) describes the arguments and returned predictions.
+
+```{r}
+#| label: prepare-bart-birthweight
+birthwt_flexible <- read.csv("data/birthwt.csv")
+bart_predictors <- birthwt_flexible[, c("age", "lwt", "smoke")]
+```
+
+Make two copies of the predictors. In the first copy, change every mother's smoking value to 1. In the second, change it to 0. Her age and weight stay the same in both copies.
+
+```{r}
+#| label: prepare-bart-interventions
+bart_under_1 <- bart_predictors
+bart_under_1$smoke <- 1
+
+bart_under_0 <- bart_predictors
+bart_under_0$smoke <- 0
+
+bart_test <- rbind(bart_under_1, bart_under_0)
+```
+
+Fit BART to the observed predictors and outcomes. Supply the two copies as `x.test` to request predictions at those predictor values. Here we use 200 trees, discard the first 500 sampling iterations, and keep the next 1000. Setting the seed makes this example reproducible.
+
+```{r}
+#| label: fit-bart-birthweight
+set.seed(661)
+birthwt_bart <- dbarts::bart(
+  x.train = bart_predictors,
+  y.train = birthwt_flexible$bwt,
+  x.test = bart_test,
+  ntree = 200,
+  nskip = 500,
+  ndpost = 1000,
+  nchain = 1,
+  nthread = 1,
+  verbose = FALSE
+)
+```
+
+The returned `yhat.test.mean` contains posterior mean predictions in the same order as the rows of `bart_test`: first everyone under smoking, then everyone under nonsmoking. Separate the predictions and inspect the first four mothers.
+
+```{r}
+#| label: inspect-bart-predictions
+bart_n <- nrow(birthwt_flexible)
+bart_mu_1 <- birthwt_bart$yhat.test.mean[seq_len(bart_n)]
+bart_mu_0 <- birthwt_bart$yhat.test.mean[bart_n + seq_len(bart_n)]
+
+bart_prediction_table <- data.frame(
+  Age = birthwt_flexible$age,
+  Weight = birthwt_flexible$lwt,
+  Smoking = birthwt_flexible$smoke,
+  Observed_birth_weight = birthwt_flexible$bwt,
+  Predicted_under_1 = bart_mu_1,
+  Predicted_under_0 = bart_mu_0,
+  Difference = bart_mu_1 - bart_mu_0
+)
+knitr::kable(head(bart_prediction_table, 4), digits = 1)
+```
+
+The predictions can differ from mother to mother under both smoking values. The smoking difference can differ too. We did not have to specify a smoking-by-age interaction or choose a polynomial for maternal weight before fitting the model.
+
+Now average, just as we did for outcome regression:
+
+```{r}
+#| label: average-bart-predictions
+bart_mean_1 <- mean(bart_mu_1)
+bart_mean_0 <- mean(bart_mu_0)
+bart_ate <- bart_mean_1 - bart_mean_0
+
+round(c(
+  Mean_under_smoking = bart_mean_1,
+  Mean_under_nonsmoking = bart_mean_0,
+  ATE = bart_ate
+), 1)
+```
+
+Under our working SCM, smoking changes mean infant birth weight by an estimated `r sprintf("%.1f", bart_ate)` grams. Changing the regression method did not change the identification formula or the averaging operation. It changed how we estimated the conditional mean inside it.
+
+For comparison, fit an additive linear model using the same predictors and average its predictions at the same intervention values:
+
+```{r}
+#| label: compare-bart-linear
+birthwt_linear <- lm(bwt ~ age + lwt + smoke, data = birthwt_flexible)
+linear_mu_1 <- predict(birthwt_linear, newdata = bart_under_1)
+linear_mu_0 <- predict(birthwt_linear, newdata = bart_under_0)
+
+round(c(
+  Linear_regression_ATE = mean(linear_mu_1) - mean(linear_mu_0),
+  BART_ATE = bart_ate
+), 1)
+```
+
+The estimates need not agree. A difference tells us that the modeling choices affect this analysis; it does not tell us which estimate is closer to the causal effect.
+
+## Using flexible predictions in AIPW
+
+The BART predictions can also replace the linear-regression predictions in AIPW. To make that substitution visible, keep the logistic propensity model from our earlier birth-weight analysis and change only the outcome predictions:
+
+```{r}
+#| label: bart-aipw-birthweight
+bart_ps_fit <- glm(
+  smoke ~ age + lwt,
+  family = binomial(),
+  data = birthwt_flexible
+)
+bart_e <- predict(bart_ps_fit, type = "response")
+bart_a <- birthwt_flexible$smoke
+bart_y <- birthwt_flexible$bwt
+
+bart_aipw_1 <- mean(
+  bart_mu_1 + bart_a / bart_e * (bart_y - bart_mu_1)
+)
+bart_aipw_0 <- mean(
+  bart_mu_0 + (1 - bart_a) / (1 - bart_e) * (bart_y - bart_mu_0)
+)
+round(bart_aipw_1 - bart_aipw_0, 1)
+```
+
+We could also estimate the propensity score flexibly. Its job remains estimating treatment probabilities well enough to support the weighted correction, with the overlap and weight checks from the previous section. Flexibility does not change that job.
+
+## Choosing how much flexibility to use
+
+BART is one way to learn a conditional mean. A neural network can do the same job: receive covariates and treatment, learn a prediction function, then predict at the treatment values of interest. The causal calculation still asks us to average those predictions. The choice of prediction method is an estimation decision.
+
+A flexible method can also fit noise. Regularization limits how freely it adapts to the observed outcomes. To assess prediction, hold out observations or use cross-validation: fit using some observations, then predict outcomes for observations that were not used to fit the model. For continuous birth weight, compare those predictions with the recorded outcomes using a measure such as mean squared error. Training error alone rewards fitting the observations already seen.
+
+For AIPW, a useful extension is **cross-fitting**. Divide the data into folds. For each fold, fit the outcome and propensity models using the other folds, then calculate predictions and AIPW contributions for the held-out fold. Finally, average contributions across everyone. Each person's outcome is then excluded from fitting the functions used in their own correction. Our code above shows the direct substitution first; cross-fitting changes how we obtain those predictions.
+
+Good prediction on held-out observations is useful evidence about a fitted model. We still need support for the intervention predictions: a method cannot learn the smoking outcomes of a covariate group represented only by nonsmokers from observations in that group. And the common causes in $X$ still come from our causal model. BART learns a regression function from the variables we supply; deciding which variables belong there remains our responsibility.
