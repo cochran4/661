@@ -26,6 +26,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 /* CSS for citations */
 div.csl-bib-body { }
 div.csl-entry {
@@ -54,7 +89,7 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./03-exercises.html" rel="next">
+<link href="./03e-robust-estimators.html" rel="next">
 <link href="./03c-propensity-scores.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
@@ -234,6 +269,10 @@ window.Quarto = {
  <span class="dropdown-text">Inverse probability weighting</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./03e-robust-estimators.html">
+ <span class="dropdown-text">Robust estimators</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./03-exercises.html">
  <span class="dropdown-text">Exercises</span></a>
   </li>  
@@ -400,6 +439,11 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./03e-robust-estimators.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Robust estimators</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./03-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
   </div>
 </li>
@@ -477,58 +521,341 @@ window.Quarto = {
 </div>
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>We have already identified <span class="math inline">\(E\left[Y(a)\right]\)</span> using outcome regression. Does that mean we should stop looking? Another expression for the same causal quantity might suggest another way to estimate it. We might prefer to model a different part of the data-generating process. Or we might find that the approaches work especially well together.</p>
-<p>Propensity scores give us such an alternative. Instead of modeling the conditional outcome mean, we can estimate each person’s probability of receiving their observed exposure. We then use those probabilities to weight their observed outcomes. Someone who received an exposure that was uncommon among people with their covariates receives more weight.</p>
-<p>This is inverse probability weighting, or IPW. We will first see how the weighting works, then use our SCM and SWIG to establish why it answers our causal question. After that, we will combine weighting with outcome regression. The combination has a useful property that neither approach has on its own.</p>
+<p>A causal effect can have more than one identification formula. We have already seen this. We first adjusted for the full covariate vector <span class="math inline">\(X\)</span>, then found that we could adjust for the propensity score <span class="math inline">\(e(X)\)</span> instead. The causal question stayed the same. Only the expression we used to answer it changed.</p>
+<p>Why should we care? Each identification formula suggests its own estimators, and those estimators trade off bias, noise, and computation differently. A different formula changes where the error can come from and how much noise we must tolerate to avoid it. So when we find a new identification formula, we gain a new set of estimators and a new set of tradeoffs to choose from.</p>
+<p>Let’s look for another one.</p>
+<p>Again, focus on a binary exposure <span class="math inline">\(A\)</span> and our measured-confounding SCM:</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow f_X(\epsilon_X),\\
+A&amp;\leftarrow f_A(X,\epsilon_A),\\
+Y&amp;\leftarrow f_Y(A,X,\epsilon_Y),
+\end{aligned}
+\]</span></p>
+<p>with independent noise terms.</p>
 </section>
-<section id="weighting-a-concrete-example" class="level2">
-<h2 class="anchored" data-anchor-id="weighting-a-concrete-example">Weighting a concrete example</h2>
-<div class="example-intro">
-<p><span class="example-label">Example.</span></p>
-<p>Return to the NHEFS smoking and weight-gain example in <a href="./03c-propensity-scores.html">Propensity scores</a>. Let <span class="math inline">\(A=1\)</span> mean quitting smoking, let <span class="math inline">\(A=0\)</span> mean not quitting, and let <span class="math inline">\(Y\)</span> be weight gain in kilograms. For now, collect only sex in <span class="math inline">\(X\)</span>.</p>
-<p>Here are the counts and mean outcomes we used before.</p>
+<section id="weighting" class="level2">
+<h2 class="anchored" data-anchor-id="weighting">Weighting</h2>
+<p>Think about estimating <span class="math inline">\(E[Y(1)]\)</span> using 1:1 propensity-score matching with replacement. Here are three people from a larger dataset:</p>
 <table class="caption-top table">
-<colgroup>
-<col style="width: 15%">
-<col style="width: 21%">
-<col style="width: 21%">
-<col style="width: 21%">
-<col style="width: 21%">
-</colgroup>
 <thead>
 <tr class="header">
-<th>Sex</th>
-<th style="text-align: right;">Quit smoking</th>
-<th style="text-align: right;">Did not quit</th>
-<th style="text-align: right;">Mean weight gain among those who quit</th>
-<th style="text-align: right;">Mean weight gain among those who did not quit</th>
+<th>Person</th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(e(X)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Y\)</span></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Male</td>
-<td style="text-align: right;">220</td>
-<td style="text-align: right;">542</td>
-<td style="text-align: right;">4.83</td>
-<td style="text-align: right;">2.00</td>
+<td>Hickory</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">6</td>
 </tr>
 <tr class="even">
-<td>Female</td>
-<td style="text-align: right;">183</td>
-<td style="text-align: right;">621</td>
-<td style="text-align: right;">4.16</td>
-<td style="text-align: right;">1.97</td>
+<td>Hazel</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td>Willow</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">4</td>
+</tr>
+</tbody>
+</table>
+<p>Hickory received treatment, so he supplies his own outcome. For each untreated person, we choose exactly one treated person with a similar propensity score to supply a surrogate outcome. Matching with replacement means the same treated person can be chosen again for another untreated person.</p>
+<p>Hazel and Willow have the same propensity score as Hickory. Suppose we choose him as the match for each of them. Their estimated outcomes under treatment 1 are then both six. The completed matching estimates are:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(e(X)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Y\)</span></th>
+<th>Treated match</th>
+<th style="text-align: right;"><span class="math inline">\(\hat\mu(X,1)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hickory</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">6</td>
+<td>n/a</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td>Hazel</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">2</td>
+<td>Hickory</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td>Willow</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">4</td>
+<td>Hickory</td>
+<td style="text-align: right;">6</td>
+</tr>
+</tbody>
+</table>
+<p>Hickory supplies the estimated outcome under treatment for himself, Hazel, and Willow. His outcome enters our average three times:</p>
+<p><span class="math display">\[
+E[Y(1)]
+\approx
+\frac{6+6+6+\cdots}{1+1+1+\cdots}
+=
+\frac{3(6)+\cdots}{3+\cdots}.
+\]</span></p>
+<p>The dots represent the remaining people in the dataset. Hickory’s outcome contributes <span class="math inline">\(3(6)\)</span> to the numerator and weight three to the denominator. More generally, each treated person’s outcome appears once for themselves, plus once for every untreated person who uses them as a match. Untreated outcomes receive weight zero. Writing</p>
+<p><span class="math display">\[
+w_i=
+\begin{cases}
+1+\text{number of times person }i\text{ is used as a match}, &amp; a_i=1,\\
+0, &amp; a_i=0,
+\end{cases}
+\]</span></p>
+<p>we can sum over everyone to write our matching estimate as a weighted mean:</p>
+<p><span class="math display">\[
+E[Y(1)]
+\approx
+\frac{\sum_i w_i y_i}
+{\sum_i w_i}.
+\]</span></p>
+<p>Do we have to find matches to get these weights? Could we get them directly from the propensity scores?</p>
+<p>Hickory’s propensity score of 0.20 means a one-in-five chance of receiving treatment. Over many people with this score, we would see about four untreated people for every treated person. This suggests giving each treated person weight five: one for themselves and four for the untreated people they represent. For a general propensity score, the same reasoning gives</p>
+<p><span class="math display">\[
+1+\frac{1-e(X)}{e(X)}=\frac{1}{e(X)}.
+\]</span></p>
+<p>Another way to think about this is to follow Hickory. He has probability 0.20 of receiving treatment, so his outcome has probability 0.20 of entering our treated-outcome average. Giving it weight five restores one person’s representation on average:</p>
+<p><span class="math display">\[
+0.20(5)+0.80(0)=1.
+\]</span></p>
+<p>More generally,</p>
+<p><span class="math display">\[
+e(X)\frac{1}{e(X)}+\{1-e(X)\}(0)=1.
+\]</span></p>
+<p>This is inverse probability weighting, or IPW. Matching determined Hickory’s weight by counting his uses as a surrogate. IPW assigns him weight five directly from his treatment probability.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03d-matching-to-ipw.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Acorn icons represent individuals. Left: two outlined untreated acorns each choose the filled treated acorn, Hickory, as their single match with replacement, giving him weight 3. Right: Hickory and four faded copies show five units of representation at propensity score 0.20, giving weight 5. The faded copies represent additional weight, not additional observations." width="900"></p>
+</figure>
+</div>
+<details class="lesson-question">
+<summary>
+Suppose a person has propensity score 0.05. Over many people with this score, how many untreated people would we see per treated person? What weight should a treated person receive? Check that this restores one person’s representation on average.
+</summary>
+<p>We would see about 19 untreated people for every treated person. Each treated person represents themselves plus 19 untreated people on average, giving weight</p>
+<p><span class="math display">\[
+1+\frac{0.95}{0.05}=20=\frac{1}{0.05}.
+\]</span></p>
+<p>Following one person, their outcome receives weight <span class="math inline">\(20\)</span> if they are treated and zero otherwise. Their average representation is</p>
+<p><span class="math display">\[
+0.05(20)+0.95(0)=1.
+\]</span></p>
+</details>
+<details class="lesson-question">
+<summary>
+In a study of a depression treatment, suppose women are more likely than men to receive treatment at the same values of the other covariates. Compare a treated woman and a treated man whose other covariates agree. Without knowing their propensity scores, who should receive more weight?
+</summary>
+<p>The man. His propensity score is smaller, so his weight <span class="math inline">\(1/e(X)\)</span> is larger. There are more untreated people per treated person at his covariate values, so his outcome has to represent more people.</p>
+</details>
+</section>
+<section id="identification" class="level2">
+<h2 class="anchored" data-anchor-id="identification">Identification</h2>
+<p>Our intuition was that the weight <span class="math inline">\(1/e(X)\)</span> lets each treated person stand in for everyone with their covariates, treated or not. Writing the weight as <span class="math inline">\(A/e(X)\)</span> (equal to <span class="math inline">\(1/e(X)\)</span> for treated people and zero for untreated people), the weighted contribution to the outcome is</p>
+<p><span class="math display">\[
+\frac{A}{e(X)} \times Y.
+\]</span></p>
+<p>What is its average among people with the same <span class="math inline">\(X\)</span>? Holding covariates fixed, treatment and outcome still vary, so we split the average by treatment value and weight each piece by its probability:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[\frac{YA}{e(X)}\Bigm| X\right]
+&amp;=E\left[\frac{YA}{e(X)}\Bigm| X,A=1\right]P(A=1\mid X)\\
+&amp;\quad+E\left[\frac{YA}{e(X)}\Bigm| X,A=0\right]P(A=0\mid X).
+\end{aligned}
+\]</span></p>
+<p>By definition of the propensity score, <span class="math inline">\(P(A=1\mid X)=e(X)\)</span> and <span class="math inline">\(P(A=0\mid X)=1-e(X).\)</span> Also, <span class="math inline">\(YA=Y\)</span> when <span class="math inline">\(A=1\)</span> and <span class="math inline">\(YA=0\)</span> when <span class="math inline">\(A=0\)</span>, so the untreated term vanishes:</p>
+<p><span class="math display">\[
+E\left[\frac{YA}{e(X)}\Bigm| X\right]
+=
+E\left[\frac{Y}{e(X)}\Bigm| X,A=1\right]e(X).
+\]</span></p>
+<p>Because <span class="math inline">\(e(X)\)</span> is constant once we condition on <span class="math inline">\(X\)</span>, it comes out of the expectation and cancels:</p>
+<p><span class="math display">\[
+E\left[\frac{YA}{e(X)}\Bigm| X\right]
+=\frac{1}{e(X)}\,E[Y\mid X,A=1]\,e(X)
+=E[Y\mid X,A=1].
+\]</span></p>
+<p>This is the observed mean among treated people with covariates <span class="math inline">\(X.\)</span> Under our measured-confounding SCM,</p>
+<p><span class="math display">\[
+E[Y\mid X,A=1]=E[Y(1)\mid X].
+\]</span></p>
+<p>Combining the two results,</p>
+<p><span class="math display">\[
+E\left[\frac{YA}{e(X)}\Bigm| X\right]=E[Y(1)\mid X].
+\]</span></p>
+<p>The weighted outcome recovers the mean potential outcome under treatment at each value of <span class="math inline">\(X\)</span>, including for people who were actually untreated.</p>
+<p>So far we have held <span class="math inline">\(X\)</span> fixed. To get the overall mean, we average over the covariate distribution using iterated expectations:</p>
+<p><span class="math display">\[
+E\left[\frac{YA}{e(X)}\right]
+=E\left[E\left[\frac{YA}{e(X)}\Bigm| X\right]\right]
+=E\left[E[Y(1)\mid X]\right]
+=E[Y(1)].
+\]</span></p>
+<p>For <span class="math inline">\(E[Y(0)]\)</span>, reverse the roles. Untreated people supply the outcomes with weight <span class="math inline">\(1/\{1-e(X)\}\)</span>, and treated people receive weight zero. Each untreated person represents themselves plus, on average, <span class="math inline">\(e(X)/\{1-e(X)\}\)</span> treated people, for a total weight of</p>
+<p><span class="math display">\[
+1+\frac{e(X)}{1-e(X)}=\frac{1}{1-e(X)}.
+\]</span></p>
+<p>Repeating the argument with <span class="math inline">\((1-A)/\{1-e(X)\}\)</span> gives</p>
+<p><span class="math display">\[
+E\left[\frac{Y(1-A)}{1-e(X)}\right]=E[Y(0)].
+\]</span></p>
+<p>Both derivations divide by <span class="math inline">\(e(X)\)</span> or <span class="math inline">\(1-e(X)\)</span>, so neither can be zero. This is the conditional positivity assumption from earlier. Collecting the two derivations, we can state the following result:</p>
+<div class="proposition-box">
+<p>Under the measured-confounding SCM, if <span class="math inline">\(0&lt;e(X)&lt;1\)</span> with probability one and the expectations below exist, then</p>
+<p><span class="math display">\[
+E[Y(1)]
+=E\left[\frac{AY}{e(X)}\right],
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+E[Y(0)]
+=E\left[\frac{(1-A)Y}{1-e(X)}\right].
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note: the proof for treatment 0">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical note: the proof for treatment 0
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>An untreated person receives weight <span class="math inline">\(1/\{1-e(X)\}\)</span>, and a treated person receives weight zero. We can write both cases as <span class="math inline">\((1-A)/\{1-e(X)\}.\)</span> Applying that weight to the outcome gives</p>
+<p><span class="math display">\[
+\frac{Y(1-A)}{1-e(X)}.
+\]</span></p>
+<p>What does this give us on average for people with the same <span class="math inline">\(X\)</span>? We want to calculate</p>
+<p><span class="math display">\[
+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right].
+\]</span></p>
+<p>First, break the average into the two possible treatment values:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right]
+&amp;=E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X,A=0\right]P(A=0\mid X)\\
+&amp;\quad+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X,A=1\right]P(A=1\mid X).
+\end{aligned}
+\]</span></p>
+<p>Substitute <span class="math inline">\(P(A=0\mid X)=1-e(X)\)</span> and <span class="math inline">\(P(A=1\mid X)=e(X)\)</span>:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right]
+&amp;=E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X,A=0\right]\{1-e(X)\}\\
+&amp;\quad+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X,A=1\right]e(X).
+\end{aligned}
+\]</span></p>
+<p>When <span class="math inline">\(A=0\)</span>, <span class="math inline">\(Y(1-A)=Y.\)</span> When <span class="math inline">\(A=1\)</span>, <span class="math inline">\(Y(1-A)=0.\)</span> This leaves</p>
+<p><span class="math display">\[
+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right]
+=E\left[\frac{Y}{1-e(X)}\Bigm|X,A=0\right]\{1-e(X)\}.
+\]</span></p>
+<p>Since we are conditioning on <span class="math inline">\(X\)</span>, <span class="math inline">\(1-e(X)\)</span> is fixed. Pull it outside the conditional expectation and cancel:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right]
+&amp;=\frac{1}{1-e(X)}E[Y\mid X,A=0]\{1-e(X)\}\\
+&amp;=E[Y\mid X,A=0].
+\end{aligned}
+\]</span></p>
+<p>Now use consistency. Among untreated people, <span class="math inline">\(Y=Y(0)\)</span>, so</p>
+<p><span class="math display">\[
+E[Y\mid X,A=0]=E[Y(0)\mid X,A=0].
+\]</span></p>
+<p>Our measured-confounding SCM and the global Markov property give <span class="math inline">\(A\mathrel{\perp\!\!\!\perp}Y(0)\mid X.\)</span> Therefore,</p>
+<p><span class="math display">\[
+E[Y(0)\mid X,A=0]=E[Y(0)\mid X].
+\]</span></p>
+<p>We have shown that</p>
+<p><span class="math display">\[
+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right]=E[Y(0)\mid X].
+\]</span></p>
+<p>Only now do we average over <span class="math inline">\(X\)</span>, using iterated expectations:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[\frac{Y(1-A)}{1-e(X)}\right]
+&amp;=E\left[E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right]\right]\\
+&amp;=E\left[E[Y(0)\mid X]\right]\\
+&amp;=E[Y(0)].
+\end{aligned}
+\]</span></p>
+</div>
+</div>
+</div>
+</section>
+<section id="estimating-the-effect" class="level2">
+<h2 class="anchored" data-anchor-id="estimating-the-effect">Estimating the effect</h2>
+<p>We have identified the intervention means. Now let’s estimate them from data, starting with a small example.</p>
+<div class="example-intro">
+<p><span class="example-label">Example: Four people.</span></p>
+<p>Suppose we observe the following covariates, treatments, and outcomes. The true propensity scores are supplied.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;"><span class="math inline">\(X\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Y\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(e(X)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.75</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.75</td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>There are <span class="math inline">\(762\)</span> men and <span class="math inline">\(804\)</span> women, for a total of <span class="math inline">\(1566\)</span> people. The estimated probabilities of quitting are</p>
-<p><span class="math display">\[
-\hat e(\text{male})=\frac{220}{762},
-\qquad
-\hat e(\text{female})=\frac{183}{804}.
-\]</span></p>
-<p>For each person, take the reciprocal of the estimated probability of receiving their observed exposure. This gives the following weights.</p>
+<p>We need two sets of weights. To estimate the mean under treatment 1, use <span class="math inline">\(A/e(X).\)</span> To estimate the mean under treatment 0, use <span class="math inline">\((1-A)/\{1-e(X)\}.\)</span> Each person supplies an observed outcome under only one treatment value, so one of their two weights will be zero.</p>
+<p>Person 1 received treatment. His weight for estimating the mean under treatment 1 is <span class="math inline">\(1/0.25=4\)</span>, and his weight for estimating the mean under treatment 0 is zero. Person 2 did not receive treatment. Her weight for the first mean is zero, and her weight for the second is <span class="math inline">\(1/(1-0.25)=4/3.\)</span> Repeating these calculations for Persons 3 and 4 completes the table:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 27%">
@@ -537,422 +864,587 @@ window.Quarto = {
 </colgroup>
 <thead>
 <tr class="header">
-<th>Sex</th>
-<th style="text-align: right;">Weight for someone who quit</th>
-<th style="text-align: right;">Weight for someone who did not quit</th>
+<th>Person</th>
+<th style="text-align: right;">Weight for <span class="math inline">\(Y(1)\)</span>: <span class="math inline">\(A/e(X)\)</span></th>
+<th style="text-align: right;">Weight for <span class="math inline">\(Y(0)\)</span>: <span class="math inline">\((1-A)/\{1-e(X)\}\)</span></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Male</td>
-<td style="text-align: right;"><span class="math inline">\(762/220\approx3.46\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(762/542\approx1.41\)</span></td>
+<td>1</td>
+<td style="text-align: right;"><span class="math inline">\(1/0.25=4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0/0.75=0\)</span></td>
 </tr>
 <tr class="even">
-<td>Female</td>
-<td style="text-align: right;"><span class="math inline">\(804/183\approx4.39\)</span></td>
-<td style="text-align: right;"><span class="math inline">\(804/621\approx1.29\)</span></td>
+<td>2</td>
+<td style="text-align: right;"><span class="math inline">\(0/0.25=0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(1/0.75=4/3\)</span></td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td style="text-align: right;"><span class="math inline">\(1/0.75=4/3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0/0.25=0\)</span></td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td style="text-align: right;"><span class="math inline">\(0/0.75=0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(1/0.25=4\)</span></td>
 </tr>
 </tbody>
 </table>
-<p>For example, each of the <span class="math inline">\(220\)</span> men who quit receives weight <span class="math inline">\(762/220\)</span>. Their weights add to <span class="math inline">\(762\)</span>. The weights of the <span class="math inline">\(542\)</span> men who did not quit also add to <span class="math inline">\(762\)</span>. The same operation gives a total weight of <span class="math inline">\(804\)</span> for women in each exposure group.</p>
-<p>After weighting, both groups therefore have the same representation of sex as the full sample. That is the point of these weights. We are trying to remove differences in the measured covariates as an explanation for differences in the outcomes.</p>
-<p>To estimate the mean weight gain under quitting, multiply each quitter’s outcome by their weight, add, and divide by <span class="math inline">\(1566\)</span>. Using the group means to carry out that calculation gives</p>
+<p>For the mean under treatment 1, Persons 1 and 3 supply the outcomes. Person 1’s outcome receives weight four, while Person 3’s outcome receives weight <span class="math inline">\(4/3.\)</span> Multiply each outcome by its weight, add, and divide by the total weight:</p>
 <p><span class="math display">\[
-E\left[Y(1)\right]
-\approx
-\frac{(762/220)(220\times4.83)+(804/183)(183\times4.16)}{1566}.
+E[Y(1)]
+\approx\frac{4(6)+(4/3)(10)}{4+4/3}
+=\frac{112/3}{16/3}
+=7.
 \]</span></p>
-<p>For the intervention under which people do not quit, the calculation is</p>
+<p>For the mean under treatment 0, Persons 2 and 4 supply the outcomes. This time their weights are <span class="math inline">\(4/3\)</span> and four, respectively. The same weighted-mean calculation gives</p>
 <p><span class="math display">\[
-E\left[Y(0)\right]
-\approx
-\frac{(762/542)(542\times2.00)+(804/621)(621\times1.97)}{1566}.
+E[Y(0)]
+\approx\frac{(4/3)(2)+4(4)}{4/3+4}
+=\frac{56/3}{16/3}
+=3.5.
 \]</span></p>
-<p>Subtracting the two expressions gives</p>
+<p>Subtract the estimated mean under treatment 0 from the estimated mean under treatment 1:</p>
+<p><span class="math display">\[
+\operatorname{ATE}\approx7-3.5=3.5.
+\]</span></p>
+<p>The estimated effect of treatment is an increase of 3.5 outcome units. We used the propensity scores to construct weights, then calculated a weighted mean in each treatment group.</p>
+<div class="main-point">
+<p>To estimate the ATE using IPW:</p>
+<ol type="1">
+<li>Estimate each person’s propensity score.</li>
+<li>Compute two weights to each person, <span class="math inline">\(A/\hat e(X)\)</span> and <span class="math inline">\((1-A)/\{1-\hat e(X)\}.\)</span></li>
+<li>Calculate the weighted mean outcome separately for each set of weights</li>
+</ol>
+</div>
+<p>The weighted means we just calculated are <strong>normalized IPW estimators</strong>, also called <strong>Hájek estimators</strong> <span class="citation" data-cites="hajek_1971">(<a href="references.html#ref-hajek_1971" role="doc-biblioref">Hájek 1971</a>)</span>. For <span class="math inline">\(n\)</span> people, we can write the same calculations as</p>
+<p><span class="math display">\[
+E[Y(1)]
+\approx\frac{\sum_{i=1}^n a_i y_i/\hat e(x_i)}
+{\sum_{i=1}^n a_i/\hat e(x_i)},
+\qquad
+E[Y(0)]
+\approx\frac{\sum_{i=1}^n (1-a_i)y_i/\{1-\hat e(x_i)\}}
+{\sum_{i=1}^n (1-a_i)/\{1-\hat e(x_i)\}}.
+\]</span></p>
+<p>How do these denominators connect to the identification result? The proposition gave us expectations of weighted outcomes. The corresponding weights have expectation one at every <span class="math inline">\(X\)</span>:</p>
 <p><span class="math display">\[
 \begin{aligned}
-E\left[Y(1)-Y(0)\right]
-&amp;\approx
-\frac{762}{1566}(4.83-2.00)
-+\frac{804}{1566}(4.16-1.97)\\
-&amp;\approx2.50\text{ kilograms}.
+E\left[\frac{A}{e(X)}\Bigm|X\right]
+&amp;=\frac{E[A\mid X]}{e(X)}=1,\\
+E\left[\frac{1-A}{1-e(X)}\Bigm|X\right]
+&amp;=\frac{E[1-A\mid X]}{1-e(X)}=1.
 \end{aligned}
 \]</span></p>
-<p>This is the same answer we obtained by direct standardization. With a separate estimated propensity for every observed covariate combination, these calculations agree. We have rearranged the calculation, rather than changed the causal question.</p>
-<p>This example adjusts only for sex. Interpreting the result causally requires an SCM in which sex is sufficient to account for the common causes of quitting and weight gain. The arithmetic cannot establish that this is an adequate causal model.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Technical note: why direct standardization and IPW agree here">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Technical note: why direct standardization and IPW agree here
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Suppose <span class="math inline">\(X\)</span> takes finitely many values. Let <span class="math inline">\(n_x\)</span> be the number of people with <span class="math inline">\(X=x\)</span>, and let <span class="math inline">\(n_{xa}&gt;0\)</span> be the number with both <span class="math inline">\(X=x\)</span> and <span class="math inline">\(A=a\)</span>. Write <span class="math inline">\(\bar y_{xa}\)</span> for their mean outcome.</p>
-<p>The estimated exposure probability in that stratum is <span class="math inline">\(n_{xa}/n_x\)</span>. Thus, the IPW contribution from that stratum is</p>
+<p>Averaging over <span class="math inline">\(X\)</span> therefore still gives one. Writing out that averaging with iterated expectations,</p>
 <p><span class="math display">\[
-\frac{1}{n}
-\frac{n_x}{n_{xa}}
-\sum_{i:x_i=x,\,a_i=a}y_i
-=\frac{n_x}{n}\bar y_{xa}.
+E\left[\frac{A}{e(X)}\right]
+=E\left[E\left[\frac{A}{e(X)}\Bigm|X\right]\right]
+=1,
 \]</span></p>
-<p>Summing over <span class="math inline">\(x\)</span> gives direct standardization. This equality uses the empirical exposure proportions within each stratum. It need not hold when we replace those proportions with probabilities from a restricted regression model.</p>
-</div>
-</div>
-</div>
+<p>and</p>
+<p><span class="math display">\[
+E\left[\frac{1-A}{1-e(X)}\right]
+=E\left[E\left[\frac{1-A}{1-e(X)}\Bigm|X\right]\right]
+=1.
+\]</span></p>
+<p>Dividing each identified weighted outcome expectation by its expected weight leaves the intervention mean unchanged. This connects the weighted means to the expressions in the proposition. In our data, however, the mean weights need not be exactly one. In the four-person example, each set of weights sums to <span class="math inline">\(16/3\)</span>, rather than four. Dividing by its own weight sum gives each estimated intervention mean the form of a weighted average.</p>
 </section>
-<section id="identification-and-estimation" class="level2">
-<h2 class="anchored" data-anchor-id="identification-and-estimation">Identification and estimation</h2>
-<p>We continue with the measured-confounding SCM from <a href="./03a-outcome-regression.html">Outcome regression</a>, with independent noise terms:</p>
+<section id="a-data-example-in-r" class="level2">
+<h2 class="anchored" data-anchor-id="a-data-example-in-r">A data example in R</h2>
+<div class="example-intro">
+<p><span class="example-label">Example: Smoking and birth weight.</span></p>
+<p>Return to the 189 births from the previous section. Let <span class="math inline">\(A\)</span> indicate smoking during pregnancy and let <span class="math inline">\(Y\)</span> be birth weight in grams. Collect maternal age and weight in <span class="math inline">\(X\)</span>, using the same working SCM as before.</p>
+</div>
+<p>Use the propensity model we fitted in the previous section:</p>
 <p><span class="math display">\[
-\begin{aligned}
-X&amp;\leftarrow f_X(\epsilon_X),\\
-A&amp;\leftarrow f_A(X,\epsilon_A),\\
-Y&amp;\leftarrow f_Y(X,A,\epsilon_Y).
-\end{aligned}
+\log\left[\frac{\hat e(X)}{1-\hat e(X)}\right]
+\approx 0.23
+-0.0147\,\text{age}
+-0.0026\,\text{weight}.
 \]</span></p>
-<p>For an intervention value <span class="math inline">\(a\)</span>, causal irrelevance gives <span class="math inline">\(X(a)=X\)</span> and <span class="math inline">\(A(a)=A\)</span>. The resulting SWIG is the one we have already used.</p>
-<div class="quarto-figure quarto-figure-center">
+<p>Age is in years and weight in pounds.</p>
+<p>Both coefficients are negative: holding weight fixed, older mothers have a lower estimated probability of smoking. Holding age fixed, heavier mothers have a lower estimated probability of smoking.</p>
+<p>To estimate mean birth weight under smoking, we weight the outcomes by <span class="math inline">\(A/\hat e(X)\)</span>: mothers who smoked receive weight <span class="math inline">\(1/\hat e(X)\)</span>, and mothers who did not smoke receive weight zero. Among mothers who smoked, older mothers’ outcomes receive more weight, holding maternal weight fixed. Outcomes from heavier mothers receive more weight, holding age fixed.</p>
+<details class="lesson-question">
+<summary>
+To estimate mean birth weight under not smoking, we use outcomes from mothers who did not smoke. Holding the other covariate fixed, should older mothers’ outcomes receive more or less weight? What about outcomes from heavier mothers?
+</summary>
+<p>The weight is <span class="math inline">\((1-A)/\{1-\hat e(X)\}\)</span>: mothers who did not smoke receive weight <span class="math inline">\(1/\{1-\hat e(X)\}\)</span>, and mothers who smoked receive weight zero. Among mothers who did not smoke, older mothers have a higher estimated probability of not smoking, so their outcomes receive less weight in estimating mean birth weight under not smoking. Heavier mothers have a higher estimated probability of not smoking, so their outcomes receive less weight in estimating that same mean.</p>
+</details>
+<p>Here are the first four mothers:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Mother</th>
+<th style="text-align: right;">Age</th>
+<th style="text-align: right;">Weight</th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">182</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">105</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">108</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Mother 1 is 19 years old and weighs 182 pounds. Substitute her covariates into the fitted model to get her estimated log odds:</p>
+<p><span class="math display">\[
+0.2320
+-0.014732(19)
+-0.002559(182)
+\approx -0.5136.
+\]</span></p>
+<p>Transform back to a probability:</p>
+<p><span class="math display">\[
+\hat e(19,182)
+\approx\frac{\exp(-0.5136)}{1+\exp(-0.5136)}
+\approx0.3743.
+\]</span></p>
+<p>She did not smoke, so her weight for estimating mean birth weight under smoking is zero:</p>
+<p><span class="math display">\[
+\frac{0}{\hat e(19,182)}=0.
+\]</span></p>
+<p>Her weight for estimating mean birth weight under not smoking is</p>
+<p><span class="math display">\[
+\frac{1-0}{1-\hat e(19,182)}
+\approx\frac{1}{1-0.3743}\approx1.60.
+\]</span></p>
+<p>Mother 3 is 20 years old and weighs 105 pounds. The same substitution gives</p>
+<p><span class="math display">\[
+\hat e(20,105)
+\approx\frac{\exp\{0.2320-0.014732(20)-0.002559(105)\}}
+{1+\exp\{0.2320-0.014732(20)-0.002559(105)\}}
+\approx0.4179.
+\]</span></p>
+<p>She smoked, so her weight for estimating mean birth weight under smoking is</p>
+<p><span class="math display">\[
+\frac{1}{\hat e(20,105)}\approx\frac{1}{0.4179}\approx2.39.
+\]</span></p>
+<p>Her weight for estimating mean birth weight under not smoking is zero:</p>
+<p><span class="math display">\[
+\frac{1-1}{1-\hat e(20,105)}=0.
+\]</span></p>
+<p>Calculate the scores and weights for Mothers 2 and 4 in the same way. In R, <code>predict()</code> calculates the scores. We then calculate a separate set of weights for each intervention mean:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>birthwt_ipw<span class="sc">$</span>score <span class="ot">&lt;-</span> <span class="fu">predict</span>(ipw_ps_fit, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>birthwt_ipw<span class="sc">$</span>weight1 <span class="ot">&lt;-</span> <span class="fu">with</span>(birthwt_ipw, smoke <span class="sc">/</span> score)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>birthwt_ipw<span class="sc">$</span>weight0 <span class="ot">&lt;-</span> <span class="fu">with</span>(birthwt_ipw, (<span class="dv">1</span> <span class="sc">-</span> smoke) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> score))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The completed calculations for these four mothers are:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Mother</th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat e(X)\)</span></th>
+<th style="text-align: right;">Weight for <span class="math inline">\(Y(1)\)</span></th>
+<th style="text-align: right;">Weight for <span class="math inline">\(Y(0)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.3743</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.60</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.3428</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.52</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.4179</td>
+<td style="text-align: right;">2.39</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.4125</td>
+<td style="text-align: right;">2.42</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Use <code>weighted.mean()</code> with each set of weights. All 189 outcomes appear in each call, but nonsmokers receive weight zero when estimating the mean under smoking, and smokers receive weight zero when estimating the mean under not smoking:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>smoked <span class="ot">&lt;-</span> birthwt_ipw<span class="sc">$</span>smoke <span class="sc">==</span> <span class="dv">1</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>ipw_mean1 <span class="ot">&lt;-</span> <span class="fu">with</span>(birthwt_ipw,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">weighted.mean</span>(bwt, weight1))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>ipw_mean0 <span class="ot">&lt;-</span> <span class="fu">with</span>(birthwt_ipw,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">weighted.mean</span>(bwt, weight0))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>ipw_ate <span class="ot">&lt;-</span> ipw_mean1 <span class="sc">-</span> ipw_mean0</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">mean1 =</span> ipw_mean1, <span class="at">mean0 =</span> ipw_mean0, <span class="at">ATE =</span> ipw_ate)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   mean1    mean0      ATE 
+2772.786 3047.119 -274.333 </code></pre>
+</div>
+</div>
+<p>The estimated mean birth weights are 2772.79 grams under smoking and 3047.12 grams under not smoking. Their difference is -274.33 grams. Under our working SCM, smoking lowers mean birth weight by an estimated 274.33 grams.</p>
+<p>How does this compare with our earlier estimate? In <a href="./03c-propensity-scores.html">Propensity scores</a>, outcome regression using the score and smoking gave an estimated decrease of 268.97 grams. The estimates are reasonably close.</p>
+<div class="example-intro">
+<p><span class="example-label">Example: Smoking and low birth weight.</span></p>
+<p>Now let <span class="math inline">\(Y=1\)</span> indicate infant birth weight below 2,500 grams and <span class="math inline">\(Y=0\)</span> otherwise, using the variable <code>low</code>. We keep the same mothers, smoking variable, and covariates.</p>
+</div>
+<p>Our weights depend on treatment and covariates, so they stay the same when we change the outcome. Replace <code>bwt</code> by <code>low</code> in the two weighted means. Because the outcome is binary, each weighted mean estimates a risk:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ipw_low_mean1 <span class="ot">&lt;-</span> <span class="fu">with</span>(birthwt_ipw, <span class="fu">weighted.mean</span>(low, weight1))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ipw_low_mean0 <span class="ot">&lt;-</span> <span class="fu">with</span>(birthwt_ipw, <span class="fu">weighted.mean</span>(low, weight0))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>ipw_low_ate <span class="ot">&lt;-</span> ipw_low_mean1 <span class="sc">-</span> ipw_low_mean0</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>ipw_low_rr <span class="ot">&lt;-</span> ipw_low_mean1 <span class="sc">/</span> ipw_low_mean0</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>ipw_low_or <span class="ot">&lt;-</span> (ipw_low_mean1 <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> ipw_low_mean1)) <span class="sc">/</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  (ipw_low_mean0 <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> ipw_low_mean0))</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">risk1 =</span> ipw_low_mean1, <span class="at">risk0 =</span> ipw_low_mean0,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ATE =</span> ipw_low_ate, <span class="at">relative_risk =</span> ipw_low_rr, <span class="at">odds_ratio =</span> ipw_low_or)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        risk1         risk0           ATE relative_risk    odds_ratio 
+    0.4020696     0.2570874     0.1449822     1.5639415     1.9431558 </code></pre>
+</div>
+</div>
+<p>For the risk under smoking, nonsmokers still receive weight zero. For the risk under not smoking, smokers receive weight zero. Under our working SCM, the estimated risk of low birth weight is 40.2% under smoking and 25.7% under not smoking. Smoking therefore increases the risk by an estimated 14.5 percentage points. The estimated causal relative risk is 1.56, and the causal odds ratio is 1.94.</p>
+<p>In the previous section, logistic outcome regression using the score and smoking gave an estimated risk increase of 14.2 percentage points. IPW gives 14.5 percentage points. Again, these are two estimates of the same causal contrast, obtained using different estimators.</p>
+</section>
+<section id="things-to-think-about-in-practice" class="level2">
+<h2 class="anchored" data-anchor-id="things-to-think-about-in-practice">Things to think about in practice</h2>
+<p>We have computed an estimate. Now look at the comparisons behind it and how much information supports them.</p>
+<section id="positivity" class="level3">
+<h3 class="anchored" data-anchor-id="positivity">Positivity</h3>
+<p>Our identification argument required conditional positivity: both treatment values must have positive probability given the covariates, <span class="math inline">\(0&lt;e(X)&lt;1\)</span>. Do our data support the comparisons that this assumption requires? This question matters for propensity-score matching, adjustment, and weighting.</p>
+<p>Look at the distribution of estimated propensity scores, separately for treated and untreated people. Two warning signs are worth looking for:</p>
+<ol type="1">
+<li><strong>Scores close to zero or one.</strong> A score of 0.001 means treatment is very unlikely at those covariate values. Over many people with that score, we would expect about 999 untreated people per treated person. A score of 0.999 reverses the problem: untreated outcomes are scarce. At these scores, a few outcomes supply most of the comparison under one treatment value.</li>
+<li><strong>Regions with little or no overlap between the groups.</strong> Are there score ranges containing treated people but few or no untreated people, or the reverse? We lack observed comparisons in those regions.</li>
+</ol>
+<p><span class="citation" data-cites="westreich_etal_2011">Westreich et al. (<a href="references.html#ref-westreich_etal_2011" role="doc-biblioref">2011</a>)</span> explicitly connect non-overlapping propensity-score distributions to possible nonpositivity.</p>
+<p>For our birth-weight example, plot the estimated scores for mothers who smoked and mothers who did not:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ipw_bins <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="dv">21</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ipw_hist0 <span class="ot">&lt;-</span> <span class="fu">hist</span>(birthwt_ipw<span class="sc">$</span>score[<span class="sc">!</span>smoked], <span class="at">breaks =</span> ipw_bins, <span class="at">plot =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>ipw_hist1 <span class="ot">&lt;-</span> <span class="fu">hist</span>(birthwt_ipw<span class="sc">$</span>score[smoked], <span class="at">breaks =</span> ipw_bins, <span class="at">plot =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>ipw_ylim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.1</span> <span class="sc">*</span> <span class="fu">max</span>(ipw_hist0<span class="sc">$</span>density, ipw_hist1<span class="sc">$</span>density))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ipw_hist0, <span class="at">freq =</span> <span class="cn">FALSE</span>, <span class="at">col =</span> <span class="cn">NA</span>, <span class="at">border =</span> <span class="st">"grey40"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> ipw_ylim, <span class="at">xlab =</span> <span class="st">"Estimated propensity score"</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Smoking probabilities by observed smoking status"</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ipw_hist1, <span class="at">freq =</span> <span class="cn">FALSE</span>, <span class="at">col =</span> <span class="cn">NA</span>, <span class="at">border =</span> <span class="st">"steelblue"</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, <span class="fu">c</span>(<span class="st">"Did not smoke"</span>, <span class="st">"Smoked"</span>),</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"grey40"</span>, <span class="st">"steelblue"</span>), <span class="at">lty =</span> <span class="dv">1</span>, <span class="at">bty =</span> <span class="st">"n"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
 <figure class="figure">
-<p><img src="images/03a-measured-confounding-swig-simplified.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="The measured-confounding SWIG after causal irrelevance. X points to A and Y(a). The fixed intervention value a points to Y(a), with no arrow from random A to Y(a)." width="620"></p>
+<p><img src="03d-inverse-probability-weighting_files/figure-html/ipw-birthweight-overlap-1.png" class="img-fluid figure-img" alt="Density histograms of estimated smoking probabilities for mothers who smoked and mothers who did not, using common bins." width="672"></p>
 </figure>
 </div>
-<p>The global Markov property gives</p>
-<p><span class="math display">\[
-A\mathrel{\perp\!\!\!\perp}Y(a)\mid X.
-\]</span></p>
-<p>We are using a consequence of the same SCM, rather than adding a new exchangeability assumption. Consistency still tells us that <span class="math inline">\(Y=Y(a)\)</span> whenever <span class="math inline">\(A=a\)</span>.</p>
-<p>For a binary exposure, write <span class="math inline">\(e(X)=P(A=1\mid X)\)</span>. More generally, for a discrete exposure, write</p>
-<p><span class="math display">\[
-p_a(X)=P(A=a\mid X).
-\]</span></p>
-<p>For binary <span class="math inline">\(A\)</span>, <span class="math inline">\(p_1(X)=e(X)\)</span> and <span class="math inline">\(p_0(X)=1-e(X)\)</span>. The notation <span class="math inline">\(1_{A=a}\)</span> is an indicator. It equals <span class="math inline">\(1\)</span> when <span class="math inline">\(A=a\)</span> and <span class="math inline">\(0\)</span> otherwise.</p>
-<div class="proposition-box">
-<p><strong>Identification by inverse probability weighting.</strong> Under the SCM above, for a discrete exposure and an intervention value <span class="math inline">\(a\)</span> with <span class="math inline">\(p_a(X)&gt;0\)</span> almost surely,</p>
-<p><span class="math display">\[
-E\left[Y(a)\right]
-=E\left[\frac{1_{A=a}Y}{p_a(X)}\right],
-\]</span></p>
-<p>provided the outcome mean is defined.</p>
-</div>
-<p>In the smoking example, this says</p>
-<p><span class="math display">\[
-E\left[Y(1)\right]
-=E\left[\frac{AY}{e(X)}\right],
-\qquad
-E\left[Y(0)\right]
-=E\left[\frac{(1-A)Y}{1-e(X)}\right].
-\]</span></p>
-<p>The indicators select the relevant exposure group, and the reciprocal probabilities supply the weights. These are the same intervention means we identified using outcome regression. We have another way to recover them from the observed-data distribution.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Technical note: proof of the IPW identity">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Technical note: proof of the IPW identity
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Fix <span class="math inline">\(a\)</span> and abbreviate <span class="math inline">\(p_a(X)\)</span> by <span class="math inline">\(p\)</span>. Consistency gives</p>
-<p><span class="math display">\[
-1_{A=a}Y=1_{A=a}Y(a).
-\]</span></p>
-<p>Conditional exchangeability from the SWIG then gives</p>
-<p><span class="math display">\[
-\begin{aligned}
-E\left[\frac{1_{A=a}Y}{p}\mid X\right]
-&amp;=\frac{1}{p}E\left[1_{A=a}Y(a)\mid X\right]\\
-&amp;=\frac{1}{p}P(A=a\mid X)E\left[Y(a)\mid X\right]\\
-&amp;=E\left[Y(a)\mid X\right].
-\end{aligned}
-\]</span></p>
-<p>Taking expectations and using iterated expectations completes the proof. Conditional positivity makes the division valid. For example, <span class="math inline">\(E\left[|Y(a)|\right]&lt;\infty\)</span> ensures that the means in this argument are well defined.</p>
 </div>
 </div>
-</div>
-<p>The estimation step follows the pattern we have used before. Estimate the unknown function, evaluate it for each person, and take a sample mean. If the observed values for person <span class="math inline">\(i\)</span> are <span class="math inline">\((x_i,a_i,y_i)\)</span>, then</p>
-<p><span class="math display">\[
-E\left[Y(1)\right]
-\approx\frac{1}{n}\sum_{i=1}^n
-\frac{a_i y_i}{\hat e(x_i)},
-\]</span></p>
-<p>and</p>
-<p><span class="math display">\[
-E\left[Y(0)\right]
-\approx\frac{1}{n}\sum_{i=1}^n
-\frac{(1-a_i)y_i}{1-\hat e(x_i)}.
-\]</span></p>
-<p>Subtract the estimated means to estimate the ATE. With a binary outcome, their ratio instead gives an estimated causal relative risk, provided the denominator is positive. We have changed how we estimate the intervention means, but we can combine them to form the same causal contrasts.</p>
-<div class="example-intro">
-<p><span class="example-label">Example.</span></p>
-<p>Return to smoking and weight gain, now collecting sex, education, and age in <span class="math inline">\(X\)</span>. Estimate the probability of quitting using the logistic regression in <a href="./03c-propensity-scores.html">Propensity scores</a>. Predict a quitting probability for each person. Someone who quit receives weight <span class="math inline">\(1/\hat e(X)\)</span>; someone who did not receives weight <span class="math inline">\(1/[1-\hat e(X)]\)</span>.</p>
-</div>
-<p>Using these weights in the two sample means gives a reported ATE estimate of <span class="math inline">\(2.98\)</span> kilograms. Under the proposed measured-confounding SCM, this estimates the difference in mean weight gain under quitting versus not quitting, adjusting for sex, education, and age.</p>
-<!-- The 2.98 kg estimate is retained from the source textbook. It has not been refitted in this rewrite. -->
+<p>Here, the scores in both groups range from about 0.31 to 0.44. The fitted scores are away from zero and one, and both groups are represented across a similar range.</p>
+<p>If warning signs appear, inspect the original covariates to identify the combinations behind them. Is one treatment impossible for those people, or simply rare in our sample? Restricting the analysis to a region with both treatment groups defines the causal effect for the people in that region.</p>
 </section>
-<section id="checking-the-weights" class="level2">
-<h2 class="anchored" data-anchor-id="checking-the-weights">Checking the weights</h2>
-<p>Estimating exposure probabilities does not guarantee that the resulting weights do what we want. Before comparing weighted outcomes, inspect the weights and check balance in the original covariates.</p>
-<p>For example, calculate the weighted mean of age in each exposure group, just as we calculated weighted means of the outcome. Do the same for each measured covariate. Standardized mean differences and balance plots can summarize the comparisons, as they did for matching. With estimated propensities, weighted covariate balance will generally be approximate.</p>
-<p>Also look for very large weights. If someone’s estimated probability of receiving their observed exposure is <span class="math inline">\(0.02\)</span>, their weight is <span class="math inline">\(50\)</span>. Their outcome can then have a large influence on the estimated mean. Large weights can reflect limited overlap, a poorly fitting propensity model, or both. Neither an elaborate model nor normalization can create comparable people where the data contain none.</p>
-<p>Conditional positivity is especially visible here because we divide by <span class="math inline">\(p_a(X)\)</span>. The SCM describes which variables determine others; it does not guarantee that every exposure value is possible at every covariate profile. If people with certain covariates never receive an exposure, IPW cannot recover their mean outcome under that exposure from these data alone.</p>
-<p>We can also calculate a normalized weighted mean. Instead of dividing the weighted outcome total by <span class="math inline">\(n\)</span>, divide by the sum of the weights in that exposure group:</p>
-<p><span class="math display">\[
-E\left[Y(1)\right]
-\approx
-\frac{\sum_{i=1}^n a_i y_i/\hat e(x_i)}
-{\sum_{i=1}^n a_i/\hat e(x_i)},
-\]</span></p>
-<p><span class="math display">\[
-E\left[Y(0)\right]
-\approx
-\frac{\sum_{i=1}^n (1-a_i)y_i/[1-\hat e(x_i)]}
-{\sum_{i=1}^n (1-a_i)/[1-\hat e(x_i)]}.
-\]</span></p>
-<p>These are normalized IPW estimators, also called Hájek estimators. They are ordinary weighted averages within each exposure group. They often behave better in finite samples, although they do not remove the influence of extreme relative weights. Normalizing weights is distinct from constructing stabilized weights, which introduce a numerator such as the marginal probability of the observed exposure.</p>
-<p>In the sex-only example, each exposure group’s weights already sum to <span class="math inline">\(1566\)</span>. The original and normalized calculations therefore agree exactly. With probabilities from a fitted regression model, the sums need not equal <span class="math inline">\(n\)</span>, so the two estimates can differ.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Technical note: what if the propensity model is wrong?">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
+<section id="balance" class="level3">
+<h3 class="anchored" data-anchor-id="balance">Balance</h3>
+<p>The positivity checks ask whether we have observations to compare. Balance asks whether weighting has made the covariate distributions similar between treatment groups. Check the original covariates, just as we did after matching.</p>
+<p>Use <code>cobalt</code>, as in the matching sections, to compare balance for the same 189 mothers across our methods. We will compare matching directly on age and maternal weight, propensity-score matching, full matching, and IPW.</p>
+<p>The labels show each method’s target: ATT for nearest-neighbor matching and ATE for full matching and IPW. Use the original pooled standard deviation for each covariate throughout to put all the comparisons on the same scale.</p>
+<p>Collect the matching weights from the earlier analyses. For the IPW balance check, <code>cobalt</code> uses one weight per mother: <code>weight1 + weight0</code> gives her nonzero weight for her observed treatment group. The intervention-mean calculations above use their separate sets of weights, including zeros.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ipw_comparison_weights <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Matching =</span> birthwt_nearest<span class="sc">$</span>weights,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">PS_matching =</span> birthwt_ps_nearest<span class="sc">$</span>weights,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Full_matching =</span> birthwt_full<span class="sc">$</span>weights,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">IPW =</span> birthwt_ipw<span class="sc">$</span>weight1 <span class="sc">+</span> birthwt_ipw<span class="sc">$</span>weight0</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>ipw_balance <span class="ot">&lt;-</span> cobalt<span class="sc">::</span><span class="fu">bal.tab</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  smoke <span class="sc">~</span> age <span class="sc">+</span> lwt, <span class="at">data =</span> birthwt_ipw,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> ipw_comparison_weights,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">un =</span> <span class="cn">TRUE</span>, <span class="at">s.d.denom =</span> <span class="st">"pooled"</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Technical note: what if the propensity model is wrong?
+<p>Here are the absolute standardized mean differences. Values closer to zero indicate closer balance in that covariate’s mean:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 8%">
+<col style="width: 17%">
+<col style="width: 20%">
+<col style="width: 23%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Covariate</th>
+<th style="text-align: right;">Before</th>
+<th style="text-align: right;">Matching (ATT)</th>
+<th style="text-align: right;">PS matching (ATT)</th>
+<th style="text-align: right;">Full matching (ATE)</th>
+<th style="text-align: right;">IPW (ATE)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Maternal age</td>
+<td style="text-align: right;">0.091</td>
+<td style="text-align: right;">0.039</td>
+<td style="text-align: right;">0.010</td>
+<td style="text-align: right;">0.030</td>
+<td style="text-align: right;">0.002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Maternal weight</td>
+<td style="text-align: right;">0.088</td>
+<td style="text-align: right;">0.009</td>
+<td style="text-align: right;">0.005</td>
+<td style="text-align: right;">0.025</td>
+<td style="text-align: right;">0.010</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-3" class="callout-3-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Write</p>
-<p><span class="math display">\[
-\mu_a(X)=E\left[Y\mid X,A=a\right],
-\qquad p_a(X)=P(A=a\mid X).
-\]</span></p>
-<p>First consider a fixed positive function <span class="math inline">\(q_a(X)\)</span> that we use in place of <span class="math inline">\(p_a(X)\)</span>. Iterated expectations give</p>
-<p><span class="math display">\[
-\begin{aligned}
-E\left[\frac{1_{A=a}Y}{q_a(X)}\right]
-&amp;=E\left[\frac{p_a(X)\mu_a(X)}{q_a(X)}\right]\\
-&amp;=E\left[Y(a)\right]
-+E\left[\mu_a(X)\frac{p_a(X)-q_a(X)}{q_a(X)}\right].
-\end{aligned}
-\]</span></p>
-<p>Thus, a wrong exposure-probability function can change the target of the unnormalized weighted mean. If a fitted propensity model approaches <span class="math inline">\(q_a\)</span>, and the corresponding sample averages converge to the expectation displayed above, that expression is the estimator’s probability limit. When <span class="math inline">\(q_a=p_a\)</span>, the extra term is zero.</p>
-<p>The identity is stated for fixed functions deliberately. A fitted propensity score is random and may use the same observations being averaged. We cannot simply treat it as fixed to claim that a same-sample estimator is unbiased. Establishing consistency requires conditions on both the fitted function and the sample average. For finite-dimensional propensity models, a detailed treatment appears in Chapter 13 of <span class="citation" data-cites="tsiatis_2006">Tsiatis (<a href="references.html#ref-tsiatis_2006" role="doc-biblioref">2006</a>)</span>.</p>
+<p>A single balance plot displays the same comparisons. The line at 0.10 is the common guide we used earlier:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03d-inverse-probability-weighting_files/figure-html/ipw-birthweight-balance-comparison-plot-1.png" class="img-fluid figure-img" alt="Absolute standardized mean differences in maternal age and weight before adjustment and after covariate matching, propensity-score matching, full matching, and IPW, with ATT and ATE targets labeled." width="768"></p>
+</figure>
 </div>
 </div>
 </div>
+<p>All four methods bring these mean differences closer to zero. IPW gives the closest mean-age balance, while propensity-score matching gives the closest mean-weight balance. Also compare spread and relevant nonlinear features or interactions.</p>
+<p>If balance remains poor, revisit the propensity model. Perhaps the relationship with age bends, or the association with maternal weight differs by age. Revise the model and check balance again.</p>
+<p>Evaluate the propensity model through the weighted comparison it produces. Classification accuracy measures how well the model separates treated from untreated people; balance measures how closely the weighted covariate distributions agree. <span class="citation" data-cites="brookhart_2006">Brookhart et al. (<a href="references.html#ref-brookhart_2006" role="doc-biblioref">2006</a>)</span> discuss why selecting variables for a propensity model differs from selecting them solely to predict treatment.</p>
 </section>
-<section id="augmented-inverse-probability-weighting" class="level2">
-<h2 class="anchored" data-anchor-id="augmented-inverse-probability-weighting">Augmented inverse probability weighting</h2>
-<p>Outcome regression estimates the conditional outcome mean. IPW uses estimated exposure probabilities. We do not have to choose between them. We can start with outcome predictions and then use weighting to correct their prediction errors.</p>
-<p>For a concrete example, consider estimating mean weight gain under quitting. Suppose a person has predicted weight gain <span class="math inline">\(\hat\mu(X,1)=5\)</span> kilograms and estimated quitting probability <span class="math inline">\(\hat e(X)=0.25\)</span>.</p>
-<p>If that person quit and gained <span class="math inline">\(7\)</span> kilograms, their observed outcome exceeds the prediction by <span class="math inline">\(7-5=2\)</span> kilograms. Weight that error by <span class="math inline">\(1/0.25\)</span> and add it to the original prediction. Their contribution is</p>
+<section id="large-weights" class="level3">
+<h3 class="anchored" data-anchor-id="large-weights">Large weights</h3>
+<p>Even with overlap, some outcomes may receive much more weight than others. For a mother who smoked, her weight when estimating mean birth weight under smoking is <span class="math inline">\(1/\hat e(X)\)</span>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Estimated propensity score</th>
+<th style="text-align: right;">Weight under smoking, if she smoked</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.001</td>
+<td style="text-align: right;">1,000</td>
+</tr>
+</tbody>
+</table>
+<p>A mother who did not smoke still receives weight zero for this mean. For the mean under not smoking, the large weights arise among nonsmokers with scores close to one: a score of 0.999 gives weight <span class="math inline">\(1/(1-0.999)=1000\)</span>.</p>
+<p>Consider a different sample with four mothers who smoked. Their infants weigh 2,500, 3,000, 3,500, and 2,000 grams. Suppose their weights for estimating the mean under smoking are 2, 2, 2, and 1,000. The weighted mean is</p>
 <p><span class="math display">\[
-5+\frac{1}{0.25}(7-5)=13.
+\frac{2(2500)+2(3000)+2(3500)+1000(2000)}{2+2+2+1000}
+=\frac{2018000}{1006}\approx2006\text{ grams}.
 \]</span></p>
-<p>The contribution is not itself a prediction of this person’s potential outcome. It combines a prediction with a weighted correction. A person who did not quit contributes their prediction under quitting, without a correction, because their observed outcome cannot reveal a prediction error under quitting.</p>
-<p>More generally, to estimate <span class="math inline">\(E\left[Y(a)\right]\)</span>, we do three things:</p>
-<ol type="1">
-<li>Predict <span class="math inline">\(\hat\mu(x_i,a)\)</span> for everyone.</li>
-<li>For people with <span class="math inline">\(a_i=a\)</span>, calculate their observed prediction error <span class="math inline">\(y_i-\hat\mu(x_i,a)\)</span> and weight it by <span class="math inline">\(1/\hat p_a(x_i)\)</span>.</li>
-<li>Add each person’s correction to their prediction and average the contributions.</li>
-</ol>
-<div class="definition-box">
-<p><strong>Augmented inverse probability weighting.</strong> The augmented inverse probability weighting (AIPW) estimator of <span class="math inline">\(E\left[Y(a)\right]\)</span> is the sample mean</p>
+<p>The last infant’s outcome carries about 99.4% of the total weight, so the weighted mean is almost that one infant’s birth weight.</p>
+<p>One response is to cap the weights. Cap the last weight at 20 and repeat the calculation:</p>
 <p><span class="math display">\[
-\frac{1}{n}\sum_{i=1}^n
-\left\{
-\hat\mu(x_i,a)
-+\frac{1_{a_i=a}}{\hat p_a(x_i)}
-\left[y_i-\hat\mu(x_i,a)\right]
-\right\},
+\frac{2(2500)+2(3000)+2(3500)+20(2000)}{2+2+2+20}
+=\frac{58000}{26}\approx2231\text{ grams}.
 \]</span></p>
-<p>where <span class="math inline">\(\hat\mu(x,a)\)</span> estimates <span class="math inline">\(E\left[Y\mid X=x,A=a\right]\)</span> and <span class="math inline">\(\hat p_a(x)\)</span> estimates <span class="math inline">\(P(A=a\mid X=x)\)</span>.</p>
+<p>The last outcome has less influence, and the estimate changes. Capping changes the weighting formula, so we trade possible bias for reduced variability.</p>
+<p>In our actual birth-weight data, inspect the nonzero weights for each intervention mean:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(birthwt_ipw<span class="sc">$</span>weight1[smoked])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  2.262   2.418   2.517   2.555   2.659   3.271 </code></pre>
 </div>
-<div class="example-intro">
-<p><span class="example-label">Example.</span></p>
-<p>In the NHEFS example, use the fitted probabilities of quitting based on sex, education, and age. Also fit a linear regression for weight gain using quitting status, sex, education, and age, without interactions.</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(birthwt_ipw<span class="sc">$</span>weight0[<span class="sc">!</span>smoked])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  1.443   1.592   1.652   1.643   1.693   1.794 </code></pre>
 </div>
-<p>For <span class="math inline">\(a=1\)</span>, predict each person’s weight gain under quitting, add the weighted prediction errors of those who quit, and average. For <span class="math inline">\(a=0\)</span>, predict weight gain under not quitting, add the weighted prediction errors of those who did not quit, and average. Subtracting the resulting means gives a reported AIPW estimate of <span class="math inline">\(3.02\)</span> kilograms.</p>
-<!-- The 3.02 kg estimate is retained from the source textbook. The source describes the outcome regression incompletely; it must include exposure (or fit separate outcome models by exposure) to provide predictions under both interventions. The original analysis should be rerun before these model details are treated as a reproducible specification. -->
-<p>Why does this combination work? With the true conditional mean, the observed prediction error has mean zero within each exposure and covariate group. The correction then has mean zero too. With the true exposure probabilities, weighting can instead correct a wrong conditional-mean function. Either route can lead to the same intervention mean.</p>
-<div class="proposition-box">
-<p><strong>The augmented identification formula.</strong> Under the measured-confounding SCM and the conditions for IPW identification, let <span class="math inline">\(\mu_a(X)=E\left[Y\mid X,A=a\right]\)</span>. Then</p>
+</div>
+<p>The largest is about 3.27.</p>
+<p>We can limit weights by truncating propensity scores before constructing them. For example, replacing scores below 0.05 by 0.05 and above 0.95 by 0.95 caps each nonzero weight at 20:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>bounded_score <span class="ot">&lt;-</span> <span class="fu">pmin</span>(<span class="fu">pmax</span>(birthwt_ipw<span class="sc">$</span>score, <span class="fl">0.05</span>), <span class="fl">0.95</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>bounded_weight1 <span class="ot">&lt;-</span> birthwt_ipw<span class="sc">$</span>smoke <span class="sc">/</span> bounded_score</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>bounded_weight0 <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">-</span> birthwt_ipw<span class="sc">$</span>smoke) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> bounded_score)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>bounded_ate <span class="ot">&lt;-</span> <span class="fu">with</span>(birthwt_ipw,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">weighted.mean</span>(bwt, bounded_weight1) <span class="sc">-</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">weighted.mean</span>(bwt, bounded_weight0))</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">original_ATE =</span> ipw_ate, <span class="at">bounded_ATE =</span> bounded_ate)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>original_ATE  bounded_ATE 
+    -274.333     -274.333 </code></pre>
+</div>
+</div>
+<p>No scores in our example cross these bounds, so the estimate is unchanged. When truncation does change weights, check how both the estimate and covariate balance change. Repeat the <code>cobalt</code> balance check using <code>bounded_weight1 + bounded_weight0</code>. Report the bounds used. <span class="citation" data-cites="cole_hernan_2008">Cole and Hernán (<a href="references.html#ref-cole_hernan_2008" role="doc-biblioref">2008</a>)</span> work through these choices.</p>
+<details class="lesson-question">
+<summary>
+Would stabilized weights solve the domination in our four-infant example? Suppose 30% of mothers smoked, and multiply every weight for estimating the mean under smoking by 0.30.
+</summary>
+<p>The weights become 0.6, 0.6, 0.6, and 300. Both the weighted outcome total and the weight sum are multiplied by 0.30, so</p>
 <p><span class="math display">\[
-E\left[Y(a)\right]
-=E\left[
-\mu_a(X)
-+\frac{1_{A=a}}{p_a(X)}\left\{Y-\mu_a(X)\right\}
-\right].
+\frac{0.30\{2(2500)+2(3000)+2(3500)+1000(2000)\}}
+{0.30\{2+2+2+1000\}}
+=\frac{2018000}{1006}\approx2006\text{ grams}.
 \]</span></p>
-</div>
-<div class="callout callout-style-default callout-note callout-titled" title="Technical note: proof of the augmented identity">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Technical note: proof of the augmented identity
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-4" class="callout-4-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Conditioning on <span class="math inline">\(X\)</span> gives</p>
+<p>The last infant still carries 99.4% of the total weight. Multiplying by the marginal treatment probability gives <strong>stabilized weights</strong>. For the mean under not smoking, the corresponding factor is 0.70. Each constant cancels in its own weighted mean, so the two estimated intervention means and the ATE stay the same.</p>
+</details>
+</section>
+<section id="choosing-a-denominator" class="level3">
+<h3 class="anchored" data-anchor-id="choosing-a-denominator">Choosing a denominator</h3>
+<p>We introduced IPW using weighted means, also called Hájek estimators. The <strong>Horvitz–Thompson estimator</strong> is another widely used choice <span class="citation" data-cites="horvitz_thompson_1952">(<a href="references.html#ref-horvitz_thompson_1952" role="doc-biblioref">Horvitz and Thompson 1952</a>)</span>. It divides the weighted outcome total by <span class="math inline">\(n\)</span>, the number of people in the sample, including those with weight zero.</p>
+<p>Return to treatment 1 in our four-person example. The Horvitz–Thompson calculation gives</p>
 <p><span class="math display">\[
-\begin{aligned}
-E\left[
-\frac{1_{A=a}}{p_a(X)}\{Y-\mu_a(X)\}\mid X
-\right]
-&amp;=\frac{P(A=a\mid X)}{p_a(X)}
-E\left[Y-\mu_a(X)\mid X,A=a\right]\\
-&amp;=0.
-\end{aligned}
+\frac{4(6)+(4/3)(10)}{4}=\frac{28}{3}\approx9.33.
 \]</span></p>
-<p>Thus, the outer expectation of the correction is zero. The remaining term is <span class="math inline">\(E\left[\mu_a(X)\right]\)</span>, which equals <span class="math inline">\(E\left[Y(a)\right]\)</span> by the identification result from outcome regression.</p>
-</div>
-</div>
-</div>
-<p>This estimator is called doubly robust. Under the conditions that make the fitted functions and sample averages converge appropriately, it is consistent if the propensity model is correct or the outcome-mean model is correct. Both models may be correct, but both do not have to be correct for consistency.</p>
-<p>This does not protect against a wrong SCM. If important common causes are missing from <span class="math inline">\(X\)</span>, the exchangeability relationship supplied by our SWIG may fail, and neither model can restore it. Double robustness concerns the two statistical models we use after identification.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Technical note: the product of the two errors">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Technical note: the product of the two errors
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-5" class="callout-5-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Fix <span class="math inline">\(a\)</span>. Write <span class="math inline">\(\mu_a(X)=E\left[Y\mid X,A=a\right]\)</span> and <span class="math inline">\(p_a(X)=P(A=a\mid X)\)</span>. Consider fixed functions <span class="math inline">\(m_a(X)\)</span> and <span class="math inline">\(q_a(X)&gt;0\)</span> in place of the true functions. The expected augmented contribution is</p>
+<p>The Hájek calculation uses the same numerator but divides by the weight sum:</p>
 <p><span class="math display">\[
-\begin{aligned}
-E\left[m_a(X)+\frac{1_{A=a}}{q_a(X)}\{Y-m_a(X)\}\right]
-&amp;=E\left[m_a(X)+\frac{p_a(X)}{q_a(X)}\{\mu_a(X)-m_a(X)\}\right]\\
-&amp;=E\left[Y(a)\right]
-+E\left[
-\{\mu_a(X)-m_a(X)\}
-\frac{p_a(X)-q_a(X)}{q_a(X)}
-\right].
-\end{aligned}
+\frac{4(6)+(4/3)(10)}{4+4/3}=7.
 \]</span></p>
-<p>The first equality follows by conditioning on <span class="math inline">\(X\)</span>. The second follows by adding and subtracting <span class="math inline">\(\mu_a(X)\)</span> and using <span class="math inline">\(E\left[\mu_a(X)\right]=E\left[Y(a)\right]\)</span>.</p>
-<p>The extra term is a product of an outcome-mean error and an exposure-probability error. It vanishes if <span class="math inline">\(m_a=\mu_a\)</span>, or if <span class="math inline">\(q_a=p_a\)</span>. It can also be small when both errors are small.</p>
-<p>For estimated functions, suppose <span class="math inline">\(\hat\mu(X,a)\)</span> and <span class="math inline">\(\hat p_a(X)\)</span> approach limits <span class="math inline">\(m_a(X)\)</span> and <span class="math inline">\(q_a(X)\)</span>, and the sample average approaches the expectation above. The same formula describes the probability limit of the AIPW estimator. These convergence statements require integrability, control of the denominators, and appropriate conditions on how the functions are fitted. They are not claims of exact unbiasedness for arbitrary models fitted to the same sample.</p>
-<p>One useful approach is cross-fitting. Fit the functions using one part of the data and evaluate their augmented contributions in another part, repeating this across parts so that each observation contributes to the final average. This separates each evaluated observation from the data used to fit its predictions and helps establish the required convergence results.</p>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled" title="Technical note: comparing variances with the true functions">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-6-contents" aria-controls="callout-6" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Technical note: comparing variances with the true functions
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-6" class="callout-6-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>There is a useful variance comparison when the functions are known. It is distinct from a claim that any fitted AIPW estimator has lower variance than any fitted IPW estimator.</p>
-<p>Fix <span class="math inline">\(a\)</span> and abbreviate <span class="math inline">\(I=1_{A=a}\)</span>, <span class="math inline">\(p=p_a(X)\)</span>, and <span class="math inline">\(\mu=\mu_a(X)\)</span>. Define</p>
+<p>Why choose one over the other? When the true treatment probabilities are known, the Horvitz–Thompson estimator is unbiased: it directly averages the weighted contributions from our identification result. The Hájek estimator divides by a weight sum that varies across samples. That ratio can introduce finite-sample bias, but normalization can also reduce variability from sample to sample.</p>
+<p>The tradeoff concerns mean squared error:</p>
 <p><span class="math display">\[
-U=\mu+\frac{I}{p}(Y-\mu),
-\qquad V=\frac{IY}{p},
-\qquad \sigma_a^2(X)=\operatorname{Var}(Y\mid X,A=a).
+\operatorname{MSE}=\operatorname{Variance}+\operatorname{Bias}^2.
 \]</span></p>
-<p>Both <span class="math inline">\(U\)</span> and <span class="math inline">\(V\)</span> have conditional mean <span class="math inline">\(\mu\)</span> given <span class="math inline">\(X\)</span>. Their conditional variances are</p>
-<p><span class="math display">\[
-\operatorname{Var}(U\mid X)=\frac{\sigma_a^2(X)}{p}
-\]</span></p>
-<p>and</p>
-<p><span class="math display">\[
-\operatorname{Var}(V\mid X)
-=\frac{\sigma_a^2(X)}{p}+\mu^2\left(\frac{1}{p}-1\right).
-\]</span></p>
-<p>For the first equality, the conditional second moment of <span class="math inline">\(I(Y-\mu)/p\)</span> is <span class="math inline">\(p\sigma_a^2(X)/p^2\)</span>, and its conditional mean is zero. For the second, the conditional second moment of <span class="math inline">\(IY/p\)</span> is <span class="math inline">\(\{\sigma_a^2(X)+\mu^2\}/p\)</span>; subtract the squared conditional mean <span class="math inline">\(\mu^2\)</span>.</p>
-<p>Provided the variances are finite, the law of total variance gives</p>
-<p><span class="math display">\[
-\operatorname{Var}(V)-\operatorname{Var}(U)
-=E\left[\mu^2\left(\frac{1}{p}-1\right)\right]\geq0.
-\]</span></p>
-<p>Averaging independent copies divides each variance by <span class="math inline">\(n\)</span>, preserving the comparison for estimators using the true functions. Estimating the functions changes the analysis and requires additional arguments.</p>
+<p>A reduction in variance can outweigh the squared bias introduced by normalization. Estimating the propensity scores introduces another source of error into both procedures. Neither method universally minimizes MSE. <span class="citation" data-cites="datta_polson_2026">Datta and Polson (<a href="references.html#ref-datta_polson_2026" role="doc-biblioref">2026</a>)</span> discuss these estimators and their tradeoffs.</p>
+<p>We can also combine the denominator choices. <span class="citation" data-cites="khan_ugander_2023">Khan and Ugander (<a href="references.html#ref-khan_ugander_2023" role="doc-biblioref">2023</a>)</span> study <strong>adaptive normalization</strong>, using a denominator that combines <span class="math inline">\(n\)</span> and the sum of weights, with the combination chosen from the data to reduce variance. Their approach connects the two estimators and extends to ATE estimation. We will continue using Hájek weighted means in our worked examples.</p>
+</section>
+<section id="uncertainty" class="level3">
+<h3 class="anchored" data-anchor-id="uncertainty">Uncertainty</h3>
+<p>As with our earlier propensity-score analyses, there are two sources of sampling uncertainty to account for. We estimated the propensity scores, so another sample would give different weights. We also used sampled outcomes to estimate the intervention means. These two steps use the same people; their uncertainties are connected.</p>
+<p>A bootstrap repeats both steps. Sample 189 mothers with replacement, keeping each mother’s covariates, smoking status, and outcome together. Refit the propensity model, construct new weights, and calculate the difference of weighted means. Repeat this procedure to obtain a collection of estimates.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">661</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>ipw_boot <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">1000</span>, {</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  boot_rows <span class="ot">&lt;-</span> <span class="fu">sample.int</span>(<span class="fu">nrow</span>(birthwt_ipw), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  boot_data <span class="ot">&lt;-</span> birthwt_ipw[boot_rows, ]</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  boot_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(smoke <span class="sc">~</span> age <span class="sc">+</span> lwt,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> <span class="fu">binomial</span>(), <span class="at">data =</span> boot_data)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  boot_score <span class="ot">&lt;-</span> <span class="fu">predict</span>(boot_fit, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  boot_weight1 <span class="ot">&lt;-</span> boot_data<span class="sc">$</span>smoke <span class="sc">/</span> boot_score</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  boot_weight0 <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">-</span> boot_data<span class="sc">$</span>smoke) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> boot_score)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">grams =</span> <span class="fu">weighted.mean</span>(boot_data<span class="sc">$</span>bwt, boot_weight1) <span class="sc">-</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">weighted.mean</span>(boot_data<span class="sc">$</span>bwt, boot_weight0),</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">risk_difference =</span> <span class="fu">weighted.mean</span>(boot_data<span class="sc">$</span>low, boot_weight1) <span class="sc">-</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">weighted.mean</span>(boot_data<span class="sc">$</span>low, boot_weight0)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The standard deviation of these estimates gives a bootstrap standard error. Their 2.5th and 97.5th percentiles give a percentile 95% confidence interval:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ipw_boot_summary <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Contrast =</span> <span class="fu">c</span>(<span class="st">"Mean difference (grams)"</span>, <span class="st">"Risk difference"</span>),</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Estimate =</span> <span class="fu">c</span>(ipw_ate, ipw_low_ate),</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">SE =</span> <span class="fu">apply</span>(ipw_boot, <span class="dv">1</span>, sd),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Lower =</span> <span class="fu">apply</span>(ipw_boot, <span class="dv">1</span>, quantile, <span class="at">probs =</span> <span class="fl">0.025</span>),</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Upper =</span> <span class="fu">apply</span>(ipw_boot, <span class="dv">1</span>, quantile, <span class="at">probs =</span> <span class="fl">0.975</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(ipw_boot_summary, <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">3</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Contrast</th>
+<th style="text-align: right;">Estimate</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">Lower</th>
+<th style="text-align: right;">Upper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Mean difference (grams)</td>
+<td style="text-align: right;">-274.333</td>
+<td style="text-align: right;">109.240</td>
+<td style="text-align: right;">-497.851</td>
+<td style="text-align: right;">-64.160</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Risk difference</td>
+<td style="text-align: right;">0.145</td>
+<td style="text-align: right;">0.071</td>
+<td style="text-align: right;">0.007</td>
+<td style="text-align: right;">0.288</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled" title="Technical note: targeted maximum likelihood estimation">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Technical note: targeted maximum likelihood estimation
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>There is another way to bring outcome regression and propensity scores together. Targeted maximum likelihood estimation (TMLE) starts with outcome predictions and then updates those predictions using information from the propensity score. The update targets the particular causal quantity being estimated. We then average the updated predictions under each intervention.</p>
-<p>The connection to AIPW is that both approaches use a correction based on the same influence function. Their computations differ. AIPW adds a weighted correction to the final average; TMLE updates the outcome model before taking that average. Van der Laan and Rubin introduced the general targeted-estimation approach in <span class="citation" data-cites="van_der_laan_rubin_2006">Laan and Rubin (<a href="references.html#ref-van_der_laan_rubin_2006" role="doc-biblioref">2006</a>)</span>.</p>
-<!-- TODO: Add a worked binary-outcome example, the targeted update, and its connection to the AIPW estimating equation. -->
-<p>A worked update and its connection to the AIPW formula will be developed here.</p>
-</div>
-</div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled" title="Technical note: semiparametric efficiency">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Technical note: semiparametric efficiency
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-8" class="callout-8-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>Once a causal quantity is identified, we can ask another question. How precise could an estimator be without imposing additional restrictions on the observed-data distribution?</p>
-<p>Semiparametric efficiency supplies a benchmark for this question. For <span class="math inline">\(E\left[Y(a)\right]\)</span>, the efficient influence function in the unrestricted observed-data model is</p>
-<p><span class="math display">\[
-\phi_a(X,A,Y)
-=\mu_a(X)
-+\frac{1_{A=a}}{p_a(X)}\{Y-\mu_a(X)\}
--E\left[Y(a)\right].
-\]</span></p>
-<p>It is the augmented contribution, centered at the target mean. Its variance gives the asymptotic variance bound for regular estimators; for a sample of size <span class="math inline">\(n\)</span>, the corresponding variance scale is <span class="math inline">\(\operatorname{Var}(\phi_a)/n\)</span>. For the ATE, the efficient influence function is <span class="math inline">\(\phi_1-\phi_0\)</span>.</p>
-<p>Under suitable conditions, an AIPW estimator attains this bound. Both fitted functions must be sufficiently accurate, with their errors converging fast enough in combination, and we need control of small exposure probabilities and finite variances. Cross-fitting helps accommodate flexible fitted models. Consistency of just one model is not, by itself, a guarantee of efficiency or valid usual standard errors.</p>
-<p>Kennedy gives an accessible account of influence functions, efficiency, and the role of the product of the two estimation errors in <span class="citation" data-cites="kennedy_2022">Kennedy (<a href="references.html#ref-kennedy_2022" role="doc-biblioref">2022</a>)</span>.</p>
-<!-- TODO: Derive the influence function and efficiency bound, then give the error-rate conditions and an interval-estimation example. -->
-<p>The derivation and a worked standard-error calculation will be added here.</p>
-</div>
-</div>
-</div>
+<p><span class="citation" data-cites="austin_2022">Austin (<a href="references.html#ref-austin_2022" role="doc-biblioref">2022</a>)</span> examines bootstrap uncertainty estimates for propensity weighting with continuous and binary outcomes.</p>
+<p>Next, we combine outcome regression and weighting in <a href="./03e-robust-estimators.html">Robust estimators</a>.</p>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
-<div id="ref-kennedy_2022" class="csl-entry" role="listitem">
-Kennedy, Edward H. 2022. <em>Semiparametric Doubly Robust Targeted Double Machine Learning: A Review</em>. <a href="https://arxiv.org/abs/2203.06469">https://arxiv.org/abs/2203.06469</a>.
+<div id="ref-austin_2022" class="csl-entry" role="listitem">
+Austin, Peter C. 2022. <span>“Bootstrap Vs Asymptotic Variance Estimation When Using Propensity Score Weighting with Continuous and Binary Outcomes.”</span> <em>Statistics in Medicine</em> 41 (22): 4426–43. <a href="https://doi.org/10.1002/sim.9519">https://doi.org/10.1002/sim.9519</a>.
 </div>
-<div id="ref-van_der_laan_rubin_2006" class="csl-entry" role="listitem">
-Laan, Mark J. van der, and Daniel Rubin. 2006. <span>“Targeted Maximum Likelihood Learning.”</span> <em>The International Journal of Biostatistics</em> 2 (1). <a href="https://doi.org/10.2202/1557-4679.1043">https://doi.org/10.2202/1557-4679.1043</a>.
+<div id="ref-brookhart_2006" class="csl-entry" role="listitem">
+Brookhart, M. Alan, Sebastian Schneeweiss, Kenneth J. Rothman, Robert J. Glynn, Jerry Avorn, and Til Stürmer. 2006. <span>“Variable Selection for Propensity Score Models.”</span> <em>American Journal of Epidemiology</em> 163 (12): 1149–56. <a href="https://doi.org/10.1093/aje/kwj149">https://doi.org/10.1093/aje/kwj149</a>.
 </div>
-<div id="ref-tsiatis_2006" class="csl-entry" role="listitem">
-Tsiatis, Anastasios A. 2006. <em>Semiparametric Theory and Missing Data</em>. Springer. <a href="https://doi.org/10.1007/0-387-37345-4">https://doi.org/10.1007/0-387-37345-4</a>.
+<div id="ref-cole_hernan_2008" class="csl-entry" role="listitem">
+Cole, Stephen R., and Miguel A. Hernán. 2008. <span>“Constructing Inverse Probability Weights for Marginal Structural Models.”</span> <em>American Journal of Epidemiology</em> 168 (6): 656–64. <a href="https://doi.org/10.1093/aje/kwn164">https://doi.org/10.1093/aje/kwn164</a>.
+</div>
+<div id="ref-datta_polson_2026" class="csl-entry" role="listitem">
+Datta, Jyotishka, and Nicholas Polson. 2026. <span>“Inverse Probability Weighting: From Survey Sampling to Evidence Estimation.”</span> <em>The New England Journal of Statistics in Data Science</em> 4 (1): 64–76. <a href="https://doi.org/10.51387/26-NEJSDS100">https://doi.org/10.51387/26-NEJSDS100</a>.
+</div>
+<div id="ref-hajek_1971" class="csl-entry" role="listitem">
+Hájek, Jaroslav. 1971. <span>“Comment on a Paper by <span>D. Basu</span>.”</span> In <em>Foundations of Statistical Inference</em>, edited by V. P. Godambe and D. A. Sprott. Holt, Rinehart; Winston.
+</div>
+<div id="ref-horvitz_thompson_1952" class="csl-entry" role="listitem">
+Horvitz, D. G., and D. J. Thompson. 1952. <span>“A Generalization of Sampling Without Replacement from a Finite Universe.”</span> <em>Journal of the American Statistical Association</em> 47 (260): 663–85. <a href="https://doi.org/10.1080/01621459.1952.10483446">https://doi.org/10.1080/01621459.1952.10483446</a>.
+</div>
+<div id="ref-khan_ugander_2023" class="csl-entry" role="listitem">
+Khan, Samir, and Johan Ugander. 2023. <span>“Adaptive Normalization for <span>IPW</span> Estimation.”</span> <em>Journal of Causal Inference</em> 11 (1): 20220019. <a href="https://doi.org/10.1515/jci-2022-0019">https://doi.org/10.1515/jci-2022-0019</a>.
+</div>
+<div id="ref-westreich_etal_2011" class="csl-entry" role="listitem">
+Westreich, Daniel, Stephen R. Cole, Michele Jonsson Funk, M. Alan Brookhart, and Til Stürmer. 2011. <span>“The Role of the c-Statistic in Variable Selection for Propensity Score Models.”</span> <em>Pharmacoepidemiology and Drug Safety</em> 20 (3): 317–20. <a href="https://doi.org/10.1002/pds.2074">https://doi.org/10.1002/pds.2074</a>.
 </div>
 </div>
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -1373,8 +1865,8 @@ document.addEventListener("DOMContentLoaded", () => {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./03-exercises.html" class="pagination-link" aria-label="Exercises">
-        <span class="nav-page-text"><span class="chapter-title">Exercises</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./03e-robust-estimators.html" class="pagination-link" aria-label="Robust estimators">
+        <span class="nav-page-text"><span class="chapter-title">Robust estimators</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
