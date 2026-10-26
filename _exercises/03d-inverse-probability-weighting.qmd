@@ -1,0 +1,162 @@
+For these exercises, use the measured-confounding SCM with binary treatment $A$. Use weighted means to estimate the intervention means. You may use a calculator; report final answers to two decimal places.
+
+### 14. Who gets more weight?
+
+For each study, say which person receives more weight for the specified intervention mean. Explain your reasoning without calculating weights.
+
+a. In a study of a job-training program, people who are unemployed are more likely to enroll than people who are employed. Among two people who enrolled, one unemployed and one employed, whose outcome receives more weight when estimating mean earnings if everyone enrolled, $E[Y(1)]$?
+
+b. In the same study, consider two people who did not enroll, one unemployed and one employed. Whose outcome receives more weight when estimating mean earnings if nobody enrolled, $E[Y(0)]$?
+
+c. In a study of blood-pressure medication, people with more severe hypertension are more likely to receive medication. Among two people who received medication, whose outcome receives more weight when estimating mean blood pressure if everyone received medication, $E[Y(1)]$: the person with more severe or less severe hypertension? Who receives more weight in estimating $E[Y(0)]$ among two people who did not receive medication?
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. The employed person. Enrolling is less likely for them, so their outcome receives a larger weight $1/e(X)$ in estimating $E[Y(1)]$.
+
+b. The unemployed person. Not enrolling is less likely for them, so their outcome receives a larger weight $1/(1-e(X))$ in estimating $E[Y(0)]$.
+
+c. Among those who received medication, the person with less severe hypertension receives more weight for $E[Y(1)]$. Among those who did not receive medication, the person with more severe hypertension receives more weight for $E[Y(0)]$. In each case, more weight goes to the person whose actual treatment was less likely.
+:::
+
+### 15. Computing an IPW estimate
+
+Consider these four people, with true propensity scores supplied:
+
+| Person | $X$ | $A$ | $Y$ | $e(X)$ | Weight for $E[Y(1)]$ | Weight for $E[Y(0)]$ |
+|---|---:|---:|---:|---:|---:|---:|
+| Hickory | 0 | 1 | 6 | 0.20 | | |
+| Hazel | 0 | 0 | 4 | 0.20 | | |
+| Willow | 1 | 1 | 10 | 0.80 | | |
+| Chestnut | 1 | 0 | 8 | 0.80 | | |
+
+a. Complete both weight columns, including the zero weights.
+
+b. Estimate $E[Y(1)]$, $E[Y(0)]$, and the ATE using weighted means. Interpret the ATE.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. The weights are $A/e(X)$ and $(1-A)/(1-e(X))$:
+
+| Person | Weight for $E[Y(1)]$ | Weight for $E[Y(0)]$ |
+|---|---:|---:|
+| Hickory | 5.00 | 0.00 |
+| Hazel | 0.00 | 1.25 |
+| Willow | 1.25 | 0.00 |
+| Chestnut | 0.00 | 5.00 |
+
+b. Sum over all four people, using zero weights where appropriate:
+
+$$
+E[Y(1)]\approx\frac{5(6)+0(4)+1.25(10)+0(8)}{5+0+1.25+0}=6.80.
+$$
+
+$$
+E[Y(0)]\approx\frac{0(6)+1.25(4)+0(10)+5(8)}{0+1.25+0+5}=7.20.
+$$
+
+The ATE is approximately $6.80-7.20=-0.40$: treatment lowers the mean outcome by an estimated $0.40$ units.
+
+:::
+
+### 16. Using a fitted propensity model
+
+In a study of a training program, $A=1$ denotes enrollment, $X$ is the number of years unemployed before the program, and $Y$ is earnings in thousands of dollars afterward. A fitted propensity model gives
+
+$$
+\operatorname{logit}\{\hat e(X)\}=X.
+$$
+
+Convert fitted log odds $\eta$ to a probability using $\exp(\eta)/(1+\exp(\eta))$.
+
+a. Use the fitted model to complete the estimated-score and weight columns, including zero weights.
+
+| Person | $X$ | $A$ | $Y$ | $\hat e(X)$ | Weight for $E[Y(1)]$ | Weight for $E[Y(0)]$ |
+|---|---:|---:|---:|---:|---:|---:|
+| Hickory | 0 | 1 | 6 | | | |
+| Hazel | 0 | 0 | 4 | | | |
+| Willow | 1 | 1 | 10 | | | |
+| Chestnut | 1 | 0 | 8 | | | |
+
+b. Use weighted means to estimate $E[Y(1)]$, $E[Y(0)]$, and the ATE. Interpret the ATE.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. At $X=0$, the fitted score is $\exp(0)/(1+\exp(0))=0.50$. At $X=1$, it is $\exp(1)/(1+\exp(1))\approx0.73$.
+
+| Person | $\hat e(X)$ | Weight for $E[Y(1)]$ | Weight for $E[Y(0)]$ |
+|---|---:|---:|---:|
+| Hickory | 0.50 | 2.00 | 0.00 |
+| Hazel | 0.50 | 0.00 | 2.00 |
+| Willow | 0.73 | 1.37 | 0.00 |
+| Chestnut | 0.73 | 0.00 | 3.72 |
+
+b. Using the unrounded weights gives
+
+$$
+E[Y(1)]\approx\frac{2(6)+(1+\exp(-1))(10)}{2+1+\exp(-1)}\approx7.62.
+$$
+
+$$
+E[Y(0)]\approx\frac{2(4)+(1+\exp(1))(8)}{2+1+\exp(1)}\approx6.60.
+$$
+
+The ATE is approximately $1.02$ thousand dollars. Enrolling rather than not enrolling increases mean earnings by an estimated $1{,}023.64$ dollars.
+:::
+
+### 17. Checking the scores and balance
+
+The two panels below show estimated propensity score distributions in two studies. Each bar counts people in a score interval of width $0.10$.
+
+![](images/03d-exercise-score-distributions.svg){width=800 fig-align="center" fig-alt="Study A: treated and untreated scores overlap between 0.10 and 0.90, with no scores in the outermost intervals. Study B: untreated scores concentrate below 0.50 and treated scores above 0.50; two treated people have score 0.01 and two untreated people have score 0.99."}
+
+a. Which study has a more reassuring score distribution for IPW? In the other study, what should you watch out for?
+
+b. In Study B, two treated people have estimated scores of $0.01$ and two untreated people have estimated scores of $0.99$. What weights do these people receive for estimating $E[Y(1)]$ and $E[Y(0)]$, respectively?
+
+c. The balance plots below compare two fitted propensity models for the same study. Which model produces better covariate balance after IPW? Explain using the plotted values.
+
+![](images/03d-exercise-balance.svg){width=800 fig-align="center" fig-alt="Absolute standardized mean differences for age, income, and prior health. Before weighting: 0.40, 0.30, 0.50. After weighting with Model 1: 0.03, 0.04, 0.02. After weighting with Model 2: 0.18, 0.08, 0.25. Dashed lines mark 0.10."}
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. Study A is more reassuring: both groups are represented across the same range of scores, away from zero and one. In Study B, most untreated people have low scores and most treated people have high scores, leaving little overlap. Also inspect the treated people near zero and untreated people near one: they receive very large weights.
+
+b. The treated people receive weight $1/0.01=100$ for estimating $E[Y(1)]$. The untreated people receive weight $1/(1-0.99)=100$ for estimating $E[Y(0)]$. Each receives zero weight for the other intervention mean.
+
+c. Model 1 produces better balance. Its absolute SMDs after weighting are $0.03$, $0.04$, and $0.02$, all below $0.10$. Model 2 leaves age at $0.18$ and prior health at $0.25$.
+:::
+
+### 18. A different denominator
+
+Return to Exercise 15. Compute the Horvitz–Thompson estimates of $E[Y(1)]$, $E[Y(0)]$, and the ATE by dividing each weighted outcome total by the number of people. Compare these with the weighted-mean estimates from Exercise 15.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+There are four people. Using the same weights and outcomes gives
+
+$$
+E[Y(1)]\approx\frac{5(6)+0(4)+1.25(10)+0(8)}{4}=10.625\approx10.63.
+$$
+
+$$
+E[Y(0)]\approx\frac{0(6)+1.25(4)+0(10)+5(8)}{4}=11.25.
+$$
+
+The ATE is approximately $10.625-11.25=-0.625\approx-0.63$. The Hájek weighted means in Exercise 15 were $6.80$ and $7.20$, giving an ATE of $-0.40$. The weighted totals are the same; the denominators are $4$ here and $6.25$ in the weighted means.
+:::

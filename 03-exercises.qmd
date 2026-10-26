@@ -15,3 +15,7 @@ filters:
 ## Propensity scores {.unnumbered}
 
 {{< include _exercises/03c-propensity-scores.qmd >}}
+
+## Inverse probability weighting {.unnumbered}
+
+{{< include _exercises/03d-inverse-probability-weighting.qmd >}}
