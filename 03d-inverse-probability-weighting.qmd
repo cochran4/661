@@ -483,7 +483,11 @@ Return to the 189 births from the previous section. Let $A$ indicate smoking dur
 ```{r}
 #| label: ipw-birthweight-propensity
 #| include: false
-birthwt_ipw <- read.csv("data/birthwt.csv")
+birthwt_ipw <- if (file.exists("data/birthwt.csv")) {
+  read.csv("data/birthwt.csv")
+} else {
+  MASS::birthwt
+}
 rownames(birthwt_ipw) <- NULL
 ipw_ps_fit <- glm(smoke ~ age + lwt,
                   family = binomial(), data = birthwt_ipw)

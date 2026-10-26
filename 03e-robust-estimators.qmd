@@ -40,7 +40,11 @@ Return to the birth-weight example, using the same fitted propensity model as in
 ```{r}
 #| label: prepare-aipw-birthweight
 #| include: false
-birthwt_ipw <- read.csv("data/birthwt.csv")
+birthwt_ipw <- if (file.exists("data/birthwt.csv")) {
+  read.csv("data/birthwt.csv")
+} else {
+  MASS::birthwt
+}
 rownames(birthwt_ipw) <- NULL
 ipw_ps_fit <- glm(smoke ~ age + lwt,
                   family = binomial(), data = birthwt_ipw)
@@ -233,7 +237,11 @@ Read the data and collect the three predictors. The `dbarts` package fits BART; 
 
 ```{r}
 #| label: prepare-bart-birthweight
-birthwt_flexible <- read.csv("data/birthwt.csv")
+birthwt_flexible <- if (file.exists("data/birthwt.csv")) {
+  read.csv("data/birthwt.csv")
+} else {
+  MASS::birthwt
+}
 bart_predictors <- birthwt_flexible[, c("age", "lwt", "smoke")]
 ```
 
