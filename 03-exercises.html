@@ -1311,6 +1311,232 @@ e(X)=0.10+0.20X_1+0.20X_2.
 <div class="response-space">
 
 </div>
+</section>
+</section>
+<section id="robust-estimators" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="robust-estimators">Robust estimators</h2>
+<p>Use the working measured-confounding SCM from this section. All fitted predictions and model-assessment results needed for these exercises are supplied; no model fitting is required.</p>
+<section id="computing-an-aipw-estimate" class="level3">
+<h3 class="anchored" data-anchor-id="computing-an-aipw-estimate">19. Computing an AIPW estimate</h3>
+<p>Two fitted models give the following propensity scores and outcome predictions:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Y\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat e(X)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat\mu(X,1)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat\mu(X,0)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hickory</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;"><span class="math inline">\(1/2\)</span></td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td>Hazel</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;"><span class="math inline">\(1/4\)</span></td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="odd">
+<td>Willow</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;"><span class="math inline">\(3/4\)</span></td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td>Chestnut</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;"><span class="math inline">\(1/2\)</span></td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">8</td>
+</tr>
+</tbody>
+</table>
+<ol type="a">
+<li>Complete the IPW-weight, weighted-correction, and contribution columns for each treatment value, including zero weights and corrections.</li>
+</ol>
+<p>Under treatment 1, the weighted correction is</p>
+<p><span class="math display">\[
+\frac{A}{\hat e(X)}\{Y-\hat\mu(X,1)\}.
+\]</span></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;">IPW weight <span class="math inline">\(A/\hat e(X)\)</span></th>
+<th style="text-align: right;">Weighted correction</th>
+<th style="text-align: right;">AIPW contribution</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hickory</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td>Hazel</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="odd">
+<td>Willow</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td>Chestnut</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+</tbody>
+</table>
+<p>Under treatment 0, the weighted correction is</p>
+<p><span class="math display">\[
+\frac{1-A}{1-\hat e(X)}\{Y-\hat\mu(X,0)\}.
+\]</span></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;">IPW weight <span class="math inline">\((1-A)/(1-\hat e(X))\)</span></th>
+<th style="text-align: right;">Weighted correction</th>
+<th style="text-align: right;">AIPW contribution</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hickory</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td>Hazel</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="odd">
+<td>Willow</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+<tr class="even">
+<td>Chestnut</td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+<td style="text-align: right;"></td>
+</tr>
+</tbody>
+</table>
+<ol start="2" type="a">
+<li>Estimate <span class="math inline">\(E[Y(1)]\)</span>, <span class="math inline">\(E[Y(0)]\)</span>, and the ATE. Interpret the ATE.</li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="what-does-robustness-buy-us" class="level3">
+<h3 class="anchored" data-anchor-id="what-does-robustness-buy-us">20. What does robustness buy us?</h3>
+<ol type="a">
+<li><p>A researcher fits additive linear and logistic models, then reports: “I used AIPW. It is doubly robust, so we can trust the estimate.” Explain what double robustness establishes and what you would still want to know about these fitted models.</p></li>
+<li><p>Consider one covariate profile <span class="math inline">\(X=x\)</span>. The true and fitted functions are:</p></li>
+</ol>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Function</th>
+<th style="text-align: right;">True value</th>
+<th style="text-align: right;">Fitted value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Outcome mean under treatment</td>
+<td style="text-align: right;"><span class="math inline">\(\mu(x,1)=10\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\hat\mu(x,1)=12\)</span></td>
+</tr>
+<tr class="even">
+<td>Propensity score</td>
+<td style="text-align: right;"><span class="math inline">\(e(x)=0.40\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(\hat e(x)=0.50\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Calculate the modeling bias at this covariate profile for outcome regression, IPW, and AIPW when estimating the mean under treatment. Use the Horvitz–Thompson form of IPW. Compare your results.</p>
+<div class="response-space">
+
+</div>
+</section>
+<section id="choosing-and-using-a-flexible-outcome-model" class="level3">
+<h3 class="anchored" data-anchor-id="choosing-and-using-a-flexible-outcome-model">21. Choosing and using a flexible outcome model</h3>
+<p>The two panels show the same observations and two fitted outcome models. The circles and blue curves correspond to <span class="math inline">\(A=0\)</span>; the triangles and orange curves correspond to <span class="math inline">\(A=1\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03e-exercise-flexible-models.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Two panels show identical observed outcomes. Model 1 fits parallel straight lines for treatment values zero and one. Model 2 fits curved relationships, with a difference between treatment groups that varies with X." width="850"></p>
+</figure>
+</div>
+<p>The models have the following mean squared prediction errors. Both were assessed using the same five cross-validation groups.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Model</th>
+<th style="text-align: right;">Training error</th>
+<th style="text-align: right;">Cross-validation error</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1: additive linear</td>
+<td style="text-align: right;">1.36</td>
+<td style="text-align: right;">1.45</td>
+</tr>
+<tr class="even">
+<td>2: flexible</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0.29</td>
+</tr>
+</tbody>
+</table>
+<ol type="a">
+<li><p>Describe one feature of the fitted relationship that Model 2 captures and Model 1 misses.</p></li>
+<li><p>Which model would you select using the cross-validation results? Explain.</p></li>
+<li><p>Describe how you would use the selected outcome model to estimate the ATE.</p></li>
+</ol>
+<div class="response-space">
+
+</div>
 
 
 </section>

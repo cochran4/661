@@ -514,31 +514,350 @@ window.Quarto = {
 </header>
 
 
-<p>We begin with AIPW and ask how errors in the outcome and propensity models affect its estimate. We then use BART to model the outcome more flexibly.</p>
-<section id="augmented-inverse-probability-weighting" class="level2">
-<h2 class="anchored" data-anchor-id="augmented-inverse-probability-weighting">Augmented inverse probability weighting</h2>
-<p>IPW estimates the propensity score. Outcome regression estimates the conditional outcome mean. We can use both. Start with the predicted outcome under an intervention, then use weighting to correct the prediction errors we can observe.</p>
-<p>For example, suppose a person has predicted outcome <span class="math inline">\(5\)</span> under treatment 1 and propensity score <span class="math inline">\(0.25.\)</span> If they receive treatment 1 and their outcome is <span class="math inline">\(7\)</span>, their prediction error is <span class="math inline">\(7-5=2.\)</span> Their augmented contribution is</p>
-<p><span class="math display">\[
-5+\frac{1}{0.25}(7-5)=13.
-\]</span></p>
-<p>If they receive treatment 0, their contribution under treatment 1 is just the prediction, <span class="math inline">\(5.\)</span> Their observed outcome does not supply a prediction error under treatment 1. Repeat this calculation for everyone, then take the ordinary mean of the contributions.</p>
-<div class="definition-box">
-<p>The <strong>augmented inverse probability weighting (AIPW) estimator</strong> of <span class="math inline">\(E[Y(a)]\)</span> is</p>
-<p><span class="math display">\[
-\widehat E\left[Y(a)\right]_{\mathrm{AIPW}}
-=
-\frac1n\sum_{i=1}^n
-\left[
-\hat\mu(x_i,a)
-+\frac{1_{a_i=a}}{\hat p_a(x_i)}
-\{y_i-\hat\mu(x_i,a)\}
-\right],
-\]</span></p>
-<p>where <span class="math inline">\(\hat\mu(x,a)\)</span> estimates <span class="math inline">\(E[Y\mid X=x,A=a]\)</span> and <span class="math inline">\(\hat p_a(x)\)</span> estimates <span class="math inline">\(P(A=a\mid X=x).\)</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03e-squirrel-model-fit.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="The familiar detective squirrel holds a straight ruler against a curved branch, inspecting the gap between them. Acorns sit nearby. Vintage sepia pen-and-ink illustration." width="700"></p>
+</figure>
 </div>
-<p>This is an average of predictions plus a weighted residual correction. The standard AIPW formula divides the residual total by <span class="math inline">\(n.\)</span> Our IPW estimates in the previous section divide weighted outcome totals by their weight sums. The two procedures use different denominators; we will retain the standard AIPW formula here, as in Technical Point 13.2 of <span class="citation" data-cites="hernan_robins_2020">Hernán and Robins (<a href="references.html#ref-hernan_robins_2020" role="doc-biblioref">2020</a>)</span>.</p>
-<p>Return to the birth-weight example, using the same fitted propensity model as in the previous section.</p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>Getting the models right is central to getting a good causal estimate. We have worked carefully to identify causal effects and express them in terms of the observed-data distribution. But those expressions involve functions we do not know: the conditional outcome mean <span class="math inline">\(\mu(x,a)\)</span> and the propensity score <span class="math inline">\(e(x)\)</span>. We use fitted functions <span class="math inline">\(\hat\mu(x,a)\)</span> and <span class="math inline">\(\hat e(x)\)</span> in their place. Those hats matter: errors in these fitted functions can introduce bias into our causal estimates.</p>
+<p>Our birth-weight analysis shows where these errors can enter. We used maternal age and weight to predict smoking, and smoking, age, and weight to predict infant birth weight. Logistic regression and linear regression made these calculations convenient, but they also imposed restrictions. Our additive linear outcome model says that another pound of maternal weight has the same association with mean birth weight at every age and smoking value. It also says that the smoking difference does not depend on either covariate. These restrictions come from our model, not our SCM.</p>
+<p>Careful causal reasoning does not protect us from these modeling errors. We can identify the right confounders and use IPW to adjust for them, yet still obtain a badly biased estimate if our propensity model poorly describes treatment probabilities. The same problem arises in outcome regression when our model poorly describes the conditional mean. Getting the estimation strategy right is only part of the work.</p>
+<p>We will consider two ways to address this problem. First, we will combine outcome regression and weighting through AIPW, examining how errors in the two fitted functions affect the estimate. Then we will use more flexible models to relax the restrictions we have imposed, working through BART as an outcome model.</p>
+</section>
+<section id="where-modeling-bias-enters" class="level2">
+<h2 class="anchored" data-anchor-id="where-modeling-bias-enters">Where modeling bias enters</h2>
+<p>Outcome regression and IPW each depend on estimating a particular function well. Before combining them, consider what happens when each function is wrong. We will focus on <span class="math inline">\(E[Y(1)]\)</span>; the same reasoning applies to <span class="math inline">\(E[Y(0)]\)</span>.</p>
+<p>To isolate the modeling error, hold the fitted functions fixed and average over new observations from the same working SCM. Recall that <span class="math inline">\(\mu(X,1)=E[Y\mid X,A=1]\)</span> and, under our SCM, <span class="math inline">\(E[\mu(X,1)]=E[Y(1)]\)</span>.</p>
+<section id="outcome-regression" class="level3">
+<h3 class="anchored" data-anchor-id="outcome-regression">Outcome regression</h3>
+<p>Outcome regression averages predictions under treatment. If the predictions are systematically too high or too low, their average carries that error into our estimate. The difference between the average fitted prediction and the intervention mean is</p>
+<p><span class="math display">\[
+E[\hat\mu(X,1)]-E[Y(1)]
+=
+E[\hat\mu(X,1)-\mu(X,1)].
+\]</span></p>
+<p>For example, if our fitted outcome function underpredicts the conditional mean by two units at every covariate value, averaging those predictions also underestimates <span class="math inline">\(E[Y(1)]\)</span> by two units. If the outcome function is correct, this modeling bias is zero.</p>
+</section>
+<section id="ipw" class="level3">
+<h3 class="anchored" data-anchor-id="ipw">IPW</h3>
+<p>IPW uses the propensity model to decide how much representation each observed outcome receives. If the fitted scores give the wrong weights, some covariate profiles receive too much representation and others too little.</p>
+<p>For this bias calculation, use the Horvitz–Thompson form of IPW: divide the weighted outcome total by <span class="math inline">\(n\)</span>, rather than by the sum of the weights. Its average contribution is</p>
+<p><span class="math display">\[
+E\left[\frac{AY}{\hat e(X)}\right]
+=
+E\left[\frac{e(X)}{\hat e(X)}\mu(X,1)\right].
+\]</span></p>
+<p>The factor <span class="math inline">\(e(X)/\hat e(X)\)</span> shows the distortion. If the propensity function is correct, this factor is one at every covariate value, and the expression reduces to <span class="math inline">\(E[\mu(X,1)]=E[Y(1)]\)</span>.</p>
+<p>Subtract the intervention mean and collect the terms multiplying <span class="math inline">\(\mu(X,1)\)</span>:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[\frac{AY}{\hat e(X)}\right]-E[Y(1)]
+&amp;=E\left[\left\{\frac{e(X)}{\hat e(X)}-1\right\}\mu(X,1)\right]\\
+&amp;=E\left[\frac{e(X)-\hat e(X)}{\hat e(X)}\mu(X,1)\right].
+\end{aligned}
+\]</span></p>
+<p>The bias depends on the propensity error <span class="math inline">\(e(X)-\hat e(X)\)</span>, divided by the fitted score and multiplied by the conditional outcome mean. If we underestimate a group’s treatment probability, we give its treated outcomes too much weight. If we overestimate it, we give them too little. Getting the propensity function right makes this error zero.</p>
+<div class="main-point">
+<p>Outcome regression gets the right intervention mean when its outcome function is correct. IPW gets the right intervention mean when its propensity function is correct. We call these procedures <strong>singly robust</strong>: each relies on getting one particular model right.</p>
+</div>
+</section>
+</section>
+<section id="double-robustness" class="level2">
+<h2 class="anchored" data-anchor-id="double-robustness">Double robustness</h2>
+<p>Can we combine outcome regression and IPW? Our idea is to start with the outcome prediction and add a weighted prediction error. We want the resulting contribution to recover the conditional mean on average within each covariate profile:</p>
+<p><span class="math display">\[
+E[Y\mid X,A=1]
+\approx
+\hat\mu(X,1)
++\frac{A}{\hat e(X)}\{Y-\hat\mu(X,1)\}.
+\]</span></p>
+<p>The right-hand side is a contribution from one person. What happens to its average if one of our fitted functions is correct?</p>
+<section id="if-the-outcome-function-is-correct" class="level3">
+<h3 class="anchored" data-anchor-id="if-the-outcome-function-is-correct">If the outcome function is correct</h3>
+<p>Suppose <span class="math inline">\(\hat\mu(X,1)=\mu(X,1)\)</span>. Among treated people at a given <span class="math inline">\(X\)</span>, the prediction errors average to zero. Untreated people contribute zero to the correction because <span class="math inline">\(A=0\)</span>. Thus the average correction is</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[\frac{A}{\hat e(X)}\{Y-\mu(X,1)\}\Bigm|X\right]
+&amp;=\frac{e(X)}{\hat e(X)}
+E[Y-\mu(X,1)\mid X,A=1]\\
+&amp;=\frac{e(X)}{\hat e(X)}\{\mu(X,1)-\mu(X,1)\}\\
+&amp;=0.
+\end{aligned}
+\]</span></p>
+<p>The fitted propensity score depends only on <span class="math inline">\(X\)</span>, so it changes the size of the errors without changing their zero average within that covariate profile. Adding the correction therefore leaves the correct conditional mean unchanged:</p>
+<p><span class="math display">\[
+E\left[\mu(X,1)+\frac{A}{\hat e(X)}\{Y-\mu(X,1)\}\Bigm|X\right]
+=\mu(X,1).
+\]</span></p>
+<p>This works even if the propensity function is wrong.</p>
+</section>
+<section id="if-the-propensity-function-is-correct" class="level3">
+<h3 class="anchored" data-anchor-id="if-the-propensity-function-is-correct">If the propensity function is correct</h3>
+<p>Now suppose <span class="math inline">\(\hat e(X)=e(X)\)</span>, while the outcome function may be wrong. At a given <span class="math inline">\(X\)</span>, the treated people occur with probability <span class="math inline">\(e(X)\)</span>. Their average prediction error is <span class="math inline">\(\mu(X,1)-\hat\mu(X,1)\)</span>. Weighting by its reciprocal cancels that treatment probability:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[\frac{A}{e(X)}\{Y-\hat\mu(X,1)\}\Bigm|X\right]
+&amp;=\frac{e(X)}{e(X)}\{\mu(X,1)-\hat\mu(X,1)\}\\
+&amp;=\mu(X,1)-\hat\mu(X,1).
+\end{aligned}
+\]</span></p>
+<p>The correction supplies exactly the difference between the true conditional mean and our fitted prediction. Add it to the starting prediction:</p>
+<p><span class="math display">\[
+\hat\mu(X,1)+\{\mu(X,1)-\hat\mu(X,1)\}
+=\mu(X,1).
+\]</span></p>
+<p>Either way, the conditional average of our contribution is <span class="math inline">\(\mu(X,1)\)</span>. Averaging over <span class="math inline">\(X\)</span> then gives <span class="math inline">\(E[Y(1)]\)</span> under our working SCM. The same argument applies to <span class="math inline">\(E[Y(0)]\)</span>, using <span class="math inline">\(1-A\)</span> and <span class="math inline">\(1-\hat e(X)\)</span> in the correction.</p>
+<div class="main-point">
+<p>This is <strong>double robustness</strong>: the contribution averages to the correct intervention mean if either the outcome function or the propensity function is correct.</p>
+</div>
+</section>
+<section id="when-both-functions-are-wrong" class="level3">
+<h3 class="anchored" data-anchor-id="when-both-functions-are-wrong">When both functions are wrong</h3>
+<p>What happens when neither function is correct? We can calculate the remaining bias. At a given <span class="math inline">\(X\)</span>, the treated people still occur with probability <span class="math inline">\(e(X)\)</span>, but we now weight their errors by <span class="math inline">\(1/\hat e(X)\)</span>. The conditional average of the contribution is</p>
+<p><span class="math display">\[
+E\left[\hat\mu(X,1)+\frac{A}{\hat e(X)}\{Y-\hat\mu(X,1)\}\Bigm|X\right]
+=
+\hat\mu(X,1)+\frac{e(X)}{\hat e(X)}\{\mu(X,1)-\hat\mu(X,1)\}.
+\]</span></p>
+<p>Subtract the true conditional mean and collect the outcome-model errors:</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\hat\mu(X,1)+\frac{e(X)}{\hat e(X)}\{\mu(X,1)-\hat\mu(X,1)\}-\mu(X,1)\\
+&amp;\quad=\{\hat\mu(X,1)-\mu(X,1)\}
+\left\{1-\frac{e(X)}{\hat e(X)}\right\}\\
+&amp;\quad=\{\hat\mu(X,1)-\mu(X,1)\}
+\frac{\hat e(X)-e(X)}{\hat e(X)}.
+\end{aligned}
+\]</span></p>
+<p>Finally, average over <span class="math inline">\(X\)</span>. Since <span class="math inline">\(E[\mu(X,1)]=E[Y(1)]\)</span>, the bias is</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;E\left[\hat\mu(X,1)+\frac{A}{\hat e(X)}\{Y-\hat\mu(X,1)\}\right]-E[Y(1)]\\
+&amp;\quad=
+E\left[
+\underbrace{\{\hat\mu(X,1)-\mu(X,1)\}}_{\text{outcome-mean error}}
+\underbrace{\frac{\hat e(X)-e(X)}{\hat e(X)}}_{\text{relative propensity error}}
+\right].
+\end{aligned}
+\]</span></p>
+<p>The name <em>double robustness</em> can be misleading. It emphasizes the cases in which one function is exactly right. It is tempting to dismiss that benefit: “All models are wrong, so why should I care?” But the bias expression tells us something more useful. The two errors multiply. If the outcome-mean error is <span class="math inline">\(0.10\)</span> and the relative propensity error is <span class="math inline">\(0.10\)</span>, their product is <span class="math inline">\(0.01\)</span>. Neither model is exactly right, yet the remaining error is smaller than either error on its own.</p>
+<div class="main-point">
+<p>The sweet spot is estimating both functions well. Two small modeling errors multiply to give an even smaller remaining error. We do not need either function to be exact to benefit from their combination.</p>
+</div>
+<p>The propensity error here is relative to the fitted score: <span class="math inline">\((\hat e(X)-e(X))/\hat e(X)\)</span>. The product argument concerns this relative error, together with the outcome-mean error <span class="citation" data-cites="kennedy_2022">(<a href="references.html#ref-kennedy_2022" role="doc-biblioref">Kennedy 2022</a>)</span>.</p>
+</section>
+</section>
+<section id="computing-the-aipw-estimate" class="level2">
+<h2 class="anchored" data-anchor-id="computing-the-aipw-estimate">Computing the AIPW estimate</h2>
+<p>The sample procedure follows the contribution we just studied. Predict each person’s outcome under each treatment value, add their weighted prediction error where that outcome is observed, and average the resulting contributions. This is <strong>augmented inverse probability weighting</strong>, or <strong>AIPW</strong>.</p>
+<section id="a-four-person-example" class="level3">
+<h3 class="anchored" data-anchor-id="a-four-person-example">A four-person example</h3>
+<p>Return to the four people from the IPW example. Suppose our fitted propensity model gives the same score values, and our fitted outcome model is</p>
+<p><span class="math display">\[
+\hat\mu(x,a)=3+2x+4a.
+\]</span></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;"><span class="math inline">\(X\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Y\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat e(X)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hickory</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td>Hazel</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="odd">
+<td>Willow</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.75</td>
+</tr>
+<tr class="even">
+<td>Chestnut</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.75</td>
+</tr>
+</tbody>
+</table>
+<p>First estimate the mean under treatment 1. Substituting <span class="math inline">\(a=1\)</span> into the outcome model gives predictions <span class="math inline">\(7,7,9,9\)</span>. Hickory received treatment, so his prediction error is <span class="math inline">\(6-7=-1\)</span>. His weight is <span class="math inline">\(1/0.25=4\)</span>, giving a correction of <span class="math inline">\(4(-1)=-4\)</span> and a final contribution of <span class="math inline">\(7-4=3\)</span>. Hazel did not receive treatment, so her correction under treatment 1 is zero and her contribution remains <span class="math inline">\(7\)</span>.</p>
+<p>Repeat this calculation for everyone:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;">Prediction under 1</th>
+<th style="text-align: right;">Weight <span class="math inline">\(A/\hat e(X)\)</span></th>
+<th style="text-align: right;">Weighted correction</th>
+<th style="text-align: right;">Contribution</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hickory</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;"><span class="math inline">\(4(6-7)=-4\)</span></td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td>Hazel</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="odd">
+<td>Willow</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;"><span class="math inline">\(4/3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\((4/3)(10-9)=4/3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(31/3\)</span></td>
+</tr>
+<tr class="even">
+<td>Chestnut</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">9</td>
+</tr>
+</tbody>
+</table>
+<p>Average the contributions over all four people:</p>
+<p><span class="math display">\[
+E[Y(1)]\approx\frac{3+7+31/3+9}{4}
+=\frac{22}{3}\approx7.33.
+\]</span></p>
+<p>For the mean under treatment 0, substitute <span class="math inline">\(a=0\)</span> to get predictions <span class="math inline">\(3,3,5,5\)</span>. The untreated people now supply the corrections, using weights <span class="math inline">\((1-A)/(1-\hat e(X))\)</span>:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 21%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;">Prediction under 0</th>
+<th style="text-align: right;">Weight <span class="math inline">\((1-A)/(1-\hat e(X))\)</span></th>
+<th style="text-align: right;">Weighted correction</th>
+<th style="text-align: right;">Contribution</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hickory</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td>Hazel</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;"><span class="math inline">\(4/3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\((4/3)(2-3)=-4/3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(5/3\)</span></td>
+</tr>
+<tr class="odd">
+<td>Willow</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5</td>
+</tr>
+<tr class="even">
+<td>Chestnut</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;"><span class="math inline">\(4(4-5)=-4\)</span></td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+<p>Again, average over all four people:</p>
+<p><span class="math display">\[
+E[Y(0)]\approx\frac{3+5/3+5+1}{4}
+=\frac83\approx2.67.
+\]</span></p>
+<p>The ATE is approximately <span class="math inline">\(22/3-8/3=14/3\approx4.67\)</span> outcome units. Compare the three calculations:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Method</th>
+<th style="text-align: right;">Mean under 1</th>
+<th style="text-align: right;">Mean under 0</th>
+<th style="text-align: right;">ATE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Outcome regression</td>
+<td style="text-align: right;">8.00</td>
+<td style="text-align: right;">4.00</td>
+<td style="text-align: right;">4.00</td>
+</tr>
+<tr class="even">
+<td>IPW, using weighted means</td>
+<td style="text-align: right;">7.00</td>
+<td style="text-align: right;">3.50</td>
+<td style="text-align: right;">3.50</td>
+</tr>
+<tr class="odd">
+<td>AIPW</td>
+<td style="text-align: right;">7.33</td>
+<td style="text-align: right;">2.67</td>
+<td style="text-align: right;">4.67</td>
+</tr>
+</tbody>
+</table>
+<p>Outcome regression averages the predictions. IPW uses weighted observed outcomes. AIPW averages the predictions plus weighted corrections. All three estimates target the same ATE.</p>
+<p>For <span class="math inline">\(n\)</span> people, the AIPW calculation can be written as follows.</p>
+<div class="definition-box">
+<p>The <strong>augmented inverse probability weighting (AIPW) estimates</strong> of the intervention means are</p>
+<p><span class="math display">\[
+E[Y(1)]\approx\frac1n\sum_{i=1}^n
+\left[\hat\mu(x_i,1)+\frac{a_i}{\hat e(x_i)}\{y_i-\hat\mu(x_i,1)\}\right]
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+E[Y(0)]\approx\frac1n\sum_{i=1}^n
+\left[\hat\mu(x_i,0)+\frac{1-a_i}{1-\hat e(x_i)}\{y_i-\hat\mu(x_i,0)\}\right].
+\]</span></p>
+</div>
+<p>Subtract the two estimated means to estimate the ATE. Both the prediction total and the weighted correction total are divided by <span class="math inline">\(n\)</span>, as in our worked example. This is the standard AIPW form described in Technical Point 13.2 of <span class="citation" data-cites="hernan_robins_2020">Hernán and Robins (<a href="references.html#ref-hernan_robins_2020" role="doc-biblioref">2020</a>)</span>.</p>
+</section>
+<section id="smoking-and-birth-weight" class="level3">
+<h3 class="anchored" data-anchor-id="smoking-and-birth-weight">Smoking and birth weight</h3>
+<p>Return to the 189 mothers in the birth-weight dataset. Use the logistic propensity model from the IPW section and an additive linear outcome model with smoking, maternal age, and maternal weight.</p>
 <p>Fit an outcome regression using smoking, maternal age, and maternal weight, then predict birth weight under each smoking value:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ipw_outcome_fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(bwt <span class="sc">~</span> smoke <span class="sc">+</span> age <span class="sc">+</span> lwt, <span class="at">data =</span> birthwt_ipw)</span>
@@ -563,102 +882,116 @@ window.Quarto = {
 2771.0551 3046.5660 -275.5109 </code></pre>
 </div>
 </div>
-<p>The AIPW estimate is -275.51 grams. For comparison, outcome regression gives -269.26 grams and IPW gives -274.33 grams. All three estimates concern the same ATE.</p>
-</section>
-<section id="why-the-combination-works" class="level2">
-<h2 class="anchored" data-anchor-id="why-the-combination-works">Why the combination works</h2>
-<p>Fix an intervention value <span class="math inline">\(a.\)</span> Write the true conditional outcome mean and treatment probability as</p>
-<p><span class="math display">\[
-\mu_a(X)=E[Y\mid X,A=a],
-\qquad
-p_a(X)=P(A=a\mid X).
-\]</span></p>
-<p>First suppose we use the true functions. Within each covariate and treatment group, the prediction error has mean zero. Thus,</p>
-<p><span class="math display">\[
-\begin{aligned}
-E\left[\frac{1_{A=a}}{p_a(X)}\{Y-\mu_a(X)\}\mid X\right]
-&amp;=\frac{p_a(X)}{p_a(X)}
-E\left[Y-\mu_a(X)\mid X,A=a\right]\\
-&amp;=0.
-\end{aligned}
-\]</span></p>
-<p>Adding the correction leaves the intervention mean unchanged:</p>
-<p><span class="math display">\[
-E\left[\mu_a(X)+\frac{1_{A=a}}{p_a(X)}\{Y-\mu_a(X)\}\right]
-=E[\mu_a(X)]=E[Y(a)].
-\]</span></p>
-<p>Now allow the two functions to be wrong. Use <span class="math inline">\(m_a(X)\)</span> for an outcome-mean function and <span class="math inline">\(q_a(X)&gt;0\)</span> for a treatment-probability function, with the expectations below defined. Conditioning on <span class="math inline">\(X\)</span> gives</p>
-<p><span class="math display">\[
-\begin{aligned}
-E\left[m_a(X)+\frac{1_{A=a}}{q_a(X)}\{Y-m_a(X)\}\mid X\right]
-&amp;=m_a(X)+\frac{p_a(X)}{q_a(X)}\{\mu_a(X)-m_a(X)\}.
-\end{aligned}
-\]</span></p>
-<p>Subtract the true conditional mean. Keep the terms visible:</p>
-<p><span class="math display">\[
-\begin{aligned}
-&amp;m_a(X)+\frac{p_a(X)}{q_a(X)}\{\mu_a(X)-m_a(X)\}-\mu_a(X)\\
-&amp;\quad=\{\mu_a(X)-m_a(X)\}
-\left\{\frac{p_a(X)}{q_a(X)}-1\right\}\\
-&amp;\quad=\{\mu_a(X)-m_a(X)\}
-\frac{p_a(X)-q_a(X)}{q_a(X)}.
-\end{aligned}
-\]</span></p>
-<p>Finally, average over <span class="math inline">\(X\)</span>:</p>
-<p><span class="math display">\[
-\begin{aligned}
-&amp;E\left[m_a(X)+\frac{1_{A=a}}{q_a(X)}\{Y-m_a(X)\}\right]-E[Y(a)]\\
-&amp;\qquad=
-E\left[
-\underbrace{\{\mu_a(X)-m_a(X)\}}_{\text{outcome-mean error}}
-\underbrace{\frac{p_a(X)-q_a(X)}{q_a(X)}}_{\text{relative probability error}}
-\right].
-\end{aligned}
-\]</span></p>
-<p>If the outcome-mean function is correct, the first error is zero. If the treatment-probability function is correct, the second error is zero. Either way, the whole extra term is zero.</p>
-<div class="proposition-box">
-<p><strong>Double robustness.</strong> Under the identification conditions, if the fitted outcome and propensity functions and the corresponding sample averages converge appropriately, AIPW consistently estimates <span class="math inline">\(E[Y(a)]\)</span> when either the outcome-mean model or the treatment-probability model is correct.</p>
+<p>Compare the intervention means and ATEs from the three methods:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>birthwt_method_comparison <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Method =</span> <span class="fu">c</span>(<span class="st">"Outcome regression"</span>, <span class="st">"IPW (weighted means)"</span>, <span class="st">"AIPW"</span>),</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Mean_under_1 =</span> <span class="fu">c</span>(<span class="fu">mean</span>(birthwt_mu1),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">weighted.mean</span>(birthwt_Y, birthwt_ipw<span class="sc">$</span>weight1), <span class="fu">mean</span>(birthwt_aug1)),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Mean_under_0 =</span> <span class="fu">c</span>(<span class="fu">mean</span>(birthwt_mu0),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">weighted.mean</span>(birthwt_Y, birthwt_ipw<span class="sc">$</span>weight0), <span class="fu">mean</span>(birthwt_aug0))</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>birthwt_method_comparison<span class="sc">$</span>ATE <span class="ot">&lt;-</span> <span class="fu">with</span>(birthwt_method_comparison,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  Mean_under_1 <span class="sc">-</span> Mean_under_0)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(birthwt_method_comparison, <span class="at">digits =</span> <span class="dv">2</span>,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Method"</span>, <span class="st">"Mean under smoking"</span>, <span class="st">"Mean under no smoking"</span>, <span class="st">"ATE"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 27%">
+<col style="width: 31%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Method</th>
+<th style="text-align: right;">Mean under smoking</th>
+<th style="text-align: right;">Mean under no smoking</th>
+<th style="text-align: right;">ATE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Outcome regression</td>
+<td style="text-align: right;">2780.75</td>
+<td style="text-align: right;">3050.01</td>
+<td style="text-align: right;">-269.26</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">IPW (weighted means)</td>
+<td style="text-align: right;">2772.79</td>
+<td style="text-align: right;">3047.12</td>
+<td style="text-align: right;">-274.33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">AIPW</td>
+<td style="text-align: right;">2771.06</td>
+<td style="text-align: right;">3046.57</td>
+<td style="text-align: right;">-275.51</td>
+</tr>
+</tbody>
+</table>
 </div>
-<p>For example, suppose the true mean in a covariate group is <span class="math inline">\(10\)</span>, but our outcome function gives <span class="math inline">\(9.\)</span> If the true treatment probability is <span class="math inline">\(0.40\)</span> and we use <span class="math inline">\(0.50\)</span>, that group’s extra term is</p>
-<p><span class="math display">\[
-(10-9)\frac{0.40-0.50}{0.50}=-0.20.
-\]</span></p>
-<p>Correct the outcome function to <span class="math inline">\(10\)</span>, or correct the probability function to <span class="math inline">\(0.40\)</span>, and the extra term becomes zero.</p>
-<p>There is an obvious objection: neither model is ever exactly right, so why care about double robustness? Look at the expression we just derived. The errors multiply. If the outcome error is <span class="math inline">\(0.10\)</span> and the relative probability error is <span class="math inline">\(0.10\)</span>, their product is <span class="math inline">\(0.01.\)</span> Neither function is exact, but their combined error can be much smaller than either error on its own. Small denominators still matter because the probability error is divided by <span class="math inline">\(q_a(X).\)</span></p>
-<p>This is a major reason to combine AIPW with flexible modeling. We can try to estimate both functions well without insisting that either one belongs to a simple linear or logistic family. The product of their errors determines the remaining systematic error in the identity above.</p>
-<p>Double robustness concerns these two statistical functions. The measured-confounding SCM still supplies the causal identification argument.</p>
-<div class="callout callout-style-default callout-note callout-titled" title="Technical note: fitted functions and cross-fitting">
+</div>
+<p>Under our working SCM, AIPW estimates that smoking lowers mean infant birth weight by 275.51 grams. Outcome regression gives a decrease of 269.26 grams, and normalized IPW gives a decrease of 274.33 grams. The data and causal target are the same; the estimation procedures differ.</p>
+<div class="callout callout-style-default callout-note callout-titled" title="Optional: targeted maximum likelihood estimation (TMLE)">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Note</span>Technical note: fitted functions and cross-fitting
+<span class="screen-reader-only">Note</span>Optional: targeted maximum likelihood estimation (TMLE)
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
-<p>The error identity above uses fixed functions <span class="math inline">\(m_a\)</span> and <span class="math inline">\(q_a.\)</span> To apply it to estimated functions, we also need the fitted functions and sample averages to behave appropriately. One useful device is cross-fitting: fit the models on one part of the data and evaluate their predictions and residual corrections on another part, repeating so every observation is evaluated once. This makes it easier to control the sample-average error when using flexible learners. We will return to this in <a href="#choosing-how-much-flexibility-to-use">Choosing how much flexibility to use</a>. <span class="citation" data-cites="kennedy_2022">Kennedy (<a href="references.html#ref-kennedy_2022" role="doc-biblioref">2022</a>)</span> develops the product-error argument and its role in inference.</p>
+<p><strong>Targeted maximum likelihood estimation (TMLE)</strong> also combines outcome regression and propensity scores. It uses the propensity scores to update the initial outcome model, then averages the updated predictions under each treatment value. The update targets the intervention mean we want to estimate. TMLE has the same double-robustness property, with remaining bias involving the product of the propensity error and the updated outcome-model error. For binary outcomes, a logistic update keeps the predictions between zero and one, so their averages are probabilities <span class="citation" data-cites="van_der_laan_rubin_2006">(<a href="references.html#ref-van_der_laan_rubin_2006" role="doc-biblioref">Laan and Rubin 2006</a>)</span>.</p>
 </div>
 </div>
 </div>
-<p>A good outcome model can already give a good estimate through standardization. We do not need to add a propensity model merely to make an analysis look more sophisticated. But when we estimate complex functions from data, their errors need not disappear quickly. Flexible modeling and augmentation can work together. That is where we go next.</p>
+<p>The product-of-errors argument gives us a reason to estimate both functions well. We turn next to flexible modeling, focusing on the outcome function.</p>
+</section>
 </section>
 <section id="flexible-outcome-models" class="level2">
 <h2 class="anchored" data-anchor-id="flexible-outcome-models">Flexible outcome models</h2>
-<p>We have spent a lot of time deciding what to estimate. We identified causal effects, wrote them in terms of the observed-data distribution, and found several ways to estimate the pieces. But those pieces still have to be estimated well.</p>
-<p>Consider our birth-weight analysis. We used maternal age and weight to predict smoking, and we used smoking, age, and weight to predict infant birth weight. Logistic regression and linear regression made those calculations convenient. They also made choices for us. A straight-line outcome model says that another pound of maternal weight has the same association with mean birth weight at every age and smoking value. An additive model says that the smoking difference does not depend on either covariate. Those are modeling restrictions, not consequences of our SCM.</p>
-<p>This is where flexible modeling comes in. We can use a method that learns bends and interactions from the data instead of requiring us to specify each one in advance. We can do this for the conditional mean, the propensity score, or both. We will focus on the conditional mean: predict outcomes well, then use the averaging operation we already know.</p>
-</section>
-<section id="start-with-one-tree" class="level2">
-<h2 class="anchored" data-anchor-id="start-with-one-tree">Start with one tree</h2>
+<p>Double robustness still gives us a reason to work hard on the models. The remaining bias depends on errors in both <span class="math inline">\(\hat\mu\)</span> and <span class="math inline">\(\hat e\)</span>. Improving either function can help; estimating both well gives us the benefit of multiplying two small errors. Combining two models does not finish the modeling work.</p>
+<p>A good outcome model can be more valuable than combining two mediocre models. In the 2016 Atlantic Causal Inference Conference competition, methods that flexibly modeled the conditional outcome mean performed especially well. This included BART approaches that modeled the outcome without a propensity model. A central lesson was the importance of estimating the outcome function well <span class="citation" data-cites="dorie_etal_2019">(<a href="references.html#ref-dorie_etal_2019" role="doc-biblioref">Dorie et al. 2019</a>)</span>. We will focus on that task here.</p>
+<p>What does flexibility look like? Consider an illustrative dataset with one covariate <span class="math inline">\(X\)</span> and binary treatment <span class="math inline">\(A\)</span>. In the picture below, the dots and triangles are observed outcomes, and the dashed curves are the true conditional means. The relationship bends as <span class="math inline">\(X\)</span> changes, and the difference between the treatment groups also changes with <span class="math inline">\(X\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03e-flexible-outcome-models.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Two panels show identical simulated outcomes for treatment values zero and one. Dashed gray curves show the true nonlinear conditional means. In the left panel, fitted parallel straight lines miss the bends and impose a constant treatment difference. In the right panel, flexible fitted curves closely follow both true means and allow the treatment difference to vary with X." width="900"></p>
+</figure>
+</div>
+<p>Both models use the same observations and variables. The additive linear model on the left fits two parallel straight lines. It misses the bends and forces the predicted treatment difference to be the same at every <span class="math inline">\(X\)</span>. The flexible model on the right uses polynomial terms to fit a separate curve for each treatment group. It can follow the bends and allow the treatment difference to vary. Changing the model family changes how closely we can approximate <span class="math inline">\(\mu(x,a)\)</span>.</p>
+<div class="main-point">
+<p><strong>Flexible modeling</strong> uses models that can capture a wide range of relationships, including bends, thresholds, and interactions. The aim is to approximate the relationship in the data without requiring a particular shape in advance.</p>
+</div>
+<p>The motivating idea is <strong>universal approximation</strong>: a sufficiently rich family can approximate a broad class of functions arbitrarily closely. The relationship might curve, change direction, jump at a threshold, or depend on combinations of variables. We want models that can represent those possibilities.</p>
+<p>There are many ways to do this. Splines join smooth pieces; regression trees divide the predictor space into regions; random forests average many trees; boosting builds a prediction through successive adjustments; neural networks combine layers of transformations; and BART adds together trees using a Bayesian model. Flexible modeling is a broad strategy, with many different tools.</p>
+<p>These methods can estimate the outcome mean <span class="math inline">\(\mu\)</span>, the propensity score <span class="math inline">\(e\)</span>, or both. Their fitted functions can enter the same averaging and AIPW calculations we have already used. We will focus on the outcome mean and work through BART. Regression trees give us a concrete way to see how a model can approximate different relationships.</p>
+<section id="regression-tree" class="level3">
+<h3 class="anchored" data-anchor-id="regression-tree">Regression tree</h3>
+<p>A regression tree builds a function from flat pieces. In one covariate, each split divides the covariate values into intervals, and each interval receives a predicted mean. Those pieces can follow a curve even though each individual piece is flat.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03e-tree-function-approximation.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Three panels show the same curved target function with regression-tree approximations using 4, 12, and 40 intervals. The flat steps follow the target increasingly closely." width="900"></p>
+</figure>
+</div>
+<p>The dashed curve is the function we want to approximate. Each solid step is the prediction in one terminal region of a tree. The panels use progressively narrower intervals, so the steps follow the curve more closely. We do not need the target to be a straight line, a quadratic, or even to keep moving in the same direction. For a continuous function on a bounded interval, sufficiently fine steps can approximate it as closely as we want. With several covariates, trees divide the predictor space into regions in the same way.</p>
+<p>This picture shows what trees can represent. We will return later to how we choose a fitted tree from finite data.</p>
 <p>Suppose we want to predict birth weight from smoking, maternal age, and maternal weight. One possible prediction rule is:</p>
 <ol type="1">
 <li>If the mother does not smoke, predict 3200 grams.</li>
 <li>If she smokes and weighs less than 120 pounds, predict 2700 grams.</li>
 <li>If she smokes and weighs at least 120 pounds, predict 2900 grams.</li>
 </ol>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03e-birthweight-regression-tree.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Decision tree: Does the mother smoke? No leads to a prediction of 3200 grams. Yes leads to a maternal weight below 120 pounds decision. Weight below 120 pounds leads to 2700 grams; weight at least 120 pounds leads to 2900 grams." width="800"></p>
+</figure>
+</div>
 <p>These numbers are made up to illustrate the rule. A 25-year-old nonsmoker weighing 110 pounds receives a prediction of 3200 grams. Change her smoking value to 1 and leave her age and weight alone. Now the prediction is 2700 grams. The predicted smoking difference is</p>
 <p><span class="math display">\[
 2700-3200=-500\text{ grams}.
@@ -674,8 +1007,8 @@ E\left[
 <p>For example, our rule partitions mothers into three regions: nonsmokers, smokers weighing less than 120 pounds, and smokers weighing at least 120 pounds. The predicted means are 3200, 2700, and 2900 grams.</p>
 <p>One tree gives a fairly rough prediction surface. Everyone in the same region receives exactly the same prediction, and crossing a boundary can produce a large jump. We can build a much more flexible surface by adding together many trees.</p>
 </section>
-<section id="bayesian-additive-regression-trees" class="level2">
-<h2 class="anchored" data-anchor-id="bayesian-additive-regression-trees">Bayesian additive regression trees</h2>
+<section id="bayesian-additive-regression-trees" class="level3">
+<h3 class="anchored" data-anchor-id="bayesian-additive-regression-trees">Bayesian additive regression trees</h3>
 <p>Imagine a second tree that contributes 50 grams for mothers younger than 25 and <span class="math inline">\(-50\)</span> grams for mothers aged 25 or older. Add its contribution to the first tree’s prediction. Our 25-year-old nonsmoker weighing 110 pounds now receives a prediction of <span class="math inline">\(3200-50=3150\)</span> grams. Under smoking, her prediction becomes <span class="math inline">\(2700-50=2650\)</span> grams. Further trees can make further adjustments.</p>
 <p>Bayesian additive regression trees, or BART, uses this sum-of-trees idea, with a prior that favors small trees and limits the contribution of each tree. Many modest contributions together can describe a complicated conditional mean <span class="citation" data-cites="chipman_george_mcculloch_2010">(<a href="references.html#ref-chipman_george_mcculloch_2010" role="doc-biblioref">Chipman et al. 2010</a>)</span>.</p>
 <div class="definition-box">
@@ -686,21 +1019,9 @@ E\left[
 <p>with prior distributions that regularize the trees and their predictions.</p>
 </div>
 <p>For our two-tree example, <span class="math inline">\(g_1\)</span> supplies the smoking-and-weight prediction and <span class="math inline">\(g_2\)</span> supplies the age adjustment. Their sum is the predicted mean. In a fitted BART model, the data inform both the splits and the contributions, and we average predictions over draws from their posterior distribution.</p>
-<p>We will use BART to estimate <span class="math inline">\(\mu(x,a)=E[Y\mid X=x,A=a]\)</span>, then predict each person’s outcome under each treatment value and average. Hill <span class="citation" data-cites="hill_2011">(<a href="references.html#ref-hill_2011" role="doc-biblioref">2011</a>)</span> developed this use of BART for causal inference. BART-based approaches also performed well in the 2016 Atlantic Causal Inference Conference data analysis competition. Across the competing methods, a central finding was the value of flexibly modeling the outcome surface <span class="citation" data-cites="dorie_etal_2019">(<a href="references.html#ref-dorie_etal_2019" role="doc-biblioref">Dorie et al. 2019</a>)</span>. That gives us a good reason to work through it.</p>
-</section>
-<section id="smoking-and-birth-weight-in-r" class="level2">
-<h2 class="anchored" data-anchor-id="smoking-and-birth-weight-in-r">Smoking and birth weight in R</h2>
+<p>We will use BART to estimate <span class="math inline">\(\mu(x,a)=E[Y\mid X=x,A=a]\)</span>, then predict each person’s outcome under each treatment value and average. Hill <span class="citation" data-cites="hill_2011">(<a href="references.html#ref-hill_2011" role="doc-biblioref">2011</a>)</span> developed this use of BART for causal inference.</p>
 <p>Return to the 189 mothers in the birth-weight dataset. Let <span class="math inline">\(A\)</span> indicate smoking during pregnancy, <span class="math inline">\(Y\)</span> be infant birth weight in grams, and <span class="math inline">\(X\)</span> collect maternal age and weight. We retain the working measured-confounding SCM from the preceding sections.</p>
-<p>Read the data and collect the three predictors. The <code>dbarts</code> package fits BART; install it once with <code>install.packages("dbarts")</code> if needed. Its <a href="https://cran.r-project.org/web/packages/dbarts/dbarts.pdf">package manual</a> describes the arguments and returned predictions.</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>birthwt_flexible <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">file.exists</span>(<span class="st">"data/birthwt.csv"</span>)) {</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read.csv</span>(<span class="st">"data/birthwt.csv"</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  MASS<span class="sc">::</span>birthwt</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>bart_predictors <span class="ot">&lt;-</span> birthwt_flexible[, <span class="fu">c</span>(<span class="st">"age"</span>, <span class="st">"lwt"</span>, <span class="st">"smoke"</span>)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-<p>Make two copies of the predictors. In the first copy, change every mother’s smoking value to 1. In the second, change it to 0. Her age and weight stay the same in both copies.</p>
+<p>As before, predict birth weight twice for each mother: once under smoking and once under no smoking. Keep her age and weight fixed.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>bart_under_1 <span class="ot">&lt;-</span> bart_predictors</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>bart_under_1<span class="sc">$</span>smoke <span class="ot">&lt;-</span> <span class="dv">1</span></span>
@@ -710,56 +1031,44 @@ E\left[
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>bart_test <span class="ot">&lt;-</span> <span class="fu">rbind</span>(bart_under_1, bart_under_0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Fit BART to the observed predictors and outcomes. Supply the two copies as <code>x.test</code> to request predictions at those predictor values. Here we use 200 trees, discard the first 500 sampling iterations, and keep the next 1000. Setting the seed makes this example reproducible.</p>
+<p>Fit BART using the recorded smoking values, ages, weights, and birth weights. Use the fitted model to predict outcomes under the two smoking values:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">661</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>birthwt_bart <span class="ot">&lt;-</span> dbarts<span class="sc">::</span><span class="fu">bart</span>(</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x.train =</span> bart_predictors,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">y.train =</span> birthwt_flexible<span class="sc">$</span>bwt,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">x.test =</span> bart_test,</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ntree =</span> <span class="dv">200</span>,</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">nskip =</span> <span class="dv">500</span>,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ndpost =</span> <span class="dv">1000</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">nchain =</span> <span class="dv">1</span>,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">nthread =</span> <span class="dv">1</span>,</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>birthwt_bart <span class="ot">&lt;-</span> dbarts<span class="sc">::</span><span class="fu">bart</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">nskip =</span> <span class="dv">500</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x.train =</span> bart_predictors,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">y.train =</span> birthwt_flexible<span class="sc">$</span>bwt,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">x.test =</span> bart_test</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>The returned <code>yhat.test.mean</code> contains posterior mean predictions in the same order as the rows of <code>bart_test</code>: first everyone under smoking, then everyone under nonsmoking. Separate the predictions and inspect the first four mothers.</p>
+<p>The supplied predictors determine which variables BART can use. The fitted function comes from the trees it learns: which variables to split on, where to split them, and what each terminal region predicts. BART averages the sums of trees over posterior draws to produce <span class="math inline">\(\hat\mu(x,a)\)</span>. We show the resulting predictions below.</p>
+<p>Store the predictions under smoking and no smoking separately:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>bart_n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(birthwt_flexible)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>bart_mu_1 <span class="ot">&lt;-</span> birthwt_bart<span class="sc">$</span>yhat.test.mean[<span class="fu">seq_len</span>(bart_n)]</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>bart_mu_0 <span class="ot">&lt;-</span> birthwt_bart<span class="sc">$</span>yhat.test.mean[bart_n <span class="sc">+</span> <span class="fu">seq_len</span>(bart_n)]</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>bart_prediction_table <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Age =</span> birthwt_flexible<span class="sc">$</span>age,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Weight =</span> birthwt_flexible<span class="sc">$</span>lwt,</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">Smoking =</span> birthwt_flexible<span class="sc">$</span>smoke,</span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">Observed_birth_weight =</span> birthwt_flexible<span class="sc">$</span>bwt,</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">Predicted_under_1 =</span> bart_mu_1,</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">Predicted_under_0 =</span> bart_mu_0,</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">Difference =</span> bart_mu_1 <span class="sc">-</span> bart_mu_0</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(bart_prediction_table, <span class="dv">4</span>), <span class="at">digits =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>bart_mu_0 <span class="ot">&lt;-</span> birthwt_bart<span class="sc">$</span>yhat.test.mean[bart_n <span class="sc">+</span> <span class="fu">seq_len</span>(bart_n)]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The first four mothers receive the following predictions:</p>
+<div class="cell">
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 4%">
-<col style="width: 7%">
-<col style="width: 9%">
+<col style="width: 5%">
+<col style="width: 17%">
+<col style="width: 11%">
 <col style="width: 25%">
-<col style="width: 20%">
-<col style="width: 20%">
-<col style="width: 12%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 16%">
 </colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: right;">Age</th>
-<th style="text-align: right;">Weight</th>
+<th style="text-align: right;">Weight (lb)</th>
 <th style="text-align: right;">Smoking</th>
-<th style="text-align: right;">Observed_birth_weight</th>
-<th style="text-align: right;">Predicted_under_1</th>
-<th style="text-align: right;">Predicted_under_0</th>
+<th style="text-align: right;">Birth weight (g)</th>
+<th style="text-align: right;">Under 1</th>
+<th style="text-align: right;">Under 0</th>
 <th style="text-align: right;">Difference</th>
 </tr>
 </thead>
@@ -822,54 +1131,48 @@ E\left[
 </div>
 </div>
 <p>Under our working SCM, smoking changes mean infant birth weight by an estimated -254.5 grams. Changing the regression method did not change the identification formula or the averaging operation. It changed how we estimated the conditional mean inside it.</p>
-<p>For comparison, fit an additive linear model using the same predictors and average its predictions at the same intervention values:</p>
+<p>Compare these estimates with the additive linear outcome model using the same predictors:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>birthwt_linear <span class="ot">&lt;-</span> <span class="fu">lm</span>(bwt <span class="sc">~</span> age <span class="sc">+</span> lwt <span class="sc">+</span> smoke, <span class="at">data =</span> birthwt_flexible)</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>linear_mu_1 <span class="ot">&lt;-</span> <span class="fu">predict</span>(birthwt_linear, <span class="at">newdata =</span> bart_under_1)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>linear_mu_0 <span class="ot">&lt;-</span> <span class="fu">predict</span>(birthwt_linear, <span class="at">newdata =</span> bart_under_0)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fu">c</span>(</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Linear_regression_ATE =</span> <span class="fu">mean</span>(linear_mu_1) <span class="sc">-</span> <span class="fu">mean</span>(linear_mu_0),</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">BART_ATE =</span> bart_ate</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>), <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Linear_regression_ATE              BART_ATE 
-               -269.3                -254.5 </code></pre>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Method</th>
+<th style="text-align: right;">Mean under smoking</th>
+<th style="text-align: right;">Mean under no smoking</th>
+<th style="text-align: right;">ATE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Linear regression</td>
+<td style="text-align: right;">2780.8</td>
+<td style="text-align: right;">3050.0</td>
+<td style="text-align: right;">-269.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">BART</td>
+<td style="text-align: right;">2783.2</td>
+<td style="text-align: right;">3037.7</td>
+<td style="text-align: right;">-254.5</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <p>The estimates need not agree. A difference tells us that the modeling choices affect this analysis; it does not tell us which estimate is closer to the causal effect.</p>
 </section>
-<section id="using-flexible-predictions-in-aipw" class="level2">
-<h2 class="anchored" data-anchor-id="using-flexible-predictions-in-aipw">Using flexible predictions in AIPW</h2>
-<p>The BART predictions can also replace the linear-regression predictions in AIPW. To make that substitution visible, keep the logistic propensity model from our earlier birth-weight analysis and change only the outcome predictions:</p>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>bart_ps_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  smoke <span class="sc">~</span> age <span class="sc">+</span> lwt,</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(),</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> birthwt_flexible</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>bart_e <span class="ot">&lt;-</span> <span class="fu">predict</span>(bart_ps_fit, <span class="at">type =</span> <span class="st">"response"</span>)</span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>bart_a <span class="ot">&lt;-</span> birthwt_flexible<span class="sc">$</span>smoke</span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>bart_y <span class="ot">&lt;-</span> birthwt_flexible<span class="sc">$</span>bwt</span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>bart_aipw_1 <span class="ot">&lt;-</span> <span class="fu">mean</span>(</span>
-<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>  bart_mu_1 <span class="sc">+</span> bart_a <span class="sc">/</span> bart_e <span class="sc">*</span> (bart_y <span class="sc">-</span> bart_mu_1)</span>
-<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>bart_aipw_0 <span class="ot">&lt;-</span> <span class="fu">mean</span>(</span>
-<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  bart_mu_0 <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> bart_a) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> bart_e) <span class="sc">*</span> (bart_y <span class="sc">-</span> bart_mu_0)</span>
-<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(bart_aipw_1 <span class="sc">-</span> bart_aipw_0, <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] -260.2</code></pre>
-</div>
-</div>
-<p>We could also estimate the propensity score flexibly. Its job remains estimating treatment probabilities well enough to support the weighted correction, with the overlap and weight checks from the previous section. Flexibility does not change that job.</p>
-</section>
-<section id="choosing-how-much-flexibility-to-use" class="level2">
-<h2 class="anchored" data-anchor-id="choosing-how-much-flexibility-to-use">Choosing how much flexibility to use</h2>
+<section id="choosing-how-much-flexibility-to-use" class="level3">
+<h3 class="anchored" data-anchor-id="choosing-how-much-flexibility-to-use">Choosing how much flexibility to use</h3>
 <p>BART is one way to learn a conditional mean. A neural network can do the same job: receive covariates and treatment, learn a prediction function, then predict at the treatment values of interest. The causal calculation still asks us to average those predictions. The choice of prediction method is an estimation decision.</p>
 <p>A flexible method can also fit noise. Regularization limits how freely it adapts to the observed outcomes. To assess prediction, hold out observations or use cross-validation: fit using some observations, then predict outcomes for observations that were not used to fit the model. For continuous birth weight, compare those predictions with the recorded outcomes using a measure such as mean squared error. Training error alone rewards fitting the observations already seen.</p>
-<p>For AIPW, a useful extension is <strong>cross-fitting</strong>. Divide the data into folds. For each fold, fit the outcome and propensity models using the other folds, then calculate predictions and AIPW contributions for the held-out fold. Finally, average contributions across everyone. Each person’s outcome is then excluded from fitting the functions used in their own correction. Our code above shows the direct substitution first; cross-fitting changes how we obtain those predictions.</p>
+<p>For example, in five-fold cross-validation, randomly divide the observations into five groups. Fit the model using four groups, then predict the outcomes in the held-out group and measure the prediction error. Repeat with a different group held out each time. Each observation contributes to the assessment through a prediction made without using that observation to fit the model.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03e-cross-validation.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Five-fold cross-validation shown as five rounds across the same five groups of observations. Each round fits the model using four groups and holds out the remaining group for prediction and scoring. The held-out group rotates from Group 1 through Group 5. Average the five held-out prediction errors." width="850"></p>
+</figure>
+</div>
+<p>Average the held-out errors to assess prediction. To choose how much flexibility to use, compare candidate settings using the same groups and select the setting with the smallest cross-validation error. Then fit the selected model using all the observations.</p>
 <p>Good prediction on held-out observations is useful evidence about a fitted model. We still need support for the intervention predictions: a method cannot learn the smoking outcomes of a covariate group represented only by nonsmokers from observations in that group. And the common causes in <span class="math inline">\(X\)</span> still come from our causal model. BART learns a regression function from the variables we supply; deciding which variables belong there remains our responsibility.</p>
 
 
@@ -889,7 +1192,11 @@ Hill, Jennifer L. 2011. <span>“Bayesian Nonparametric Modeling for Causal Infe
 <div id="ref-kennedy_2022" class="csl-entry" role="listitem">
 Kennedy, Edward H. 2022. <em>Semiparametric Doubly Robust Targeted Double Machine Learning: A Review</em>. <a href="https://arxiv.org/abs/2203.06469">https://arxiv.org/abs/2203.06469</a>.
 </div>
+<div id="ref-van_der_laan_rubin_2006" class="csl-entry" role="listitem">
+Laan, Mark J. van der, and Daniel Rubin. 2006. <span>“Targeted Maximum Likelihood Learning.”</span> <em>The International Journal of Biostatistics</em> 2 (1). <a href="https://doi.org/10.2202/1557-4679.1043">https://doi.org/10.2202/1557-4679.1043</a>.
 </div>
+</div>
+</section>
 </section>
 
 </main> <!-- /main -->
