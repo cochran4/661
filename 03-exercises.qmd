@@ -19,3 +19,7 @@ filters:
 ## Inverse probability weighting {.unnumbered}
 
 {{< include _exercises/03d-inverse-probability-weighting.qmd >}}
+
+## Robust estimators {.unnumbered}
+
+{{< include _exercises/03e-robust-estimators.qmd >}}

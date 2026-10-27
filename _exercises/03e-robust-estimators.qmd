@@ -1,0 +1,171 @@
+Use the working measured-confounding SCM from this section. All fitted predictions and model-assessment results needed for these exercises are supplied; no model fitting is required.
+
+### 19. Computing an AIPW estimate
+
+Two fitted models give the following propensity scores and outcome predictions:
+
+| Person | $A$ | $Y$ | $\hat e(X)$ | $\hat\mu(X,1)$ | $\hat\mu(X,0)$ |
+|---|---:|---:|---:|---:|---:|
+| Hickory | 1 | 12 | $1/2$ | 10 | 7 |
+| Hazel | 0 | 6 | $1/4$ | 9 | 7 |
+| Willow | 1 | 8 | $3/4$ | 9 | 6 |
+| Chestnut | 0 | 10 | $1/2$ | 11 | 8 |
+
+a. Complete the IPW-weight, weighted-correction, and contribution columns for each treatment value, including zero weights and corrections.
+
+Under treatment 1, the weighted correction is
+
+$$
+\frac{A}{\hat e(X)}\{Y-\hat\mu(X,1)\}.
+$$
+
+| Person | IPW weight $A/\hat e(X)$ | Weighted correction | AIPW contribution |
+|---|---:|---:|---:|
+| Hickory | | | |
+| Hazel | | | |
+| Willow | | | |
+| Chestnut | | | |
+
+Under treatment 0, the weighted correction is
+
+$$
+\frac{1-A}{1-\hat e(X)}\{Y-\hat\mu(X,0)\}.
+$$
+
+| Person | IPW weight $(1-A)/(1-\hat e(X))$ | Weighted correction | AIPW contribution |
+|---|---:|---:|---:|
+| Hickory | | | |
+| Hazel | | | |
+| Willow | | | |
+| Chestnut | | | |
+
+b. Estimate $E[Y(1)]$, $E[Y(0)]$, and the ATE. Interpret the ATE.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. For treatment 1, the correction is $A/\hat e(X)$ times the prediction error under 1. Add this correction to the prediction under 1:
+
+| Person | IPW weight $A/\hat e(X)$ | Weighted correction | AIPW contribution |
+|---|---:|---:|---:|
+| Hickory | 2 | $2(12-10)=4$ | $10+4=14$ |
+| Hazel | 0 | 0 | 9 |
+| Willow | $4/3$ | $(4/3)(8-9)=-4/3$ | $9-4/3=23/3$ |
+| Chestnut | 0 | 0 | 11 |
+
+For treatment 0, use $(1-A)/(1-\hat e(X))$ times the prediction error under 0:
+
+| Person | IPW weight $(1-A)/(1-\hat e(X))$ | Weighted correction | AIPW contribution |
+|---|---:|---:|---:|
+| Hickory | 0 | 0 | 7 |
+| Hazel | $4/3$ | $(4/3)(6-7)=-4/3$ | $7-4/3=17/3$ |
+| Willow | 0 | 0 | 6 |
+| Chestnut | 2 | $2(10-8)=4$ | $8+4=12$ |
+
+b. Average each contribution column over all four people:
+
+$$
+E[Y(1)]\approx\frac{14+9+23/3+11}{4}
+=\frac{125}{12}\approx10.42,
+$$
+
+$$
+E[Y(0)]\approx\frac{7+17/3+6+12}{4}
+=\frac{23}{3}\approx7.67.
+$$
+
+Using the unrounded means, the ATE is approximately $125/12-23/3=2.75$. Under the working SCM, treatment increases the mean outcome by an estimated $2.75$ units.
+:::
+
+### 20. What does robustness buy us?
+
+a. A researcher fits additive linear and logistic models, then reports: "I used AIPW. It is doubly robust, so we can trust the estimate." Explain what double robustness establishes and what you would still want to know about these fitted models.
+
+b. Consider one covariate profile $X=x$. The true and fitted functions are:
+
+| Function | True value | Fitted value |
+|---|---:|---:|
+| Outcome mean under treatment | $\mu(x,1)=10$ | $\hat\mu(x,1)=12$ |
+| Propensity score | $e(x)=0.40$ | $\hat e(x)=0.50$ |
+
+Calculate the modeling bias at this covariate profile for outcome regression, IPW, and AIPW when estimating the mean under treatment. Use the Horvitz–Thompson form of IPW. Compare your results.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. Double robustness establishes that the AIPW contribution averages to the correct intervention mean if either the outcome function or the propensity function is correct under the working SCM. It does not establish that either fitted model is correct. We would want to know whether the models capture the relevant nonlinearities and interactions. If both functions are wrong, AIPW's remaining modeling bias depends on the product of their errors. The doubly robust label alone does not tell us that this product is small.
+
+b. At this covariate profile, the outcome-model error is $12-10=2$, the propensity-model error is $0.50-0.40=0.10$, and the relative propensity error is $0.10/0.50=0.20$.
+
+Outcome regression uses the fitted prediction, so its modeling bias is
+
+$$
+\hat\mu(x,1)-\mu(x,1)=12-10=2.
+$$
+
+For the Horvitz–Thompson form of IPW, the expected contribution is $(0.40/0.50)(10)=8$. Its modeling bias is
+
+$$
+\frac{e(x)-\hat e(x)}{\hat e(x)}\mu(x,1)
+=\frac{0.40-0.50}{0.50}(10)=-2.
+$$
+
+The expected AIPW contribution is $12+(0.40/0.50)(10-12)=10.4$. Its modeling bias is
+
+$$
+\{\hat\mu(x,1)-\mu(x,1)\}
+\frac{\hat e(x)-e(x)}{\hat e(x)}
+=(12-10)\frac{0.50-0.40}{0.50}=0.4.
+$$
+
+| Method | Expected contribution at $X=x$ | Modeling bias |
+|---|---:|---:|
+| Outcome regression | 12.00 | 2.00 |
+| IPW | 8.00 | -2.00 |
+| AIPW | 10.40 | 0.40 |
+
+AIPW has smaller absolute modeling bias here, although both fitted functions are wrong. These are conditional biases for this covariate profile; the overall modeling bias averages the corresponding conditional biases over $X$.
+:::
+
+### 21. Choosing and using a flexible outcome model
+
+The two panels show the same observations and two fitted outcome models. The circles and blue curves correspond to $A=0$; the triangles and orange curves correspond to $A=1$.
+
+![](images/03e-exercise-flexible-models.svg){width=850 fig-align="center" fig-alt="Two panels show identical observed outcomes. Model 1 fits parallel straight lines for treatment values zero and one. Model 2 fits curved relationships, with a difference between treatment groups that varies with X."}
+
+The models have the following mean squared prediction errors. Both were assessed using the same five cross-validation groups.
+
+| Model | Training error | Cross-validation error |
+|---|---:|---:|
+| 1: additive linear | 1.36 | 1.45 |
+| 2: flexible | 0.25 | 0.29 |
+
+a. Describe one feature of the fitted relationship that Model 2 captures and Model 1 misses.
+
+b. Which model would you select using the cross-validation results? Explain.
+
+c. Describe how you would use the selected outcome model to estimate the ATE.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. Model 2 captures the bends: the predicted means rise, fall, and rise again as $X$ increases. It also allows the predicted treatment difference to vary with $X$. Model 1 imposes straight lines and a constant treatment difference.
+
+b. Select Model 2. Its cross-validation error is $0.29$, compared with $1.45$ for Model 1. It predicts the held-out outcomes more accurately under this assessment.
+
+c. Predict each person's outcome under treatment 1 and under treatment 0, using their covariates in both predictions. Average the predictions under each treatment value and subtract the estimated mean under 0 from the estimated mean under 1:
+
+$$
+\operatorname{ATE}\approx
+\frac1n\sum_{i=1}^n\hat\mu(x_i,1)
+-
+\frac1n\sum_{i=1}^n\hat\mu(x_i,0).
+$$
+:::
+
