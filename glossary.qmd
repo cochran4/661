@@ -22,6 +22,10 @@ A probabilistic quantity involving potential outcomes that we want to estimate.
 
 In a graph, a node is a child of another node when it receives an arrow directly from that node.
 
+**Confounding by indication**
+
+Confounding that arises when the clinical reasons for giving a treatment also influence the outcome.
+
 **Confounder**
 
 A common cause of the exposure and outcome that can create or distort their observed association.
@@ -62,6 +66,10 @@ A collection of nodes joined only by directed edges.
 
 A path whose arrows line up head to tail, so that every arrow can be followed in its direction.
 
+**Exclusion restriction**
+
+The instrument affects the outcome only through the treatment.
+
 **Exposure**
 
 The condition, action, or factor whose causal effect is being studied. Depending on the setting, it may also be called the treatment or intervention.
@@ -73,6 +81,10 @@ For each person, we observe the potential outcome under the treatment received b
 **Identified**
 
 A causal estimand is identified when it can be written entirely in terms of observed variables and their probability model.
+
+**Instrument independence**
+
+The instrument and outcome have no common causes other than those accounted for by the measured covariates.
 
 **Independence**
 
@@ -134,9 +146,17 @@ A model that defines each variable through an assignment function of its parents
 
 An ordering of a list of random variables, with one assignment for each variable, in which every variable used in an assignment appears earlier in the list.
 
+**Treatment relevance**
+
+An instrument is associated with treatment after conditioning on the measured covariates.
+
 **Unbiased estimator**
 
 An estimator whose expected value under a probability model equals the quantity it is intended to estimate.
+
+**Unmeasured confounding**
+
+Confounding due to a common cause of treatment and outcome that is not measured in the study data.
 
 **Unmeasured confounder**
 

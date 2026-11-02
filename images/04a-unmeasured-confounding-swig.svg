@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 370" width="620" height="370" role="img" aria-labelledby="title"><title id="title">Unmeasured-confounding SWIG</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#315C43" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" marker-end="url(#arrow)">
+<path d="M 140.0,121.8 L 110.7,245.3"/>
+<path d="M 187.4,101.2 L 480.0,267.3"/>
+<path d="M 432.6,101.2 L 140.0,267.3"/>
+<path d="M 480.0,121.8 L 509.3,245.3"/>
+<path d="M 225.0,290.0 L 474.0,290.0"/>
+</g>
+<circle cx="150" cy="80" r="40" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="150" y="80" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">X(a)</text>
+<circle cx="470" cy="80" r="40" fill="#FFFDF9" stroke="#315C43" stroke-width="1.8" stroke-dasharray="6 4"/>
+<text x="470" y="80" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">U(a)</text>
+<circle cx="100" cy="290" r="40" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="100" y="290" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">A(a)</text>
+<circle cx="520" cy="290" r="40" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/>
+<text x="520" y="290" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">Y(a)</text>
+<circle cx="190" cy="290" r="32" fill="#FFFDF9" stroke="#315C43" stroke-width="1.8"/>
+<text x="190" y="290" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">a</text>
+</svg>

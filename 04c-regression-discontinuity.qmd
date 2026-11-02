@@ -1,0 +1,19 @@
+---
+title: "Regression discontinuity"
+---
+
+## Treatment assignment through a threshold
+
+*[Placeholder: Introduce regression discontinuity through a concrete example.]*
+
+## Identification at the cutoff
+
+*[Placeholder: State the assumptions and show identification at the cutoff.]*
+
+## Estimation
+
+*[Placeholder: Develop the estimation approach.]*
+
+## Difference-in-differences
+
+*[Placeholder: The previous GitBook contained only a heading for this topic.]*

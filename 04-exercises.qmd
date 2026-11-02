@@ -1,0 +1,19 @@
+---
+title: "Exercises"
+---
+
+## Nonidentification
+
+*[Placeholder: Exercises to be written.]*
+
+## Instrumental variables
+
+*[Placeholder: Exercises to be written.]*
+
+## Regression discontinuity
+
+*[Placeholder: Exercises to be written.]*
+
+## Other approaches
+
+*[Placeholder: Exercises to be written.]*

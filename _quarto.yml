@@ -33,7 +33,12 @@ book:
         - 03e-robust-estimators.qmd
         - 03-exercises.qmd
     - part: "Unmeasured confounding"
-      chapters: []
+      chapters:
+        - 04a-unmeasured-confounding.qmd
+        - 04b-instrumental-variables.qmd
+        - 04c-regression-discontinuity.qmd
+        - 04d-other-approaches.qmd
+        - 04-exercises.qmd
     - part: "Sensitivity analysis"
       chapters: []
     - part: "Missing data"
@@ -94,6 +99,18 @@ book:
             file: 03e-robust-estimators.qmd
           - text: "Exercises"
             file: 03-exercises.qmd
+      - text: "Unmeasured confounding"
+        menu:
+          - text: "Unmeasured confounding"
+            file: 04a-unmeasured-confounding.qmd
+          - text: "Instrumental variables"
+            file: 04b-instrumental-variables.qmd
+          - text: "Regression discontinuity"
+            file: 04c-regression-discontinuity.qmd
+          - text: "Other approaches"
+            file: 04d-other-approaches.qmd
+          - text: "Exercises"
+            file: 04-exercises.qmd
       - text: "Back matter"
         menu:
           - text: "Glossary"
