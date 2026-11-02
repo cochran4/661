@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.20">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Instrumental variables – Causal inference (and other things)</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./04c-regression-discontinuity.html" rel="next">
+<link href="./04a-unmeasured-confounding.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-6f0fedc4ee850e54f211b38f75226697.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Causal inference (and other things)</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./00-syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-motivation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Motivation</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-motivation">    
+        <li>
+    <a class="dropdown-item" href="./01a-being-a-detective.html">
+ <span class="dropdown-text">Being a detective with data</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01b-why-probability-is-not-enough.html">
+ <span class="dropdown-text">Why probability is not enough</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01c-clinical-trials.html">
+ <span class="dropdown-text">Clinical trials as our exemplar</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01d-probability.html">
+ <span class="dropdown-text">Probability gives us a formal language</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-construction" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Construction</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-construction">    
+        <li>
+    <a class="dropdown-item" href="./02a-assignments.html">
+ <span class="dropdown-text">A list of assignments</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02b-structural-causal-models.html">
+ <span class="dropdown-text">Structural causal models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02c-causal-graphs.html">
+ <span class="dropdown-text">Causal graphs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02d-global-markov-property.html">
+ <span class="dropdown-text">Global Markov property</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02e-potential-outcomes.html">
+ <span class="dropdown-text">Potential outcomes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02f-single-world-intervention-graphs.html">
+ <span class="dropdown-text">Single-world intervention graphs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-measured-confounding" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Measured confounding</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-measured-confounding">    
+        <li>
+    <a class="dropdown-item" href="./03a-outcome-regression.html">
+ <span class="dropdown-text">Outcome regression</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03b-matching.html">
+ <span class="dropdown-text">Matching</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03c-propensity-scores.html">
+ <span class="dropdown-text">Propensity scores</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03d-inverse-probability-weighting.html">
+ <span class="dropdown-text">Inverse probability weighting</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03e-robust-estimators.html">
+ <span class="dropdown-text">Robust estimators</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-unmeasured-confounding" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Unmeasured confounding</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-unmeasured-confounding">    
+        <li>
+    <a class="dropdown-item" href="./04a-unmeasured-confounding.html">
+ <span class="dropdown-text">Unmeasured confounding</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./04b-instrumental-variables.html">
+ <span class="dropdown-text">Instrumental variables</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./04c-regression-discontinuity.html">
+ <span class="dropdown-text">Regression discontinuity</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./04d-other-approaches.html">
+ <span class="dropdown-text">Other approaches</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./04-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-back-matter" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Back matter</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-back-matter">    
+        <li>
+    <a class="dropdown-item" href="./glossary.html">
+ <span class="dropdown-text">Glossary</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./references.html">
+ <span class="dropdown-text">References</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04a-unmeasured-confounding.html">Unmeasured confounding</a></li><li class="breadcrumb-item"><a href="./04b-instrumental-variables.html"><span class="chapter-title">Instrumental variables</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">index.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-syllabus.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Syllabus</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Motivation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01a-being-a-detective.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Being a detective with data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01b-why-probability-is-not-enough.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Why probability is not enough</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01c-clinical-trials.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Clinical trials as our exemplar</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01d-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Probability gives us a formal language</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Construction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02a-assignments.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">A list of assignments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02b-structural-causal-models.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Structural causal models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02c-causal-graphs.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Causal graphs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02d-global-markov-property.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Global Markov property</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02e-potential-outcomes.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Potential outcomes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02f-single-world-intervention-graphs.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Single-world intervention graphs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Measured confounding</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03a-outcome-regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Outcome regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03b-matching.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Matching</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03c-propensity-scores.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Propensity scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03d-inverse-probability-weighting.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Inverse probability weighting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03e-robust-estimators.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Robust estimators</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Unmeasured confounding</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04a-unmeasured-confounding.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Unmeasured confounding</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04b-instrumental-variables.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Instrumental variables</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04c-regression-discontinuity.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Regression discontinuity</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04d-other-approaches.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Other approaches</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Sensitivity analysis</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Missing data</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Complex surveys</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Back matter</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Glossary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">References</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04a-unmeasured-confounding.html">Unmeasured confounding</a></li><li class="breadcrumb-item"><a href="./04b-instrumental-variables.html"><span class="chapter-title">Instrumental variables</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">Instrumental variables</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/04b-squirrel-iv-solution-v2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="The detective squirrel sits in an open-backed wooden armchair with space for its tail, receiving an IV infusion from a bag labeled IV solution. Vintage sepia pen-and-ink illustration." width="700"></p>
+</figure>
+</div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>We ended the last section with a problem: adding another measured variable is not, by itself, going to save us from unmeasured confounding. And yet people often resort to a type of variable called an instrument. An instrument is a variable that pushes people toward or away from treatment but does not otherwise affect the outcome. The hope is that it gives us variation in treatment that the unmeasured confounders did not produce.</p>
+<p>But an instrument is still just a variable. It sits in the data and in the SCM like any other. Even if we fully justify that a variable is an instrument, that alone does not get us out of the problem. It is going to take more than the SCM.</p>
+<p>So that is what we set out to figure out. We describe the instrumental-variable setting and the causal effect we want. Then we ask what else we have to assume to identify it.</p>
+<div class="main-point">
+<p>An instrument alone does not identify the causal effect. Even with an instrument, we still need more assumptions to identify the causal quantities we want.</p>
+</div>
+</section>
+<section id="our-working-scm" class="level2">
+<h2 class="anchored" data-anchor-id="our-working-scm">Our working SCM</h2>
+<p>Let <span class="math inline">\(A\)</span> be treatment, <span class="math inline">\(Y\)</span> the outcome, <span class="math inline">\(X\)</span> measured confounders, and <span class="math inline">\(U\)</span> unmeasured confounders. We add an observed variable <span class="math inline">\(Z\)</span>, our proposed instrument. Our working SCM is</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow f_X(\epsilon_X),\\
+U&amp;\leftarrow f_U(\epsilon_U),\\
+Z&amp;\leftarrow f_Z(X,\epsilon_Z),\\
+A&amp;\leftarrow f_A(X,U,Z,\epsilon_A),\\
+Y&amp;\leftarrow f_Y(X,U,A,\epsilon_Y),
+\end{aligned}
+\]</span></p>
+<p>where the noise terms <span class="math inline">\(\epsilon_X\)</span>, <span class="math inline">\(\epsilon_U\)</span>, <span class="math inline">\(\epsilon_Z\)</span>, <span class="math inline">\(\epsilon_A\)</span>, and <span class="math inline">\(\epsilon_Y\)</span> are independent. We observe <span class="math inline">\(X\)</span>, <span class="math inline">\(Z\)</span>, <span class="math inline">\(A\)</span>, and <span class="math inline">\(Y\)</span>, but not <span class="math inline">\(U\)</span>.</p>
+<p>The corresponding causal graph is</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/04b-instrumental-variables.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Instrumental-variable causal graph. X points to Z, A, and Y. U points to A and Y. Z points to A, and A points to Y. There is no arrow from Z directly to Y or from U to Z." width="700"></p>
+</figure>
+</div>
+<p>Why would we want a variable like <span class="math inline">\(Z\)</span>? Think about where variation in treatment comes from. In our graph, people end up with different values of <span class="math inline">\(A\)</span> for two kinds of reasons. Some of it comes from <span class="math inline">\(U\)</span>, which is also tied to the outcome, and that is the problem. Some of it comes from <span class="math inline">\(Z\)</span>. Now suppose <span class="math inline">\(Z\)</span> is something like a coin flip that nudges people toward treatment, for example an alert that was sent to some people and not others. The alert does not know anything about <span class="math inline">\(U\)</span>, and it does not affect <span class="math inline">\(Y\)</span> except by changing <span class="math inline">\(A\)</span>. So when people who got the nudge end up treated more often than people who did not, that extra treatment is not coming from <span class="math inline">\(U\)</span>. It is variation in treatment the unmeasured confounders did not produce, and that is the variation we hope to learn from.</p>
+<p>All of that depends on one thing. The nudge has to actually move treatment. If <span class="math inline">\(Z\)</span> does nothing to <span class="math inline">\(A\)</span>, there is no extra variation to learn from. We call this assumption <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="An instrument is associated with treatment after conditioning on the measured covariates." tabindex="0">treatment relevance</span>.</p>
+<div class="assumption-box">
+<p><strong>Treatment relevance.</strong> The distribution of <span class="math inline">\(A\)</span> given <span class="math inline">\(X\)</span> differs across values of <span class="math inline">\(Z\)</span>.</p>
+</div>
+<p>This connects to an idea from earlier. We called the intervened value <span class="math inline">\(a\)</span> irrelevant to a variable when it did not enter that variable’s potential-outcome assignment. Relevance is the opposite. We want <span class="math inline">\(Z\)</span> to matter for <span class="math inline">\(A\)</span>. But it is not enough for <span class="math inline">\(Z\)</span> to appear in the assignment for <span class="math inline">\(A\)</span>, because an assignment can include <span class="math inline">\(Z\)</span> and still ignore it in practice. What we need is that different values of <span class="math inline">\(Z\)</span> lead to different treatment distributions among people with the same <span class="math inline">\(X\)</span>.</p>
+<div class="definition-box">
+<p><strong>Instrumental variable.</strong> Consider treatment <span class="math inline">\(A\)</span>, outcome <span class="math inline">\(Y\)</span>, measured confounders <span class="math inline">\(X\)</span>, and unmeasured confounders <span class="math inline">\(U\)</span>. An observed variable <span class="math inline">\(Z\)</span> is an instrument for the effect of <span class="math inline">\(A\)</span> on <span class="math inline">\(Y\)</span> relative to <span class="math inline">\(X\)</span> if the SCM including <span class="math inline">\(Z\)</span> has these three properties:</p>
+<ul>
+<li><span class="math inline">\(Z\)</span> the distribution of <span class="math inline">\(A\)</span> given <span class="math inline">\(X\)</span> differs across values of <span class="math inline">\(Z\)</span>.</li>
+<li>All common causes of <span class="math inline">\(Z\)</span> and <span class="math inline">\(Y\)</span> are accounted for by <span class="math inline">\(X\)</span>.</li>
+<li>Every directed path from <span class="math inline">\(Z\)</span> to <span class="math inline">\(Y\)</span> passes through <span class="math inline">\(A\)</span>.</li>
+</ul>
+</div>
+</section>
+<section id="potential-outcomes" class="level2">
+<h2 class="anchored" data-anchor-id="potential-outcomes">Potential outcomes</h2>
+<p>Consider intervening on both treatment and instrument, setting them to <span class="math inline">\(a\)</span> and <span class="math inline">\(z\)</span>. Let <span class="math inline">\(Y(a,z)\)</span> be the outcome under that joint intervention. The potential-outcome SCM is</p>
+<p><span class="math display">\[
+\begin{aligned}
+X(a,z)&amp;\leftarrow f_X(\epsilon_X),\\
+U(a,z)&amp;\leftarrow f_U(\epsilon_U),\\
+Z(a,z)&amp;\leftarrow f_Z(X(a,z),\epsilon_Z),\\
+A(a,z)&amp;\leftarrow f_A(X(a,z),U(a,z),z,\epsilon_A),\\
+Y(a,z)&amp;\leftarrow f_Y(X(a,z),U(a,z),a,\epsilon_Y).
+\end{aligned}
+\]</span></p>
+<p>We keep the original noise terms. Before simplifying any labels, the SWIG is</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/04b-instrumental-variables-joint-swig-unsimplified.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Joint-intervention SWIG before causal irrelevance. The random nodes are X(a,z), U(a,z), Z(a,z), A(a,z), and Y(a,z). Fixed z points to A(a,z), and fixed a points to Y(a,z)." width="700"></p>
+</figure>
+</div>
+<p>Now look at which random variables are not descendants of the fixed intervention values. Neither <span class="math inline">\(X(a,z)\)</span>, <span class="math inline">\(U(a,z)\)</span>, nor <span class="math inline">\(Z(a,z)\)</span> is a descendant of fixed <span class="math inline">\(a\)</span> or fixed <span class="math inline">\(z\)</span>, so causal irrelevance lets us drop both arguments from their labels. The random treatment <span class="math inline">\(A(a,z)\)</span> is a descendant of fixed <span class="math inline">\(z\)</span> but not fixed <span class="math inline">\(a\)</span>, so it can be written as <span class="math inline">\(A(z)\)</span>. The outcome <span class="math inline">\(Y(a,z)\)</span> is a descendant of fixed <span class="math inline">\(a\)</span> but not fixed <span class="math inline">\(z\)</span>, so it can be written as <span class="math inline">\(Y(a)\)</span>. Thus,</p>
+<p><span class="math display">\[
+\begin{aligned}
+X(a,z)&amp;=X,\\
+U(a,z)&amp;=U,\\
+Z(a,z)&amp;=Z,\\
+A(a,z)&amp;=A(z),\\
+Y(a,z)&amp;=Y(a).
+\end{aligned}
+\]</span></p>
+<p>The simplified SWIG is</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/04b-instrumental-variables-joint-swig.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Joint-intervention SWIG after causal irrelevance. The labels are X, U, Z, A(z), and Y(a). Fixed z points to A(z), and fixed a points to Y(a). The graph's arrows are unchanged." width="700"></p>
+</figure>
+</div>
+<section id="what-follows-about-the-instrument" class="level3">
+<h3 class="anchored" data-anchor-id="what-follows-about-the-instrument">What follows about the instrument</h3>
+<p>Our good old rules have already given us two useful observations about the potential outcomes. In the SWIG, <span class="math inline">\(Z\)</span> is connected to <span class="math inline">\(A(z)\)</span> and <span class="math inline">\(Y(a)\)</span> only through <span class="math inline">\(X\)</span>. Conditioning on <span class="math inline">\(X\)</span> blocks those paths, so the global Markov property tells us that <span class="math inline">\(Z\)</span> is independent of the potential treatments and outcomes given <span class="math inline">\(X\)</span>. This property gets a name: <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="The instrument and outcome have no common causes other than those accounted for by the measured covariates." tabindex="0">instrument independence</span>.</p>
+<p>We also used causal irrelevance to see that, once treatment is fixed, changing the instrument leaves the outcome unchanged. That is what <span class="math inline">\(Y(a,z)=Y(a)\)</span> says. This property is called the <span class="glossary-term" data-bs-toggle="tooltip" data-bs-title="The instrument affects the outcome only through the treatment." tabindex="0">exclusion restriction</span>.</p>
+<p>These observations are important enough that, in the potential-outcome tradition, people usually start by stating them as assumptions. We prefer to let the SCM do the talking. We specify how the variables are generated, then use the global Markov property and causal irrelevance to tell us what follows. Together with treatment relevance, this gives us the familiar instrumental-variable properties.</p>
+<div class="proposition-box">
+<p><strong>Properties of an instrument.</strong> An instrument satisfies</p>
+<ul>
+<li><strong>Relevance:</strong> the distribution of <span class="math inline">\(A\)</span> given <span class="math inline">\(X\)</span> differs across values of <span class="math inline">\(Z\)</span>.</li>
+<li><strong>Instrument independence:</strong> <span class="math inline">\(Z\mathrel{\perp\!\!\!\perp}(A(z),Y(a))\mid X\)</span> for all <span class="math inline">\(a\)</span> and <span class="math inline">\(z\)</span>.</li>
+<li><strong>Exclusion restriction:</strong> <span class="math inline">\(Y(a,z)=Y(a)\)</span>.</li>
+</ul>
+</div>
+</section>
+</section>
+<section id="where-instruments-come-from" class="level2">
+<h2 class="anchored" data-anchor-id="where-instruments-come-from">Where instruments come from</h2>
+<div class="example-intro">
+<p><span class="example-label">Treatment assignment and treatment received</span></p>
+<p>In a randomized trial, let <span class="math inline">\(Z\)</span> be assigned treatment, <span class="math inline">\(A\)</span> treatment actually received, and <span class="math inline">\(Y\)</span> the outcome. A person assigned treatment may not take it, and a person assigned control may obtain it elsewhere. We want the effect of receiving treatment, rather than the effect of being assigned treatment.</p>
+</div>
+<p>Noncompliance makes treatment received an observational exposure even within a randomized trial. Random assignment gives us a reason to believe that <span class="math inline">\(Z\)</span> does not share causes with the outcome. Assignment should also change the probability of receiving treatment. But we still need to argue that assignment affects the outcome only through treatment received. For example, if assignment changes follow-up care or expectations in ways not captured by <span class="math inline">\(A\)</span>, that restriction may fail.</p>
+<p>The effect of assignment itself is the intention-to-treat effect. Randomization identifies that effect. Using assignment as an instrument to learn about treatment received requires the instrumental-variable assumptions and the additional assumptions we will develop below.</p>
+<div class="example-intro">
+<p><span class="example-label">Randomized encouragement</span></p>
+<p>Suppose we randomize an invitation, reminder, or recommendation intended to encourage treatment. Let <span class="math inline">\(Z\)</span> indicate encouragement, <span class="math inline">\(A\)</span> treatment uptake, and <span class="math inline">\(Y\)</span> the outcome.</p>
+</div>
+<p>Treatment assignment is a strong form of encouragement, but encouragement can take other forms. Examples include gift cards, vouchers, and recommendations. Randomizing encouragement helps justify the absence of common causes of <span class="math inline">\(Z\)</span> and <span class="math inline">\(Y\)</span>. It does not establish that encouragement has no other effect on the outcome. A cash incentive, for example, could affect health through the money itself as well as through treatment uptake.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/04b-squirrel-encouragement.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Two squirrels illustrate encouragement. On the left, a delighted squirrel wears a silly acorn hat and accepts money. On the right, a squirrel offered no payment looks with consternation at the same hat on a stool. Vintage sepia pen-and-ink illustration." width="850"></p>
+</figure>
+</div>
+<div class="example-intro">
+<p><span class="example-label">Genetic variants and Mendelian randomization</span></p>
+<p>A genetic variant can sometimes serve as an instrument. Let <span class="math inline">\(Z\)</span> be the genetic variant, <span class="math inline">\(A\)</span> the exposure it influences, and <span class="math inline">\(Y\)</span> a later health outcome. Using a variant this way is called Mendelian randomization.</p>
+</div>
+<p>Why would a gene work as an instrument? Genes are handed down at conception, so they are not chosen by the person, and they are not shaped by the person’s later diet, income, or habits. That makes a variant look like a nudge that was assigned by nature. If the variant also changes the exposure, then people who carry it and people who do not differ in the exposure for reasons that have nothing to do with the unmeasured confounders.</p>
+<p>Here is a real example. Lower HDL cholesterol is associated with higher heart-disease risk, so it looks like low HDL might cause heart disease. But people with low HDL also differ in diet, exercise, and many other ways we may not measure. Frikke-Schmidt and colleagues instead looked at variants in the ABCA1 gene that lower HDL cholesterol <span class="citation" data-cites="frikkeschmidt2008abca1">(<a href="references.html#ref-frikkeschmidt2008abca1" role="doc-biblioref">Frikke-Schmidt et al. 2008</a>)</span>. Here <span class="math inline">\(Z\)</span> is carrying the variant, <span class="math inline">\(A\)</span> is HDL cholesterol, and <span class="math inline">\(Y\)</span> is ischemic heart disease. If low HDL itself caused heart disease, carriers should have had more of it. They did not. That suggests the observed association between HDL and heart disease was not simply the causal effect of HDL.</p>
+<p>A genetic instrument still needs the same causal argument as any other. The variant must change the exposure, which is treatment relevance. We must also justify the missing arrows. A variant can affect several biological processes, so it might change the outcome through a route other than the exposure we picked, and that would break the exclusion restriction. Genetic ancestry can also be linked to environmental causes of the outcome, which would break instrument independence. So being a gene does not make a variable an instrument. We still have to argue for it.</p>
+<div class="example-intro">
+<p><span class="example-label">Distance and prescribing preferences</span></p>
+<p>In observational health-care data, proposed instruments include distance to a treatment facility and a clinician’s tendency to prescribe one treatment rather than another.</p>
+</div>
+<p>For distance, the proposed story is that living closer makes treatment more likely. We then need to ask whether location also reflects income, access to other care, or other causes of the outcome. For prescribing preference, we need to ask whether patients are effectively assigned to clinicians independently of their health risks, and whether clinicians differ in other aspects of care that affect the outcome. An association with treatment is only one part of either argument.</p>
+</section>
+<section id="the-effect-we-want-to-estimate" class="level2">
+<h2 class="anchored" data-anchor-id="the-effect-we-want-to-estimate">The effect we want to estimate</h2>
+<p>Return to an encouragement trial with binary encouragement <span class="math inline">\(Z\)</span> and binary treatment <span class="math inline">\(A\)</span>. Some people take treatment only if encouraged. We want the average effect of receiving treatment among these people. We can describe that group using the potential treatments <span class="math inline">\(A(z=0)\)</span> and <span class="math inline">\(A(z=1)\)</span> we have just introduced.</p>
+<section id="who-are-the-compliers" class="level3">
+<h3 class="anchored" data-anchor-id="who-are-the-compliers">Who are the compliers?</h3>
+<p>Someone who takes treatment only when encouraged has <span class="math inline">\(A(z=0)=0\)</span> and <span class="math inline">\(A(z=1)=1\)</span>. Someone who would take treatment either way has <span class="math inline">\(A(z=0)=A(z=1)=1\)</span>. The two potential treatments give four possible responses:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Response to encouragement</th>
+<th style="text-align: right;"><span class="math inline">\(A(z=0)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(A(z=1)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Always-taker</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td>Never-taker</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td>Complier</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td>Defier</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p>These responses refer to the particular instrument we chose. A person could respond to one encouragement but not another. We observe only the treatment received under the actual instrument value, so we do not generally observe which response type a person has.</p>
+<p>Causal irrelevance gave <span class="math inline">\(Y(a,z)=Y(a)\)</span>, so the treatment contrast is <span class="math inline">\(Y(a=1)-Y(a=0)\)</span> regardless of the instrument value. We can now average that contrast among compliers to state our target effect.</p>
+<div class="definition-box">
+<p><strong>Complier average causal effect (CACE).</strong> For binary treatment and instrument, the average treatment effect among compliers is</p>
+<p><span class="math display">\[
+E[Y(a=1)-Y(a=0)\mid A(z=1)=1,A(z=0)=0].
+\]</span></p>
+</div>
+<p>In the encouragement trial, this is the average effect of receiving treatment among people who would take it if encouraged and would not take it without encouragement. It is also called the <em>local average treatment effect</em> (LATE) <span class="citation" data-cites="imbensangrist1994late">(<a href="references.html#ref-imbensangrist1994late" role="doc-biblioref">Imbens and Angrist 1994</a>)</span>. Defining this target does not yet identify it; we next ask which additional assumption lets us estimate it.</p>
+</section>
+</section>
+<section id="identifying-the-complier-effect" class="level2">
+<h2 class="anchored" data-anchor-id="identifying-the-complier-effect">Identifying the complier effect</h2>
+<p>The usual IV estimand, also called the Wald estimand, is the ratio of the outcome difference between instrument groups to their treatment-uptake difference. Start with a binary instrument <span class="math inline">\(Z\)</span> and binary treatment <span class="math inline">\(A\)</span>. For these calculations, take <span class="math inline">\(X\)</span> to be constant, so the instrumental-variable assumptions hold without conditioning on measured covariates. We will bring <span class="math inline">\(X\)</span> back when we discuss regression.</p>
+<section id="the-problem" class="level3">
+<h3 class="anchored" data-anchor-id="the-problem">The problem</h3>
+<p>In the trial example, we can compare people who received treatment with people who did not. But treatment received is influenced by <span class="math inline">\(U\)</span>, so the observed difference</p>
+<p><span class="math display">\[
+E[Y\mid A=1]-E[Y\mid A=0]
+\]</span></p>
+<p>does not generally equal the average treatment effect</p>
+<p><span class="math display">\[
+E[Y(1)]-E[Y(0)].
+\]</span></p>
+<p>Assignment is different. Under assignment <span class="math inline">\(z\)</span>, treatment received is <span class="math inline">\(A(z)\)</span>. The exclusion restriction gives <span class="math inline">\(Y(a,z)=Y(a)\)</span>, so the outcome under that assignment is <span class="math inline">\(Y(A(z))\)</span>.</p>
+<p>Because assignment is independent of the other causes in our SCM, consistency and independence give</p>
+<p><span class="math display">\[
+E[Y\mid Z=z]=E[Y(A(z))].
+\]</span></p>
+<p>Thus the observed difference between assignment groups identifies the effect of assignment:</p>
+<p><span class="math display">\[
+E[Y\mid Z=1]-E[Y\mid Z=0]
+=E[Y(A(1))-Y(A(0))].
+\]</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/04b-treatment-versus-instrument.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Two illustrative panels distinguish observed outcomes from unobserved potential outcomes. Grouping by treatment gives observed means different from the intervention means. Grouping by randomized assignment gives observed means equal to the means under each assignment intervention." width="950"></p>
+</figure>
+</div>
+<p>The left panel shows why comparing treatment groups can mislead us. The people who receive treatment differ from those who do not, so their observed means differ from the means we would obtain by intervening on treatment. In the right panel, assignment is independent of the other causes, so the assignment-group means recover the means under interventions on assignment. We still need to connect the effect of assignment to the effect of treatment received.</p>
+</section>
+<section id="monotonicity" class="level3">
+<h3 class="anchored" data-anchor-id="monotonicity">Monotonicity</h3>
+<p>To identify the CACE, assume that encouragement never makes someone less likely to take treatment. It can change a person’s decision from no treatment to treatment, or leave the decision unchanged.</p>
+<div class="assumption-box">
+<p><strong>Monotonicity.</strong> Changing the instrument from zero to one never decreases anyone’s treatment:</p>
+<p><span class="math display">\[
+A(1)\geq A(0).
+\]</span></p>
+</div>
+<p>For example, an invitation can persuade someone to take treatment or leave their decision unchanged, but cannot make someone who would otherwise take treatment refuse it. In terms of the response types above, there are no defiers.</p>
+<p>To see how this identifies the CACE, first write the outcome under assignment <span class="math inline">\(z\)</span> as</p>
+<p><span class="math display">\[
+Y(A(z))=Y(0)+A(z)\{Y(1)-Y(0)\}.
+\]</span></p>
+<p>Subtract the two assignment outcomes and take expectations:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[Y\mid Z=1]-E[Y\mid Z=0]
+&amp;=E[Y(A(1))-Y(A(0))]\\
+&amp;=E[\{A(1)-A(0)\}\{Y(1)-Y(0)\}].
+\end{aligned}
+\]</span></p>
+<p>Always-takers and never-takers have <span class="math inline">\(A(1)-A(0)=0\)</span>, so they contribute zero. Monotonicity removes defiers. Only compliers remain:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[Y\mid Z=1]-E[Y\mid Z=0]
+&amp;=P(A(1)=1,A(0)=0)\\
+&amp;\quad\times E[Y(1)-Y(0)\mid A(1)=1,A(0)=0].
+\end{aligned}
+\]</span></p>
+<p>The treatment-uptake difference identifies the probability of being a complier. The instrument’s independence from the potential treatments and consistency give</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[A\mid Z=1]-E[A\mid Z=0]
+&amp;=E[A(1)-A(0)]\\
+&amp;=P(A(1)=1,A(0)=0).
+\end{aligned}
+\]</span></p>
+<p>Dividing the outcome difference by the treatment-uptake difference cancels this probability.</p>
+<div class="proposition-box">
+<p><strong>Proposition.</strong> Under the instrumental-variable assumptions and monotonicity, the usual IV estimand identifies the complier average treatment effect:</p>
+<p><span class="math display">\[
+E[Y(1)-Y(0)\mid A(1)=1,A(0)=0]
+=\frac{E[Y\mid Z=1]-E[Y\mid Z=0]}
+{E[A\mid Z=1]-E[A\mid Z=0]}.
+\]</span></p>
+</div>
+<p>The numerator is the outcome difference between instrument groups. The denominator is the probability of being a complier. Their ratio identifies the average treatment effect among compliers, our CACE.</p>
+</section>
+<section id="treatment-homogeneity-a-different-target" class="level3">
+<h3 class="anchored" data-anchor-id="treatment-homogeneity-a-different-target">Treatment homogeneity: a different target</h3>
+<p>Under a different assumption, the same ratio identifies the average treatment effect among the treated. Return to a trial with assignment <span class="math inline">\(Z\)</span>, treatment received <span class="math inline">\(A\)</span>, and a binary outcome <span class="math inline">\(Y\)</span>. The following table gives counts of people in each group. Here <span class="math inline">\(Z=1\)</span> labels the arm with lower treatment uptake. Reversing the assignment labels makes both differences change sign, leaving their ratio unchanged.</p>
+<div class="example-intro">
+<p><span class="example-label">Assignment and treatment received</span></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 21%">
+<col style="width: 28%">
+<col style="width: 28%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Assignment <span class="math inline">\(Z\)</span></th>
+<th>Treatment received <span class="math inline">\(A\)</span></th>
+<th style="text-align: right;">Number with <span class="math inline">\(Y=0\)</span></th>
+<th style="text-align: right;">Number with <span class="math inline">\(Y=1\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0</td>
+<td>0</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">40</td>
+</tr>
+<tr class="even">
+<td>0</td>
+<td>1</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">10</td>
+</tr>
+<tr class="odd">
+<td>1</td>
+<td>0</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">30</td>
+</tr>
+<tr class="even">
+<td>1</td>
+<td>1</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">10</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The estimated outcome risks in the assignment groups are</p>
+<p><span class="math display">\[
+\begin{aligned}
+\widehat E[Y\mid Z=1]&amp;=\frac{30+10}{90}=\frac49,\\
+\widehat E[Y\mid Z=0]&amp;=\frac{40+10}{100}=\frac12.
+\end{aligned}
+\]</span></p>
+<p>The estimated probabilities of receiving treatment are</p>
+<p><span class="math display">\[
+\begin{aligned}
+\widehat E[A\mid Z=1]&amp;=\frac{20+10}{90}=\frac13,\\
+\widehat E[A\mid Z=0]&amp;=\frac{40+10}{100}=\frac12.
+\end{aligned}
+\]</span></p>
+<p>We can compute the ratio of the outcome difference to the treatment-uptake difference:</p>
+<p><span class="math display">\[
+\frac{\widehat E[Y\mid Z=1]-\widehat E[Y\mid Z=0]}
+{\widehat E[A\mid Z=1]-\widehat E[A\mid Z=0]}
+=\frac{4/9-1/2}{1/3-1/2}
+=\frac13.
+\]</span></p>
+<p>This is the same ratio used to estimate the CACE under monotonicity. We can instead give it an ATT interpretation through a homogeneity assumption.</p>
+<p>For binary treatment, consistency lets us write</p>
+<p><span class="math display">\[
+Y=Y(0)+A\{Y(1)-Y(0)\}.
+\]</span></p>
+<p>Take expectations within an assignment group. Because <span class="math inline">\(A\)</span> is zero or one, only treated people contribute to the second term:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[Y\mid Z=z]
+&amp;=E[Y(0)\mid Z=z]
+  +E[A\{Y(1)-Y(0)\}\mid Z=z]\\
+&amp;=E[Y(0)\mid Z=z]
+  +P(A=1\mid Z=z)E[Y(1)-Y(0)\mid A=1,Z=z]\\
+&amp;=E[Y(0)]
+  +E[A\mid Z=z]E[Y(1)-Y(0)\mid A=1,Z=z].
+\end{aligned}
+\]</span></p>
+<p>The last line uses the instrument assumption that <span class="math inline">\(Y(0)\)</span> is independent of <span class="math inline">\(Z\)</span>. The remaining unknown is the average treatment effect among treated people within each assignment group. Suppose this average is the same in both groups.</p>
+<div class="assumption-box">
+<p><strong>Effect homogeneity among the treated.</strong> The average treatment effect among treated people does not depend on the instrument value:</p>
+<p><span class="math display">\[
+E[Y(1)-Y(0)\mid A=1,Z=z]
+=E[Y(1)-Y(0)\mid A=1],
+\qquad z\in\{0,1\}.
+\]</span></p>
+</div>
+<p>In the trial example, this says that people who receive treatment in one assignment arm have the same average treatment effect as people who receive treatment in the other arm. It does not say that everyone has the same individual treatment effect.</p>
+<p>Write this common average as <span class="math inline">\(\tau=E[Y(1)-Y(0)\mid A=1]\)</span>. Then</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[Y\mid Z=1]&amp;=E[Y(0)]+\tau E[A\mid Z=1],\\
+E[Y\mid Z=0]&amp;=E[Y(0)]+\tau E[A\mid Z=0].
+\end{aligned}
+\]</span></p>
+<p>Subtracting cancels the baseline mean:</p>
+<p><span class="math display">\[
+E[Y\mid Z=1]-E[Y\mid Z=0]
+=\tau\{E[A\mid Z=1]-E[A\mid Z=0]\}.
+\]</span></p>
+<p>The treatment-uptake difference is nonzero by instrument relevance. Dividing by that difference identifies <span class="math inline">\(\tau\)</span>.</p>
+<div class="proposition-box">
+<p><strong>Proposition.</strong> Under the instrumental-variable assumptions and effect homogeneity among the treated, the usual IV estimand identifies the average treatment effect among the treated:</p>
+<p><span class="math display">\[
+E[Y(1)-Y(0)\mid A=1]
+=\frac{E[Y\mid Z=1]-E[Y\mid Z=0]}
+{E[A\mid Z=1]-E[A\mid Z=0]}.
+\]</span></p>
+</div>
+<p>Under this assumption, our trial estimate of <span class="math inline">\(1/3\)</span> is an estimated increase of about 33 percentage points in outcome risk among those who receive treatment.</p>
+<details>
+<summary>
+Why does a weak instrument cause problems?
+</summary>
+<p>The denominator is the difference in treatment uptake between instrument groups. If that difference is small, the estimate divides by a number close to zero. Sampling error in either difference can then produce a large change in the ratio. A small instrument–outcome association arising through an invalid pathway can also become a large error in the estimated treatment effect <span class="citation" data-cites="bound1995weak">(<a href="references.html#ref-bound1995weak" role="doc-biblioref">Bound et al. 1995</a>)</span>.</p>
+</details>
+</section>
+</section>
+<section id="linear-regression" class="level2">
+<h2 class="anchored" data-anchor-id="linear-regression">Linear regression</h2>
+<section id="connecting-iv-to-regression" class="level3">
+<h3 class="anchored" data-anchor-id="connecting-iv-to-regression">Connecting IV to regression</h3>
+<p>We can calculate the usual IV estimator from differences in sample means, or obtain the same estimate through two regressions. Start with the relation we derived under effect homogeneity among the treated:</p>
+<p><span class="math display">\[
+E[Y\mid Z]=E[Y(0)]+\tau E[A\mid Z].
+\]</span></p>
+<p>Write <span class="math inline">\(\beta_0=E[Y(0)]\)</span> and <span class="math inline">\(\beta_1=\tau\)</span>. For binary <span class="math inline">\(Z\)</span>, the two instrument-group treatment means can always be written as a line:</p>
+<p><span class="math display">\[
+E[A\mid Z]=\alpha_0+\alpha_1Z,
+\]</span></p>
+<p>where</p>
+<p><span class="math display">\[
+\alpha_0=E[A\mid Z=0],
+\qquad
+\alpha_1=E[A\mid Z=1]-E[A\mid Z=0].
+\]</span></p>
+<p>Substituting this expression into the outcome relation gives</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[Y\mid Z]
+&amp;=\beta_0+\beta_1(\alpha_0+\alpha_1Z)\\
+&amp;=(\beta_0+\beta_1\alpha_0)+\beta_1\alpha_1Z.
+\end{aligned}
+\]</span></p>
+<p>The slope from regressing <span class="math inline">\(A\)</span> on <span class="math inline">\(Z\)</span> is <span class="math inline">\(\alpha_1\)</span>. The slope from regressing <span class="math inline">\(Y\)</span> on <span class="math inline">\(Z\)</span> is <span class="math inline">\(\beta_1\alpha_1\)</span>. Their ratio is therefore</p>
+<p><span class="math display">\[
+\frac{E[Y\mid Z=1]-E[Y\mid Z=0]}
+{E[A\mid Z=1]-E[A\mid Z=0]}
+=\frac{\beta_1\alpha_1}{\alpha_1}
+=\beta_1.
+\]</span></p>
+<p>We can recover the same ratio in two stages.</p>
+<p><strong>Stage 1.</strong> Fit a linear regression of <span class="math inline">\(A\)</span> on <span class="math inline">\(Z\)</span>, including an intercept. For each person, calculate</p>
+<p><span class="math display">\[
+\widehat A_i=\widehat\alpha_0+\widehat\alpha_1Z_i.
+\]</span></p>
+<p><strong>Stage 2.</strong> Fit a linear regression of <span class="math inline">\(Y\)</span> on <span class="math inline">\(\widehat A\)</span>, again including an intercept. The slope is the two-stage least-squares estimate <span class="math inline">\(\widehat\beta_1\)</span>.</p>
+<p>To see why this equals the ratio of sample differences, write <span class="math inline">\(\bar A_z\)</span> and <span class="math inline">\(\bar Y_z\)</span> for the sample means within instrument group <span class="math inline">\(z\)</span>. The first stage assigns <span class="math inline">\(\widehat A_i=\bar A_z\)</span> to each person with <span class="math inline">\(Z_i=z\)</span>. The second-stage slope is therefore</p>
+<p><span class="math display">\[
+\widehat\beta_1
+=\frac{\bar Y_1-\bar Y_0}{\bar A_1-\bar A_0}.
+\]</span></p>
+<p>For the trial table, this gives <span class="math inline">\((4/9-1/2)/(1/3-1/2)=1/3\)</span>, just as before. This equality of the point estimates is algebraic. Whether we interpret the estimate as an ATT or a complier effect depends on the causal assumptions.</p>
+</section>
+<section id="two-stage-regression" class="level3">
+<h3 class="anchored" data-anchor-id="two-stage-regression">Two-stage regression</h3>
+<p>Two-stage least squares extends to multiple instruments, measured covariates, and continuous treatment. Let <span class="math inline">\(Z\)</span> now be a vector of instruments, <span class="math inline">\(X\)</span> a vector of measured covariates, and <span class="math inline">\(A\)</span> a scalar treatment.</p>
+<p>The procedure is similar, but include <span class="math inline">\(X\)</span> in both stages.</p>
+<p><strong>Stage 1.</strong> Regress <span class="math inline">\(A\)</span> on <span class="math inline">\(Z\)</span> and <span class="math inline">\(X\)</span>:</p>
+<p><span class="math display">\[
+E[A\mid X,Z]=\alpha_0+\alpha_1^{\mathsf T}Z+\alpha_2^{\mathsf T}X.
+\]</span></p>
+<p>Use the fitted regression to calculate each person’s predicted treatment:</p>
+<p><span class="math display">\[
+\widehat A_i
+=\widehat\alpha_0+\widehat\alpha_1^{\mathsf T}Z_i
++\widehat\alpha_2^{\mathsf T}X_i.
+\]</span></p>
+<p><strong>Stage 2.</strong> Regress <span class="math inline">\(Y\)</span> on <span class="math inline">\(\widehat A\)</span> and <span class="math inline">\(X\)</span>. The coefficient on <span class="math inline">\(\widehat A\)</span> is the two-stage least-squares estimate <span class="math inline">\(\widehat\beta_1\)</span>. An IV fitting routine also computes the appropriate standard errors for this estimator.</p>
+<p>The causal interpretation requires more than the two regression fits. For example, suppose the first-stage mean above is correctly specified and the outcome follows the structural model</p>
+<p><span class="math display">\[
+Y(a)=\beta_0+\beta_1a+\beta_2^{\mathsf T}X+R,
+\]</span></p>
+<p>where <span class="math inline">\(E[R\mid X,Z]=0\)</span>. Here <span class="math inline">\(R\)</span> can contain unmeasured causes of treatment and outcome, so it can be associated with <span class="math inline">\(A\)</span>. The model assumes that changing treatment by one unit adds <span class="math inline">\(\beta_1\)</span> to the outcome, regardless of <span class="math inline">\(X\)</span> or <span class="math inline">\(R\)</span>.</p>
+<p>By consistency,</p>
+<p><span class="math display">\[
+Y=\beta_0+\beta_1A+\beta_2^{\mathsf T}X+R.
+\]</span></p>
+<p>Taking conditional expectations gives</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[Y\mid X,Z]
+&amp;=\beta_0+\beta_1E[A\mid X,Z]
+  +\beta_2^{\mathsf T}X+E[R\mid X,Z]\\
+&amp;=\beta_0+\beta_1E[A\mid X,Z]+\beta_2^{\mathsf T}X.
+\end{aligned}
+\]</span></p>
+<p>This is the relation used by the second stage. The instruments must predict treatment beyond what <span class="math inline">\(X\)</span> predicts, so their contribution lets us separate the treatment coefficient from the covariate coefficients.</p>
+<p>Under this structural model, the causal contrast is</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[Y(a)-Y(0)\mid X]
+&amp;=E[\beta_1a\mid X]\\
+&amp;=\beta_1a.
+\end{aligned}
+\]</span></p>
+<p>The coefficient has a causal interpretation because of the structural and instrument assumptions. Two-stage regression estimates that coefficient; fitting two regressions does not establish those assumptions.</p>
+</section>
+<section id="nonlinear-regression" class="level3">
+<h3 class="anchored" data-anchor-id="nonlinear-regression">Nonlinear regression</h3>
+<p>The derivation above uses a linear outcome relation. For a nonlinear outcome model, replacing treatment with its first-stage prediction generally changes the argument. Terza, Basu, and Rathouz compare that approach with including first-stage residuals in the outcome model, a control-function approach we will return to later <span class="citation" data-cites="terza2008residual">(<a href="references.html#ref-terza2008residual" role="doc-biblioref">Terza et al. 2008</a>)</span>.</p>
+</section>
+</section>
+<section id="justifying-an-instrument-is-difficult" class="level2">
+<h2 class="anchored" data-anchor-id="justifying-an-instrument-is-difficult">Justifying an instrument is difficult</h2>
+<p>Before using any of these methods, we have to justify the instrument. This is often the hardest part of the analysis. A variable can have an appealing name—random assignment, prescribing preference, genetic variant—and still fail the assumptions needed for the question we are asking.</p>
+<p>There are useful checks. We can examine whether <span class="math inline">\(Z\)</span> is associated with <span class="math inline">\(A\)</span> given <span class="math inline">\(X\)</span> and how much treatment variation it explains. We can compare measured pretreatment characteristics across instrument values. We can also look for associations with outcomes that the treatment cannot plausibly affect. These checks can expose problems. Passing them does not establish the absence of unmeasured common causes or alternative routes from <span class="math inline">\(Z\)</span> to <span class="math inline">\(Y\)</span>.</p>
+<p>Unverifiable assumptions are not unusual in causal inference. What worries me is how badly an analysis can mislead us when we treat an instrument as a guarantee. An invalid instrument can give a confident answer to the wrong scientific question. A weak instrument can also produce a badly behaved estimate even when the sample looks large. These problems show up in real data.</p>
+<section id="education-earnings-and-weak-instruments" class="level3">
+<h3 class="anchored" data-anchor-id="education-earnings-and-weak-instruments">Education, earnings, and weak instruments</h3>
+<p>Quarter of birth has been used as an instrument for years of education. The proposed mechanism combines school-entry rules with compulsory-schooling laws: birth timing can affect how much schooling someone completes before being allowed to leave. The outcome is later earnings.</p>
+<p>Bound, Jaeger, and Baker reexamined this application using U.S. Census data. They found that weak relationships between the instruments and schooling could produce substantial finite-sample bias despite the large sample. They also showed how weak instruments can magnify small violations of the instrument assumptions <span class="citation" data-cites="bound1995weak">(<a href="references.html#ref-bound1995weak" role="doc-biblioref">Bound et al. 1995</a>)</span>. Birth timing and school rules provide a story for why the instrument predicts schooling; that story does not protect the resulting estimate from these problems.</p>
+</section>
+<section id="schooling-body-size-and-inherited-characteristics" class="level3">
+<h3 class="anchored" data-anchor-id="schooling-body-size-and-inherited-characteristics">Schooling, body size, and inherited characteristics</h3>
+<p>Sanderson and colleagues deliberately applied genetic instruments to negative control outcomes in UK Biobank. Their analyses produced apparent effects of years of schooling on natural hair colour and tanning ability, and of body mass index on tanning ability. Schooling does not change the hair colour someone inherited. The authors used these results to reveal possible bias from genetic ancestry and related structure in the data <span class="citation" data-cites="sanderson2021negative">(<a href="references.html#ref-sanderson2021negative" role="doc-biblioref">Sanderson et al. 2021</a>)</span>.</p>
+<p>The mechanism matters: genetic ancestry can influence the frequencies of the variants used as instruments, inherited pigmentation, and the social or environmental factors associated with schooling or body size. The genetic variants can therefore carry associations that do not represent the causal effect of the exposure. Several commonly used sensitivity methods also retained these apparent effects. Running more instrumental-variable methods did not make the causal story correct.</p>
+</section>
+<section id="prescribing-preference-and-exaggerated-clinical-effects" class="level3">
+<h3 class="anchored" data-anchor-id="prescribing-preference-and-exaggerated-clinical-effects">Prescribing preference and exaggerated clinical effects</h3>
+<p>Boef and colleagues used routine-care data from 476 cardiac-surgery patients to study preoperative corticosteroids, using physician preference as the instrument. The outcomes included ventilation time, lengths of stay, and postoperative complications. The estimated effects were in the same direction as a large randomized trial, but were much larger and had very wide confidence intervals <span class="citation" data-cites="boef2014preference">(<a href="references.html#ref-boef2014preference" role="doc-biblioref">Boef et al. 2014</a>)</span>.</p>
+<p>Here the authors identified a practical failure of precision even with a strong, plausible instrument. A dramatic point estimate is easy to turn into a dramatic clinical claim; the data may support much less certainty. Instrument strength, instrument validity, and useful precision are separate issues.</p>
+<div class="main-point">
+<p>Finding a variable related to treatment is easy compared with justifying an instrument. We need a credible account of how it was generated and every way it could affect the outcome. The label “instrumental variable” does not protect a scientific conclusion from bad assumptions.</p>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-boef2014preference" class="csl-entry" role="listitem">
+Boef, Anna G. C., Judith van Paassen, M. Sesmu Arbous, et al. 2014. <span>“Physician’s Preference-Based Instrumental Variable Analysis: Is It Valid and Useful in a Moderate-Sized Study?”</span> <em>Epidemiology</em> 25 (6): 923–27. <a href="https://doi.org/10.1097/EDE.0000000000000151">https://doi.org/10.1097/EDE.0000000000000151</a>.
+</div>
+<div id="ref-bound1995weak" class="csl-entry" role="listitem">
+Bound, John, David A. Jaeger, and Regina M. Baker. 1995. <span>“Problems with Instrumental Variables Estimation When the Correlation Between the Instruments and the Endogenous Explanatory Variable Is Weak.”</span> <em>Journal of the American Statistical Association</em> 90 (430): 443–50. <a href="https://doi.org/10.1080/01621459.1995.10476536">https://doi.org/10.1080/01621459.1995.10476536</a>.
+</div>
+<div id="ref-frikkeschmidt2008abca1" class="csl-entry" role="listitem">
+Frikke-Schmidt, Ruth, Børge G. Nordestgaard, Maria C. A. Stene, et al. 2008. <span>“Association of Loss-of-Function Mutations in the <span>ABCA1</span> Gene with High-Density Lipoprotein Cholesterol Levels and Risk of Ischemic Heart Disease.”</span> <em>JAMA</em> 299 (21): 2524–32. <a href="https://doi.org/10.1001/jama.299.21.2524">https://doi.org/10.1001/jama.299.21.2524</a>.
+</div>
+<div id="ref-imbensangrist1994late" class="csl-entry" role="listitem">
+Imbens, Guido W., and Joshua D. Angrist. 1994. <span>“Identification and Estimation of Local Average Treatment Effects.”</span> <em>Econometrica</em> 62 (2): 467–75. <a href="https://doi.org/10.2307/2951620">https://doi.org/10.2307/2951620</a>.
+</div>
+<div id="ref-sanderson2021negative" class="csl-entry" role="listitem">
+Sanderson, Eleanor, Tom G. Richardson, Gibran Hemani, and George Davey Smith. 2021. <span>“The Use of Negative Control Outcomes in <span>Mendelian</span> Randomization to Detect Potential Population Stratification.”</span> <em>International Journal of Epidemiology</em> 50 (4): 1350–61. <a href="https://doi.org/10.1093/ije/dyaa288">https://doi.org/10.1093/ije/dyaa288</a>.
+</div>
+<div id="ref-terza2008residual" class="csl-entry" role="listitem">
+Terza, Joseph V., Anirban Basu, and Paul J. Rathouz. 2008. <span>“Two-Stage Residual Inclusion Estimation: Addressing Endogeneity in Health Econometric Modeling.”</span> <em>Journal of Health Economics</em> 27 (3): 531–43. <a href="https://doi.org/10.1016/j.jhealeco.2007.09.009">https://doi.org/10.1016/j.jhealeco.2007.09.009</a>.
+</div>
+</div>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((element) => {
+    new bootstrap.Tooltip(element, {
+      placement: "top",
+      trigger: "hover focus"
+    });
+  });
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./04a-unmeasured-confounding.html" class="pagination-link" aria-label="Unmeasured confounding">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Unmeasured confounding</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./04c-regression-discontinuity.html" class="pagination-link" aria-label="Regression discontinuity">
+        <span class="nav-page-text"><span class="chapter-title">Regression discontinuity</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

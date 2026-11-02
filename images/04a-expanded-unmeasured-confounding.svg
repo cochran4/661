@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 740" width="1000" height="740" role="img" aria-labelledby="title"><title id="title">Expanded causal graph with the U, A, Y triangle highlighted</title><defs>
+<marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#718174" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker>
+<marker id="core-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#A5425E" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker>
+</defs><path d="M500 100 L300 400 L700 400 Z" fill="#A5425E" fill-opacity="0.07"/>
+<path d="M 458.0,100.0 L 198.0,100.0" fill="none" stroke="#718174" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M 542.0,100.0 L 802.0,100.0" fill="none" stroke="#718174" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M 473.8,617.2 L 330.0,437.5" fill="none" stroke="#718174" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M 526.2,617.2 L 670.0,437.5" fill="none" stroke="#718174" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M 122.0,400.0 L 252.0,400.0" fill="none" stroke="#718174" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M 476.7,134.9 L 326.6,360.1" fill="none" stroke="#A5425E" stroke-width="3.3" marker-end="url(#core-arrow)"/>
+<path d="M 523.3,134.9 L 673.4,360.1" fill="none" stroke="#A5425E" stroke-width="3.3" marker-end="url(#core-arrow)"/>
+<path d="M 342.0,400.0 L 652.0,400.0" fill="none" stroke="#A5425E" stroke-width="3.3" marker-end="url(#core-arrow)"/>
+<circle cx="500" cy="100" r="40" fill="#F9ECEF" stroke="#A5425E" stroke-width="2" stroke-dasharray="6 4"/><text x="500" y="100" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="28" fill="#A5425E">U</text>
+<circle cx="300" cy="400" r="40" fill="#F9ECEF" stroke="#A5425E" stroke-width="2"/><text x="300" y="400" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="28" fill="#A5425E">A</text>
+<circle cx="700" cy="400" r="40" fill="#F9ECEF" stroke="#A5425E" stroke-width="2"/><text x="700" y="400" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="28" fill="#A5425E">Y</text>
+<circle cx="150" cy="100" r="40" fill="#E6EEDF" stroke="#315C43" stroke-width="2"/><text x="150" y="100" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="28" fill="#315C43">N</text>
+<circle cx="850" cy="100" r="40" fill="#E6EEDF" stroke="#315C43" stroke-width="2"/><text x="850" y="100" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="28" fill="#315C43">W</text>
+<circle cx="80" cy="400" r="40" fill="#E6EEDF" stroke="#315C43" stroke-width="2"/><text x="80" y="400" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="28" fill="#315C43">Z</text>
+<circle cx="500" cy="650" r="40" fill="#E6EEDF" stroke="#315C43" stroke-width="2"/><text x="500" y="650" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="28" fill="#315C43">X</text>
+</svg>
