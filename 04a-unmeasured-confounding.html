@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.10.20">
+<meta name="generator" content="quarto-1.11.9">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -58,14 +58,15 @@ div.csl-indent {
 <link href="./03-exercises.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-6f0fedc4ee850e54f211b38f75226697.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-ba9040e57dc60d9cb57624e8e56c0bcb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -125,19 +126,18 @@ window.Quarto = {
 
 </head>
 
-<body class="nav-sidebar floating nav-fixed fullcontent quarto-light">
+<body class="nav-sidebar floating nav-fixed fullcontent quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Causal inference (and other things)</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
@@ -289,15 +289,16 @@ window.Quarto = {
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
 </div>
+            <div id="quarto-search" class="" title="Search"></div>
       </div> <!-- /container-fluid -->
     </nav>
-  <nav class="quarto-secondary-nav">
+  <nav class="quarto-secondary-nav" aria-label="Toolbar">
     <div class="container-fluid d-flex">
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04a-unmeasured-confounding.html">Unmeasured confounding</a></li><li class="breadcrumb-item"><a href="./04a-unmeasured-confounding.html"><span class="chapter-title">Unmeasured confounding</span></a></li></ol></nav>
-        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04a-unmeasured-confounding.html">Unmeasured confounding</a></li><li class="breadcrumb-item"><a href="./04a-unmeasured-confounding.html"><span class="chapter-title">Unmeasured confounding</span></a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
   </nav>
@@ -305,7 +306,7 @@ window.Quarto = {
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="Section">
     <div class="sidebar-menu-container"> 
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
@@ -320,13 +321,10 @@ window.Quarto = {
 </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Motivation</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-controls="quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-1-label">Motivation</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
-      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./01a-being-a-detective.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Being a detective with data</span></a>
@@ -356,13 +354,10 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
- <span class="menu-text">Construction</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-controls="quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-2-label">Construction</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-2" aria-labelledby="quarto-sidebar-section-2-label" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./02a-assignments.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">A list of assignments</span></a>
@@ -402,13 +397,10 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">Measured confounding</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-controls="quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-3-label">Measured confounding</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-3" aria-labelledby="quarto-sidebar-section-3-label" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./03a-outcome-regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Outcome regression</span></a>
@@ -443,13 +435,10 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
- <span class="menu-text">Unmeasured confounding</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-controls="quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-4-label">Unmeasured confounding</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-4" aria-labelledby="quarto-sidebar-section-4-label" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./04a-unmeasured-confounding.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Unmeasured confounding</span></a>
@@ -491,13 +480,10 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
- <span class="menu-text">Back matter</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-controls="quarto-sidebar-section-8" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-8-label">Back matter</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-8" aria-labelledby="quarto-sidebar-section-8-label" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./glossary.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Glossary</span></a>
@@ -517,9 +503,9 @@ window.Quarto = {
 <!-- margin-sidebar -->
     
 <!-- main -->
-<main class="content" id="quarto-document-content">
+<main class="content" id="quarto-document-content" tabindex="-1">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04a-unmeasured-confounding.html">Unmeasured confounding</a></li><li class="breadcrumb-item"><a href="./04a-unmeasured-confounding.html"><span class="chapter-title">Unmeasured confounding</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04a-unmeasured-confounding.html">Unmeasured confounding</a></li><li class="breadcrumb-item"><a href="./04a-unmeasured-confounding.html"><span class="chapter-title">Unmeasured confounding</span></a></li></ol></nav>
 <div class="quarto-title">
 <h1 class="title"><span class="chapter-title">Unmeasured confounding</span></h1>
 </div>
@@ -620,25 +606,38 @@ P(Y=1\mid A=0)=\frac{0.10}{0.50}=0.20.
 <p>The observed risk is much higher among people who stay indoors. The question is how much of that difference is caused by staying indoors. Let’s build two different worlds that both produce this table.</p>
 <section id="two-worlds" class="level3">
 <h3 class="anchored" data-anchor-id="two-worlds">Two worlds</h3>
-<p>Each world is an SCM. We describe each one in words, and then draw it as a probability tree so we can compute with it.</p>
-<p><strong>Case 1. Staying indoors increases the risk of an exacerbation.</strong> In this world, <span class="math inline">\(U\)</span> has no influence. Half of people stay indoors, and they do so for reasons unrelated to anything else about them. Someone who goes outside has a <span class="math inline">\(0.20\)</span> risk of an exacerbation. Staying indoors raises that risk to <span class="math inline">\(0.80\)</span>.</p>
-<p><strong>Case 2. The difference comes from underlying asthma severity.</strong> In this world, <span class="math inline">\(U=1\)</span> means severe asthma and <span class="math inline">\(U=0\)</span> means mild asthma, and half of people have severe asthma. People with severe asthma stay indoors, and people with mild asthma do not. The risk of an exacerbation is <span class="math inline">\(0.20\)</span> for mild asthma and <span class="math inline">\(0.80\)</span> for severe asthma, whether or not the person stays indoors. Staying indoors does nothing.</p>
+<p>Each world is an SCM. We use Bernoulli assignments to make the data-generating steps explicit. Each random assignment uses its own independent noise; the displayed probabilities determine how the variables depend on one another.</p>
+<p><strong>Case 1. Staying indoors increases the risk of an exacerbation.</strong> In this world, <span class="math inline">\(U\)</span> has no influence. Half of people stay indoors, independently of <span class="math inline">\(U\)</span>. Someone who goes outside has a <span class="math inline">\(0.20\)</span> risk of an exacerbation, while someone who stays indoors has a <span class="math inline">\(0.80\)</span> risk. The SCM is</p>
+<p><span class="math display">\[
+\begin{aligned}
+U&amp;\leftarrow f_U(\epsilon_U),\\
+A&amp;\leftarrow \operatorname{Bernoulli}(0.50),\\
+Y&amp;\leftarrow \operatorname{Bernoulli}(0.20+0.60A).
+\end{aligned}
+\]</span></p>
+<p>The noise used for each Bernoulli assignment is independent of <span class="math inline">\(\epsilon_U\)</span> and of the noise used for the other assignment.</p>
+<p><strong>Case 2. The difference comes from underlying asthma severity.</strong> Here <span class="math inline">\(U=1\)</span> means severe asthma and <span class="math inline">\(U=0\)</span> means mild asthma. Half have severe asthma. People with severe asthma stay indoors, while people with mild asthma do not. The risk of an exacerbation depends on severity, and staying indoors itself has no effect. The SCM is</p>
+<p><span class="math display">\[
+\begin{aligned}
+U&amp;\leftarrow \operatorname{Bernoulli}(0.50),\\
+A&amp;\leftarrow U,\\
+Y&amp;\leftarrow \operatorname{Bernoulli}(0.20+0.60U).
+\end{aligned}
+\]</span></p>
+<p>The two Bernoulli assignments use independent noise terms.</p>
 <p>Both worlds satisfy our causal assumptions. Those assumptions let <span class="math inline">\(U\)</span> influence <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span>, and let <span class="math inline">\(A\)</span> influence <span class="math inline">\(Y\)</span>, but they do not require any of these influences to be present. An assignment is allowed to ignore a parent. In Case 1, <span class="math inline">\(U\)</span> is ignored. In Case 2, the outcome ignores <span class="math inline">\(A\)</span>.</p>
 </section>
-<section id="reading-the-probability-trees" class="level3">
-<h3 class="anchored" data-anchor-id="reading-the-probability-trees">Reading the probability trees</h3>
-<p>For visual purposes, we draw each world as a probability tree. Each split is a variable, in the order the world generates them. Each branch is labeled with the probability of that value given the branches before it. A path from left to right is one complete way the world could unfold. <strong>Multiplying the probabilities along a path gives the joint probability of everything on it.</strong> To get a probability about the variables we observe, we add up the paths that match.</p>
-<p><strong>Case 1.</strong> Since <span class="math inline">\(U\)</span> affects neither <span class="math inline">\(A\)</span> nor <span class="math inline">\(Y\)</span>, we leave it out of the tree. The first split is <span class="math inline">\(A\)</span>, with branch probabilities <span class="math inline">\(P(A=a)\)</span>. The second split is <span class="math inline">\(Y\)</span>, with branch probabilities <span class="math inline">\(P(Y=y\mid A=a)\)</span>.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/04a-case-1-probability-tree.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Case 1 probability tree. Both A branches have probability 0.50. The probability of Y=1 is 0.80 for A=1 and 0.20 for A=0." width="800"></p>
-</figure>
-</div>
-<p>Each observed outcome is a single path, so each joint probability is one product. For instance,</p>
+<section id="the-observed-probabilities" class="level3">
+<h3 class="anchored" data-anchor-id="the-observed-probabilities">The observed probabilities</h3>
+<p>In Case 1, the assignments give <span class="math inline">\(P(A=1)=0.50\)</span> and</p>
 <p><span class="math display">\[
-P(A=1,Y=1)=P(A=1)P(Y=1\mid A=1)=0.50(0.80)=0.40.
+P(Y=1\mid A=a)=0.20+0.60a.
 \]</span></p>
-<p>The four joint probabilities are</p>
+<p>In Case 2, <span class="math inline">\(A=U\)</span> and <span class="math inline">\(P(U=1)=0.50\)</span>, so <span class="math inline">\(P(A=1)=0.50\)</span>. Conditioning on <span class="math inline">\(A=a\)</span> fixes <span class="math inline">\(U=a\)</span>, giving</p>
+<p><span class="math display">\[
+P(Y=1\mid A=a)=0.20+0.60a.
+\]</span></p>
+<p>Thus both SCMs give the following joint probabilities:</p>
 <p><span class="math display">\[
 \begin{aligned}
 P(A=0,Y=0)&amp;=0.50(0.80)=0.40,\\
@@ -647,46 +646,44 @@ P(A=1,Y=0)&amp;=0.50(0.20)=0.10,\\
 P(A=1,Y=1)&amp;=0.50(0.80)=0.40.
 \end{aligned}
 \]</span></p>
-<p><strong>Case 2.</strong> This tree has three splits, <span class="math inline">\(U\)</span>, then <span class="math inline">\(A\)</span>, then <span class="math inline">\(Y\)</span>. The branch probabilities are <span class="math inline">\(P(U=u)\)</span>, <span class="math inline">\(P(A=a\mid U=u)\)</span>, and <span class="math inline">\(P(Y=y\mid U=u,A=a)\)</span>. Because people with severe asthma always stay indoors and people with mild asthma never do, <span class="math inline">\(A=U\)</span>. The branch to <span class="math inline">\(A=1\)</span> has probability one when <span class="math inline">\(U=1\)</span> and probability zero when <span class="math inline">\(U=0\)</span>. Branches with probability zero stop at <span class="math inline">\(A\)</span>, since they add nothing to any probability.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/04a-case-2-probability-tree.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Case 2 probability tree. Both U branches have probability 0.50. U=1 leads to A=1 with probability one and an exacerbation risk of 0.80. U=0 leads to A=0 with probability one and an exacerbation risk of 0.20. Treatment branches with probability zero stop." width="950"></p>
-</figure>
-</div>
-<p>We never observe <span class="math inline">\(U\)</span>, so to get a probability about <span class="math inline">\(A\)</span> and <span class="math inline">\(Y\)</span> we add over the values of <span class="math inline">\(U\)</span>. For instance,</p>
-<p><span class="math display">\[
-\begin{aligned}
-P(A=1,Y=1)&amp;=0.50(0)(0.20)+0.50(1)(0.80)\\
-&amp;=0.40.
-\end{aligned}
-\]</span></p>
-<p>The first term is the path through <span class="math inline">\(U=0\)</span>, which has probability zero. The second is the path through <span class="math inline">\(U=1\)</span>. Doing the same for each cell gives</p>
-<p><span class="math display">\[
-\begin{aligned}
-P(A=0,Y=0)&amp;=0.50(1)(0.80)=0.40,\\
-P(A=0,Y=1)&amp;=0.50(1)(0.20)=0.10,\\
-P(A=1,Y=0)&amp;=0.50(1)(0.20)=0.10,\\
-P(A=1,Y=1)&amp;=0.50(1)(0.80)=0.40.
-\end{aligned}
-\]</span></p>
 <p><strong>Both SCMs reproduce exactly the observed table above.</strong> Two worlds with very different causal structures look identical in the data.</p>
 </section>
 <section id="the-causal-effect-in-each-world" class="level3">
 <h3 class="anchored" data-anchor-id="the-causal-effect-in-each-world">The causal effect in each world</h3>
-<p>Now we ask what would happen if we set everyone’s treatment to <span class="math inline">\(a\)</span>. The potential outcome <span class="math inline">\(Y(a)\)</span> is a person’s outcome under that intervention, and <span class="math inline">\(E[Y(a)]\)</span> is the risk of an exacerbation if everyone received <span class="math inline">\(a\)</span>.</p>
-<p><strong>Case 1.</strong> Setting <span class="math inline">\(A\)</span> to <span class="math inline">\(a\)</span> means everyone gets the risk that goes with <span class="math inline">\(a\)</span>. Going outside gives <span class="math inline">\(0.20\)</span>, and staying indoors gives <span class="math inline">\(0.80\)</span>. So</p>
+<p>Now we ask what would happen if we set treatment to <span class="math inline">\(a\)</span>.</p>
+<p><strong>Case 1.</strong> The outcome assignment uses <span class="math inline">\(A\)</span>. Substituting <span class="math inline">\(a\)</span> gives</p>
 <p><span class="math display">\[
-E[Y(1)]=0.80, \qquad E[Y(0)]=0.20.
+Y(a)\leftarrow\operatorname{Bernoulli}(0.20+0.60a).
 \]</span></p>
-<p>These equal the observed risks <span class="math inline">\(P(Y=1\mid A=1)\)</span> and <span class="math inline">\(P(Y=1\mid A=0)\)</span>, because there is no unmeasured confounding here. The average treatment effect is</p>
+<p>The expectation of a Bernoulli variable is its success probability, so</p>
+<p><span class="math display">\[
+E[Y(a)]=0.20+0.60a.
+\]</span></p>
+<p>In particular,</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[Y(1)]&amp;=P(Y=1\mid A=1)=0.80,\\
+E[Y(0)]&amp;=P(Y=1\mid A=0)=0.20.
+\end{aligned}
+\]</span></p>
+<p>The average treatment effect is</p>
 <p><span class="math display">\[
 E[Y(1)]-E[Y(0)]=0.80-0.20=0.60.
 \]</span></p>
-<p><strong>Case 2.</strong> Setting <span class="math inline">\(A\)</span> to <span class="math inline">\(a\)</span> does not change anyone’s asthma severity, and the outcome depends only on severity. So whether we send everyone indoors or everyone outside, half the population still has mild asthma with a <span class="math inline">\(0.20\)</span> risk and half still has severe asthma with a <span class="math inline">\(0.80\)</span> risk. For either value of <span class="math inline">\(a\)</span>,</p>
+<p><strong>Case 2.</strong> The outcome assignment uses <span class="math inline">\(U\)</span>, not <span class="math inline">\(A\)</span>. An intervention on treatment leaves severity unchanged, so</p>
 <p><span class="math display">\[
-E[Y(a)]=0.50(0.20)+0.50(0.80)=0.50.
+Y(a)\leftarrow\operatorname{Bernoulli}(0.20+0.60U).
 \]</span></p>
-<p>So <span class="math inline">\(E[Y(1)]=E[Y(0)]=0.50\)</span>, and the average treatment effect is <span class="math inline">\(0.50-0.50=0\)</span>.</p>
+<p>For any <span class="math inline">\(a\)</span>, we average over the two severity groups:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[Y(a)]
+&amp;=E[E[Y(a)\mid U]]\\
+&amp;=0.50(0.20)+0.50(0.80)\\
+&amp;=0.50.
+\end{aligned}
+\]</span></p>
+<p>Thus <span class="math inline">\(E[Y(1)]=E[Y(0)]=0.50\)</span>, and the average treatment effect is zero.</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -789,7 +786,7 @@ E[Y(1)]-E[Y(0)]=E[Y]-E[Y]=0.
 <div class="main-point">
 <p>Our SCM alone is not going to save us. As long as this unmeasured confounding remains, adding more measured variables to the graph will not save us either. We need something more to get past non-identification.</p>
 </div>
-<div class="callout callout-style-default callout-note callout-titled" title="Optional technical note: Pearl's general non-identification result">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
@@ -904,7 +901,8 @@ document.addEventListener("DOMContentLoaded", () => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
       // Inspect non-navigation links and adorn them if external
-     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
       for (var i=0; i<links.length; i++) {
         const link = links[i];
         if (!isInternal(link.href)) {
@@ -913,8 +911,69 @@ document.addEventListener("DOMContentLoaded", () => {
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
+          if (!link.classList.contains('no-external-icon')) {
+          }
         }
       }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
       const config = {
         allowHTML: true,
@@ -928,6 +987,7 @@ document.addEventListener("DOMContentLoaded", () => {
         interactiveBorder: 10,
         theme: 'quarto',
         placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
       };
       if (contentFn) {
         config.content = contentFn;
@@ -1090,44 +1150,54 @@ document.addEventListener("DOMContentLoaded", () => {
           const lineIds = lines.map((line) => {
             return targetCell + "-" + line;
           })
-          let top = null;
-          let height = null;
-          let parent = null;
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
           if (lineIds.length > 0) {
-              //compute the position of the single el (top and bottom and make a div)
-              const el = window.document.getElementById(lineIds[0]);
-              top = el.offsetTop;
-              height = el.offsetHeight;
-              parent = el.parentElement.parentElement;
-            if (lineIds.length > 1) {
-              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
-              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
-              height = bottom - top;
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
             }
-            if (top !== null && height !== null && parent !== null) {
-              // cook up a div (if necessary) and position it 
-              let div = window.document.getElementById("code-annotation-line-highlight");
-              if (div === null) {
-                div = window.document.createElement("div");
-                div.setAttribute("id", "code-annotation-line-highlight");
-                div.style.position = 'absolute';
-                parent.appendChild(div);
-              }
-              div.style.top = top - 2 + "px";
-              div.style.height = height + 4 + "px";
-              div.style.left = 0;
-              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
-              if (gutterDiv === null) {
-                gutterDiv = window.document.createElement("div");
-                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
-                gutterDiv.style.position = 'absolute';
-                const codeCell = window.document.getElementById(targetCell);
-                const gutter = codeCell.querySelector('.code-annotation-gutter');
-                gutter.appendChild(gutterDiv);
-              }
-              gutterDiv.style.top = top - 2 + "px";
-              gutterDiv.style.height = height + 4 + "px";
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
             }
+            placeBand(gutterDiv, el, lastEl);
             selectedAnnoteEl = annoteEl;
           }
         };
@@ -1226,7 +1296,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
   </script>
-<nav class="page-navigation">
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script>
+<nav class="page-navigation" aria-label="Page">
   <div class="nav-page nav-page-previous">
       <a href="./03-exercises.html" class="pagination-link" aria-label="Exercises">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Exercises</span></span>
