@@ -1,14 +1,16 @@
 ---
 title: "Exercises"
+filters:
+  - _filters/solutions.lua
 ---
 
 ## Nonidentification
 
-*[Placeholder: Exercises to be written.]*
+{{< include _exercises/04a-unmeasured-confounding.qmd >}}
 
 ## Instrumental variables
 
-*[Placeholder: Exercises to be written.]*
+{{< include _exercises/04b-instrumental-variables.qmd >}}
 
 ## Regression discontinuity
 

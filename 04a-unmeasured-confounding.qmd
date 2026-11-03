@@ -78,29 +78,49 @@ The observed risk is much higher among people who stay indoors. The question is 
 
 ### Two worlds
 
-Each world is an SCM. We describe each one in words, and then draw it as a probability tree so we can compute with it.
+Each world is an SCM. We use Bernoulli assignments to make the data-generating steps explicit. Each random assignment uses its own independent noise; the displayed probabilities determine how the variables depend on one another.
 
-**Case 1. Staying indoors increases the risk of an exacerbation.** In this world, $U$ has no influence. Half of people stay indoors, and they do so for reasons unrelated to anything else about them. Someone who goes outside has a $0.20$ risk of an exacerbation. Staying indoors raises that risk to $0.80$.
+**Case 1. Staying indoors increases the risk of an exacerbation.** In this world, $U$ has no influence. Half of people stay indoors, independently of $U$. Someone who goes outside has a $0.20$ risk of an exacerbation, while someone who stays indoors has a $0.80$ risk. The SCM is
 
-**Case 2. The difference comes from underlying asthma severity.** In this world, $U=1$ means severe asthma and $U=0$ means mild asthma, and half of people have severe asthma. People with severe asthma stay indoors, and people with mild asthma do not. The risk of an exacerbation is $0.20$ for mild asthma and $0.80$ for severe asthma, whether or not the person stays indoors. Staying indoors does nothing.
+$$
+\begin{aligned}
+U&\leftarrow f_U(\epsilon_U),\\
+A&\leftarrow \operatorname{Bernoulli}(0.50),\\
+Y&\leftarrow \operatorname{Bernoulli}(0.20+0.60A).
+\end{aligned}
+$$
+
+The noise used for each Bernoulli assignment is independent of $\epsilon_U$ and of the noise used for the other assignment.
+
+**Case 2. The difference comes from underlying asthma severity.** Here $U=1$ means severe asthma and $U=0$ means mild asthma. Half have severe asthma. People with severe asthma stay indoors, while people with mild asthma do not. The risk of an exacerbation depends on severity, and staying indoors itself has no effect. The SCM is
+
+$$
+\begin{aligned}
+U&\leftarrow \operatorname{Bernoulli}(0.50),\\
+A&\leftarrow U,\\
+Y&\leftarrow \operatorname{Bernoulli}(0.20+0.60U).
+\end{aligned}
+$$
+
+The two Bernoulli assignments use independent noise terms.
 
 Both worlds satisfy our causal assumptions. Those assumptions let $U$ influence $A$ and $Y$, and let $A$ influence $Y$, but they do not require any of these influences to be present. An assignment is allowed to ignore a parent. In Case 1, $U$ is ignored. In Case 2, the outcome ignores $A$.
 
-### Reading the probability trees
+### The observed probabilities
 
-For visual purposes, we draw each world as a probability tree. Each split is a variable, in the order the world generates them. Each branch is labeled with the probability of that value given the branches before it. A path from left to right is one complete way the world could unfold. **Multiplying the probabilities along a path gives the joint probability of everything on it.** To get a probability about the variables we observe, we add up the paths that match.
-
-**Case 1.** Since $U$ affects neither $A$ nor $Y$, we leave it out of the tree. The first split is $A$, with branch probabilities $P(A=a)$. The second split is $Y$, with branch probabilities $P(Y=y\mid A=a)$.
-
-![](images/04a-case-1-probability-tree.svg){width=800 fig-align="center" fig-alt="Case 1 probability tree. Both A branches have probability 0.50. The probability of Y=1 is 0.80 for A=1 and 0.20 for A=0."}
-
-Each observed outcome is a single path, so each joint probability is one product. For instance,
+In Case 1, the assignments give $P(A=1)=0.50$ and
 
 $$
-P(A=1,Y=1)=P(A=1)P(Y=1\mid A=1)=0.50(0.80)=0.40.
+P(Y=1\mid A=a)=0.20+0.60a.
 $$
 
-The four joint probabilities are
+In Case 2, $A=U$ and $P(U=1)=0.50$, so $P(A=1)=0.50$. Conditioning on $A=a$ fixes $U=a$, giving
+
+$$
+P(Y=1\mid A=a)=0.20+0.60a.
+$$
+
+Thus both SCMs give the following joint probabilities:
 
 $$
 \begin{aligned}
@@ -111,55 +131,57 @@ P(A=1,Y=1)&=0.50(0.80)=0.40.
 \end{aligned}
 $$
 
-**Case 2.** This tree has three splits, $U$, then $A$, then $Y$. The branch probabilities are $P(U=u)$, $P(A=a\mid U=u)$, and $P(Y=y\mid U=u,A=a)$. Because people with severe asthma always stay indoors and people with mild asthma never do, $A=U$. The branch to $A=1$ has probability one when $U=1$ and probability zero when $U=0$. Branches with probability zero stop at $A$, since they add nothing to any probability.
-
-![](images/04a-case-2-probability-tree.svg){width=950 fig-align="center" fig-alt="Case 2 probability tree. Both U branches have probability 0.50. U=1 leads to A=1 with probability one and an exacerbation risk of 0.80. U=0 leads to A=0 with probability one and an exacerbation risk of 0.20. Treatment branches with probability zero stop."}
-
-We never observe $U$, so to get a probability about $A$ and $Y$ we add over the values of $U$. For instance,
-
-$$
-\begin{aligned}
-P(A=1,Y=1)&=0.50(0)(0.20)+0.50(1)(0.80)\\
-&=0.40.
-\end{aligned}
-$$
-
-The first term is the path through $U=0$, which has probability zero. The second is the path through $U=1$. Doing the same for each cell gives
-
-$$
-\begin{aligned}
-P(A=0,Y=0)&=0.50(1)(0.80)=0.40,\\
-P(A=0,Y=1)&=0.50(1)(0.20)=0.10,\\
-P(A=1,Y=0)&=0.50(1)(0.20)=0.10,\\
-P(A=1,Y=1)&=0.50(1)(0.80)=0.40.
-\end{aligned}
-$$
-
 **Both SCMs reproduce exactly the observed table above.** Two worlds with very different causal structures look identical in the data.
 
 ### The causal effect in each world
 
-Now we ask what would happen if we set everyone's treatment to $a$. The potential outcome $Y(a)$ is a person's outcome under that intervention, and $E[Y(a)]$ is the risk of an exacerbation if everyone received $a$.
+Now we ask what would happen if we set treatment to $a$.
 
-**Case 1.** Setting $A$ to $a$ means everyone gets the risk that goes with $a$. Going outside gives $0.20$, and staying indoors gives $0.80$. So
+**Case 1.** The outcome assignment uses $A$. Substituting $a$ gives
 
 $$
-E[Y(1)]=0.80, \qquad E[Y(0)]=0.20.
+Y(a)\leftarrow\operatorname{Bernoulli}(0.20+0.60a).
 $$
 
-These equal the observed risks $P(Y=1\mid A=1)$ and $P(Y=1\mid A=0)$, because there is no unmeasured confounding here. The average treatment effect is
+The expectation of a Bernoulli variable is its success probability, so
+
+$$
+E[Y(a)]=0.20+0.60a.
+$$
+
+In particular,
+
+$$
+\begin{aligned}
+E[Y(1)]&=P(Y=1\mid A=1)=0.80,\\
+E[Y(0)]&=P(Y=1\mid A=0)=0.20.
+\end{aligned}
+$$
+
+The average treatment effect is
 
 $$
 E[Y(1)]-E[Y(0)]=0.80-0.20=0.60.
 $$
 
-**Case 2.** Setting $A$ to $a$ does not change anyone's asthma severity, and the outcome depends only on severity. So whether we send everyone indoors or everyone outside, half the population still has mild asthma with a $0.20$ risk and half still has severe asthma with a $0.80$ risk. For either value of $a$,
+**Case 2.** The outcome assignment uses $U$, not $A$. An intervention on treatment leaves severity unchanged, so
 
 $$
-E[Y(a)]=0.50(0.20)+0.50(0.80)=0.50.
+Y(a)\leftarrow\operatorname{Bernoulli}(0.20+0.60U).
 $$
 
-So $E[Y(1)]=E[Y(0)]=0.50$, and the average treatment effect is $0.50-0.50=0$.
+For any $a$, we average over the two severity groups:
+
+$$
+\begin{aligned}
+E[Y(a)]
+&=E[E[Y(a)\mid U]]\\
+&=0.50(0.20)+0.50(0.80)\\
+&=0.50.
+\end{aligned}
+$$
+
+Thus $E[Y(1)]=E[Y(0)]=0.50$, and the average treatment effect is zero.
 
 | | $E[Y(1)]$ | $E[Y(0)]$ | ATE |
 |---|---:|---:|---:|

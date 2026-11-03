@@ -1,0 +1,37 @@
+### 1. Does measuring another variable identify the effect?
+
+Return to the wildfire-smoke example. Let $A=1$ mean staying indoors and $Y=1$ mean an asthma exacerbation later that day. This time, we also observe $X$, where $X=1$ means the person had an exacerbation in the previous year. All three variables are binary. An unmeasured variable $U$ may influence both $A$ and $Y$.
+
+Assume the following causal graph:
+
+![](images/04a-unmeasured-confounding.svg){width=560 fig-align="center" fig-alt="X and unmeasured U each point to A and Y, and A points to Y."}
+
+Suppose we know the following probabilities exactly:
+
+$$
+\begin{aligned}
+P(X=1)&=\frac12,\\
+P(A=1\mid X=x)&=\frac12,\qquad x\in\{0,1\}.
+\end{aligned}
+$$
+
+The outcome probabilities are
+
+| $x$ | $a$ | $P(Y=0\mid X=x,A=a)$ | $P(Y=1\mid X=x,A=a)$ |
+|---:|---:|---:|---:|
+| 0 | 0 | $3/4$ | $1/4$ |
+| 0 | 1 | $1/2$ | $1/2$ |
+| 1 | 0 | $1/2$ | $1/2$ |
+| 1 | 1 | $1/4$ | $3/4$ |
+
+These probabilities determine the joint distribution of the observed variables $X,A,Y$. Your task is to construct two SCMs that reproduce this same observed distribution but give different ATEs. Use Bernoulli assignments as in the worked example, with independent noise terms. Assignments may ignore parents in the graph.
+
+a. Construct a first SCM in which $U$ has no influence and $A$ is independent of $X$ and $U$. Choose an outcome assignment that reproduces the table. Verify that your SCM also gives the stated probabilities for $X$ and $A$.
+
+b. Construct a second SCM in which $U$ influences both staying indoors and the outcome, but staying indoors has no effect on the outcome. Reproduce the same table and the same probabilities for $X$ and $A$. **Hint:** Try a binary $U$ with $P(U=1)=1/2$ and the assignment $A\leftarrow U$.
+
+c. For each SCM, derive $E[Y(a=1)]$ and $E[Y(a=0)]$, averaging over the variables that still affect the outcome after intervention. Calculate the ATE in each case.
+
+d. Explain why these two SCMs show that the ATE cannot be identified from the observed distribution of $X,A,Y$, even though $X$ is measured.
+
+<div class="response-space"></div>

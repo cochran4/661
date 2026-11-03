@@ -1,0 +1,126 @@
+For Exercises 2 and 3, use our working instrumental-variable SCM, with binary offer $Z$, binary participation $A$, and blood pressure $Y$. Assume treatment relevance and monotonicity. Take $X$ to be constant unless covariates are explicitly included. Exercise 4 asks you to assess proposed instruments rather than assume their validity.
+
+### 2. The usual IV estimand and weak treatment relevance
+
+A study randomly offers an incentive to join an exercise program. The study reports these estimated participation probabilities and mean systolic blood pressures:
+
+| Offer | Probability of participation | Mean blood pressure (mmHg) |
+|---|---:|---:|
+| Not offered ($Z=0$) | 0.30 | 138 |
+| Offered ($Z=1$) | 0.70 | 134 |
+
+a. Calculate the difference in mean blood pressure and the difference in participation between the offer groups, subtracting the group with $Z=0$ from the group with $Z=1$.
+
+b. Calculate the usual IV estimate.
+
+c. Interpret the estimate as a CACE. Specify who the compliers are in this study.
+
+d. Another study reports participation probabilities of 0.30 without the offer and 0.31 with it. Mean blood pressures are 138 and 137.9 mmHg, respectively. Calculate the IV estimate. Although the estimate is the same, treatment relevance is much weaker. What might happen to the estimate if sampling variability slightly changes the observed outcome difference? Explain using the denominator of the IV estimator.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. The outcome difference is $134-138=-4$ mmHg. The participation difference is $0.70-0.30=0.40$.
+
+b. The usual IV estimate is
+
+$$
+\frac{134-138}{0.70-0.30}
+=\frac{-4}{0.40}
+=-10\text{ mmHg}.
+$$
+
+c. Participating in the exercise program is estimated to lower mean systolic blood pressure by 10 mmHg among people who would participate if offered the incentive and would not participate without it. These people are the compliers.
+
+d. The second estimate is
+
+$$
+\frac{137.9-138}{0.31-0.30}
+=\frac{-0.1}{0.01}
+=-10\text{ mmHg}.
+$$
+
+The denominator is now only 0.01. A small change in the outcome difference is divided by this small number and can cause a large change in the estimate. For example, changing the outcome difference from $-0.1$ to $-0.2$ mmHg changes the estimate from $-10$ to $-20$ mmHg. The weak instrument makes the estimate less stable even though its current value is the same.
+:::
+
+### 3. Reading two-stage least-squares results
+
+Let $Z=1$ indicate an offer to join an exercise program, $A=1$ participation, and $Y$ systolic blood pressure at the end of the study. The fitted regressions are supplied; no model fitting is required.
+
+**a. Without covariates.** The first-stage regression of $A$ on $Z$ gives
+
+$$
+\widehat A=0.2+0.4Z.
+$$
+
+The second-stage regression of $Y$ on $\widehat A$ gives
+
+$$
+\widehat Y=136-10\widehat A.
+$$
+
+What is the estimated causal effect of participating? Interpret the estimate, including the group to which it applies and the units.
+
+**b. With covariates.** Another exercise-program study records $X$, a binary indicator of high baseline blood pressure. The offer is randomized with probability $1/2$ at both values of $X$. Researchers include $X$ in both stages.
+
+The first-stage regression of $A$ on $Z$ and $X$ gives
+
+$$
+\widehat A=0.2+0.4Z+0.1X.
+$$
+
+The second-stage regression of $Y$ on $\widehat A$ and $X$ gives
+
+$$
+\widehat Y=136-8\widehat A+6X.
+$$
+
+What is the estimated causal effect of participating? Interpret the estimate, including the group to which it applies and the units.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. The treatment-effect estimate is the coefficient on $\widehat A$ in the second stage, $-10$. Under the stated SCM, treatment relevance, and monotonicity, participating in the exercise program is estimated to lower mean systolic blood pressure by 10 mmHg among compliers: people who would participate if offered the encouragement and would not participate without it.
+
+b. The treatment-effect estimate is $-8$, the second-stage coefficient on $\widehat A$. Participating is estimated to lower mean systolic blood pressure by 8 mmHg among compliers, accounting for baseline blood pressure. With binary $X$, an intercept and $X$ provide saturated covariate adjustment. The offer probability is also the same at both values of $X$, so the complier weights agree with those for the overall CACE.
+:::
+
+### 4. Would you trust these proposed instruments?
+
+Consider three studies in which treatment received may have unmeasured common causes with the outcome.
+
+**A gift-card offer.** A study randomly offers some people a gift card if they join an exercise program. Participation is 55% among those offered the incentive and 35% among those not offered it. The proposed instrument $Z$ is the offer, treatment $A$ is participation, and outcome $Y$ is blood pressure. People who participate can spend their gift cards however they like.
+
+**Living near a rehabilitation clinic.** Researchers propose living within one mile of a rehabilitation clinic as an instrument for attending rehabilitation after a heart attack. Attendance is more common among people living nearby. The outcome is hospital readmission. Housing costs and access to other health services differ between nearby and more distant neighborhoods.
+
+**A surgeon's prescribing preference.** Researchers propose assignment to a surgeon who usually prescribes a preventive medication more often ($Z=1$), rather than one who prescribes it less often ($Z=0$), as an instrument for whether a patient receives it. The outcome is a postoperative complication. Surgeons in the first group prescribe the medication more often, but also use different postoperative care protocols. Patients are referred to surgeons partly according to the complexity of their condition.
+
+a. For each study, explain how you would assess treatment relevance. What evidence is supplied, and what could be checked in the data?
+
+b. For each study, discuss whether the proposed instrument could share unmeasured causes with treatment or outcome. Identify a specific possible common cause or explain how the study design addresses this concern.
+
+c. For each study, describe a possible causal route from the instrument to the outcome that does not pass through treatment $A$. Explain what this would mean for exclusion restriction.
+
+d. For each study, describe what monotonicity would mean. Does greater average treatment uptake under $Z=1$ establish monotonicity? Explain.
+
+e. Choose one study and propose a useful check using observed data. Explain what the check could reveal and which concern it would leave unresolved.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. For the gift-card study, the participation difference is $0.55-0.35=0.20$. The other studies report an association with treatment but do not give its magnitude. Researchers can estimate the treatment difference across instrument values and examine its uncertainty. Where the argument requires conditioning on $X$, they should assess relevance after accounting for those covariates.
+
+b. Randomization of the gift-card offer addresses common causes of the offer and treatment or outcome. In the clinic study, income and health needs can influence both residential location and rehabilitation attendance or readmission. In the surgeon study, condition complexity can influence referral to a surgeon and the patient's treatment and complication risk. Measured covariates may account for some of these differences, but the causal argument must address what remains unmeasured.
+
+c. In the gift-card study, someone who participates after receiving the offer gets money, while someone who participates without the offer does not. Thus, even at the same participation value, the offer could affect blood pressure through spending on food or medication. This gives a route through the money that bypasses participation as defined by $A$. In the clinic study, nearby access to other health services could affect readmission without rehabilitation attendance. In the surgeon study, assignment to a surgeon changes the postoperative care protocol as well as prescribing. The care protocol could affect complications without the medication. These routes threaten exclusion restriction when they represent effects of the proposed instrument that bypass the defined treatment.
+
+d. For the gift card, monotonicity means nobody would participate without the offer but refuse because of it. For clinic proximity, moving from farther away to nearby must not cause someone who would attend rehabilitation to stop attending. For prescribing preference, assignment to a surgeon with a stronger preference must not cause someone who would otherwise receive the medication to go without it. Larger average uptake does not establish any of these individual-level restrictions: compliers can outnumber defiers while defiers still exist.
+
+e. In the clinic study, researchers could compare measured income, baseline health, and access to other care across instrument groups. Differences could reveal problems with the proposed independence argument. Similar measured characteristics would still leave unmeasured differences and routes through other health services unresolved. Other useful checks include estimating treatment relevance and examining pretreatment characteristics across surgeon-preference groups.
+:::
