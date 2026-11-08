@@ -655,7 +655,146 @@ P(A=1\mid X=x)&amp;=\frac12,\qquad x\in\{0,1\}.
 </section>
 <section id="regression-discontinuity" class="level2">
 <h2 class="anchored" data-anchor-id="regression-discontinuity">Regression discontinuity</h2>
-<p><em>[Placeholder: Exercises to be written.]</em></p>
+<p>Assume the RD identification assumptions from the section hold, except where a question asks you to assess them.</p>
+<section id="read-the-effect-from-a-graph" class="level3">
+<h3 class="anchored" data-anchor-id="read-the-effect-from-a-graph">5. Read the effect from a graph</h3>
+<p>In Panel A, patients arriving before time zero receive traditional flow; patients arriving at or after zero receive split flow. In Panel B, patients receive treatment when their risk score is at least 20. The curves show mean observed outcomes.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/04c-rd-exercise-curves.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Two gridded RD plots. Panel A shows mean time to disposition with a treatment cutoff at zero. Panel B shows mean symptom score with a treatment cutoff at 20." width="850"></p>
+</figure>
+</div>
+<ol type="a">
+<li><p>In Panel A, estimate the local average treatment effect of split flow on time to disposition at time zero.</p></li>
+<li><p>In Panel B, estimate the local average treatment effect on symptom score at risk score 20.</p></li>
+<li><p>Do these comparisons also identify the average treatment effect for all patients?</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="estimate-the-jump-from-a-table" class="level3">
+<h3 class="anchored" data-anchor-id="estimate-the-jump-from-a-table">6. Estimate the jump from a table</h3>
+<p>In a fictional oncology clinic, patients with a cancer risk score of at least 20 receive an additional therapy. Patients below 20 receive usual care alone. The outcome is tumor diameter eight weeks later; smaller is better. Each row is one patient, and the scores and data are made up.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Risk score</th>
+<th style="text-align: right;">Tumor diameter (mm)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">16</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">17</td>
+<td style="text-align: right;">12</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">4</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">24</td>
+<td style="text-align: right;">6</td>
+</tr>
+</tbody>
+</table>
+<p>A bandwidth <span class="math inline">\(h\)</span> includes scores from <span class="math inline">\(20-h\)</span> to <span class="math inline">\(20+h\)</span>, including the endpoints. Estimate the local average treatment effect of adding the therapy at score 20 by subtracting the untreated sample mean from the treated sample mean.</p>
+<ol type="a">
+<li><p>Estimate the effect using <span class="math inline">\(h=4\)</span>.</p></li>
+<li><p>Estimate the effect using <span class="math inline">\(h=2\)</span>.</p></li>
+<li><p>How many observations does each bandwidth include?</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="use-fitted-regression-lines" class="level3">
+<h3 class="anchored" data-anchor-id="use-fitted-regression-lines">7. Use fitted regression lines</h3>
+<p>Split flow begins at noon. Let <span class="math inline">\(r\)</span> be arrival time in hours, so noon is <span class="math inline">\(r=12\)</span>. Using arrivals within one hour of noon, researchers fit:</p>
+<p><span class="math display">\[
+\begin{aligned}
+\text{Before noon:}\quad \hat m_0(r)&amp;=100+6(r-12),\\[0.5em]
+\text{After noon:}\quad \hat m_1(r)&amp;=90+2(r-12).
+\end{aligned}
+\]</span></p>
+<p>The outcome is time to disposition in minutes.</p>
+<ol type="a">
+<li><p>What does each line predict at noon?</p></li>
+<li><p>Estimate the local average treatment effect of split flow at noon.</p></li>
+<li><p>What is one benefit and one risk of using a wider bandwidth?</p></li>
+<li><p>Researchers add a quadratic term in <span class="math inline">\(R\)</span> to each model and obtain a larger <span class="math inline">\(R^2\)</span> and a smaller AIC. Does this establish that their estimate of the local average treatment effect is more accurate? Explain.</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="check-a-placement-test-design" class="level3">
+<h3 class="anchored" data-anchor-id="check-a-placement-test-design">8. Check a placement-test design</h3>
+<p>Students scoring below 80 must take developmental mathematics. Students scoring at least 80 skip it. The outcome is credits completed in the following year.</p>
+<ol type="a">
+<li><p>Mean credits are 18 just below 80 and 22 just above. Estimate the local average treatment effect of developmental mathematics at score 80.</p></li>
+<li><p>Scores pile up at exactly 80. Why would this concern you?</p></li>
+<li><p>Women make up 50% of students just below 80 and 70% just above. Why does this raise doubts about the comparison?</p></li>
+<li><p>Only second-attempt scores were recorded. How could different retake rates by gender produce the difference in part c?</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="a-fuzzy-treatment-rule" class="level3">
+<h3 class="anchored" data-anchor-id="a-fuzzy-treatment-rule">9. A fuzzy treatment rule</h3>
+<p>A clinic recommends treatment at a risk score of 20. Patients can decline. Larger symptom scores mean worse symptoms.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Just below or above 20</th>
+<th style="text-align: right;">Treatment uptake</th>
+<th style="text-align: right;">Mean symptom score</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Below</td>
+<td style="text-align: right;">0.2</td>
+<td style="text-align: right;">15</td>
+</tr>
+<tr class="even">
+<td>Above</td>
+<td style="text-align: right;">0.6</td>
+<td style="text-align: right;">13</td>
+</tr>
+</tbody>
+</table>
+<p>Assume the fuzzy RD assumptions from the section hold.</p>
+<ol type="a">
+<li><p>Calculate the jump in mean symptoms and the jump in treatment uptake.</p></li>
+<li><p>Estimate the local average treatment effect by dividing the outcome jump by the treatment jump.</p></li>
+<li><p>Which patients does this effect describe?</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
 </section>
 <section id="other-approaches" class="level2">
 <h2 class="anchored" data-anchor-id="other-approaches">Other approaches</h2>

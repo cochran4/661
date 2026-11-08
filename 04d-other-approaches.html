@@ -26,7 +26,26 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -505,117 +524,163 @@ window.Quarto = {
 </header>
 
 
-<!-- Imported from the previous GitBook: other-considerations/proxy-variables.md. Prose and equations retained; headings, callout syntax, and image paths adapted for Quarto. -->
-<section id="control-functions" class="level2">
-<h2 class="anchored" data-anchor-id="control-functions">Control functions</h2>
-<p><em>[Placeholder: The previous GitBook contained only a heading for this topic.]</em></p>
-</section>
-<section id="proxy-variables" class="level2">
-<h2 class="anchored" data-anchor-id="proxy-variables">Proxy variables</h2>
-<p>When there is unmeasured confounding, one can identify <span class="math display">\[E[Y(a)]\]</span> with the help of <em>proxies</em> for the unmeasured confounder, i.e.&nbsp;noisy measurements of the unmeasured confounder.</p>
-<p>-—–</p>
-<p><mark style="background-color:purple;"><strong>Example 1 (revisited).</strong></mark> </p>
-<p>Let’s revisit the epidemiology problem referred to as <em>confounding by indication</em>, whereby healthcare providers have information about a patient’s underlying health that is not captured in the data. </p>
-<details>
-<summary>
-Q. What might be some <em>proxy</em> variables for unmeasured health <span class="math">U</span>?
-</summary>
-<p><strong>A.</strong> Well, the variables will certainly depend on the context. But broadly, we can think of any information on a patient’s health that the care provider might collect to inform their treatment decision. Examples include</p>
-<ul>
-<li>Vitals (e.g., blood pressure, temperature)</li>
-<li>Lab results (e.g., lipid profile, A1C, protein levels)</li>
-<li>Imaging results (e.g., cloudiness in lung x-ray)</li>
-</ul>
-</details>
-<p>-—–</p>
-<p>The simplest case may be when two variables <span class="math display">\[Z\]</span> and <span class="math display">\[W\]</span>can have a direct causal impact on the unmeasured variable <span class="math display">\[U\]</span> (i.e.&nbsp;<span class="math display">\[Z \rightarrow U\]</span> and <span class="math display">\[W \rightarrow U\]</span>) but not on any other variables. </p>
-<p>We update our SWIG to look like:</p>
-<p><img src="images/04d-gitbook-08.svg" alt="Updated SWIG to include proxy variables Z and W" class="gitbook-drawing"></p>
-<p><em>How exactly does a proxy variable help?</em></p>
-<p>It starts with backdoor adjustment:</p>
-<p><span class="math display">\[E[g( Y(a)) ] = E[ E[ g(Y) | A=a, U] ]\]</span>​</p>
-<p><strong>And an assumption</strong> <strong>about variables taking on a finite number of values.</strong></p>
-<p>This means that</p>
-<p><span class="math display">\[E[Y(a)] = \sum_y y P( Y(a)=y)\]</span></p>
-<p>with </p>
-<p><span class="math display">\[P(Y(a)=y) = \sum_{u} P( Y = y | U=u,A=a)P(U=u)\]</span>.</p>
-<p>The right-hand side is expressed in terms of <span class="math display">\[U\]</span> which we do not measure, but remarkably, we can remove <span class="math display">\[U\]</span>​ from the expression. It requires manipulating two applications of law of iterated expectation:</p>
-<ul>
-<li><p><span class="math display">\[P(W=w | Z=z, A=a)\]</span></p>
-<p><span class="math display">\[= \sum_u P(W=w | U=u) P( U=u | Z=z, A=a)\]</span>​</p></li>
-<li><p><span class="math display">\[P(Y=y | Z=z)\]</span>​</p>
-<p><span class="math display">\[=\sum_u P(Y=y | U=u, A=a) P(U=u | Z=z, A=a)\]</span>​</p></li>
-</ul>
-<p>We can then re-write <span class="math display">\[P(Y(a)=y)\]</span> into</p>
-<p><span class="math display">\[\sum_{z,w} P (Y=y | Z=z, A=a) (\mathbb{B}^{-1})_{zw} P(W=w)\]</span>​,</p>
-<p>provided <span class="math display">\[\mathbb{B}\]</span> is invertible where <span class="math display">\[\mathbb{B}\]</span>​ is the matrix whose entries are given by </p>
-<p><span class="math display">\[(\mathbb{B})_{wz} = P( W=w | Z=z , A = a).\]</span> </p>
-<p>Notice that the above expression does not involve <span class="math display">\[U\]</span>​. </p>
-<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Warning
+<span class="screen-reader-only">Note</span>Planned expansion
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>Technical note.</strong> The argument involves matrix manipulations and may not be particularly illuminating, but we repeat it here. </p>
-<p>The two expressions we recover from the law of iterated expectations are expressed in matrix form as</p>
-<p><span class="math display">\[\mathbb{B} = \mathbb{C} \mathbb{D}\]</span> </p>
-<p>​where ​</p>
-<ul>
-<li><span class="math display">\[(\mathbb{C})_{wu} = P( W=w | U=u )\]</span>​</li>
-<li><span class="math display">\[(\mathbb{D})_{uz} = P( U=u | Z=z, A=a )\]</span></li>
-</ul>
+<p>We plan to develop proxy-variable and control-function approaches to unmeasured confounding. The proxy-variable material below is retained from the earlier GitBook and has been adapted to the format of this text. This section is supplementary reading rather than a scheduled lecture.</p>
+</div>
+</div>
+<section id="control-functions" class="level2">
+<h2 class="anchored" data-anchor-id="control-functions">Control functions</h2>
+<p><em>[Planned: introduce control functions through a worked example, then describe the additional assumptions they require. The earlier GitBook contained only a heading for this topic.]</em></p>
+</section>
+<section id="proxy-variables" class="level2">
+<h2 class="anchored" data-anchor-id="proxy-variables">Proxy variables</h2>
+<p>A <strong>proxy</strong> provides information about a variable we do not observe directly. In some settings, two proxies for an unmeasured confounder can help identify <span class="math inline">\(E[Y(a)]\)</span>. We need restrictions on how the proxies are generated and enough information in their relationship; simply measuring two related variables is not sufficient <span class="citation" data-cites="kuroki2014measurement miao2018proxy">(<a href="references.html#ref-kuroki2014measurement" role="doc-biblioref">Kuroki and Pearl 2014</a>; <a href="references.html#ref-miao2018proxy" role="doc-biblioref">Miao et al. 2018</a>)</span>.</p>
+<div class="example-intro">
+<p><span class="example-label">Information about underlying health</span></p>
+<p>Return to confounding by indication. A physician sees aspects of a patient’s underlying health that influence both treatment and outcome, but are missing from our data. What measurements might give us information about that unmeasured health?</p>
+</div>
+<p>Vital signs, laboratory results, and imaging findings are possible candidates. Which measurements can serve as proxies depends on their causal relationships with treatment, outcome, and the unmeasured health characteristics.</p>
+<p>For a simple setup, suppose the unmeasured variable <span class="math inline">\(U\)</span> influences two observed proxies, <span class="math inline">\(Z\)</span> and <span class="math inline">\(W\)</span>, as well as treatment <span class="math inline">\(A\)</span> and outcome <span class="math inline">\(Y\)</span>. The proxies have no additional causes shared with each other, treatment, or outcome. The corresponding causal graph is</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/04d-proxy-variables.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Unmeasured U points to observed proxies Z and W, treatment A, and outcome Y. A also points to Y." width="620"></p>
+</figure>
+</div>
+<p>If we observed <span class="math inline">\(U\)</span>, our usual adjustment argument would give</p>
+<p><span class="math display">\[
+E[Y(a)]=E\big[E[Y\mid U,A=a]\big],
+\]</span></p>
+<p>when the conditional expectations are defined. We will use the proxy relationships to remove <span class="math inline">\(U\)</span> from that expression.</p>
+<p>For this finite-variable example, assume <span class="math inline">\(U\)</span>, <span class="math inline">\(Z\)</span>, and <span class="math inline">\(W\)</span> each have <span class="math inline">\(k\)</span> possible values, and <span class="math inline">\(Y\)</span> has finitely many values. Then</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[Y(a)]&amp;=\sum_y y\,P(Y(a)=y),\\[0.4em]
+P(Y(a)=y)&amp;=\sum_u P(Y=y\mid U=u,A=a)P(U=u).
+\end{aligned}
+\]</span></p>
+<p>The graph gives two useful applications of the law of iterated expectations:</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;P(W=w\mid Z=z,A=a)\\
+&amp;\quad=\sum_u P(W=w\mid U=u)\\
+&amp;\qquad\qquad\times P(U=u\mid Z=z,A=a),
+\end{aligned}
+\]</span></p>
 <p>and</p>
-<p><span class="math display">\[\mathbb{E} = \mathbb{F} \mathbb{D}\]</span>​</p>
-<p>where</p>
-<ul>
-<li><span class="math display">\[(\mathbb{E})_{yz} = P( Y=y | Z=z, A=x )\]</span></li>
-<li><span class="math display">\[(\mathbb{F})_{yu} = P( Y=y | U=u, A=x )\]</span>​.</li>
-</ul>
-<p>Matrix algebra then gives </p>
-<p><span class="math display">\[\mathbb{F} = \mathbb{E} \mathbb{D}^{-1} = \mathbb{E} \mathbb{B}^{-1}\mathbb{C}\]</span>.</p>
-<p>Entry-wise, this expression becomes</p>
-<p><span class="math display">\[P( Y = y | U= u, A=a )\]</span>​</p>
-<p><span class="math display">\[= \sum_{wz} P( Y=y | Z=z, A=a ) ( \mathbb{B}^{-1} )_{z w} P( W=w | U=u )\]</span>​</p>
-<p>and summing over <span class="math display">\[u\]</span>​ leaves the desired result</p>
-<p><span class="math display">\[P(Y(a)=y)\]</span></p>
-<p><span class="math display">\[= \sum_u P( Y=y | U=u, A=a ) P(U=u)\]</span>​</p>
-<p><span class="math display">\[= \sum_{uwz} P( Y=y | Z=z, A=a ) ( \mathbb{B}^{-1} )_{z w} P( W=w | U=u )P(U=u)\]</span>​</p>
-<p><span class="math display">\[= \sum_{wz} P( Y=y | Z=z, A=a ) ( \mathbb{B}^{-1} )_{z w} P( W=w)\]</span>. </p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;P(Y=y\mid Z=z,A=a)\\
+&amp;\quad=\sum_u P(Y=y\mid U=u,A=a)\\
+&amp;\qquad\qquad\times P(U=u\mid Z=z,A=a).
+\end{aligned}
+\]</span></p>
+<p>Both expressions use the same conditional distribution of <span class="math inline">\(U\)</span> given <span class="math inline">\(Z\)</span> and <span class="math inline">\(A\)</span>. We can combine them using matrix algebra. Define the <span class="math inline">\(k\)</span>-by-<span class="math inline">\(k\)</span> matrix <span class="math inline">\(B_a\)</span> by</p>
+<p><span class="math display">\[
+(B_a)_{wz}=P(W=w\mid Z=z,A=a).
+\]</span></p>
+<p>If <span class="math inline">\(B_a\)</span> is invertible, the resulting identification formula is</p>
+<p><span class="math display">\[
+\begin{aligned}
+P(Y(a)=y)
+&amp;=\sum_{z,w}P(Y=y\mid Z=z,A=a)\\
+&amp;\qquad\times(B_a^{-1})_{zw}\,P(W=w).
+\end{aligned}
+\]</span></p>
+<p>Every quantity on the right involves observed variables. The invertibility condition supplies the extra restriction needed for this calculation <span class="citation" data-cites="miao2018proxy">(<a href="references.html#ref-miao2018proxy" role="doc-biblioref">Miao et al. 2018</a>)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Optional technical note: the matrix calculation
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Define four matrices:</p>
+<p><span class="math display">\[
+\begin{aligned}
+C_{wu}&amp;=P(W=w\mid U=u),\\
+(D_a)_{uz}&amp;=P(U=u\mid Z=z,A=a),\\
+(E_a)_{yz}&amp;=P(Y=y\mid Z=z,A=a),\\
+(F_a)_{yu}&amp;=P(Y=y\mid U=u,A=a).
+\end{aligned}
+\]</span></p>
+<p>The two iterated-expectation identities become</p>
+<p><span class="math display">\[
+B_a=CD_a,\qquad E_a=F_aD_a.
+\]</span></p>
+<p>Because <span class="math inline">\(B_a\)</span> is invertible and <span class="math inline">\(C\)</span> and <span class="math inline">\(D_a\)</span> are square, both factors are invertible. Therefore,</p>
+<p><span class="math display">\[
+F_a=E_aD_a^{-1}=E_aB_a^{-1}C.
+\]</span></p>
+<p>Let <span class="math inline">\(p_U\)</span> and <span class="math inline">\(p_W\)</span> be the column vectors of marginal probabilities for <span class="math inline">\(U\)</span> and <span class="math inline">\(W\)</span>. Since <span class="math inline">\(p_W=Cp_U\)</span>,</p>
+<p><span class="math display">\[
+F_ap_U=E_aB_a^{-1}Cp_U=E_aB_a^{-1}p_W.
+\]</span></p>
+<p>The left side gives the intervention probabilities <span class="math inline">\(P(Y(a)=y)\)</span>. Reading off row <span class="math inline">\(y\)</span> on the right gives the identification formula above.</p>
 </div>
 </div>
-<p>-—–</p>
-<p><mark style="background-color:purple;"><strong>Example 2.</strong></mark> </p>
-<p>Consider the simplest case when all variables are binary.</p>
-<details>
-<summary>
-Q. <strong>Use proxy variables</strong> <span class="math">Z</span> <strong>and</strong> <span class="math">W</span> <strong>to i</strong>dentify <span class="math">E[Y(a)]</span>
-</summary>
-<p><strong>A.</strong> In the binary case, we can make simplifications. First, </p>
-<p><span class="math display">\[E[Y(a)] = P( Y(a)= 1 )\]</span>​</p>
-<p><span class="math display">\[= \sum_{wz} P( Y=1 | Z=z, A=a) (\mathbb{B}^{-1})_{zw} P(W=w)\]</span></p>
-<p>Since most of our expressions condition on <span class="math display">\[A=a\]</span>​, we will suppress this dependence by replacing <span class="math display">\[P\]</span>​ with <span class="math display">\[P_a\]</span>​ in an effort to simplify notation. </p>
-<p>Second, we note that</p>
-<p><span class="math display">\[\mathbb{B} = \begin{bmatrix} 1-P_a(W=1 | Z=0) &amp; 1-P_a(W=1 | Z=1) \\ P_a(W=1 | Z=0) &amp; P_a(W=1 | Z=1)\end{bmatrix}\]</span>​</p>
-<p> so that</p>
-<p><span class="math display">\[\mathbb{B}^{-1} = \frac{1}{|\mathbb{B}|} \begin{bmatrix} P_a(W=1 | Z=1) &amp; P_a(W=1 | Z=1)-1 \\ -P_a(W=1 | Z=0) &amp; 1-P_a(W=1 | Z=0)\end{bmatrix}\]</span>where</p>
-<p><span class="math display">\[| \mathbb{B} | =P_a(W=1 | Z=1) - P_a(W=1|Z=0)\]</span></p>
-<p>Therefore, </p>
-<p><span class="math display">\[= \sum_{wz} P( Y=1 | Z=z, A=a) (\mathbb{B}^{-1})_{zw} P(W=w)\]</span>​</p>
-<p><span class="math display">\[= P_a( Y=1 | Z=0) \frac{P_a(W=1|Z=1)-P_a(W=1)}{P_a(W=1 | Z=1) - P_a(W=1|Z=0)}\]</span></p>
-<p><span class="math display">\[+P_a( Y=1 | Z=1)\frac{P_a(W=1)-P_a(W=1|Z=0)}{P_a(W=1 | Z=1) - P_a(W=1|Z=0)}\]</span>.</p>
-</details>
-<p> <strong>References</strong></p>
-<ul>
-<li>Kuroki, M., &amp; Pearl, J. (2014). <a href="https://academic.oup.com/biomet/article/101/2/423/194920">Measurement bias and effect restoration in causal inference.</a><em>Biometrika</em>, <em>101</em>(2), 423-437.</li>
-<li>Miao, W., Geng, Z., &amp; Tchetgen Tchetgen, E. J. (2018). <a href="https://academic.oup.com/biomet/article/105/4/987/5073056">Identifying causal effects with proxy variables of an unmeasured confounder</a>. <em>Biometrika</em>, <em>105</em>(4), 987-993.</li>
-</ul>
+</div>
+<div class="example-intro">
+<p><span class="example-label">Binary proxies</span></p>
+<p>Suppose <span class="math inline">\(U\)</span>, <span class="math inline">\(Z\)</span>, <span class="math inline">\(W\)</span>, and <span class="math inline">\(Y\)</span> are all binary. How does the matrix formula simplify?</p>
+</div>
+<p>Because <span class="math inline">\(Y\)</span> is binary, <span class="math inline">\(E[Y(a)]=P(Y(a)=1)\)</span>. To keep the calculation readable, write</p>
+<p><span class="math display">\[
+\begin{aligned}
+q_z&amp;=P(W=1\mid Z=z,A=a),\\
+r_z&amp;=P(Y=1\mid Z=z,A=a),\\
+p&amp;=P(W=1).
+\end{aligned}
+\]</span></p>
+<p>The first two quantities depend on the chosen treatment value <span class="math inline">\(a\)</span>; <span class="math inline">\(p\)</span> is the marginal probability of <span class="math inline">\(W=1\)</span>. Then</p>
+<p><span class="math display">\[
+B_a=
+\begin{bmatrix}
+1-q_0&amp;1-q_1\\
+q_0&amp;q_1
+\end{bmatrix},
+\]</span></p>
+<p>with determinant <span class="math inline">\(q_1-q_0\)</span>. If <span class="math inline">\(q_1\ne q_0\)</span>, its inverse is</p>
+<p><span class="math display">\[
+B_a^{-1}=
+\frac{1}{q_1-q_0}
+\begin{bmatrix}
+q_1&amp;q_1-1\\
+-q_0&amp;1-q_0
+\end{bmatrix}.
+\]</span></p>
+<p>Substituting into the identification formula gives</p>
+<p><span class="math display">\[
+\begin{aligned}
+E[Y(a)]
+&amp;=r_0\frac{q_1-p}{q_1-q_0}\\[0.4em]
+&amp;\quad+r_1\frac{p-q_0}{q_1-q_0}.
+\end{aligned}
+\]</span></p>
+<p>The calculation requires the proxies to remain associated within treatment groups: <span class="math inline">\(q_1\)</span> and <span class="math inline">\(q_0\)</span> must differ. When they are close, the small denominator can also make estimation unstable.</p>
 
 
+<div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-kuroki2014measurement" class="csl-entry" role="listitem">
+Kuroki, Manabu, and Judea Pearl. 2014. <span>“Measurement Bias and Effect Restoration in Causal Inference.”</span> <em>Biometrika</em> 101 (2): 423–37. <a href="https://doi.org/10.1093/biomet/ast066">https://doi.org/10.1093/biomet/ast066</a>.
+</div>
+<div id="ref-miao2018proxy" class="csl-entry" role="listitem">
+Miao, Wang, Zhi Geng, and Eric J. Tchetgen Tchetgen. 2018. <span>“Identifying Causal Effects with Proxy Variables of an Unmeasured Confounder.”</span> <em>Biometrika</em> 105 (4): 987–93. <a href="https://doi.org/10.1093/biomet/asy038">https://doi.org/10.1093/biomet/asy038</a>.
+</div>
+</div>
 </section>
 
 </main> <!-- /main -->
