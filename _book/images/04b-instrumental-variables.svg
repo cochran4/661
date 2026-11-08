@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 660" width="1000" height="660" role="img" aria-labelledby="title"><title id="title">Instrumental-variable causal graph</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#315C43" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.2" stroke-linecap="round" marker-end="url(#arrow)">
+<path d="M460 70 C100 5 70 100 70 285"/>
+<path d="M469.0 99.8 L263.1 298.1"/>
+<path d="M532.5 98.2 L762.2 297.3"/>
+<path d="M468.4 550.8 L263.8 361.3"/>
+<path d="M533.0 552.5 L761.6 362.0"/>
+<path d="M113.0 330.0 L184.0 330.0"/>
+<path d="M273.0 330.0 L750.0 330.0"/>
+</g>
+<circle cx="500" cy="70" r="40" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/><text x="500" y="70" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="26" fill="#244635">X</text>
+<circle cx="500" cy="580" r="40" fill="#FFFDF9" stroke="#315C43" stroke-width="1.8" stroke-dasharray="6 4"/><text x="500" y="580" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="26" fill="#244635">U</text>
+<circle cx="70" cy="330" r="40" fill="#F6E9EC" stroke="#315C43" stroke-width="1.8"/><text x="70" y="330" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="26" fill="#244635">Z</text>
+<circle cx="230" cy="330" r="40" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/><text x="230" y="330" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="26" fill="#244635">A</text>
+<circle cx="800" cy="330" r="44" fill="#E6EEDF" stroke="#315C43" stroke-width="1.8"/><text x="800" y="330" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="26" fill="#244635">Y</text>
+</svg>

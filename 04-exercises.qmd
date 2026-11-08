@@ -14,7 +14,7 @@ filters:
 
 ## Regression discontinuity
 
-*[Placeholder: Exercises to be written.]*
+{{< include _exercises/04c-regression-discontinuity.qmd >}}
 
 ## Other approaches
 

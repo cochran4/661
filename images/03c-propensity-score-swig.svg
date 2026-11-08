@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 265" role="img" aria-labelledby="title desc">
+<title id="title">Measured-confounding SWIG</title>
+<desc id="desc">X points to natural treatment A and to Y(a). The separate fixed intervention a points to Y(a). A and a are adjacent circles with a gap.</desc>
+<g fill="none" stroke="#315c43" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+<path d="M 137 82 L 272 167"/>
+<path d="M 143 65 L 524 65"/>
+<path d="M 407 168 L 532 93"/>
+<path d="M 263.08 165.82 L 272 167 L 267.08 159.47"/>
+<path d="M 515.82 68.75 L 524 65 L 515.82 61.25"/>
+<path d="M 526.92 100.43 L 532 93 L 523.05 93.99"/>
+</g>
+<circle cx="110" cy="65" r="32" fill="#e6eedf" stroke="#315c43" stroke-width="1.8"/>
+<text x="110" y="65" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">X</text>
+<circle cx="300" cy="185" r="32" fill="#e6eedf" stroke="#315c43" stroke-width="1.8"/>
+<text x="300" y="185" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">A</text>
+<circle cx="380" cy="185" r="32" fill="#fffdf9" stroke="#315c43" stroke-width="1.8"/>
+<text x="380" y="185" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">a</text>
+<circle cx="570" cy="65" r="45" fill="#e6eedf" stroke="#315c43" stroke-width="1.8"/>
+<text x="570" y="65" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="25" fill="#244635">Y(a)</text>
+</svg>

@@ -239,19 +239,155 @@ In the encouragement trial, this is the average effect of receiving treatment am
 
 ## Identifying the complier effect
 
-The usual IV estimand, also called the Wald estimand, is the ratio of the outcome difference between instrument groups to their treatment-uptake difference. Start with a binary instrument $Z$ and binary treatment $A$. For these calculations, take $X$ to be constant, so the instrumental-variable assumptions hold without conditioning on measured covariates. We will bring $X$ back when we discuss regression.
+### The effect of the offer
 
-The ratio is
+Although we are ultimately interested in the effect of treatment on blood pressure, we take a detour and start with the effect of the offer itself. The reason is that, although participation $X$ and blood pressure $Y$ share the unmeasured cause $U$, the offer $Z$ and $Y$ have no unmeasured common cause in our working SCM, so the effect of $Z$ on $Y$ is identified without adjusting for $U$. We keep $X$ in the argument because [it is a cause of the treatment $A$ and shares $U$ with $Y$, so it confounds the relationship between $A$ and $Y$].
+
+Intervene on the offer by setting $Z$ to $z$. Rename the variables and substitute $z$ for the instrument argument in the treatment assignment. After applying causal irrelevance, the corresponding SWIG is
+
+![](images/04b-instrument-z-swig.svg){width=700 fig-align="center" fig-alt="SWIG for setting the instrument to z. X points to natural Z, A(z), and Y(z). U points to A(z) and Y(z). Fixed z points to A(z), which points to Y(z)."}
+
+Conditioning on $X$ blocks the paths from natural $Z$ to $Y(z)$. The global Markov property gives $Z\perp\!\!\!\perp Y(z)\mid X$. Our identification argument under measured confounding therefore applies:
 
 $$
-\frac{E[Y\mid Z=1]-E[Y\mid Z=0]}
-{E[A\mid Z=1]-E[A\mid Z=0]}.
+\begin{aligned}
+&E[Y\mid Z=1,X]-E[Y\mid Z=0,X]\\
+&\qquad=E[Y(z=1)-Y(z=0)\mid X].
+\end{aligned}
 $$
+
+We have identified the effect of the offer. How does it tell us about the effect of participation?
+
+### Which response types contribute?
+
+Break the effect of the offer into contributions from the four principal strata. The law of iterated expectations gives
+
+$$
+\begin{aligned}
+&E[Y(z=1)-Y(z=0)\mid X]\\
+&=E[Y(z=1)-Y(z=0)\mid X,\text{compliers}]\times P(\text{compliers}\mid X)\\[0.5em]
+&\quad+E[Y(z=1)-Y(z=0)\mid X,\text{defiers}]\times P(\text{defiers}\mid X)\\[0.5em]
+&\quad+E[Y(z=1)-Y(z=0)\mid X,\text{always-takers}]\times P(\text{always-takers}\mid X)\\[0.5em]
+&\quad+E[Y(z=1)-Y(z=0)\mid X,\text{never-takers}]\times P(\text{never-takers}\mid X).
+\end{aligned}
+$$
+
+We now take the strata one at a time.
+
+**Defiers.** Monotonicity says the offer never discourages participation, so $P(\text{defiers}\mid X)=0$. The defier term vanishes.
+
+**Always-takers.** An always-taker participates with or without the offer, so changing the offer leaves their participation unchanged. The exclusion restriction says the offer affects blood pressure only through participation. Hence $Y(z=1)=Y(z=0)$ for them, and their contribution is zero.
+
+**Never-takers.** A never-taker does not participate with or without the offer. Again the offer leaves their participation unchanged, so by exclusion $Y(z=1)=Y(z=0)$, and their contribution is zero.
+
+**Compliers.** Only the complier term remains. Substituting the three results above gives
+
+$$
+\begin{aligned}
+&E[Y\mid Z=1,X]-E[Y\mid Z=0,X]\\
+&=E[Y(z=1)-Y(z=0)\mid X,\text{compliers}]\\
+&\quad\times P(\text{compliers}\mid X).
+\end{aligned}
+$$
+
+For compliers, changing the offer from zero to one changes participation from zero to one. By exclusion, their effect of the offer is therefore their effect of participation:
+
+$$
+\begin{aligned}
+&E[Y(z=1)-Y(z=0)\mid X,\text{compliers}]\\
+&\qquad=E[Y(a=1)-Y(a=0)\mid X,\text{compliers}].
+\end{aligned}
+$$
+
+::: {.callout-note title="Optional technical note: why the unchanged-treatment terms vanish" collapse="true"}
+The assignments above generate
+
+$$
+\begin{aligned}
+Y(z=0)&=f_Y(X,U,A(z=0),\epsilon_Y),\\
+Y(z=1)&=f_Y(X,U,A(z=1),\epsilon_Y).
+\end{aligned}
+$$
+
+Both use the same $X$, $U$, outcome function, and noise. For always-takers, both treatment arguments equal one, so both outcomes equal $f_Y(X,U,1,\epsilon_Y)$. For never-takers, both arguments equal zero, so both outcomes equal $f_Y(X,U,0,\epsilon_Y)$. Thus $Y(z=1)-Y(z=0)=0$ for each person in either stratum.
+
+For compliers, the treatment arguments are zero and one, respectively. Argument substitution in the original outcome assignment gives
+
+$$
+\begin{aligned}
+Y(a=0)&=f_Y(X,U,0,\epsilon_Y),\\
+Y(a=1)&=f_Y(X,U,1,\epsilon_Y).
+\end{aligned}
+$$
+
+Consequently, among compliers,
+
+$$
+Y(z=1)-Y(z=0)=Y(a=1)-Y(a=0).
+$$
+
+In the strata decomposition, a group with zero probability given $X$ contributes zero; we do not need to define a conditional mean within that empty group.
+:::
+
+### The effect of the offer on participation
+
+Apply the same identification steps to participation:
+
+$$
+\begin{aligned}
+&E[A\mid Z=1,X]-E[A\mid Z=0,X]\\
+&\qquad=E[A(z=1)-A(z=0)\mid X].
+\end{aligned}
+$$
+
+Under monotonicity, the treatment difference is one for compliers and zero for always-takers and never-takers. Hence
+
+$$
+E[A\mid Z=1,X]-E[A\mid Z=0,X]
+=P(\text{compliers}\mid X).
+$$
+
+The outcome difference is the conditional complier effect multiplied by this proportion. The participation difference is the proportion itself. Dividing cancels it. This identifies the CACE within covariate groups. The overall CACE averages these effects over the distribution of $X$ among compliers.
+
+::: {.proposition-box}
+**Identification of the CACE.** Under our working SCM, treatment relevance, and monotonicity, at covariate values where the conditional expectations are defined and the treatment-uptake difference is nonzero,
+
+$$
+\begin{aligned}
+\text{CACE}
+&=E\left[
+\left.
+\frac{E[Y\mid Z=1,X]-E[Y\mid Z=0,X]}
+{E[A\mid Z=1,X]-E[A\mid Z=0,X]}
+\,\right|\,\text{compliers}
+\right].
+\end{aligned}
+$$
+:::
+
+
+
+If we remove $X\to Z$, instrument independence holds without conditioning on $X$. The argument then gives the unconditional result of Imbens and Angrist [@imbensangrist1994late], expressed through the ratio called the **Wald estimand**:
+
+::: {.proposition-box}
+**Corollary. Unconditional instrument independence.** If we remove the arrow $X\to Z$ from our SCM, then under monotonicity and treatment relevance,
+
+$$
+\begin{aligned}
+\text{CACE}
+&=E[Y(a=1)-Y(a=0)\mid\text{compliers}]\\
+&=\frac{E[Y\mid Z=1]-E[Y\mid Z=0]}
+{E[A\mid Z=1]-E[A\mid Z=0]},
+\end{aligned}
+$$
+
+provided the expectations are defined and the denominator is nonzero.
+:::
 
 ::: {.example-intro}
 <span class="example-label">The gift-card offer and blood pressure</span>
 
-Suppose our exercise-program study gives the following results. Treatment $A=1$ means participation, and $Y$ is systolic blood pressure measured in mmHg.
+Suppose the offer is randomized with the same probability for everyone, and our study gives the following results. Treatment $A=1$ means participation, and $Y$ is systolic blood pressure measured in mmHg.
 
 | Gift-card offer | Probability of participation | Mean blood pressure |
 |---|---:|---:|
@@ -259,160 +395,16 @@ Suppose our exercise-program study gives the following results. Treatment $A=1$ 
 | Not offered ($Z=0$) | 0.2 | 134 |
 :::
 
-The offer groups differ in average blood pressure by $130-134=-4$ mmHg. They differ in participation by $0.6-0.2=0.4$. Dividing gives
+The offer changes mean blood pressure by $130-134=-4$ mmHg and participation by $0.6-0.2=0.4$. The estimated CACE is
 
 $$
-\begin{aligned}
 \widehat{\text{CACE}}
-&=\frac{130-134}{0.6-0.2}\\
-&=\frac{-4}{0.4}\\
-&=-10\text{ mmHg}.
-\end{aligned}
+=\frac{130-134}{0.6-0.2}
+=\frac{-4}{0.4}
+=-10\text{ mmHg}.
 $$
 
-Under our working SCM, treatment relevance, and monotonicity, we interpret this as an estimated 10 mmHg reduction in blood pressure from participating in the program among compliers: people who would participate only if offered the gift card.
-
-The offer changes participation for only some people. The outcome difference of $-4$ mmHg is therefore smaller in magnitude than the estimated effect of participation among those people. Dividing by the participation difference accounts for this.
-
-We can compare average outcomes between people offered the gift card and people not offered it. But how does that comparison tell us about the effect of participating in the program among compliers?
-
-To see the connection, we will write the observed outcome separately for each offer group, then compare their averages.
-
-### Why the ratio identifies the CACE
-
-When $Z=1$, the treatment received is $A(z=1)$. By consistency and exclusion restriction,
-
-$$
-\begin{aligned}
-Y&=Y(a=0)\\
-&\quad+A(z=1)\{Y(a=1)-Y(a=0)\}.
-\end{aligned}
-$$
-
-When $Z=0$, the treatment received is $A(z=0)$, so
-
-$$
-\begin{aligned}
-Y&=Y(a=0)\\
-&\quad+A(z=0)\{Y(a=1)-Y(a=0)\}.
-\end{aligned}
-$$
-
-In each expression, treatment received determines which potential outcome we observe: $Y(a=0)$ if treatment is zero, and $Y(a=1)$ if treatment is one.
-
-First, take the average outcome among people offered the gift card. Substituting the expression for their outcomes and using linearity of expectation gives
-
-$$
-\begin{aligned}
-E[Y\mid Z=1]
-&=E[Y(a=0)\mid Z=1]\\
-&\quad+E\big[A(z=1)\{Y(a=1)-Y(a=0)\}\mid Z=1\big].
-\end{aligned}
-$$
-
-Instrument independence tells us that conditioning on $Z$ does not change the joint distribution of the potential treatments and outcomes. We can therefore remove the conditioning on the right:
-
-$$
-\begin{aligned}
-E[Y\mid Z=1]
-&=E[Y(a=0)]\\
-&\quad+E\big[A(z=1)\{Y(a=1)-Y(a=0)\}\big].
-\end{aligned}
-$$
-
-The same steps for people not offered the gift card give
-
-$$
-\begin{aligned}
-E[Y\mid Z=0]
-&=E[Y(a=0)]\\
-&\quad+E\big[A(z=0)\{Y(a=1)-Y(a=0)\}\big].
-\end{aligned}
-$$
-
-Subtract these two expressions. The $E[Y(a=0)]$ terms cancel, leaving
-
-$$
-\begin{aligned}
-&E[Y\mid Z=1]-E[Y\mid Z=0]\\
-&\quad=E\big[A(z=1)\{Y(a=1)-Y(a=0)\}\big]\\
-&\qquad-E\big[A(z=0)\{Y(a=1)-Y(a=0)\}\big]\\
-&\quad=E\big[\{A(z=1)-A(z=0)\}\\
-&\hspace{5em}\times\{Y(a=1)-Y(a=0)\}\big].
-\end{aligned}
-$$
-
-Under monotonicity, $A(z=1)-A(z=0)$ is one for compliers and zero for everyone else. The product inside this expectation is therefore the treatment effect for compliers and zero for everyone else. Averaging over these two groups gives
-
-$$
-\begin{aligned}
-&E[Y\mid Z=1]-E[Y\mid Z=0]\\
-&\quad=P(\text{compliers})\\
-&\qquad\times E[Y(a=1)-Y(a=0)\mid\text{compliers}]\\
-&\qquad+P(\text{not compliers})\times 0\\
-&\quad=P(\text{compliers})\times\text{CACE}.
-\end{aligned}
-$$
-
-We have recovered the CACE multiplied by the probability of being a complier. To recover the CACE itself, we need to find that probability.
-
-Think again about how the offer changes participation. Under monotonicity, it changes participation from zero to one for compliers and leaves everyone else's participation unchanged. So the difference in participation between the offer groups tells us the probability of being a complier. To show this, consistency first gives
-
-$$
-\begin{aligned}
-E[A\mid Z=1]&=E[A(z=1)\mid Z=1],\\
-E[A\mid Z=0]&=E[A(z=0)\mid Z=0].
-\end{aligned}
-$$
-
-Instrument independence lets us remove the conditioning on the right:
-
-$$
-\begin{aligned}
-E[A\mid Z=1]&=E[A(z=1)],\\
-E[A\mid Z=0]&=E[A(z=0)].
-\end{aligned}
-$$
-
-Subtracting and using monotonicity gives
-
-$$
-\begin{aligned}
-&E[A\mid Z=1]-E[A\mid Z=0]\\
-&\quad=E[A(z=1)]-E[A(z=0)]\\
-&\quad=E[A(z=1)-A(z=0)]\\
-&\quad=1\times P(\text{compliers})\\
-&\qquad+0\times P(\text{not compliers})\\
-&\quad=P(\text{compliers}).
-\end{aligned}
-$$
-
-We now have both pieces: the outcome difference is the probability of being a complier times the CACE, and the treatment difference is that same probability. Dividing the first by the second gives
-
-$$
-\begin{aligned}
-&\frac{E[Y\mid Z=1]-E[Y\mid Z=0]}
-{E[A\mid Z=1]-E[A\mid Z=0]}\\
-&\quad=\frac{P(\text{compliers})\times\text{CACE}}
-{P(\text{compliers})}\\
-&\quad=\text{CACE}.
-\end{aligned}
-$$
-
-Treatment relevance guarantees that some people change their participation in response to the offer, so we are dividing by a positive probability.
-
-::: {.proposition-box}
-**Proposition.** Under our working SCM, with the additional assumptions of treatment relevance and monotonicity, the usual IV estimand identifies the complier average causal effect:
-
-$$
-\begin{aligned}
-\text{CACE}
-&=E[Y(a=1)-Y(a=0)\mid\text{compliers}]\\
-&=\frac{E[Y\mid Z=1]-E[Y\mid Z=0]}
-{E[A\mid Z=1]-E[A\mid Z=0]}.
-\end{aligned}
-$$
-:::
+Under the stated assumptions, participation reduces mean blood pressure by an estimated 10 mmHg among people who would participate only if offered the gift card.
 
 <details>
 <summary>Optional technical note: effect homogeneity instead of monotonicity</summary>
@@ -461,7 +453,7 @@ $$
 
 This is the same ratio used to estimate the CACE under monotonicity. We can instead give it an ATT interpretation through the assumption below.
 
-As in the CACE argument, keep $A$ and $Z$ binary and take $X$ to be constant. Consistency and exclusion restriction give
+For this alternative argument, keep $A$ and $Z$ binary and take $X$ to be constant, as in the unconditional corollary. Consistency and exclusion restriction give
 
 $$
 \begin{aligned}
@@ -604,7 +596,7 @@ A tempting move is to add $X$ to both regressions. For the exercise program, we 
 
 ![](images/04b-squirrel-cavalier.png){width=650 fig-align="center" fig-alt="A supremely confident squirrel in a feathered cavalier hat casually tosses cards labeled X into two bowls labeled Stage 1 and Stage 2."}
 
-But our CACE result does not automatically carry over. The earlier argument assumed there were no covariates, so it never showed that adding them preserves the complier-effect interpretation. We can fit the two regressions and get a coefficient. What we do not yet know is whether that coefficient is a causal effect among compliers, or something else.
+Our identification result gives a CACE within covariate groups. Our 2SLS calculation, however, used constant $X$. It does not establish that including $X$ linearly in both stages recovers either those conditional effects or the overall CACE. We need to examine what this regression coefficient estimates.
 
 Let us first describe the procedure, then ask when we can give it a complier-effect interpretation. Throughout, we keep $A$ and $Z$ binary.
 

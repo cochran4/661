@@ -35,3 +35,111 @@ c. For each SCM, derive $E[Y(a=1)]$ and $E[Y(a=0)]$, averaging over the variable
 d. Explain why these two SCMs show that the ATE cannot be identified from the observed distribution of $X,A,Y$, even though $X$ is measured.
 
 <div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. One possible SCM is
+
+$$
+\begin{aligned}
+X&\leftarrow\operatorname{Bernoulli}(1/2),\\
+U&\leftarrow\operatorname{Bernoulli}(1/2),\\
+A&\leftarrow\operatorname{Bernoulli}(1/2),\\
+Y&\leftarrow\operatorname{Bernoulli}\!\left(\frac{1+X+A}{4}\right).
+\end{aligned}
+$$
+
+Each Bernoulli assignment uses its own independent noise. The assignment for $A$ does not use $X$ or $U$, so $A$ is independent of both. The assignments give $P(X=1)=1/2$ and $P(A=1\mid X=x)=1/2$ for either value of $x$.
+
+The outcome assignment gives
+
+$$
+P(Y=1\mid X=x,A=a)=\frac{1+x+a}{4}.
+$$
+
+Evaluating this expression reproduces the supplied outcome probabilities:
+
+| $x$ | $a$ | $P(Y=0\mid X=x,A=a)$ | $P(Y=1\mid X=x,A=a)$ |
+|---:|---:|---:|---:|
+| 0 | 0 | $3/4$ | $1/4$ |
+| 0 | 1 | $1/2$ | $1/2$ |
+| 1 | 0 | $1/2$ | $1/2$ |
+| 1 | 1 | $1/4$ | $3/4$ |
+
+b. A second possible SCM is
+
+$$
+\begin{aligned}
+X&\leftarrow\operatorname{Bernoulli}(1/2),\\
+U&\leftarrow\operatorname{Bernoulli}(1/2),\\
+A&\leftarrow U,\\
+Y&\leftarrow\operatorname{Bernoulli}\!\left(\frac{1+X+U}{4}\right).
+\end{aligned}
+$$
+
+The Bernoulli assignments again use independent noise. Here $U$ represents an unmeasured risk factor that influences both staying indoors and exacerbations. Since $X$ and $U$ are independent and $A=U$,
+
+$$
+\begin{aligned}
+P(X=1)&=\frac12,\\
+P(A=1\mid X=x)&=P(U=1\mid X=x)=\frac12.
+\end{aligned}
+$$
+
+Among people with $X=x$ and $A=a$, we have $U=a$. Therefore,
+
+$$
+\begin{aligned}
+P(Y=1\mid X=x,A=a)
+&=P(Y=1\mid X=x,U=a)\\
+&=\frac{1+x+a}{4}.
+\end{aligned}
+$$
+
+This is the same expression as in the first SCM, so it reproduces the same outcome table. Both SCMs also give the same probabilities for $X$ and $A$. Thus, they give the same joint distribution of all three observed variables:
+
+$$
+\begin{aligned}
+P(X=x,A=a,Y=y)
+&=P(X=x)P(A=a\mid X=x)\\
+&\quad\times P(Y=y\mid X=x,A=a).
+\end{aligned}
+$$
+
+c. In the first SCM, substitute $a$ for the treatment argument in the outcome assignment. The risk becomes $(1+X+a)/4$. Intervention leaves $X$ unchanged, so
+
+$$
+\begin{aligned}
+E[Y(a=1)]
+&=\frac12\left(\frac{1+0+1}{4}\right)
+ +\frac12\left(\frac{1+1+1}{4}\right)\\
+&=\frac12\left(\frac12\right)+\frac12\left(\frac34\right)
+ =\frac58,\\[0.5em]
+E[Y(a=0)]
+&=\frac12\left(\frac{1+0+0}{4}\right)
+ +\frac12\left(\frac{1+1+0}{4}\right)\\
+&=\frac12\left(\frac14\right)+\frac12\left(\frac12\right)
+ =\frac38.
+\end{aligned}
+$$
+
+The first ATE is $5/8-3/8=1/4$: staying indoors increases the risk by 25 percentage points in this SCM.
+
+In the second SCM, the outcome assignment contains $X$ and $U$, but no treatment argument. Intervention leaves both $X$ and $U$ unchanged. Each of their four combinations has probability $1/4$, so for either treatment value,
+
+$$
+\begin{aligned}
+E[Y(a)]
+&=\frac14\left(\frac14\right)
+ +\frac14\left(\frac12\right)\\
+&\quad+\frac14\left(\frac12\right)
+ +\frac14\left(\frac34\right)\\
+&=\frac12.
+\end{aligned}
+$$
+
+Thus $E[Y(a=1)]=E[Y(a=0)]=1/2$, and the second ATE is zero.
+
+d. The two SCMs satisfy the supplied graph and reproduce the same observed distribution of $X,A,Y$, but their ATEs are $1/4$ and zero. The observed distribution therefore does not determine a unique ATE. Measuring $X$ does not resolve the ambiguity caused by the unmeasured common cause allowed by the graph.
+:::

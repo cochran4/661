@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Inverse probability weighting – Causal inference (and other things)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./03e-robust-estimators.html" rel="next">
+<link href="./03c-propensity-scores.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-6f1477c1ffb8692f3d9a2ae751e48ac3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">Causal inference (and other things)</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./00-syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-motivation" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Motivation</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-motivation">    
+        <li>
+    <a class="dropdown-item" href="./01a-being-a-detective.html">
+ <span class="dropdown-text">Being a detective with data</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01b-why-probability-is-not-enough.html">
+ <span class="dropdown-text">Why probability is not enough</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01c-clinical-trials.html">
+ <span class="dropdown-text">Clinical trials as our exemplar</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01d-probability.html">
+ <span class="dropdown-text">Probability gives us a formal language</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./01-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-construction" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Construction</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-construction">    
+        <li>
+    <a class="dropdown-item" href="./02a-assignments.html">
+ <span class="dropdown-text">A list of assignments</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02b-structural-causal-models.html">
+ <span class="dropdown-text">Structural causal models</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02c-causal-graphs.html">
+ <span class="dropdown-text">Causal graphs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02d-global-markov-property.html">
+ <span class="dropdown-text">Global Markov property</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02e-potential-outcomes.html">
+ <span class="dropdown-text">Potential outcomes</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02f-single-world-intervention-graphs.html">
+ <span class="dropdown-text">Single-world intervention graphs</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./02-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-measured-confounding" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Measured confounding</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-measured-confounding">    
+        <li>
+    <a class="dropdown-item" href="./03a-outcome-regression.html">
+ <span class="dropdown-text">Outcome regression</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03b-matching.html">
+ <span class="dropdown-text">Matching</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03c-propensity-scores.html">
+ <span class="dropdown-text">Propensity scores</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03d-inverse-probability-weighting.html">
+ <span class="dropdown-text">Inverse probability weighting</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03e-robust-estimators.html">
+ <span class="dropdown-text">Robust estimators</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-unmeasured-confounding" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Unmeasured confounding</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-unmeasured-confounding">    
+        <li>
+    <a class="dropdown-item" href="./04a-unmeasured-confounding.html">
+ <span class="dropdown-text">Unmeasured confounding</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./04b-instrumental-variables.html">
+ <span class="dropdown-text">Instrumental variables</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./04c-regression-discontinuity.html">
+ <span class="dropdown-text">Regression discontinuity</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./04d-other-approaches.html">
+ <span class="dropdown-text">Other approaches</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./04-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-back-matter" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Back matter</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-back-matter">    
+        <li>
+    <a class="dropdown-item" href="./glossary.html">
+ <span class="dropdown-text">Glossary</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./references.html">
+ <span class="dropdown-text">References</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03a-outcome-regression.html">Measured confounding</a></li><li class="breadcrumb-item"><a href="./03d-inverse-probability-weighting.html"><span class="chapter-title">Inverse probability weighting</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">index.html</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./00-syllabus.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Syllabus</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Motivation</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01a-being-a-detective.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Being a detective with data</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01b-why-probability-is-not-enough.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Why probability is not enough</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01c-clinical-trials.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Clinical trials as our exemplar</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01d-probability.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Probability gives us a formal language</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Construction</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02a-assignments.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">A list of assignments</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02b-structural-causal-models.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Structural causal models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02c-causal-graphs.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Causal graphs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02d-global-markov-property.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Global Markov property</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02e-potential-outcomes.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Potential outcomes</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02f-single-world-intervention-graphs.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Single-world intervention graphs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Measured confounding</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03a-outcome-regression.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Outcome regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03b-matching.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Matching</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03c-propensity-scores.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Propensity scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03d-inverse-probability-weighting.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Inverse probability weighting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03e-robust-estimators.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Robust estimators</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Unmeasured confounding</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04a-unmeasured-confounding.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Unmeasured confounding</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04b-instrumental-variables.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Instrumental variables</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04c-regression-discontinuity.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Regression discontinuity</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04d-other-approaches.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Other approaches</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Sensitivity analysis</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Missing data</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Complex surveys</span></span>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+ <span class="menu-text">Back matter</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./glossary.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Glossary</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">References</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03a-outcome-regression.html">Measured confounding</a></li><li class="breadcrumb-item"><a href="./03d-inverse-probability-weighting.html"><span class="chapter-title">Inverse probability weighting</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">Inverse probability weighting</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03d-squirrel-weights.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="The familiar squirrel attaches a comically large weight to one acorn while other acorns carry small weights. Vintage paperback-style ink illustration." width="700"></p>
+</figure>
+</div>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>A causal effect can have more than one identification formula. We have already seen this. We first adjusted for the full covariate vector <span class="math inline">\(X\)</span>, then found that we could adjust for the propensity score <span class="math inline">\(e(X)\)</span> instead. The causal question stayed the same. Only the expression we used to answer it changed.</p>
+<p>Why should we care? Each identification formula suggests its own estimators, and those estimators trade off bias, noise, and computation differently. A different formula changes where the error can come from and how much noise we must tolerate to avoid it. So when we find a new identification formula, we gain a new set of estimators and a new set of tradeoffs to choose from.</p>
+<p>Let’s look for another one.</p>
+<p>Again, focus on a binary exposure <span class="math inline">\(A\)</span> and our measured-confounding SCM:</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow f_X(\epsilon_X),\\
+A&amp;\leftarrow f_A(X,\epsilon_A),\\
+Y&amp;\leftarrow f_Y(A,X,\epsilon_Y),
+\end{aligned}
+\]</span></p>
+<p>with independent noise terms.</p>
+</section>
+<section id="weighting" class="level2">
+<h2 class="anchored" data-anchor-id="weighting">Weighting</h2>
+<p>Think about estimating <span class="math inline">\(E[Y(1)]\)</span> using 1:1 propensity-score matching with replacement. Here are three people from a larger dataset:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(e(X)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Y\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hickory</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td>Hazel</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td>Willow</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">4</td>
+</tr>
+</tbody>
+</table>
+<p>Hickory received treatment, so he supplies his own outcome. For each untreated person, we choose exactly one treated person with a similar propensity score to supply a surrogate outcome. Matching with replacement means the same treated person can be chosen again for another untreated person.</p>
+<p>Hazel and Willow have the same propensity score as Hickory. Suppose we choose him as the match for each of them. Their estimated outcomes under treatment 1 are then both six. The completed matching estimates are:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(e(X)\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Y\)</span></th>
+<th>Treated match</th>
+<th style="text-align: right;"><span class="math inline">\(\hat\mu(X,1)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Hickory</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">6</td>
+<td>n/a</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="even">
+<td>Hazel</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">2</td>
+<td>Hickory</td>
+<td style="text-align: right;">6</td>
+</tr>
+<tr class="odd">
+<td>Willow</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.20</td>
+<td style="text-align: right;">4</td>
+<td>Hickory</td>
+<td style="text-align: right;">6</td>
+</tr>
+</tbody>
+</table>
+<p>Hickory supplies the estimated outcome under treatment for himself, Hazel, and Willow. His outcome enters our average three times:</p>
+<p><span class="math display">\[
+E[Y(1)]
+\approx
+\frac{6+6+6+\cdots}{1+1+1+\cdots}
+=
+\frac{3(6)+\cdots}{3+\cdots}.
+\]</span></p>
+<p>The dots represent the remaining people in the dataset. Hickory’s outcome contributes <span class="math inline">\(3(6)\)</span> to the numerator and weight three to the denominator. More generally, each treated person’s outcome appears once for themselves, plus once for every untreated person who uses them as a match. Untreated outcomes receive weight zero. Writing</p>
+<p><span class="math display">\[
+w_i=
+\begin{cases}
+1+\text{number of times person }i\text{ is used as a match}, &amp; a_i=1,\\
+0, &amp; a_i=0,
+\end{cases}
+\]</span></p>
+<p>we can sum over everyone to write our matching estimate as a weighted mean:</p>
+<p><span class="math display">\[
+E[Y(1)]
+\approx
+\frac{\sum_i w_i y_i}
+{\sum_i w_i}.
+\]</span></p>
+<p>Do we have to find matches to get these weights? Could we get them directly from the propensity scores?</p>
+<p>Hickory’s propensity score of 0.20 means a one-in-five chance of receiving treatment. Over many people with this score, we would see about four untreated people for every treated person. This suggests giving each treated person weight five: one for themselves and four for the untreated people they represent. For a general propensity score, the same reasoning gives</p>
+<p><span class="math display">\[
+1+\frac{1-e(X)}{e(X)}=\frac{1}{e(X)}.
+\]</span></p>
+<p>Another way to think about this is to follow Hickory. He has probability 0.20 of receiving treatment, so his outcome has probability 0.20 of entering our treated-outcome average. Giving it weight five restores one person’s representation on average:</p>
+<p><span class="math display">\[
+0.20(5)+0.80(0)=1.
+\]</span></p>
+<p>More generally,</p>
+<p><span class="math display">\[
+e(X)\frac{1}{e(X)}+\{1-e(X)\}(0)=1.
+\]</span></p>
+<p>This is inverse probability weighting, or IPW. Matching determined Hickory’s weight by counting his uses as a surrogate. IPW assigns him weight five directly from his treatment probability.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/03d-matching-to-ipw.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Acorn icons represent individuals. Left: two outlined untreated acorns each choose the filled treated acorn, Hickory, as their single match with replacement, giving him weight 3. Right: Hickory and four faded copies show five units of representation at propensity score 0.20, giving weight 5. The faded copies represent additional weight, not additional observations." width="900"></p>
+</figure>
+</div>
+<details class="lesson-question">
+<summary>
+Suppose a person has propensity score 0.05. Over many people with this score, how many untreated people would we see per treated person? What weight should a treated person receive? Check that this restores one person’s representation on average.
+</summary>
+<p>We would see about 19 untreated people for every treated person. Each treated person represents themselves plus 19 untreated people on average, giving weight</p>
+<p><span class="math display">\[
+1+\frac{0.95}{0.05}=20=\frac{1}{0.05}.
+\]</span></p>
+<p>Following one person, their outcome receives weight <span class="math inline">\(20\)</span> if they are treated and zero otherwise. Their average representation is</p>
+<p><span class="math display">\[
+0.05(20)+0.95(0)=1.
+\]</span></p>
+</details>
+<details class="lesson-question">
+<summary>
+In a study of a depression treatment, suppose women are more likely than men to receive treatment at the same values of the other covariates. Compare a treated woman and a treated man whose other covariates agree. Without knowing their propensity scores, who should receive more weight?
+</summary>
+<p>The man. His propensity score is smaller, so his weight <span class="math inline">\(1/e(X)\)</span> is larger. There are more untreated people per treated person at his covariate values, so his outcome has to represent more people.</p>
+</details>
+</section>
+<section id="identification" class="level2">
+<h2 class="anchored" data-anchor-id="identification">Identification</h2>
+<p>Our intuition was that the weight <span class="math inline">\(1/e(X)\)</span> lets each treated person stand in for everyone with their covariates, treated or not. Writing the weight as <span class="math inline">\(A/e(X)\)</span> (equal to <span class="math inline">\(1/e(X)\)</span> for treated people and zero for untreated people), the weighted contribution to the outcome is</p>
+<p><span class="math display">\[
+\frac{A}{e(X)} \times Y.
+\]</span></p>
+<p>What is its average among people with the same <span class="math inline">\(X\)</span>? Holding covariates fixed, treatment and outcome still vary, so we split the average by treatment value and weight each piece by its probability:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[\frac{YA}{e(X)}\Bigm| X\right]
+&amp;=E\left[\frac{YA}{e(X)}\Bigm| X,A=1\right]P(A=1\mid X)\\
+&amp;\quad+E\left[\frac{YA}{e(X)}\Bigm| X,A=0\right]P(A=0\mid X).
+\end{aligned}
+\]</span></p>
+<p>By definition of the propensity score, <span class="math inline">\(P(A=1\mid X)=e(X)\)</span> and <span class="math inline">\(P(A=0\mid X)=1-e(X).\)</span> Also, <span class="math inline">\(YA=Y\)</span> when <span class="math inline">\(A=1\)</span> and <span class="math inline">\(YA=0\)</span> when <span class="math inline">\(A=0\)</span>, so the untreated term vanishes:</p>
+<p><span class="math display">\[
+E\left[\frac{YA}{e(X)}\Bigm| X\right]
+=
+E\left[\frac{Y}{e(X)}\Bigm| X,A=1\right]e(X).
+\]</span></p>
+<p>Because <span class="math inline">\(e(X)\)</span> is constant once we condition on <span class="math inline">\(X\)</span>, it comes out of the expectation and cancels:</p>
+<p><span class="math display">\[
+E\left[\frac{YA}{e(X)}\Bigm| X\right]
+=\frac{1}{e(X)}\,E[Y\mid X,A=1]\,e(X)
+=E[Y\mid X,A=1].
+\]</span></p>
+<p>This is the observed mean among treated people with covariates <span class="math inline">\(X.\)</span> Under our measured-confounding SCM,</p>
+<p><span class="math display">\[
+E[Y\mid X,A=1]=E[Y(1)\mid X].
+\]</span></p>
+<p>Combining the two results,</p>
+<p><span class="math display">\[
+E\left[\frac{YA}{e(X)}\Bigm| X\right]=E[Y(1)\mid X].
+\]</span></p>
+<p>The weighted outcome recovers the mean potential outcome under treatment at each value of <span class="math inline">\(X\)</span>, including for people who were actually untreated.</p>
+<p>So far we have held <span class="math inline">\(X\)</span> fixed. To get the overall mean, we average over the covariate distribution using iterated expectations:</p>
+<p><span class="math display">\[
+E\left[\frac{YA}{e(X)}\right]
+=E\left[E\left[\frac{YA}{e(X)}\Bigm| X\right]\right]
+=E\left[E[Y(1)\mid X]\right]
+=E[Y(1)].
+\]</span></p>
+<p>For <span class="math inline">\(E[Y(0)]\)</span>, reverse the roles. Untreated people supply the outcomes with weight <span class="math inline">\(1/\{1-e(X)\}\)</span>, and treated people receive weight zero. Each untreated person represents themselves plus, on average, <span class="math inline">\(e(X)/\{1-e(X)\}\)</span> treated people, for a total weight of</p>
+<p><span class="math display">\[
+1+\frac{e(X)}{1-e(X)}=\frac{1}{1-e(X)}.
+\]</span></p>
+<p>Repeating the argument with <span class="math inline">\((1-A)/\{1-e(X)\}\)</span> gives</p>
+<p><span class="math display">\[
+E\left[\frac{Y(1-A)}{1-e(X)}\right]=E[Y(0)].
+\]</span></p>
+<p>Both derivations divide by <span class="math inline">\(e(X)\)</span> or <span class="math inline">\(1-e(X)\)</span>, so neither can be zero. This is the conditional positivity assumption from earlier. Collecting the two derivations, we can state the following result:</p>
+<div class="proposition-box">
+<p>Under the measured-confounding SCM, if <span class="math inline">\(0&lt;e(X)&lt;1\)</span> with probability one and the expectations below exist, then</p>
+<p><span class="math display">\[
+E[Y(1)]
+=E\left[\frac{AY}{e(X)}\right],
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+E[Y(0)]
+=E\left[\frac{(1-A)Y}{1-e(X)}\right].
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled" title="Technical note: the proof for treatment 0">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Technical note: the proof for treatment 0
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>An untreated person receives weight <span class="math inline">\(1/\{1-e(X)\}\)</span>, and a treated person receives weight zero. We can write both cases as <span class="math inline">\((1-A)/\{1-e(X)\}.\)</span> Applying that weight to the outcome gives</p>
+<p><span class="math display">\[
+\frac{Y(1-A)}{1-e(X)}.
+\]</span></p>
+<p>What does this give us on average for people with the same <span class="math inline">\(X\)</span>? We want to calculate</p>
+<p><span class="math display">\[
+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right].
+\]</span></p>
+<p>First, break the average into the two possible treatment values:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right]
+&amp;=E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X,A=0\right]P(A=0\mid X)\\
+&amp;\quad+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X,A=1\right]P(A=1\mid X).
+\end{aligned}
+\]</span></p>
+<p>Substitute <span class="math inline">\(P(A=0\mid X)=1-e(X)\)</span> and <span class="math inline">\(P(A=1\mid X)=e(X)\)</span>:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right]
+&amp;=E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X,A=0\right]\{1-e(X)\}\\
+&amp;\quad+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X,A=1\right]e(X).
+\end{aligned}
+\]</span></p>
+<p>When <span class="math inline">\(A=0\)</span>, <span class="math inline">\(Y(1-A)=Y.\)</span> When <span class="math inline">\(A=1\)</span>, <span class="math inline">\(Y(1-A)=0.\)</span> This leaves</p>
+<p><span class="math display">\[
+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right]
+=E\left[\frac{Y}{1-e(X)}\Bigm|X,A=0\right]\{1-e(X)\}.
+\]</span></p>
+<p>Since we are conditioning on <span class="math inline">\(X\)</span>, <span class="math inline">\(1-e(X)\)</span> is fixed. Pull it outside the conditional expectation and cancel:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right]
+&amp;=\frac{1}{1-e(X)}E[Y\mid X,A=0]\{1-e(X)\}\\
+&amp;=E[Y\mid X,A=0].
+\end{aligned}
+\]</span></p>
+<p>Now use consistency. Among untreated people, <span class="math inline">\(Y=Y(0)\)</span>, so</p>
+<p><span class="math display">\[
+E[Y\mid X,A=0]=E[Y(0)\mid X,A=0].
+\]</span></p>
+<p>Our measured-confounding SCM and the global Markov property give <span class="math inline">\(A\mathrel{\perp\!\!\!\perp}Y(0)\mid X.\)</span> Therefore,</p>
+<p><span class="math display">\[
+E[Y(0)\mid X,A=0]=E[Y(0)\mid X].
+\]</span></p>
+<p>We have shown that</p>
+<p><span class="math display">\[
+E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right]=E[Y(0)\mid X].
+\]</span></p>
+<p>Only now do we average over <span class="math inline">\(X\)</span>, using iterated expectations:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[\frac{Y(1-A)}{1-e(X)}\right]
+&amp;=E\left[E\left[\frac{Y(1-A)}{1-e(X)}\Bigm|X\right]\right]\\
+&amp;=E\left[E[Y(0)\mid X]\right]\\
+&amp;=E[Y(0)].
+\end{aligned}
+\]</span></p>
+</div>
+</div>
+</div>
+</section>
+<section id="estimating-the-effect" class="level2">
+<h2 class="anchored" data-anchor-id="estimating-the-effect">Estimating the effect</h2>
+<p>We have identified the intervention means. Now let’s estimate them from data, starting with a small example.</p>
+<div class="example-intro">
+<p><span class="example-label">Example: Four people.</span></p>
+<p>Suppose we observe the following covariates, treatments, and outcomes. The true propensity scores are supplied.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;"><span class="math inline">\(X\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(Y\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(e(X)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0.25</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.75</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0.75</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>We need two sets of weights. To estimate the mean under treatment 1, use <span class="math inline">\(A/e(X).\)</span> To estimate the mean under treatment 0, use <span class="math inline">\((1-A)/\{1-e(X)\}.\)</span> Each person supplies an observed outcome under only one treatment value, so one of their two weights will be zero.</p>
+<p>Person 1 received treatment. His weight for estimating the mean under treatment 1 is <span class="math inline">\(1/0.25=4\)</span>, and his weight for estimating the mean under treatment 0 is zero. Person 2 did not receive treatment. Her weight for the first mean is zero, and her weight for the second is <span class="math inline">\(1/(1-0.25)=4/3.\)</span> Repeating these calculations for Persons 3 and 4 completes the table:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 27%">
+<col style="width: 36%">
+<col style="width: 36%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Person</th>
+<th style="text-align: right;">Weight for <span class="math inline">\(Y(1)\)</span>: <span class="math inline">\(A/e(X)\)</span></th>
+<th style="text-align: right;">Weight for <span class="math inline">\(Y(0)\)</span>: <span class="math inline">\((1-A)/\{1-e(X)\}\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td style="text-align: right;"><span class="math inline">\(1/0.25=4\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0/0.75=0\)</span></td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td style="text-align: right;"><span class="math inline">\(0/0.25=0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(1/0.75=4/3\)</span></td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td style="text-align: right;"><span class="math inline">\(1/0.75=4/3\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(0/0.25=0\)</span></td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td style="text-align: right;"><span class="math inline">\(0/0.75=0\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(1/0.25=4\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>For the mean under treatment 1, Persons 1 and 3 supply the outcomes. Person 1’s outcome receives weight four, while Person 3’s outcome receives weight <span class="math inline">\(4/3.\)</span> Multiply each outcome by its weight, add, and divide by the total weight:</p>
+<p><span class="math display">\[
+E[Y(1)]
+\approx\frac{4(6)+(4/3)(10)}{4+4/3}
+=\frac{112/3}{16/3}
+=7.
+\]</span></p>
+<p>For the mean under treatment 0, Persons 2 and 4 supply the outcomes. This time their weights are <span class="math inline">\(4/3\)</span> and four, respectively. The same weighted-mean calculation gives</p>
+<p><span class="math display">\[
+E[Y(0)]
+\approx\frac{(4/3)(2)+4(4)}{4/3+4}
+=\frac{56/3}{16/3}
+=3.5.
+\]</span></p>
+<p>Subtract the estimated mean under treatment 0 from the estimated mean under treatment 1:</p>
+<p><span class="math display">\[
+\operatorname{ATE}\approx7-3.5=3.5.
+\]</span></p>
+<p>The estimated effect of treatment is an increase of 3.5 outcome units. We used the propensity scores to construct weights, then calculated a weighted mean in each treatment group.</p>
+<div class="main-point">
+<p>To estimate the ATE using IPW:</p>
+<ol type="1">
+<li>Estimate each person’s propensity score.</li>
+<li>Compute two weights to each person, <span class="math inline">\(A/\hat e(X)\)</span> and <span class="math inline">\((1-A)/\{1-\hat e(X)\}.\)</span></li>
+<li>Calculate the weighted mean outcome separately for each set of weights</li>
+</ol>
+</div>
+<p>The weighted means we just calculated are <strong>normalized IPW estimators</strong>, also called <strong>Hájek estimators</strong> <span class="citation" data-cites="hajek_1971">(<a href="references.html#ref-hajek_1971" role="doc-biblioref">Hájek 1971</a>)</span>. For <span class="math inline">\(n\)</span> people, we can write the same calculations as</p>
+<p><span class="math display">\[
+E[Y(1)]
+\approx\frac{\sum_{i=1}^n a_i y_i/\hat e(x_i)}
+{\sum_{i=1}^n a_i/\hat e(x_i)},
+\qquad
+E[Y(0)]
+\approx\frac{\sum_{i=1}^n (1-a_i)y_i/\{1-\hat e(x_i)\}}
+{\sum_{i=1}^n (1-a_i)/\{1-\hat e(x_i)\}}.
+\]</span></p>
+<p>How do these denominators connect to the identification result? The proposition gave us expectations of weighted outcomes. The corresponding weights have expectation one at every <span class="math inline">\(X\)</span>:</p>
+<p><span class="math display">\[
+\begin{aligned}
+E\left[\frac{A}{e(X)}\Bigm|X\right]
+&amp;=\frac{E[A\mid X]}{e(X)}=1,\\
+E\left[\frac{1-A}{1-e(X)}\Bigm|X\right]
+&amp;=\frac{E[1-A\mid X]}{1-e(X)}=1.
+\end{aligned}
+\]</span></p>
+<p>Averaging over <span class="math inline">\(X\)</span> therefore still gives one. Writing out that averaging with iterated expectations,</p>
+<p><span class="math display">\[
+E\left[\frac{A}{e(X)}\right]
+=E\left[E\left[\frac{A}{e(X)}\Bigm|X\right]\right]
+=1,
+\]</span></p>
+<p>and</p>
+<p><span class="math display">\[
+E\left[\frac{1-A}{1-e(X)}\right]
+=E\left[E\left[\frac{1-A}{1-e(X)}\Bigm|X\right]\right]
+=1.
+\]</span></p>
+<p>Dividing each identified weighted outcome expectation by its expected weight leaves the intervention mean unchanged. This connects the weighted means to the expressions in the proposition. In our data, however, the mean weights need not be exactly one. In the four-person example, each set of weights sums to <span class="math inline">\(16/3\)</span>, rather than four. Dividing by its own weight sum gives each estimated intervention mean the form of a weighted average.</p>
+</section>
+<section id="a-data-example-in-r" class="level2">
+<h2 class="anchored" data-anchor-id="a-data-example-in-r">A data example in R</h2>
+<div class="example-intro">
+<p><span class="example-label">Example: Smoking and birth weight.</span></p>
+<p>Return to the 189 births from the previous section. Let <span class="math inline">\(A\)</span> indicate smoking during pregnancy and let <span class="math inline">\(Y\)</span> be birth weight in grams. Collect maternal age and weight in <span class="math inline">\(X\)</span>, using the same working SCM as before.</p>
+</div>
+<p>Use the propensity model we fitted in the previous section:</p>
+<p><span class="math display">\[
+\log\left[\frac{\hat e(X)}{1-\hat e(X)}\right]
+\approx 0.23
+-0.0147\,\text{age}
+-0.0026\,\text{weight}.
+\]</span></p>
+<p>Age is in years and weight in pounds.</p>
+<p>Both coefficients are negative: holding weight fixed, older mothers have a lower estimated probability of smoking. Holding age fixed, heavier mothers have a lower estimated probability of smoking.</p>
+<p>To estimate mean birth weight under smoking, we weight the outcomes by <span class="math inline">\(A/\hat e(X)\)</span>: mothers who smoked receive weight <span class="math inline">\(1/\hat e(X)\)</span>, and mothers who did not smoke receive weight zero. Among mothers who smoked, older mothers’ outcomes receive more weight, holding maternal weight fixed. Outcomes from heavier mothers receive more weight, holding age fixed.</p>
+<details class="lesson-question">
+<summary>
+To estimate mean birth weight under not smoking, we use outcomes from mothers who did not smoke. Holding the other covariate fixed, should older mothers’ outcomes receive more or less weight? What about outcomes from heavier mothers?
+</summary>
+<p>The weight is <span class="math inline">\((1-A)/\{1-\hat e(X)\}\)</span>: mothers who did not smoke receive weight <span class="math inline">\(1/\{1-\hat e(X)\}\)</span>, and mothers who smoked receive weight zero. Among mothers who did not smoke, older mothers have a higher estimated probability of not smoking, so their outcomes receive less weight in estimating mean birth weight under not smoking. Heavier mothers have a higher estimated probability of not smoking, so their outcomes receive less weight in estimating that same mean.</p>
+</details>
+<p>Here are the first four mothers:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Mother</th>
+<th style="text-align: right;">Age</th>
+<th style="text-align: right;">Weight</th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">19</td>
+<td style="text-align: right;">182</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">155</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">105</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">108</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Mother 1 is 19 years old and weighs 182 pounds. Substitute her covariates into the fitted model to get her estimated log odds:</p>
+<p><span class="math display">\[
+0.2320
+-0.014732(19)
+-0.002559(182)
+\approx -0.5136.
+\]</span></p>
+<p>Transform back to a probability:</p>
+<p><span class="math display">\[
+\hat e(19,182)
+\approx\frac{\exp(-0.5136)}{1+\exp(-0.5136)}
+\approx0.3743.
+\]</span></p>
+<p>She did not smoke, so her weight for estimating mean birth weight under smoking is zero:</p>
+<p><span class="math display">\[
+\frac{0}{\hat e(19,182)}=0.
+\]</span></p>
+<p>Her weight for estimating mean birth weight under not smoking is</p>
+<p><span class="math display">\[
+\frac{1-0}{1-\hat e(19,182)}
+\approx\frac{1}{1-0.3743}\approx1.60.
+\]</span></p>
+<p>Mother 3 is 20 years old and weighs 105 pounds. The same substitution gives</p>
+<p><span class="math display">\[
+\hat e(20,105)
+\approx\frac{\exp\{0.2320-0.014732(20)-0.002559(105)\}}
+{1+\exp\{0.2320-0.014732(20)-0.002559(105)\}}
+\approx0.4179.
+\]</span></p>
+<p>She smoked, so her weight for estimating mean birth weight under smoking is</p>
+<p><span class="math display">\[
+\frac{1}{\hat e(20,105)}\approx\frac{1}{0.4179}\approx2.39.
+\]</span></p>
+<p>Her weight for estimating mean birth weight under not smoking is zero:</p>
+<p><span class="math display">\[
+\frac{1-1}{1-\hat e(20,105)}=0.
+\]</span></p>
+<p>Calculate the scores and weights for Mothers 2 and 4 in the same way. In R, <code>predict()</code> calculates the scores. We then calculate a separate set of weights for each intervention mean:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>birthwt_ipw<span class="sc">$</span>score <span class="ot">&lt;-</span> <span class="fu">predict</span>(ipw_ps_fit, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>birthwt_ipw<span class="sc">$</span>weight1 <span class="ot">&lt;-</span> <span class="fu">with</span>(birthwt_ipw, smoke <span class="sc">/</span> score)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>birthwt_ipw<span class="sc">$</span>weight0 <span class="ot">&lt;-</span> <span class="fu">with</span>(birthwt_ipw, (<span class="dv">1</span> <span class="sc">-</span> smoke) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> score))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The completed calculations for these four mothers are:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Mother</th>
+<th style="text-align: right;"><span class="math inline">\(A\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat e(X)\)</span></th>
+<th style="text-align: right;">Weight for <span class="math inline">\(Y(1)\)</span></th>
+<th style="text-align: right;">Weight for <span class="math inline">\(Y(0)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.3743</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.60</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.3428</td>
+<td style="text-align: right;">0.00</td>
+<td style="text-align: right;">1.52</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.4179</td>
+<td style="text-align: right;">2.39</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0.4125</td>
+<td style="text-align: right;">2.42</td>
+<td style="text-align: right;">0.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>Use <code>weighted.mean()</code> with each set of weights. All 189 outcomes appear in each call, but nonsmokers receive weight zero when estimating the mean under smoking, and smokers receive weight zero when estimating the mean under not smoking:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>smoked <span class="ot">&lt;-</span> birthwt_ipw<span class="sc">$</span>smoke <span class="sc">==</span> <span class="dv">1</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>ipw_mean1 <span class="ot">&lt;-</span> <span class="fu">with</span>(birthwt_ipw,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">weighted.mean</span>(bwt, weight1))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>ipw_mean0 <span class="ot">&lt;-</span> <span class="fu">with</span>(birthwt_ipw,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">weighted.mean</span>(bwt, weight0))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>ipw_ate <span class="ot">&lt;-</span> ipw_mean1 <span class="sc">-</span> ipw_mean0</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">mean1 =</span> ipw_mean1, <span class="at">mean0 =</span> ipw_mean0, <span class="at">ATE =</span> ipw_ate)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   mean1    mean0      ATE 
+2772.786 3047.119 -274.333 </code></pre>
+</div>
+</div>
+<p>The estimated mean birth weights are 2772.79 grams under smoking and 3047.12 grams under not smoking. Their difference is -274.33 grams. Under our working SCM, smoking lowers mean birth weight by an estimated 274.33 grams.</p>
+<p>How does this compare with our earlier estimate? In <a href="./03c-propensity-scores.html">Propensity scores</a>, outcome regression using the score and smoking gave an estimated decrease of 268.97 grams. The estimates are reasonably close.</p>
+<div class="example-intro">
+<p><span class="example-label">Example: Smoking and low birth weight.</span></p>
+<p>Now let <span class="math inline">\(Y=1\)</span> indicate infant birth weight below 2,500 grams and <span class="math inline">\(Y=0\)</span> otherwise, using the variable <code>low</code>. We keep the same mothers, smoking variable, and covariates.</p>
+</div>
+<p>Our weights depend on treatment and covariates, so they stay the same when we change the outcome. Replace <code>bwt</code> by <code>low</code> in the two weighted means. Because the outcome is binary, each weighted mean estimates a risk:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ipw_low_mean1 <span class="ot">&lt;-</span> <span class="fu">with</span>(birthwt_ipw, <span class="fu">weighted.mean</span>(low, weight1))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>ipw_low_mean0 <span class="ot">&lt;-</span> <span class="fu">with</span>(birthwt_ipw, <span class="fu">weighted.mean</span>(low, weight0))</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>ipw_low_ate <span class="ot">&lt;-</span> ipw_low_mean1 <span class="sc">-</span> ipw_low_mean0</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>ipw_low_rr <span class="ot">&lt;-</span> ipw_low_mean1 <span class="sc">/</span> ipw_low_mean0</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>ipw_low_or <span class="ot">&lt;-</span> (ipw_low_mean1 <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> ipw_low_mean1)) <span class="sc">/</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  (ipw_low_mean0 <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> ipw_low_mean0))</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">risk1 =</span> ipw_low_mean1, <span class="at">risk0 =</span> ipw_low_mean0,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ATE =</span> ipw_low_ate, <span class="at">relative_risk =</span> ipw_low_rr, <span class="at">odds_ratio =</span> ipw_low_or)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        risk1         risk0           ATE relative_risk    odds_ratio 
+    0.4020696     0.2570874     0.1449822     1.5639415     1.9431558 </code></pre>
+</div>
+</div>
+<p>For the risk under smoking, nonsmokers still receive weight zero. For the risk under not smoking, smokers receive weight zero. Under our working SCM, the estimated risk of low birth weight is 40.2% under smoking and 25.7% under not smoking. Smoking therefore increases the risk by an estimated 14.5 percentage points. The estimated causal relative risk is 1.56, and the causal odds ratio is 1.94.</p>
+<p>In the previous section, logistic outcome regression using the score and smoking gave an estimated risk increase of 14.2 percentage points. IPW gives 14.5 percentage points. Again, these are two estimates of the same causal contrast, obtained using different estimators.</p>
+</section>
+<section id="things-to-think-about-in-practice" class="level2">
+<h2 class="anchored" data-anchor-id="things-to-think-about-in-practice">Things to think about in practice</h2>
+<p>We have computed an estimate. Now look at the comparisons behind it and how much information supports them.</p>
+<section id="positivity" class="level3">
+<h3 class="anchored" data-anchor-id="positivity">Positivity</h3>
+<p>Our identification argument required conditional positivity: both treatment values must have positive probability given the covariates, <span class="math inline">\(0&lt;e(X)&lt;1\)</span>. Do our data support the comparisons that this assumption requires? This question matters for propensity-score matching, adjustment, and weighting.</p>
+<p>Look at the distribution of estimated propensity scores, separately for treated and untreated people. Two warning signs are worth looking for:</p>
+<ol type="1">
+<li><strong>Scores close to zero or one.</strong> A score of 0.001 means treatment is very unlikely at those covariate values. Over many people with that score, we would expect about 999 untreated people per treated person. A score of 0.999 reverses the problem: untreated outcomes are scarce. At these scores, a few outcomes supply most of the comparison under one treatment value.</li>
+<li><strong>Regions with little or no overlap between the groups.</strong> Are there score ranges containing treated people but few or no untreated people, or the reverse? We lack observed comparisons in those regions.</li>
+</ol>
+<p><span class="citation" data-cites="westreich_etal_2011">Westreich et al. (<a href="references.html#ref-westreich_etal_2011" role="doc-biblioref">2011</a>)</span> explicitly connect non-overlapping propensity-score distributions to possible nonpositivity.</p>
+<p>For our birth-weight example, plot the estimated scores for mothers who smoked and mothers who did not:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ipw_bins <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">length.out =</span> <span class="dv">21</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ipw_hist0 <span class="ot">&lt;-</span> <span class="fu">hist</span>(birthwt_ipw<span class="sc">$</span>score[<span class="sc">!</span>smoked], <span class="at">breaks =</span> ipw_bins, <span class="at">plot =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>ipw_hist1 <span class="ot">&lt;-</span> <span class="fu">hist</span>(birthwt_ipw<span class="sc">$</span>score[smoked], <span class="at">breaks =</span> ipw_bins, <span class="at">plot =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>ipw_ylim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.1</span> <span class="sc">*</span> <span class="fu">max</span>(ipw_hist0<span class="sc">$</span>density, ipw_hist1<span class="sc">$</span>density))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ipw_hist0, <span class="at">freq =</span> <span class="cn">FALSE</span>, <span class="at">col =</span> <span class="cn">NA</span>, <span class="at">border =</span> <span class="st">"grey40"</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>     <span class="at">ylim =</span> ipw_ylim, <span class="at">xlab =</span> <span class="st">"Estimated propensity score"</span>,</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Smoking probabilities by observed smoking status"</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ipw_hist1, <span class="at">freq =</span> <span class="cn">FALSE</span>, <span class="at">col =</span> <span class="cn">NA</span>, <span class="at">border =</span> <span class="st">"steelblue"</span>, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topright"</span>, <span class="fu">c</span>(<span class="st">"Did not smoke"</span>, <span class="st">"Smoked"</span>),</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"grey40"</span>, <span class="st">"steelblue"</span>), <span class="at">lty =</span> <span class="dv">1</span>, <span class="at">bty =</span> <span class="st">"n"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03d-inverse-probability-weighting_files/figure-html/ipw-birthweight-overlap-1.png" class="img-fluid figure-img" alt="Density histograms of estimated smoking probabilities for mothers who smoked and mothers who did not, using common bins." width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Here, the scores in both groups range from about 0.31 to 0.44. The fitted scores are away from zero and one, and both groups are represented across a similar range.</p>
+<p>If warning signs appear, inspect the original covariates to identify the combinations behind them. Is one treatment impossible for those people, or simply rare in our sample? Restricting the analysis to a region with both treatment groups defines the causal effect for the people in that region.</p>
+</section>
+<section id="balance" class="level3">
+<h3 class="anchored" data-anchor-id="balance">Balance</h3>
+<p>The positivity checks ask whether we have observations to compare. Balance asks whether weighting has made the covariate distributions similar between treatment groups. Check the original covariates, just as we did after matching.</p>
+<p>Use <code>cobalt</code>, as in the matching sections, to compare balance for the same 189 mothers across our methods. We will compare matching directly on age and maternal weight, propensity-score matching, full matching, and IPW.</p>
+<p>The labels show each method’s target: ATT for nearest-neighbor matching and ATE for full matching and IPW. Use the original pooled standard deviation for each covariate throughout to put all the comparisons on the same scale.</p>
+<p>Collect the matching weights from the earlier analyses. For the IPW balance check, <code>cobalt</code> uses one weight per mother: <code>weight1 + weight0</code> gives her nonzero weight for her observed treatment group. The intervention-mean calculations above use their separate sets of weights, including zeros.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ipw_comparison_weights <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Matching =</span> birthwt_nearest<span class="sc">$</span>weights,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">PS_matching =</span> birthwt_ps_nearest<span class="sc">$</span>weights,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Full_matching =</span> birthwt_full<span class="sc">$</span>weights,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">IPW =</span> birthwt_ipw<span class="sc">$</span>weight1 <span class="sc">+</span> birthwt_ipw<span class="sc">$</span>weight0</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>ipw_balance <span class="ot">&lt;-</span> cobalt<span class="sc">::</span><span class="fu">bal.tab</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  smoke <span class="sc">~</span> age <span class="sc">+</span> lwt, <span class="at">data =</span> birthwt_ipw,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">weights =</span> ipw_comparison_weights,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">un =</span> <span class="cn">TRUE</span>, <span class="at">s.d.denom =</span> <span class="st">"pooled"</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Here are the absolute standardized mean differences. Values closer to zero indicate closer balance in that covariate’s mean:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 8%">
+<col style="width: 17%">
+<col style="width: 20%">
+<col style="width: 23%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Covariate</th>
+<th style="text-align: right;">Before</th>
+<th style="text-align: right;">Matching (ATT)</th>
+<th style="text-align: right;">PS matching (ATT)</th>
+<th style="text-align: right;">Full matching (ATE)</th>
+<th style="text-align: right;">IPW (ATE)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Maternal age</td>
+<td style="text-align: right;">0.091</td>
+<td style="text-align: right;">0.039</td>
+<td style="text-align: right;">0.010</td>
+<td style="text-align: right;">0.030</td>
+<td style="text-align: right;">0.002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Maternal weight</td>
+<td style="text-align: right;">0.088</td>
+<td style="text-align: right;">0.009</td>
+<td style="text-align: right;">0.005</td>
+<td style="text-align: right;">0.025</td>
+<td style="text-align: right;">0.010</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>A single balance plot displays the same comparisons. The line at 0.10 is the common guide we used earlier:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03d-inverse-probability-weighting_files/figure-html/ipw-birthweight-balance-comparison-plot-1.png" class="img-fluid figure-img" alt="Absolute standardized mean differences in maternal age and weight before adjustment and after covariate matching, propensity-score matching, full matching, and IPW, with ATT and ATE targets labeled." width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>All four methods bring these mean differences closer to zero. IPW gives the closest mean-age balance, while propensity-score matching gives the closest mean-weight balance. Also compare spread and relevant nonlinear features or interactions.</p>
+<p>If balance remains poor, revisit the propensity model. Perhaps the relationship with age bends, or the association with maternal weight differs by age. Revise the model and check balance again.</p>
+<p>Evaluate the propensity model through the weighted comparison it produces. Classification accuracy measures how well the model separates treated from untreated people; balance measures how closely the weighted covariate distributions agree. <span class="citation" data-cites="brookhart_2006">Brookhart et al. (<a href="references.html#ref-brookhart_2006" role="doc-biblioref">2006</a>)</span> discuss why selecting variables for a propensity model differs from selecting them solely to predict treatment.</p>
+</section>
+<section id="large-weights" class="level3">
+<h3 class="anchored" data-anchor-id="large-weights">Large weights</h3>
+<p>Even with overlap, some outcomes may receive much more weight than others. For a mother who smoked, her weight when estimating mean birth weight under smoking is <span class="math inline">\(1/\hat e(X)\)</span>:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Estimated propensity score</th>
+<th style="text-align: right;">Weight under smoking, if she smoked</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.50</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.05</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.001</td>
+<td style="text-align: right;">1,000</td>
+</tr>
+</tbody>
+</table>
+<p>A mother who did not smoke still receives weight zero for this mean. For the mean under not smoking, the large weights arise among nonsmokers with scores close to one: a score of 0.999 gives weight <span class="math inline">\(1/(1-0.999)=1000\)</span>.</p>
+<p>Consider a different sample with four mothers who smoked. Their infants weigh 2,500, 3,000, 3,500, and 2,000 grams. Suppose their weights for estimating the mean under smoking are 2, 2, 2, and 1,000. The weighted mean is</p>
+<p><span class="math display">\[
+\frac{2(2500)+2(3000)+2(3500)+1000(2000)}{2+2+2+1000}
+=\frac{2018000}{1006}\approx2006\text{ grams}.
+\]</span></p>
+<p>The last infant’s outcome carries about 99.4% of the total weight, so the weighted mean is almost that one infant’s birth weight.</p>
+<p>One response is to cap the weights. Cap the last weight at 20 and repeat the calculation:</p>
+<p><span class="math display">\[
+\frac{2(2500)+2(3000)+2(3500)+20(2000)}{2+2+2+20}
+=\frac{58000}{26}\approx2231\text{ grams}.
+\]</span></p>
+<p>The last outcome has less influence, and the estimate changes. Capping changes the weighting formula, so we trade possible bias for reduced variability.</p>
+<p>In our actual birth-weight data, inspect the nonzero weights for each intervention mean:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(birthwt_ipw<span class="sc">$</span>weight1[smoked])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  2.262   2.418   2.517   2.555   2.659   3.271 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(birthwt_ipw<span class="sc">$</span>weight0[<span class="sc">!</span>smoked])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  1.443   1.592   1.652   1.643   1.693   1.794 </code></pre>
+</div>
+</div>
+<p>The largest is about 3.27.</p>
+<p>We can limit weights by truncating propensity scores before constructing them. For example, replacing scores below 0.05 by 0.05 and above 0.95 by 0.95 caps each nonzero weight at 20:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>bounded_score <span class="ot">&lt;-</span> <span class="fu">pmin</span>(<span class="fu">pmax</span>(birthwt_ipw<span class="sc">$</span>score, <span class="fl">0.05</span>), <span class="fl">0.95</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>bounded_weight1 <span class="ot">&lt;-</span> birthwt_ipw<span class="sc">$</span>smoke <span class="sc">/</span> bounded_score</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>bounded_weight0 <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">-</span> birthwt_ipw<span class="sc">$</span>smoke) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> bounded_score)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>bounded_ate <span class="ot">&lt;-</span> <span class="fu">with</span>(birthwt_ipw,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">weighted.mean</span>(bwt, bounded_weight1) <span class="sc">-</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">weighted.mean</span>(bwt, bounded_weight0))</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">original_ATE =</span> ipw_ate, <span class="at">bounded_ATE =</span> bounded_ate)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>original_ATE  bounded_ATE 
+    -274.333     -274.333 </code></pre>
+</div>
+</div>
+<p>No scores in our example cross these bounds, so the estimate is unchanged. When truncation does change weights, check how both the estimate and covariate balance change. Repeat the <code>cobalt</code> balance check using <code>bounded_weight1 + bounded_weight0</code>. Report the bounds used. <span class="citation" data-cites="cole_hernan_2008">Cole and Hernán (<a href="references.html#ref-cole_hernan_2008" role="doc-biblioref">2008</a>)</span> work through these choices.</p>
+<details class="lesson-question">
+<summary>
+Would stabilized weights solve the domination in our four-infant example? Suppose 30% of mothers smoked, and multiply every weight for estimating the mean under smoking by 0.30.
+</summary>
+<p>The weights become 0.6, 0.6, 0.6, and 300. Both the weighted outcome total and the weight sum are multiplied by 0.30, so</p>
+<p><span class="math display">\[
+\frac{0.30\{2(2500)+2(3000)+2(3500)+1000(2000)\}}
+{0.30\{2+2+2+1000\}}
+=\frac{2018000}{1006}\approx2006\text{ grams}.
+\]</span></p>
+<p>The last infant still carries 99.4% of the total weight. Multiplying by the marginal treatment probability gives <strong>stabilized weights</strong>. For the mean under not smoking, the corresponding factor is 0.70. Each constant cancels in its own weighted mean, so the two estimated intervention means and the ATE stay the same.</p>
+</details>
+</section>
+<section id="choosing-a-denominator" class="level3">
+<h3 class="anchored" data-anchor-id="choosing-a-denominator">Choosing a denominator</h3>
+<p>We introduced IPW using weighted means, also called Hájek estimators. The <strong>Horvitz–Thompson estimator</strong> is another widely used choice <span class="citation" data-cites="horvitz_thompson_1952">(<a href="references.html#ref-horvitz_thompson_1952" role="doc-biblioref">Horvitz and Thompson 1952</a>)</span>. It divides the weighted outcome total by <span class="math inline">\(n\)</span>, the number of people in the sample, including those with weight zero.</p>
+<p>Return to treatment 1 in our four-person example. The Horvitz–Thompson calculation gives</p>
+<p><span class="math display">\[
+\frac{4(6)+(4/3)(10)}{4}=\frac{28}{3}\approx9.33.
+\]</span></p>
+<p>The Hájek calculation uses the same numerator but divides by the weight sum:</p>
+<p><span class="math display">\[
+\frac{4(6)+(4/3)(10)}{4+4/3}=7.
+\]</span></p>
+<p>Why choose one over the other? When the true treatment probabilities are known, the Horvitz–Thompson estimator is unbiased: it directly averages the weighted contributions from our identification result. The Hájek estimator divides by a weight sum that varies across samples. That ratio can introduce finite-sample bias, but normalization can also reduce variability from sample to sample.</p>
+<p>The tradeoff concerns mean squared error:</p>
+<p><span class="math display">\[
+\operatorname{MSE}=\operatorname{Variance}+\operatorname{Bias}^2.
+\]</span></p>
+<p>A reduction in variance can outweigh the squared bias introduced by normalization. Estimating the propensity scores introduces another source of error into both procedures. Neither method universally minimizes MSE. <span class="citation" data-cites="datta_polson_2026">Datta and Polson (<a href="references.html#ref-datta_polson_2026" role="doc-biblioref">2026</a>)</span> discuss these estimators and their tradeoffs.</p>
+<p>We can also combine the denominator choices. <span class="citation" data-cites="khan_ugander_2023">Khan and Ugander (<a href="references.html#ref-khan_ugander_2023" role="doc-biblioref">2023</a>)</span> study <strong>adaptive normalization</strong>, using a denominator that combines <span class="math inline">\(n\)</span> and the sum of weights, with the combination chosen from the data to reduce variance. Their approach connects the two estimators and extends to ATE estimation. We will continue using Hájek weighted means in our worked examples.</p>
+</section>
+<section id="uncertainty" class="level3">
+<h3 class="anchored" data-anchor-id="uncertainty">Uncertainty</h3>
+<p>As with our earlier propensity-score analyses, there are two sources of sampling uncertainty to account for. We estimated the propensity scores, so another sample would give different weights. We also used sampled outcomes to estimate the intervention means. These two steps use the same people; their uncertainties are connected.</p>
+<p>A bootstrap repeats both steps. Sample 189 mothers with replacement, keeping each mother’s covariates, smoking status, and outcome together. Refit the propensity model, construct new weights, and calculate the difference of weighted means. Repeat this procedure to obtain a collection of estimates.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">661</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>ipw_boot <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">1000</span>, {</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  boot_rows <span class="ot">&lt;-</span> <span class="fu">sample.int</span>(<span class="fu">nrow</span>(birthwt_ipw), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  boot_data <span class="ot">&lt;-</span> birthwt_ipw[boot_rows, ]</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  boot_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(smoke <span class="sc">~</span> age <span class="sc">+</span> lwt,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">family =</span> <span class="fu">binomial</span>(), <span class="at">data =</span> boot_data)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  boot_score <span class="ot">&lt;-</span> <span class="fu">predict</span>(boot_fit, <span class="at">type =</span> <span class="st">"response"</span>)</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  boot_weight1 <span class="ot">&lt;-</span> boot_data<span class="sc">$</span>smoke <span class="sc">/</span> boot_score</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  boot_weight0 <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">-</span> boot_data<span class="sc">$</span>smoke) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> boot_score)</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">grams =</span> <span class="fu">weighted.mean</span>(boot_data<span class="sc">$</span>bwt, boot_weight1) <span class="sc">-</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">weighted.mean</span>(boot_data<span class="sc">$</span>bwt, boot_weight0),</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">risk_difference =</span> <span class="fu">weighted.mean</span>(boot_data<span class="sc">$</span>low, boot_weight1) <span class="sc">-</span></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">weighted.mean</span>(boot_data<span class="sc">$</span>low, boot_weight0)</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The standard deviation of these estimates gives a bootstrap standard error. Their 2.5th and 97.5th percentiles give a percentile 95% confidence interval:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ipw_boot_summary <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Contrast =</span> <span class="fu">c</span>(<span class="st">"Mean difference (grams)"</span>, <span class="st">"Risk difference"</span>),</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Estimate =</span> <span class="fu">c</span>(ipw_ate, ipw_low_ate),</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">SE =</span> <span class="fu">apply</span>(ipw_boot, <span class="dv">1</span>, sd),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Lower =</span> <span class="fu">apply</span>(ipw_boot, <span class="dv">1</span>, quantile, <span class="at">probs =</span> <span class="fl">0.025</span>),</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Upper =</span> <span class="fu">apply</span>(ipw_boot, <span class="dv">1</span>, quantile, <span class="at">probs =</span> <span class="fl">0.975</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(ipw_boot_summary, <span class="at">digits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">3</span>, <span class="dv">3</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Contrast</th>
+<th style="text-align: right;">Estimate</th>
+<th style="text-align: right;">SE</th>
+<th style="text-align: right;">Lower</th>
+<th style="text-align: right;">Upper</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Mean difference (grams)</td>
+<td style="text-align: right;">-274.333</td>
+<td style="text-align: right;">109.240</td>
+<td style="text-align: right;">-497.851</td>
+<td style="text-align: right;">-64.160</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Risk difference</td>
+<td style="text-align: right;">0.145</td>
+<td style="text-align: right;">0.071</td>
+<td style="text-align: right;">0.007</td>
+<td style="text-align: right;">0.288</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><span class="citation" data-cites="austin_2022">Austin (<a href="references.html#ref-austin_2022" role="doc-biblioref">2022</a>)</span> examines bootstrap uncertainty estimates for propensity weighting with continuous and binary outcomes.</p>
+<p>Next, we combine outcome regression and weighting in <a href="./03e-robust-estimators.html">Robust estimators</a>.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list" style="display: none">
+<div id="ref-austin_2022" class="csl-entry" role="listitem">
+Austin, Peter C. 2022. <span>“Bootstrap Vs Asymptotic Variance Estimation When Using Propensity Score Weighting with Continuous and Binary Outcomes.”</span> <em>Statistics in Medicine</em> 41 (22): 4426–43. <a href="https://doi.org/10.1002/sim.9519">https://doi.org/10.1002/sim.9519</a>.
+</div>
+<div id="ref-brookhart_2006" class="csl-entry" role="listitem">
+Brookhart, M. Alan, Sebastian Schneeweiss, Kenneth J. Rothman, Robert J. Glynn, Jerry Avorn, and Til Stürmer. 2006. <span>“Variable Selection for Propensity Score Models.”</span> <em>American Journal of Epidemiology</em> 163 (12): 1149–56. <a href="https://doi.org/10.1093/aje/kwj149">https://doi.org/10.1093/aje/kwj149</a>.
+</div>
+<div id="ref-cole_hernan_2008" class="csl-entry" role="listitem">
+Cole, Stephen R., and Miguel A. Hernán. 2008. <span>“Constructing Inverse Probability Weights for Marginal Structural Models.”</span> <em>American Journal of Epidemiology</em> 168 (6): 656–64. <a href="https://doi.org/10.1093/aje/kwn164">https://doi.org/10.1093/aje/kwn164</a>.
+</div>
+<div id="ref-datta_polson_2026" class="csl-entry" role="listitem">
+Datta, Jyotishka, and Nicholas Polson. 2026. <span>“Inverse Probability Weighting: From Survey Sampling to Evidence Estimation.”</span> <em>The New England Journal of Statistics in Data Science</em> 4 (1): 64–76. <a href="https://doi.org/10.51387/26-NEJSDS100">https://doi.org/10.51387/26-NEJSDS100</a>.
+</div>
+<div id="ref-hajek_1971" class="csl-entry" role="listitem">
+Hájek, Jaroslav. 1971. <span>“Comment on a Paper by <span>D. Basu</span>.”</span> In <em>Foundations of Statistical Inference</em>, edited by V. P. Godambe and D. A. Sprott, 236. Toronto: Holt, Rinehart; Winston.
+</div>
+<div id="ref-horvitz_thompson_1952" class="csl-entry" role="listitem">
+Horvitz, D. G., and D. J. Thompson. 1952. <span>“A Generalization of Sampling Without Replacement from a Finite Universe.”</span> <em>Journal of the American Statistical Association</em> 47 (260): 663–85. <a href="https://doi.org/10.1080/01621459.1952.10483446">https://doi.org/10.1080/01621459.1952.10483446</a>.
+</div>
+<div id="ref-khan_ugander_2023" class="csl-entry" role="listitem">
+Khan, Samir, and Johan Ugander. 2023. <span>“Adaptive Normalization for <span>IPW</span> Estimation.”</span> <em>Journal of Causal Inference</em> 11 (1): 20220019. <a href="https://doi.org/10.1515/jci-2022-0019">https://doi.org/10.1515/jci-2022-0019</a>.
+</div>
+<div id="ref-westreich_etal_2011" class="csl-entry" role="listitem">
+Westreich, Daniel, Stephen R. Cole, Michele Jonsson Funk, M. Alan Brookhart, and Til Stürmer. 2011. <span>“The Role of the c-Statistic in Variable Selection for Propensity Score Models.”</span> <em>Pharmacoepidemiology and Drug Safety</em> 20 (3): 317–20. <a href="https://doi.org/10.1002/pds.2074">https://doi.org/10.1002/pds.2074</a>.
+</div>
+</div>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((element) => {
+    new bootstrap.Tooltip(element, {
+      placement: "top",
+      trigger: "hover focus"
+    });
+  });
+});
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./03c-propensity-scores.html" class="pagination-link" aria-label="Propensity scores">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Propensity scores</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./03e-robust-estimators.html" class="pagination-link" aria-label="Robust estimators">
+        <span class="nav-page-text"><span class="chapter-title">Robust estimators</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

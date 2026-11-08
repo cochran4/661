@@ -30,7 +30,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./references.html" rel="next">
-<link href="./03-exercises.html" rel="prev">
+<link href="./04-exercises.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -202,7 +202,46 @@ window.Quarto = {
  <span class="dropdown-text">Matching</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./03c-propensity-scores.html">
+ <span class="dropdown-text">Propensity scores</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03d-inverse-probability-weighting.html">
+ <span class="dropdown-text">Inverse probability weighting</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./03e-robust-estimators.html">
+ <span class="dropdown-text">Robust estimators</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./03-exercises.html">
+ <span class="dropdown-text">Exercises</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-unmeasured-confounding" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Unmeasured confounding</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-unmeasured-confounding">    
+        <li>
+    <a class="dropdown-item" href="./04a-unmeasured-confounding.html">
+ <span class="dropdown-text">Unmeasured confounding</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./04b-instrumental-variables.html">
+ <span class="dropdown-text">Instrumental variables</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./04c-regression-discontinuity.html">
+ <span class="dropdown-text">Regression discontinuity</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./04d-other-approaches.html">
+ <span class="dropdown-text">Other approaches</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./04-exercises.html">
  <span class="dropdown-text">Exercises</span></a>
   </li>  
     </ul>
@@ -358,14 +397,61 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./03c-propensity-scores.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Propensity scores</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03d-inverse-probability-weighting.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Inverse probability weighting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03e-robust-estimators.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Robust estimators</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./03-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
   </div>
 </li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
-      <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text">Unmeasured confounding</span></span>
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Unmeasured confounding</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04a-unmeasured-confounding.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Unmeasured confounding</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04b-instrumental-variables.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Instrumental variables</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04c-regression-discontinuity.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Regression discontinuity</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04d-other-approaches.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Other approaches</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
+  </div>
+</li>
+      </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
@@ -438,6 +524,8 @@ window.Quarto = {
 <p>A probabilistic quantity involving potential outcomes that we want to estimate.</p>
 <p><strong>Child</strong></p>
 <p>In a graph, a node is a child of another node when it receives an arrow directly from that node.</p>
+<p><strong>Confounding by indication</strong></p>
+<p>Confounding that arises when the clinical reasons for giving a treatment also influence the outcome.</p>
 <p><strong>Confounder</strong></p>
 <p>A common cause of the exposure and outcome that can create or distort their observed association.</p>
 <p><strong>Conditional exchangeability</strong></p>
@@ -458,12 +546,16 @@ window.Quarto = {
 <p>A collection of nodes joined only by directed edges.</p>
 <p><strong>Directed path</strong></p>
 <p>A path whose arrows line up head to tail, so that every arrow can be followed in its direction.</p>
+<p><strong>Exclusion restriction</strong></p>
+<p>The instrument affects the outcome only through the treatment.</p>
 <p><strong>Exposure</strong></p>
 <p>The condition, action, or factor whose causal effect is being studied. Depending on the setting, it may also be called the treatment or intervention.</p>
 <p><strong>Fundamental problem of causal inference</strong></p>
 <p>For each person, we observe the potential outcome under the treatment received but not the potential outcome under the other treatment. We therefore cannot observe both potential outcomes for the same person.</p>
 <p><strong>Identified</strong></p>
 <p>A causal estimand is identified when it can be written entirely in terms of observed variables and their probability model.</p>
+<p><strong>Instrument independence</strong></p>
+<p>The instrument and outcome have no common causes other than those accounted for by the measured covariates.</p>
 <p><strong>Independence</strong></p>
 <p>Learning the value of one random variable does not change the probability distribution of the other.</p>
 <p><strong>Estimator</strong></p>
@@ -494,8 +586,12 @@ window.Quarto = {
 <p>A model that defines each variable through an assignment function of its parents and a noise variable, with the noise variables independent as an entire collection.</p>
 <p><strong>Topological order</strong></p>
 <p>An ordering of a list of random variables, with one assignment for each variable, in which every variable used in an assignment appears earlier in the list.</p>
+<p><strong>Treatment relevance</strong></p>
+<p>An instrument is associated with treatment after conditioning on the measured covariates.</p>
 <p><strong>Unbiased estimator</strong></p>
 <p>An estimator whose expected value under a probability model equals the quantity it is intended to estimate.</p>
+<p><strong>Unmeasured confounding</strong></p>
+<p>Confounding due to a common cause of treatment and outcome that is not measured in the study data.</p>
 <p><strong>Unmeasured confounder</strong></p>
 <p>A confounder that was not measured in the study data.</p>
 <p><strong>Well-defined (mathematical sense)</strong></p>
@@ -916,7 +1012,7 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./03-exercises.html" class="pagination-link" aria-label="Exercises">
+      <a href="./04-exercises.html" class="pagination-link" aria-label="Exercises">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Exercises</span></span>
       </a>          
   </div>

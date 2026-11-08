@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 850" width="1400" height="850" role="img" aria-labelledby="title"><title id="title">Joint treatment and instrument SWIG after causal irrelevance</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M1 1 L9 5 L1 9" fill="none" stroke="#315C43" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<g fill="none" stroke="#315C43" stroke-width="2.4" stroke-linecap="round" marker-end="url(#arrow)"><path d="M630 100 C110 0 110 160 110 346"/>
+<path d="M655.2 155.1 L486.7 362.6"/>
+<path d="M757.9 141.1 L1089.7 377.1"/>
+<path d="M655.2 684.9 L486.7 477.4"/>
+<path d="M757.9 698.9 L1089.7 462.9"/>
+<path d="M263.0 420.0 L366.0 420.0"/>
+<path d="M593.0 420.0 L1076.0 420.0"/>
+</g>
+<circle cx="700" cy="100" r="68" fill="#E6EEDF" stroke="#315C43" stroke-width="2"/><text x="700" y="100" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="28" fill="#244635">X</text>
+<circle cx="700" cy="740" r="68" fill="#FFFDF9" stroke="#315C43" stroke-width="2" stroke-dasharray="6 4"/><text x="700" y="740" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="28" fill="#244635">U</text>
+<circle cx="110" cy="420" r="68" fill="#F6E9EC" stroke="#315C43" stroke-width="2"/><text x="110" y="420" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="28" fill="#244635">Z</text>
+<circle cx="230" cy="420" r="30" fill="#FFFDF9" stroke="#315C43" stroke-width="2"/><text x="230" y="420" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="28" fill="#244635">z</text>
+<circle cx="440" cy="420" r="68" fill="#E6EEDF" stroke="#315C43" stroke-width="2"/><text x="440" y="420" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="28" fill="#244635">A(z)</text>
+<circle cx="560" cy="420" r="30" fill="#FFFDF9" stroke="#315C43" stroke-width="2"/><text x="560" y="420" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="28" fill="#244635">a</text>
+<circle cx="1150" cy="420" r="68" fill="#E6EEDF" stroke="#315C43" stroke-width="2"/><text x="1150" y="420" dy=".34em" text-anchor="middle" font-family="Georgia,serif" font-style="italic" font-size="28" fill="#244635">Y(a)</text>
+</svg>
