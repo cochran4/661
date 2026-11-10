@@ -38,9 +38,9 @@ book:
         - 04b-instrumental-variables.qmd
         - 04c-regression-discontinuity.qmd
         - 04d-other-approaches.qmd
+        - 04e-e-values.qmd
+        - 04f-rosenbaum-sensitivity.qmd
         - 04-exercises.qmd
-    - part: "Sensitivity analysis"
-      chapters: []
     - part: "Missing data"
       chapters: []
     - part: "Complex surveys"
@@ -109,6 +109,10 @@ book:
             file: 04c-regression-discontinuity.qmd
           - text: "Other approaches"
             file: 04d-other-approaches.qmd
+          - text: "E-values"
+            file: 04e-e-values.qmd
+          - text: "Rosenbaum sensitivity"
+            file: 04f-rosenbaum-sensitivity.qmd
           - text: "Exercises"
             file: 04-exercises.qmd
       - text: "Back matter"

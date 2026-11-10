@@ -1,0 +1,144 @@
+---
+title: "Rosenbaum sensitivity"
+---
+
+<!-- Working adaptation of the prior GitBook's sensitivity-analyses/rosenbaum material. Originals, figures, and material awaiting further review are preserved in instructor-planning/archive/sensitivity-gitbook. -->
+
+## Hidden bias within a matched pair
+
+The E-value summarized the joint strength of two relationships needed to explain an observed risk ratio. Rosenbaum sensitivity analysis starts with treatment assignment: how different could the odds of receiving treatment be for two people with the same measured covariates, and how would that change our inference?
+
+Consider two people matched exactly on $X$. Suppose their probabilities of receiving treatment, given both measured and unmeasured characteristics, are $0.4$ and $0.6$. Their treatment odds are
+
+$$
+\frac{0.4}{1-0.4}=\frac23,
+\qquad
+\frac{0.6}{1-0.6}=\frac32.
+$$
+
+The ratio of the larger odds to the smaller odds is
+
+$$
+\frac{3/2}{2/3}=\frac94=2.25.
+$$
+
+They agree on everything we matched, yet their treatment odds differ by a factor of $2.25$. The sensitivity parameter $\Gamma$ places a ceiling on this difference [@rosenbaum2002observational].
+
+::: {.definition-box}
+Let $\pi_i=P(A_i=1\mid X_i,U_i)$, with $0<\pi_i<1$. The **Rosenbaum sensitivity model** with parameter $\Gamma\geq1$ requires, for any two people $i,j$ in the same matched set,
+
+$$
+\frac1\Gamma\leq\frac{\pi_i/(1-\pi_i)}{\pi_j/(1-\pi_j)}\leq\Gamma.
+$$
+:::
+
+Our pair satisfies this model with $\Gamma=2.25$. It also satisfies the model for every larger $\Gamma$. When $\Gamma=1$, matched people have the same treatment odds under the model. Increasing $\Gamma$ allows more hidden bias in treatment assignment.
+
+We will use exact matching to isolate this idea. In practice, imperfect matching can leave measured differences as well, and those need attention alongside hidden bias.
+
+## Conditioning on one treated person
+
+Suppose assignments are independent across people conditional on their measured and unmeasured characteristics. Within a pair, condition on exactly one person receiving treatment. The probability that person $i$ is the treated member becomes
+
+$$
+\begin{aligned}
+p_i
+&=\frac{\pi_i(1-\pi_j)}{\pi_i(1-\pi_j)+\pi_j(1-\pi_i)}\\[0.4em]
+&=\frac{\pi_i/(1-\pi_i)}{\pi_i/(1-\pi_i)+\pi_j/(1-\pi_j)}.
+\end{aligned}
+$$
+
+For our numerical pair, taking $i$ to be the person with probability $0.6$ gives
+
+$$
+p_i=\frac{3/2}{3/2+2/3}=\frac9{13}\approx0.692.
+$$
+
+More generally, the odds-ratio bound gives
+
+$$
+\frac1{1+\Gamma}\leq p_i\leq\frac\Gamma{1+\Gamma}.
+$$
+
+At $\Gamma=1$, either person has probability $1/2$ of being the treated member. At $\Gamma=2$, that probability can range from $1/3$ to $2/3$. These are probabilities conditional on one treated person in the pair, rather than the original individual treatment probabilities.
+
+## A binary-outcome example
+
+The prior GitBook used a smoking and lung-cancer example with $122$ discordant pairs. We retain those counts to illustrate the calculation. Let $A=1$ denote heavy smoking and $Y=1$ death from lung cancer. Among pairs whose outcomes differed, the counts were
+
+| Outcome in exposed member | Outcome in unexposed member | Number of pairs |
+|---|---|---:|
+| 1 | 0 | $c=110$ |
+| 0 | 1 | $b=12$ |
+
+Pairs with equal outcomes contribute zero to the within-pair outcome difference. Among the discordant pairs, $110$ of $122$ have the death in the exposed member.
+
+For the randomization calculation, test the **sharp null**
+
+$$
+H_0:Y_i(1)=Y_i(0)\quad\text{for every person }i.
+$$
+
+Under this null, each person's outcome stays fixed when we change exposure assignments. This lets us calculate how often a different assignment would put the exposure label on the person who died. A zero average effect alone would not justify holding every outcome fixed.
+
+Let $C$ count discordant pairs in which the exposed member has $Y=1$. At $\Gamma=1$, with independent assignments across pairs conditional on one exposed member in each pair,
+
+$$
+C\sim\operatorname{Binomial}(122,1/2).
+$$
+
+For a prespecified one-sided test in the direction of increased risk, the p-value is $P(C\geq110)$.
+
+Now allow hidden bias. Under the sharp null, the probability that the person with $Y=1$ receives exposure lies between $1/(1+\Gamma)$ and $\Gamma/(1+\Gamma)$. The largest upper-tail probability occurs when every discordant pair takes the upper endpoint. The smallest occurs at the lower endpoint. Thus the one-sided p-value is bounded by
+
+$$
+\begin{aligned}
+p_-(\Gamma)&=P\!\left\{\operatorname{Binomial}\!\left(122,\frac1{1+\Gamma}\right)\geq110\right\},\\[0.4em]
+p_+(\Gamma)&=P\!\left\{\operatorname{Binomial}\!\left(122,\frac\Gamma{1+\Gamma}\right)\geq110\right\}.
+\end{aligned}
+$$
+
+The upper bound asks whether an allowed assignment mechanism could make a result at least this extreme reasonably common under the null. We do not need to identify the actual unmeasured confounder to calculate it.
+
+## Increasing the allowed bias
+
+Here are the upper bounds for several values of $\Gamma$:
+
+| $\Gamma$ | Upper bound on the one-sided p-value |
+|---:|---:|
+| 1 | $2.73\times10^{-21}$ |
+| 2 | $1.32\times10^{-9}$ |
+| 3 | $0.0000203$ |
+| 4 | $0.00196$ |
+| 5 | $0.0232$ |
+| 6 | $0.0969$ |
+
+At $\Gamma=5$, even the largest p-value allowed by the model remains below $0.05$. At $\Gamma=6$, it does not. The upper bound reaches $0.05$ at approximately $\Gamma=5.473$ for this one-sided test.
+
+This does not estimate the actual amount of hidden bias. It says how much bias the specified inference can withstand under this model. Crossing the threshold means that rejection is no longer guaranteed across all allowed assignment mechanisms; it does not establish that the null is true.
+
+The calculation in R is short:
+
+```{r}
+#| eval: false
+b <- 12
+c <- 110
+Gamma <- c(1, 2, 3, 4, 5, 6)
+p_lower <- pbinom(c - 1, b + c, 1 / (1 + Gamma),
+                  lower.tail = FALSE)
+p_upper <- pbinom(c - 1, b + c, Gamma / (1 + Gamma),
+                  lower.tail = FALSE)
+data.frame(Gamma, p_lower, p_upper)
+
+uniroot(function(g) {
+  pbinom(c - 1, b + c, g / (1 + g), lower.tail = FALSE) - 0.05
+}, interval = c(1, 10))$root
+```
+
+We have specified a one-sided test throughout. A two-sided analysis needs an explicit two-sided testing rule; its sensitivity bounds should not be obtained by recentering a binomial distribution and reusing the earlier calculation.
+
+## What the two approaches ask
+
+An E-value asks about the joint exposure-confounder and confounder-outcome strengths needed to move a risk ratio to the null. Our Rosenbaum calculation bounds treatment-assignment odds within matched pairs and allows the unmeasured characteristics to align with outcomes in the most unfavorable way. It asks when a particular test would cease to reject uniformly over the allowed assignments.
+
+The numerical values of $E$ and $\Gamma$ therefore answer different questions. Neither tells us whether the required confounding is plausible in the study. That is where the scientific context returns.

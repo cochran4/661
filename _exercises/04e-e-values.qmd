@@ -1,0 +1,129 @@
+The studies in these exercises are hypothetical. Assume the sensitivity-analysis assumptions from the section hold.
+
+### 10. What could these confounders explain?
+
+A study reports that workers exposed to a solvent have 2.5 times the risk of lung disease as unexposed workers. Suppose an unmeasured characteristic could explain the entire association, with no causal effect of the solvent. Let $r$ be its prevalence ratio comparing exposed with unexposed workers, and let $s$ be the lung-disease risk ratio comparing workers with and without that characteristic.
+
+a. Compute the largest relative risk that each pair could explain:
+
+| Pair | $r$ | $s$ |
+|---|---:|---:|
+| A | 2 | 3 |
+| B | 4 | 6 |
+
+b. Which pairs could explain the reported relative risk of 2.5 entirely through confounding? Interpret your answers.
+
+c. Pair C passes both separate Cornfield conditions. Why is that still not enough?
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. The joint bounding factor is $rs/(r+s-1)$:
+
+$$
+\begin{aligned}
+\text{A:}\quad &\frac{2\times3}{2+3-1}=1.50,\\[0.4em]
+\text{B:}\quad &\frac{4\times6}{4+6-1}\approx2.67,\\[0.4em]
+\text{C:}\quad &\frac{3\times3}{3+3-1}=1.80.
+\end{aligned}
+$$
+
+b. Only B could explain a relative risk of 2.5. A characteristic four times as prevalent among exposed workers that increases lung-disease risk sixfold could produce an association at least this large under the null model. Pair A can produce at most a relative risk of 1.50, and pair C at most 1.80. Neither can account for the observed association completely.
+
+c. Both strengths in C exceed 2.5, but confounding depends on the two relationships together. Their joint bounding factor is only 1.80. Passing the two separate necessary conditions does not guarantee that the null explanation can produce the observed association.
+:::
+
+### 11. Compute and interpret an E-value
+
+Consider two studies that adjusted for measured common causes:
+
+| Study | Exposure comparison | Outcome | Adjusted relative risk |
+|---|---|---|---:|
+| A | Solvent-exposed vs. unexposed workers | Lung disease | 2.50 |
+| B | Homes using an air filter vs. homes without one | A respiratory illness episode | 0.64 |
+
+a. Compute the E-value for each point estimate. Show how you handle the protective association in B.
+
+b. Interpret each result. State which groups you are comparing when describing the prevalence of the unmeasured confounder, and make clear that the interpretation concerns confounding remaining after the measured adjustment.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. For study A,
+
+$$
+E=2.50+\sqrt{2.50^2-2.50}\approx4.44.
+$$
+
+For study B, first reverse the exposure comparison:
+
+$$
+RR_{\mathrm{reversed}}=\frac1{0.64}=1.5625.
+$$
+
+Then
+
+$$
+E=1.5625+\sqrt{1.5625^2-1.5625}=2.50.
+$$
+
+b. To explain away study A's relative risk entirely as confounding, an unmeasured confounder would need to be at least 4.44 times more prevalent among solvent-exposed workers than among unexposed workers, **or** increase lung-disease risk by at least 4.44 times, after the measured adjustment.
+
+For study B, an unmeasured confounder would need to be at least 2.50 times more prevalent in homes **without** an air filter than in homes using one, **or** increase respiratory-illness risk by at least 2.50 times, after the measured adjustment, to explain away the protective association.
+
+These are necessary requirements on at least one relationship. The two relationships must still satisfy the joint bound; having one strength reach its E-value does not guarantee that the association can be explained regardless of the other strength.
+:::
+
+### 12. Include the confidence interval
+
+Now suppose the two studies report the following 95% confidence intervals.
+
+| Study | Exposure comparison | Outcome | Adjusted relative risk (95% CI) |
+|---|---|---|---|
+| A | Solvent-exposed vs. unexposed workers | Lung disease | $2.50\;[1.40,4.10]$ |
+| B | Homes using an air filter vs. homes without one | A respiratory illness episode | $0.64\;[0.49,0.81]$ |
+
+a. For each study, compute the point-estimate E-value and the confidence-limit E-value. Identify the endpoint you use.
+
+b. For study A or B, write two or three sentences reporting the estimate, its interval, and both E-values. Interpret what would be needed to explain away the point estimate and what would be needed for the interval to include one.
+
+<div class="response-space"></div>
+
+::: {.answer-block}
+**Solution**
+
+a. The results are
+
+| Study | Point-estimate E-value | Relevant confidence limit | Confidence-limit E-value |
+|---|---:|---|---:|
+| A | 4.44 | Lower limit: 1.40 | 2.15 |
+| B | 2.50 | Upper limit: 0.81, inverted before calculation | 1.77 |
+
+For A, the lower limit is nearest one:
+
+$$
+E(1.40)=1.40+\sqrt{1.40^2-1.40}\approx2.15.
+$$
+
+For B, the upper limit is nearest one. Reversing the comparison gives
+
+$$
+\begin{aligned}
+R^*&=\frac1{0.81},\\[0.4em]
+E&=R^*+\sqrt{(R^*)^2-R^*}\approx1.77.
+\end{aligned}
+$$
+
+b. One possible write-up for A is:
+
+> The adjusted relative risk of lung disease comparing solvent-exposed with unexposed workers was 2.50 (95% CI: 1.40–4.10), with E-values of 4.44 for the point estimate and 2.15 for the lower confidence limit. To explain away the point estimate entirely as confounding, an unmeasured confounder would need to be at least 4.44 times more prevalent among exposed workers or increase lung-disease risk by at least 4.44 times, after the measured adjustment. For the confidence interval to include one, the corresponding requirement is 2.15.
+
+One possible write-up for B is:
+
+> The adjusted relative risk of a respiratory illness episode comparing homes using an air filter with homes without one was 0.64 (95% CI: 0.49–0.81), with E-values of 2.50 for the point estimate and 1.77 for the upper confidence limit. To explain away the point estimate entirely as confounding, an unmeasured confounder would need to be at least 2.50 times more prevalent in homes without a filter or increase respiratory-illness risk by at least 2.50 times, after the measured adjustment. For the confidence interval to include one, the corresponding requirement is 1.77.
+
+:::

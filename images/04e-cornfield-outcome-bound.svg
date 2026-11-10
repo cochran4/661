@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="940" height="570" viewBox="0 0 940 570" role="img" aria-labelledby="title desc">
+<title id="title">The second Cornfield condition</title>
+<desc id="desc">The observed risk point moves left by w_N Delta and up by (1-w_S) Delta to (B,B+Delta). The new ray from the origin is steeper, bounding the observed relative risk by (B+Delta)/B.</desc>
+<defs>
+  <marker id="axis" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10" fill="none" stroke="#111827" stroke-width="1.5"/></marker>
+  <marker id="move" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#B7791F"/></marker>
+</defs>
+<rect width="940" height="570" fill="white"/>
+<g font-family="Inter, Arial, sans-serif" font-size="22" fill="#111827">
+  <g stroke="#111827" stroke-width="2" fill="none" marker-end="url(#axis)">
+    <path d="M100 460 H850"/>
+    <path d="M100 460 V45"/>
+  </g>
+  <text x="99" y="27">Lung-cancer risk among smokers</text>
+  <text x="440" y="535" text-anchor="middle">Lung-cancer risk among nonsmokers</text>
+  <text x="77" y="486">0</text>
+  <g stroke="#C9D8CE" stroke-width="1.5" stroke-dasharray="5 6" fill="none">
+    <path d="M200 460 V100 H100"/>
+    <path d="M300 460 V200 H100"/>
+  </g>
+  <path d="M100 460 L300 200" fill="none" stroke="#6B7280" stroke-width="3"/>
+  <path d="M100 460 L200 100" fill="none" stroke="#2F6F4E" stroke-width="3"/>
+  <g stroke="#B7791F" stroke-width="2.3" fill="none" marker-end="url(#move)">
+    <path d="M292 200 H208"/>
+    <path d="M200 192 V110"/>
+  </g>
+  <circle cx="300" cy="200" r="5.5" fill="#6B7280"/>
+  <circle cx="200" cy="100" r="5.5" fill="#2F6F4E"/>
+  <text x="320" y="204">(R<tspan baseline-shift="sub" font-size="15">N</tspan>, R<tspan baseline-shift="sub" font-size="15">S</tspan>)</text>
+  <text x="218" y="87" fill="#2F6F4E">(B, B + Δ)</text>
+  <text x="250" y="233" text-anchor="middle" fill="#B7791F" font-size="19">w<tspan baseline-shift="sub" font-size="13">N</tspan> Δ</text>
+  <text x="218" y="155" fill="#B7791F" font-size="19">(1 − w<tspan baseline-shift="sub" font-size="13">S</tspan>) Δ</text>
+  <text x="200" y="490" text-anchor="middle">B</text>
+  <text x="300" y="490" text-anchor="middle">R<tspan baseline-shift="sub" font-size="15">N</tspan></text>
+  <text x="81" y="207" text-anchor="end">R<tspan baseline-shift="sub" font-size="15">S</tspan></text>
+  <text x="81" y="107" text-anchor="end">B + Δ</text>
+  <g transform="translate(485 280)">
+    <path d="M0 0 H45" stroke="#6B7280" stroke-width="3"/>
+    <text x="60" y="7">Observed slope: R<tspan baseline-shift="sub" font-size="15">S</tspan> / R<tspan baseline-shift="sub" font-size="15">N</tspan></text>
+    <path d="M0 57 H45" stroke="#2F6F4E" stroke-width="3"/>
+    <text x="60" y="64">Steeper slope: (B + Δ) / B</text>
+  </g>
+</g>
+</svg>

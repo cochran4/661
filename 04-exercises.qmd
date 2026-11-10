@@ -19,3 +19,7 @@ filters:
 ## Other approaches
 
 *[Placeholder: Exercises to be written.]*
+
+## E-values
+
+{{< include _exercises/04e-e-values.qmd >}}
