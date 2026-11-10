@@ -36,7 +36,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
 <link href="./glossary.html" rel="next">
-<link href="./04d-other-approaches.html" rel="prev">
+<link href="./04f-rosenbaum-sensitivity.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
@@ -246,6 +246,14 @@ window.Quarto = {
  <span class="dropdown-text">Other approaches</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./04e-e-values.html">
+ <span class="dropdown-text">E-values</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./04f-rosenbaum-sensitivity.html">
+ <span class="dropdown-text">Rosenbaum sensitivity</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./04-exercises.html">
  <span class="dropdown-text">Exercises</span></a>
   </li>  
@@ -442,14 +450,20 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./04e-e-values.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">E-values</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04f-rosenbaum-sensitivity.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Rosenbaum sensitivity</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./04-exercises.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Exercises</span></a>
   </div>
 </li>
       </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text">Sensitivity analysis</span></span>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
@@ -461,10 +475,10 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" aria-controls="quarto-sidebar-section-8" aria-expanded="true">
- <span class="menu-text" id="quarto-sidebar-section-8-label">Back matter</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" aria-controls="quarto-sidebar-section-7" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-7-label">Back matter</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
       </div>
-      <ul id="quarto-sidebar-section-8" aria-labelledby="quarto-sidebar-section-8-label" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-7" aria-labelledby="quarto-sidebar-section-7-label" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./glossary.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Glossary</span></a>
@@ -799,8 +813,129 @@ P(A=1\mid X=x)&amp;=\frac12,\qquad x\in\{0,1\}.
 <section id="other-approaches" class="level2">
 <h2 class="anchored" data-anchor-id="other-approaches">Other approaches</h2>
 <p><em>[Placeholder: Exercises to be written.]</em></p>
+</section>
+<section id="e-values" class="level2">
+<h2 class="anchored" data-anchor-id="e-values">E-values</h2>
+<p>The studies in these exercises are hypothetical. Assume the sensitivity-analysis assumptions from the section hold.</p>
+<section id="what-could-these-confounders-explain" class="level3">
+<h3 class="anchored" data-anchor-id="what-could-these-confounders-explain">10. What could these confounders explain?</h3>
+<p>A study reports that workers exposed to a solvent have 2.5 times the risk of lung disease as unexposed workers. Suppose an unmeasured characteristic could explain the entire association, with no causal effect of the solvent. Let <span class="math inline">\(r\)</span> be its prevalence ratio comparing exposed with unexposed workers, and let <span class="math inline">\(s\)</span> be the lung-disease risk ratio comparing workers with and without that characteristic.</p>
+<ol type="a">
+<li>Compute the largest relative risk that each pair could explain:</li>
+</ol>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Pair</th>
+<th style="text-align: right;"><span class="math inline">\(r\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(s\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">6</td>
+</tr>
+</tbody>
+</table>
+<ol start="2" type="a">
+<li><p>Which pairs could explain the reported relative risk of 2.5 entirely through confounding? Interpret your answers.</p></li>
+<li><p>Pair C passes both separate Cornfield conditions. Why is that still not enough?</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="compute-and-interpret-an-e-value" class="level3">
+<h3 class="anchored" data-anchor-id="compute-and-interpret-an-e-value">11. Compute and interpret an E-value</h3>
+<p>Consider two studies that adjusted for measured common causes:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 23%">
+<col style="width: 23%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Study</th>
+<th>Exposure comparison</th>
+<th>Outcome</th>
+<th style="text-align: right;">Adjusted relative risk</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>Solvent-exposed vs.&nbsp;unexposed workers</td>
+<td>Lung disease</td>
+<td style="text-align: right;">2.50</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>Homes using an air filter vs.&nbsp;homes without one</td>
+<td>A respiratory illness episode</td>
+<td style="text-align: right;">0.64</td>
+</tr>
+</tbody>
+</table>
+<ol type="a">
+<li><p>Compute the E-value for each point estimate. Show how you handle the protective association in B.</p></li>
+<li><p>Interpret each result. State which groups you are comparing when describing the prevalence of the unmeasured confounder, and make clear that the interpretation concerns confounding remaining after the measured adjustment.</p></li>
+</ol>
+<div class="response-space">
+
+</div>
+</section>
+<section id="include-the-confidence-interval" class="level3">
+<h3 class="anchored" data-anchor-id="include-the-confidence-interval">12. Include the confidence interval</h3>
+<p>Now suppose the two studies report the following 95% confidence intervals.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Study</th>
+<th>Exposure comparison</th>
+<th>Outcome</th>
+<th>Adjusted relative risk (95% CI)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>Solvent-exposed vs.&nbsp;unexposed workers</td>
+<td>Lung disease</td>
+<td><span class="math inline">\(2.50\;[1.40,4.10]\)</span></td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>Homes using an air filter vs.&nbsp;homes without one</td>
+<td>A respiratory illness episode</td>
+<td><span class="math inline">\(0.64\;[0.49,0.81]\)</span></td>
+</tr>
+</tbody>
+</table>
+<ol type="a">
+<li><p>For each study, compute the point-estimate E-value and the confidence-limit E-value. Identify the endpoint you use.</p></li>
+<li><p>For study A or B, write two or three sentences reporting the estimate, its interval, and both E-values. Interpret what would be needed to explain away the point estimate and what would be needed for the interval to include one.</p></li>
+</ol>
+<div class="response-space">
+
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -1292,8 +1427,8 @@ document.addEventListener("DOMContentLoaded", () => {
   </script>
 <nav class="page-navigation" aria-label="Page">
   <div class="nav-page nav-page-previous">
-      <a href="./04d-other-approaches.html" class="pagination-link" aria-label="Other approaches">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Other approaches</span></span>
+      <a href="./04f-rosenbaum-sensitivity.html" class="pagination-link" aria-label="Rosenbaum sensitivity">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Rosenbaum sensitivity</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
