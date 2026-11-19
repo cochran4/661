@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Rosenbaum sensitivity – Causal inference (and other things)</title>
+<title>Rosenbaum’s sensitivity analysis – Causal inference (and other things)</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -101,7 +101,7 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ba9040e57dc60d9cb57624e8e56c0bcb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-a9c568a913165b8a8765685f58130fce.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -340,7 +340,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04a-unmeasured-confounding.html">Unmeasured confounding</a></li><li class="breadcrumb-item"><a href="./04f-rosenbaum-sensitivity.html"><span class="chapter-title">Rosenbaum sensitivity</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04a-unmeasured-confounding.html">Unmeasured confounding</a></li><li class="breadcrumb-item"><a href="./04f-rosenbaum-sensitivity.html"><span class="chapter-title">Rosenbaum’s sensitivity analysis</span></a></li></ol></nav>
         <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -509,7 +509,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04f-rosenbaum-sensitivity.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Rosenbaum sensitivity</span></a>
+  <a href="./04f-rosenbaum-sensitivity.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Rosenbaum’s sensitivity analysis</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -554,9 +554,9 @@ window.Quarto = {
 <!-- main -->
 <main class="content" id="quarto-document-content" tabindex="-1">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04a-unmeasured-confounding.html">Unmeasured confounding</a></li><li class="breadcrumb-item"><a href="./04f-rosenbaum-sensitivity.html"><span class="chapter-title">Rosenbaum sensitivity</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04a-unmeasured-confounding.html">Unmeasured confounding</a></li><li class="breadcrumb-item"><a href="./04f-rosenbaum-sensitivity.html"><span class="chapter-title">Rosenbaum’s sensitivity analysis</span></a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-title">Rosenbaum sensitivity</span></h1>
+<h1 class="title"><span class="chapter-title">Rosenbaum’s sensitivity analysis</span></h1>
 </div>
 
 
@@ -573,102 +573,1091 @@ window.Quarto = {
 </header>
 
 
-<!-- Working adaptation of the prior GitBook's sensitivity-analyses/rosenbaum material. Originals, figures, and material awaiting further review are preserved in instructor-planning/archive/sensitivity-gitbook. -->
-<section id="hidden-bias-within-a-matched-pair" class="level2">
-<h2 class="anchored" data-anchor-id="hidden-bias-within-a-matched-pair">Hidden bias within a matched pair</h2>
-<p>The E-value summarized the joint strength of two relationships needed to explain an observed risk ratio. Rosenbaum sensitivity analysis starts with treatment assignment: how different could the odds of receiving treatment be for two people with the same measured covariates, and how would that change our inference?</p>
-<p>Consider two people matched exactly on <span class="math inline">\(X\)</span>. Suppose their probabilities of receiving treatment, given both measured and unmeasured characteristics, are <span class="math inline">\(0.4\)</span> and <span class="math inline">\(0.6\)</span>. Their treatment odds are</p>
-<p><span class="math display">\[
-\frac{0.4}{1-0.4}=\frac23,
-\qquad
-\frac{0.6}{1-0.6}=\frac32.
-\]</span></p>
-<p>The ratio of the larger odds to the smaller odds is</p>
-<p><span class="math display">\[
-\frac{3/2}{2/3}=\frac94=2.25.
-\]</span></p>
-<p>They agree on everything we matched, yet their treatment odds differ by a factor of <span class="math inline">\(2.25\)</span>. The sensitivity parameter <span class="math inline">\(\Gamma\)</span> places a ceiling on this difference <span class="citation" data-cites="rosenbaum2002observational">(<a href="references.html#ref-rosenbaum2002observational" role="doc-biblioref">Rosenbaum 2002</a>)</span>.</p>
-<div class="definition-box">
-<p>Let <span class="math inline">\(\pi_i=P(A_i=1\mid X_i,U_i)\)</span>, with <span class="math inline">\(0&lt;\pi_i&lt;1\)</span>. The <strong>Rosenbaum sensitivity model</strong> with parameter <span class="math inline">\(\Gamma\geq1\)</span> requires, for any two people <span class="math inline">\(i,j\)</span> in the same matched set,</p>
-<p><span class="math display">\[
-\frac1\Gamma\leq\frac{\pi_i/(1-\pi_i)}{\pi_j/(1-\pi_j)}\leq\Gamma.
-\]</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/04e-squirrel-sensitivity.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="A squirrel adds a brass weight to an acorn balance, testing when it tips. Part of the load is concealed by a cloth, and progressively larger weights wait on the workbench. Vintage pen-and-ink illustration." width="700"></p>
+</figure>
 </div>
-<p>Our pair satisfies this model with <span class="math inline">\(\Gamma=2.25\)</span>. It also satisfies the model for every larger <span class="math inline">\(\Gamma\)</span>. When <span class="math inline">\(\Gamma=1\)</span>, matched people have the same treatment odds under the model. Increasing <span class="math inline">\(\Gamma\)</span> allows more hidden bias in treatment assignment.</p>
-<p>We will use exact matching to isolate this idea. In practice, imperfect matching can leave measured differences as well, and those need attention alongside hidden bias.</p>
+<!-- Working adaptation of the prior GitBook's sensitivity-analyses/rosenbaum material. Originals, figures, and material awaiting further review are preserved in instructor-planning/archive/sensitivity-gitbook. -->
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>We still face the same unmeasured-confounding problem. Measured characteristics <span class="math inline">\(X\)</span> and unmeasured characteristics <span class="math inline">\(U\)</span> influence both treatment <span class="math inline">\(A\)</span> and outcome <span class="math inline">\(Y.\)</span> We have no instrument, discontinuity, or other way to address the missing common causes directly.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/04a-unmeasured-confounding.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="X and unmeasured U each point to treatment A and outcome Y. A also points to Y." width="620"></p>
+</figure>
+</div>
+<p>The E-value gave us one answer. Suppose you study childhood asthma among children living near major roads. You have detailed residential histories and adjust for recorded family characteristics, but you do not know whether anyone smokes in the home. Comparing children near major roads with those farther away, you report an adjusted relative risk of 2, with a 95% confidence interval from 1.5 to 2.7.</p>
+<p>Calculate the E-value for the point estimate:</p>
+<p><span class="math display">\[2+\sqrt{2^2-2}\approx3.41.\]</span></p>
+<p>Put it in your report, and Bob’s your uncle.</p>
+<p>Now suppose your rival studies warehouse injuries among night-shift and day-shift workers. They have detailed job histories but no information about sleep or alcohol use. Their adjusted relative risk is also 2, with a 95% confidence interval from 1.5 to 2.7. Their E-value?</p>
+<p><span class="math display">\[2+\sqrt{2^2-2}\approx3.41.\]</span></p>
+<p>Put it in the report. Bob’s your uncle?</p>
+<p>These are very different studies, with different exposures, outcomes, and missing common causes, yet they get exactly the same E-value. The calculation uses only the relative risk. Nothing else about the study enters.</p>
+<p>That convenience can make us lazy. Reporting the number can take the place of thinking about how confounding might actually operate in our study. The formula has done its job. Judging whether the required confounding is plausible is still up to us <span class="citation" data-cites="poole2020evalue">(<a href="references.html#ref-poole2020evalue" role="doc-biblioref">Poole 2020</a>)</span>.</p>
+<p>Rosenbaum’s <span class="math inline">\(\Gamma\)</span>-sensitivity analysis works differently. It brings the treatment assignments and outcomes in our data into the calculation. We ask how unmeasured characteristics could influence who receives treatment, then check whether that selection could explain the result we observed <span class="citation" data-cites="rosenbaum2002observational">(<a href="references.html#ref-rosenbaum2002observational" role="doc-biblioref">Rosenbaum 2002</a>)</span>. We will build the idea from a simple example, first with equal treatment chances and then allowing unmeasured characteristics to influence treatment.</p>
 </section>
-<section id="conditioning-on-one-treated-person" class="level2">
-<h2 class="anchored" data-anchor-id="conditioning-on-one-treated-person">Conditioning on one treated person</h2>
-<p>Suppose assignments are independent across people conditional on their measured and unmeasured characteristics. Within a pair, condition on exactly one person receiving treatment. The probability that person <span class="math inline">\(i\)</span> is the treated member becomes</p>
+<section id="a-simple-setting" class="level2">
+<h2 class="anchored" data-anchor-id="a-simple-setting">A simple setting</h2>
+<p>Start with four patients and no measured or unmeasured common causes of treatment and outcome. Let <span class="math inline">\(A=1\)</span> indicate receiving medication and <span class="math inline">\(Y=1\)</span> indicate hospitalization within six months. We observe:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Patient</th>
+<th style="text-align: center;">Treatment <span class="math inline">\(A\)</span></th>
+<th style="text-align: center;">Hospitalization <span class="math inline">\(Y\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Acorn</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Birch</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chestnut</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hazel</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>Both patients who received medication were hospitalized, while neither untreated patient was. We want to know whether medication affects hospitalization. We will approach this through a hypothesis test: ask whether our observed pattern would be unusual if medication changed no patient’s outcome. That no-effect hypothesis is the sharp null:</p>
+<p><span class="math display">\[
+H_0:Y(1)=Y(0)
+\qquad\text{for every patient}.
+\]</span></p>
+<p>It tells us that each patient’s unobserved potential outcome equals their observed outcome. We can therefore complete the table under the null:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Patient</th>
+<th style="text-align: center;">Observed <span class="math inline">\(A\)</span></th>
+<th style="text-align: center;">Observed <span class="math inline">\(Y\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(Y(0)\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(Y(1)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Acorn</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Birch</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chestnut</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hazel</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>Acorn and Birch would be hospitalized whether or not they received medication. Chestnut and Hazel would stay out either way. This is stronger than a zero average effect, which could hide benefits for some patients and harms for others.</p>
+<div class="main-point">
+<p>The sharp null fills in the missing potential outcomes: we know each patient’s outcome under either treatment.</p>
+</div>
+<p>To measure the pattern we are testing, use the number of hospitalizations among treated patients as our test statistic:</p>
+<p><span class="math display">\[
+T=\text{number of treated patients hospitalized}.
+\]</span></p>
+<p>We observed <span class="math inline">\(T=2.\)</span> We are looking for increased hospitalization among treated patients. Ideally, we would simply calculate how often two or more treated patients would be hospitalized under the sharp null. But that calculation requires a probability model for the outcomes and treatment assignments, including quantities we do not know.</p>
+<p>The useful idea, going back to Fisher and carried into Rosenbaum’s sensitivity analysis, is to calculate a conditional p-value instead. We condition on the full set of potential outcomes, which the sharp null lets us complete from the observed outcomes. We also condition on exactly two patients receiving treatment. We then ask how often a different selection of those two patients would give at least as many treated hospitalizations as we observed.</p>
+<p>Writing <span class="math inline">\(M\)</span> for the number treated, our conditional one-sided p-value is</p>
+<p><span class="math display">\[
+\begin{gathered}
+P_{H_0}\bigl(T\geq2\mid M=2,\\
+\text{completed potential outcomes}\bigr).
+\end{gathered}
+\]</span></p>
+<p>Conditioning on the potential outcomes lets us calculate the statistic under every treatment assignment without specifying an outcome distribution. Conditioning on the treatment count will remove the unknown common treatment probability.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Optional technical note: conditional validity
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Potential outcomes remain random variables in our SCM. Let <span class="math inline">\(\mathbf Y(0)\)</span> and <span class="math inline">\(\mathbf Y(1)\)</span> denote the full vectors of potential outcomes for all patients, and collect the quantities we condition on as</p>
+<p><span class="math display">\[
+\mathcal F=
+\bigl(\mathbf Y(0),\mathbf Y(1),\mathbf X,\mathbf U\bigr).
+\]</span></p>
+<p>Let <span class="math inline">\(M\)</span> record the number treated, or the treatment counts within groups when we condition separately within levels of <span class="math inline">\(X.\)</span> Conditioning on <span class="math inline">\(\mathcal F\)</span> means considering its realized values, not assuming these variables are nonrandom.</p>
+<p>The sharp null and consistency make both full potential-outcome vectors equal to the observed outcome vector. The conditional assignment law must still be supplied by the SCM. Independent assignment noise and outcome noise imply that, conditional on the full covariate vectors, learning the potential-outcome vectors does not further change the assignment probabilities. We then condition that assignment law on <span class="math inline">\(M.\)</span></p>
+<p>Suppose the resulting test has conditional rejection probability at most <span class="math inline">\(\alpha\)</span> under every model satisfying the null:</p>
+<p><span class="math display">\[
+P(\text{reject}\mid\mathcal F,M)\leq\alpha
+\qquad\text{almost surely}.
+\]</span></p>
+<p>Iterated expectation gives unconditional error control:</p>
 <p><span class="math display">\[
 \begin{aligned}
-p_i
-&amp;=\frac{\pi_i(1-\pi_j)}{\pi_i(1-\pi_j)+\pi_j(1-\pi_i)}\\[0.4em]
-&amp;=\frac{\pi_i/(1-\pi_i)}{\pi_i/(1-\pi_i)+\pi_j/(1-\pi_j)}.
+P(\text{reject})
+&amp;=E\!\left[P(\text{reject}\mid\mathcal F,M)\right]\\
+&amp;\leq\alpha.
 \end{aligned}
 \]</span></p>
-<p>For our numerical pair, taking <span class="math inline">\(i\)</span> to be the person with probability <span class="math inline">\(0.6\)</span> gives</p>
+<p>Thus we can establish validity conditionally and average over the conditioning variables. We must use the correct conditional assignment law; conditioning does not in general preserve the original assignment probabilities. Branson and Bind develop assignment-based tests with unequal treatment probabilities and prove conditional validity in Theorem 3.2 and Appendix 6.2 <span class="citation" data-cites="branson2019randomization">(<a href="references.html#ref-branson2019randomization" role="doc-biblioref">Branson and Bind 2019</a>)</span>.</p>
+<p>When that law is unknown but satisfies the sensitivity bound, the largest p-value over the allowed laws is at least the p-value under the true law. Rejecting only when this upper bound is at most <span class="math inline">\(\alpha\)</span> retains error control.</p>
+</div>
+</div>
+</div>
+<p>To calculate this probability, first consider the chance of the particular treatment arrangement we observed.</p>
+<p>Let <span class="math inline">\(p=P(A=1)\)</span> be the common probability of receiving medication, with <span class="math inline">\(0&lt;p&lt;1.\)</span> Assume treatment assignments are independent across patients. The probability that Acorn and Birch receive medication while Chestnut and Hazel do not is</p>
 <p><span class="math display">\[
-p_i=\frac{3/2}{3/2+2/3}=\frac9{13}\approx0.692.
+p\times p\times(1-p)\times(1-p)=p^2(1-p)^2.
 \]</span></p>
-<p>More generally, the odds-ratio bound gives</p>
+<p>To judge whether our observed arrangement is unusual, we need to compare it with other arrangements that could have occurred. Suppose Acorn and Chestnut had received medication instead. Under the sharp null, changing who receives medication leaves each patient’s hospitalization outcome unchanged:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Patient</th>
+<th style="text-align: center;">Alternative treatment <span class="math inline">\(A\)</span></th>
+<th style="text-align: center;">Hospitalization <span class="math inline">\(Y\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Acorn</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Birch</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chestnut</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hazel</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+</tbody>
+</table>
+<p>Now one treated patient was hospitalized, and one untreated patient was hospitalized. The probability of this particular treatment selection is</p>
 <p><span class="math display">\[
-\frac1{1+\Gamma}\leq p_i\leq\frac\Gamma{1+\Gamma}.
+p\times(1-p)\times p\times(1-p)=p^2(1-p)^2.
 \]</span></p>
-<p>At <span class="math inline">\(\Gamma=1\)</span>, either person has probability <span class="math inline">\(1/2\)</span> of being the treated member. At <span class="math inline">\(\Gamma=2\)</span>, that probability can range from <span class="math inline">\(1/3\)</span> to <span class="math inline">\(2/3\)</span>. These are probabilities conditional on one treated person in the pair, rather than the original individual treatment probabilities.</p>
-</section>
-<section id="a-binary-outcome-example" class="level2">
-<h2 class="anchored" data-anchor-id="a-binary-outcome-example">A binary-outcome example</h2>
-<p>The prior GitBook used a smoking and lung-cancer example with <span class="math inline">\(122\)</span> discordant pairs. We retain those counts to illustrate the calculation. Let <span class="math inline">\(A=1\)</span> denote heavy smoking and <span class="math inline">\(Y=1\)</span> death from lung cancer. Among pairs whose outcomes differed, the counts were</p>
+<p>It has the same probability as the observed selection. These are just two possibilities. Keeping the treatment count at two, we can list every pair of patients who could have received medication. There are six such pairs. Under the sharp null, each patient’s outcome is known, so we can calculate the treated hospitalization count for every selection:</p>
 <table class="caption-top table">
 <colgroup>
-<col style="width: 30%">
-<col style="width: 30%">
-<col style="width: 40%">
+<col style="width: 28%">
+<col style="width: 35%">
+<col style="width: 35%">
 </colgroup>
 <thead>
 <tr class="header">
-<th>Outcome in exposed member</th>
-<th>Outcome in unexposed member</th>
+<th style="text-align: left;">Treated patients</th>
+<th style="text-align: center;">Hospitalized<br>among treated</th>
+<th style="text-align: center;">Assignment<br>probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Acorn and Birch (observed)</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;"><span class="math inline">\(p^2(1-p)^2\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Acorn and Chestnut</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><span class="math inline">\(p^2(1-p)^2\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Acorn and Hazel</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><span class="math inline">\(p^2(1-p)^2\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Birch and Chestnut</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><span class="math inline">\(p^2(1-p)^2\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Birch and Hazel</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><span class="math inline">\(p^2(1-p)^2\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chestnut and Hazel</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;"><span class="math inline">\(p^2(1-p)^2\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>All six selections have the same probability, and only one gives two hospitalizations among treated patients. Conditional on two patients receiving treatment, and under the sharp null, the probability of a count at least as large as ours is therefore</p>
+<p><span class="math display">\[
+\frac{p^2(1-p)^2}{6p^2(1-p)^2}=\frac16 \approx 0.17.
+\]</span></p>
+<p>Our one-sided p-value is therefore about 0.17. If medication affected no one and each patient independently received treatment with the same probability <span class="math inline">\(p,\)</span> then, among assignments with exactly two treated patients, about 17% would give two or more treated hospitalizations. Our observed pattern is not particularly unusual under that explanation. This calculation is Fisher’s exact test.</p>
+<p>The sharp null let us calculate outcomes under every assignment. The treatment model gave those assignments their probabilities. Conditioning on the observed treatment count removed the unknown <span class="math inline">\(p.\)</span></p>
+</section>
+<section id="when-symptoms-affect-treatment" class="level2">
+<h2 class="anchored" data-anchor-id="when-symptoms-affect-treatment">When symptoms affect treatment</h2>
+<p>Return to the same four patients. Now suppose symptom severity <span class="math inline">\(U\)</span> influences both receiving medication and later hospitalization. Let <span class="math inline">\(U=1\)</span> mean severe symptoms and <span class="math inline">\(U=0\)</span> mean symptoms are not severe. For this calculation, suppose we know each patient’s severity and the treatment probability given it:</p>
+<p><span class="math display">\[
+e(U)=P(A=1\mid U).
+\]</span></p>
+<p>Patients with severe symptoms receive medication with probability <span class="math inline">\(2/3,\)</span> while those without severe symptoms receive it with probability <span class="math inline">\(1/2.\)</span> Thus,</p>
+<p><span class="math display">\[
+e(U)=
+\begin{cases}
+1/2,&amp;U=0,\\
+2/3,&amp;U=1.
+\end{cases}
+\]</span></p>
+<p>Add severity and these probabilities to the observed arrangement:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Patient</th>
+<th style="text-align: center;">Severity<br><span class="math inline">\(U\)</span></th>
+<th style="text-align: center;">Treatment<br><span class="math inline">\(A\)</span></th>
+<th style="text-align: center;">Hospitalized<br><span class="math inline">\(Y\)</span></th>
+<th style="text-align: center;">Treatment chance<br><span class="math inline">\(e(U)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Acorn</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><span class="math inline">\(2/3\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Birch</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><span class="math inline">\(2/3\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chestnut</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;"><span class="math inline">\(1/2\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hazel</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;"><span class="math inline">\(1/2\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>There are still two treated hospitalizations and none among untreated patients. We use the same sharp null: medication changes no patient’s outcome. The completed potential-outcome table from the previous example therefore still applies.</p>
+<p>To assess how unusual the observed arrangement is, first calculate its treatment-assignment probability. Assume assignments are independent conditional on the patients’ severity. Acorn and Birch receive medication, while Chestnut and Hazel do not, giving</p>
+<p><span class="math display">\[
+\frac23\times\frac23\times\left(1-\frac12\right)
+\times\left(1-\frac12\right)=\frac19.
+\]</span></p>
+<p>Consider the same alternative as before: Acorn and Chestnut receive medication. Their severity stays the same, and under the sharp null their hospitalization outcomes stay the same too:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Patient</th>
+<th style="text-align: center;">Severity<br><span class="math inline">\(U\)</span></th>
+<th style="text-align: center;">Alternative<br><span class="math inline">\(A\)</span></th>
+<th style="text-align: center;">Hospitalized<br><span class="math inline">\(Y\)</span></th>
+<th style="text-align: center;">Treatment chance<br><span class="math inline">\(e(U)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Acorn</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><span class="math inline">\(2/3\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Birch</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><span class="math inline">\(2/3\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chestnut</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;"><span class="math inline">\(1/2\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hazel</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;"><span class="math inline">\(1/2\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>This gives one treated hospitalization. The probability of this treatment selection is</p>
+<p><span class="math display">\[
+\frac23\times\left(1-\frac23\right)\times\frac12
+\times\left(1-\frac12\right)=\frac1{18}.
+\]</span></p>
+<p>Previously, these two selections had the same probability. Now the observed selection is twice as likely as the alternative. The six possible selections with exactly two treated patients have probabilities:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 35%">
+<col style="width: 35%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Treated patients</th>
+<th style="text-align: center;">Hospitalized<br>among treated</th>
+<th style="text-align: center;">Assignment<br>probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Acorn and Birch (observed)</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;"><span class="math inline">\(1/9\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Acorn and Chestnut</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><span class="math inline">\(1/18\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Acorn and Hazel</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><span class="math inline">\(1/18\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Birch and Chestnut</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><span class="math inline">\(1/18\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Birch and Hazel</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><span class="math inline">\(1/18\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chestnut and Hazel</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;"><span class="math inline">\(1/36\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>We again condition on exactly two patients receiving medication. The probability of that event is the sum of the six assignment probabilities:</p>
+<p><span class="math display">\[
+\frac19+4\left(\frac1{18}\right)+\frac1{36}=\frac{13}{36}.
+\]</span></p>
+<p>Divide each assignment probability by <span class="math inline">\(13/36\)</span> to obtain its probability given that exactly two patients received medication:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Treated patients</th>
+<th style="text-align: center;">Assignment<br>probability</th>
+<th style="text-align: center;">Given two<br>treated</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Acorn and Birch</td>
+<td style="text-align: center;"><span class="math inline">\(1/9\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(4/13\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Acorn and Chestnut</td>
+<td style="text-align: center;"><span class="math inline">\(1/18\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2/13\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Acorn and Hazel</td>
+<td style="text-align: center;"><span class="math inline">\(1/18\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2/13\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Birch and Chestnut</td>
+<td style="text-align: center;"><span class="math inline">\(1/18\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2/13\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Birch and Hazel</td>
+<td style="text-align: center;"><span class="math inline">\(1/18\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2/13\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chestnut and Hazel</td>
+<td style="text-align: center;"><span class="math inline">\(1/36\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(1/13\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Only the Acorn–Birch selection gives two treated hospitalizations. Its conditional probability, and hence our one-sided p-value, is</p>
+<p><span class="math display">\[
+\frac4{13}\approx0.31.
+\]</span></p>
+<p>Under the sharp null and this severity-dependent treatment model, a result at least as extreme as ours occurs about 31% of the time, conditional on two receiving medication. Previously, with independent assignments sharing a common probability <span class="math inline">\(p,\)</span> it occurred about 17% of the time. The outcomes and observed treatment labels are unchanged. Selection toward patients who would be hospitalized has made the observed arrangement more likely under no medication effect.</p>
+<p>Now consider a different possibility for the unmeasured severity. Keep every observed treatment and hospitalization unchanged, but suppose Chestnut and Hazel have severe symptoms and Acorn and Birch do not. The treatment model is unchanged: severe symptoms increase the probability of medication from one half to two thirds.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Patient</th>
+<th style="text-align: center;">Severity<br><span class="math inline">\(U\)</span></th>
+<th style="text-align: center;">Observed<br><span class="math inline">\(A\)</span></th>
+<th style="text-align: center;">Observed<br><span class="math inline">\(Y\)</span></th>
+<th style="text-align: center;">Treatment chance<br><span class="math inline">\(e(U)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Acorn</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><span class="math inline">\(1/2\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Birch</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><span class="math inline">\(1/2\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Chestnut</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;"><span class="math inline">\(2/3\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Hazel</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;"><span class="math inline">\(2/3\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The probability of the observed treatment selection is now</p>
+<p><span class="math display">\[
+\frac12\times\frac12\times\left(1-\frac23\right)
+\times\left(1-\frac23\right)=\frac1{36}.
+\]</span></p>
+<p>Each mixed pair still has assignment probability <span class="math inline">\(1/18,\)</span> while the Chestnut–Hazel selection now has probability <span class="math inline">\(1/9.\)</span> The probability of exactly two treated patients remains</p>
+<p><span class="math display">\[
+\frac1{36}+4\left(\frac1{18}\right)+\frac19=\frac{13}{36}.
+\]</span></p>
+<p>Only the observed selection gives two treated hospitalizations. Conditional on two patients receiving medication, its probability is</p>
+<p><span class="math display">\[
+\frac{1/36}{13/36}=\frac1{13}\approx0.08.
+\]</span></p>
+<p>Compare the three treatment-selection scenarios:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 44%">
+<col style="width: 55%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Treatment selection based on unmeasured severity</th>
+<th style="text-align: center;">One-sided<br>p-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Treatment probability does not depend on severity</td>
+<td style="text-align: center;"><span class="math inline">\(1/6\approx0.17\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Severe symptoms increase treatment odds; Acorn and Birch have severe symptoms</td>
+<td style="text-align: center;"><span class="math inline">\(4/13\approx0.31\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Severe symptoms increase treatment odds; Chestnut and Hazel have severe symptoms</td>
+<td style="text-align: center;"><span class="math inline">\(1/13\approx0.08\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="main-point">
+<p>How unusual our finding looks depends on treatment selection. The same observed records gave different p-values under our three scenarios.</p>
+</div>
+<p>The sharp null determines the outcomes under alternative assignments; the selection mechanism determines how likely those assignments are.</p>
+<p>With four patients, we can enumerate every assignment. In a larger study, we could draw assignments using their conditional probabilities and calculate the fraction producing a result at least as large as ours. That is Monte Carlo simulation of the same test.</p>
+</section>
+<section id="when-treatment-probabilities-are-unknown" class="level2">
+<h2 class="anchored" data-anchor-id="when-treatment-probabilities-are-unknown">When treatment probabilities are unknown</h2>
+<p>We calculated three different p-values from the same observed records by supplying different information about symptom severity. Claims data do not give us that information. We observe who received medication and who was hospitalized, but not each patient’s severity. To see what we need from that missing information, rewrite each treated patient’s probability as</p>
+<p><span class="math display">\[
+e(U)=\frac{e(U)}{1-e(U)}\,[1-e(U)].
+\]</span></p>
+<p>The ratio is the odds of treatment for someone with severity <span class="math inline">\(U:\)</span></p>
+<p><span class="math display">\[
+\frac{e(U)}{1-e(U)}.
+\]</span></p>
+<p>This rewrite gives every patient a factor of <span class="math inline">\(1-e(U)\)</span> in an assignment probability, whether they receive medication or not. A treated patient also contributes their treatment odds. The product of all four patients’ <span class="math inline">\(1-e(U)\)</span> factors is therefore common to every assignment. It cancels when we condition on exactly two patients receiving medication, leaving only the products of the treated patients’ odds.</p>
+<p>In our severity example, these odds are</p>
+<p><span class="math display">\[
+\begin{aligned}
+U=1:&amp;\qquad \frac{e(1)}{1-e(1)}=\frac{2/3}{1/3}=2,\\[0.4em]
+U=0:&amp;\qquad \frac{e(0)}{1-e(0)}=\frac{1/2}{1/2}=1.
+\end{aligned}
+\]</span></p>
+<p>Return to the first severity scenario, in which Acorn and Birch have severe symptoms and Chestnut and Hazel do not. We can see the cancellation directly.</p>
+<p>For the observed assignment, Acorn and Birch receive medication while Chestnut and Hazel do not. Its probability is</p>
+<p><span class="math display">\[
+\frac23\times\frac23\times\frac12\times\frac12.
+\]</span></p>
+<p>Rewrite each treated patient’s probability as their treatment odds multiplied by their probability of remaining untreated:</p>
+<p><span class="math display">\[
+\frac23=2\times\frac13.
+\]</span></p>
+<p>Substituting this for Acorn and Birch gives</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;P(\text{Acorn and Birch treated})\\[0.3em]
+&amp;\quad=\left(2\times\frac13\right)
+       \left(2\times\frac13\right)\frac12\frac12\\[0.4em]
+&amp;\quad=(2\times2)
+       \left(\frac13\frac13\frac12\frac12\right).
+\end{aligned}
+\]</span></p>
+<p>The first parentheses contain the treated patients’ odds. The second contain every patient’s probability of remaining untreated: one third for Acorn, one third for Birch, and one half each for Chestnut and Hazel. Their product is <span class="math inline">\(1/36,\)</span> giving assignment probability <span class="math inline">\(4/36=1/9.\)</span></p>
+<p>For a different assignment, the treated patients’ odds change, but that second product stays the same. This is the common factor that cancels when we calculate the conditional assignment probabilities.</p>
+<p>For Acorn and Chestnut, the corresponding calculation is</p>
+<p><span class="math display">\[
+\begin{gathered}
+P(\text{Acorn and Chestnut treated})\\[0.3em]
+=(2\times1)\frac1{36}=\frac1{18}.
+\end{gathered}
+\]</span></p>
+<p>For Chestnut and Hazel, it is</p>
+<p><span class="math display">\[
+\begin{gathered}
+P(\text{Chestnut and Hazel treated})\\[0.3em]
+=(1\times1)\frac1{36}=\frac1{36}.
+\end{gathered}
+\]</span></p>
+<p>The factor <span class="math inline">\(1/36\)</span> cancels when we condition on two treated patients. The products of the treated patients’ odds remain:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 35%">
+<col style="width: 35%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Treated patients</th>
+<th style="text-align: center;">Product of<br>treatment odds</th>
+<th style="text-align: center;">Given two<br>treated</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Acorn and Birch</td>
+<td style="text-align: center;"><span class="math inline">\(2\times2=4\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(4/13\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Acorn and Chestnut</td>
+<td style="text-align: center;"><span class="math inline">\(2\times1=2\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2/13\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Acorn and Hazel</td>
+<td style="text-align: center;"><span class="math inline">\(2\times1=2\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2/13\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Birch and Chestnut</td>
+<td style="text-align: center;"><span class="math inline">\(2\times1=2\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2/13\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Birch and Hazel</td>
+<td style="text-align: center;"><span class="math inline">\(2\times1=2\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2/13\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chestnut and Hazel</td>
+<td style="text-align: center;"><span class="math inline">\(1\times1=1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(1/13\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>The denominator 13 is the sum of these six products. Replacing Chestnut with Birch in a treated pair doubles its conditional probability, because Birch has twice Chestnut’s treatment odds. Selecting both Acorn and Birch gives four times the probability of selecting both Chestnut and Hazel: each replacement contributes an odds ratio of two.</p>
+<p>This is how unmeasured selection enters the calculation. Differences in treatment odds change the relative probabilities of the arrangements, even after we condition on how many patients received treatment.</p>
+<p>We can make the same calculation for all three scenarios. In the first, everyone has the same odds, so every pair has the same product; divide by that common product to write each as one. In the two severity scenarios, treatment odds are two for severe patients and one for the others:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Treated patients</th>
+<th style="text-align: center;">No severity<br>difference</th>
+<th style="text-align: center;">Acorn and<br>Birch severe</th>
+<th style="text-align: center;">Chestnut and<br>Hazel severe</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Acorn and Birch</td>
+<td style="text-align: center;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(4\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(1\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Acorn and Chestnut</td>
+<td style="text-align: center;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Acorn and Hazel</td>
+<td style="text-align: center;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Birch and Chestnut</td>
+<td style="text-align: center;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Birch and Hazel</td>
+<td style="text-align: center;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(2\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chestnut and Hazel</td>
+<td style="text-align: center;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(1\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(4\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sum</td>
+<td style="text-align: center;"><span class="math inline">\(6\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(13\)</span></td>
+<td style="text-align: center;"><span class="math inline">\(13\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Divide each entry by its column’s sum to obtain its conditional assignment probability. Only the Acorn–Birch selection gives two treated hospitalizations, so the first row gives our three p-values: <span class="math inline">\(1/6,\)</span> <span class="math inline">\(4/13,\)</span> and <span class="math inline">\(1/13.\)</span></p>
+<div class="main-point">
+<p>We need each patient’s treatment odds, not <span class="math inline">\(U\)</span> itself. After conditioning on the number treated, the common factor cancels; products of the treated patients’ odds determine the assignment probabilities.</p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Optional technical note: treatment odds as a balancing score
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>The missing information <span class="math inline">\(U\)</span> could include detailed symptom histories, social support, and much more. Yet its role in treatment assignment can be summarized by the single number <span class="math inline">\(o(X,U).\)</span> Treatment odds determine the full propensity score:</p>
+<p><span class="math display">\[
+e(X,U)=\frac{o(X,U)}{1+o(X,U)}.
+\]</span></p>
+<p>By our <a href="./03c-propensity-scores.html#balancing-score-characterization">balancing-score proposition</a>, treatment odds form a balancing score for <span class="math inline">\(X\)</span> and <span class="math inline">\(U.\)</span> Under exchangeability given <span class="math inline">\(X\)</span> and <span class="math inline">\(U,\)</span> adjusting for treatment odds is enough; we may also retain <span class="math inline">\(X:\)</span></p>
+<p><span class="math display">\[
+Y(a)\perp\!\!\!\perp A\mid X,o(X,U).
+\]</span></p>
+<p>The corresponding causal graph is</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/04f-odds-balancing-score.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="X and U determine treatment odds o(X,U). X and the treatment odds point to A. X, U, and A point to Y." width="700"></p>
+</figure>
+</div>
+<p>Its SCM is</p>
+<p><span class="math display">\[
+\begin{aligned}
+X&amp;\leftarrow f_X(\epsilon_X),\\
+U&amp;\leftarrow f_U(\epsilon_U),\\
+O&amp;\leftarrow o(X,U),\\
+A&amp;\leftarrow f_A(X,O,\epsilon_A),\\
+Y&amp;\leftarrow f_Y(X,U,A,\epsilon_Y).
+\end{aligned}
+\]</span></p>
+<p>Here <span class="math inline">\(O=o(X,U)\)</span> records treatment odds. The noise terms are independent, and the treatment assignment reproduces the full treatment probability using these odds. This balancing-score connection is not needed to calculate the conditional assignment probabilities.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="bounding-treatment-selection" class="level2">
+<h2 class="anchored" data-anchor-id="bounding-treatment-selection">Bounding treatment selection</h2>
+<p>But we do not know each patient’s treatment odds either. We can instead ask how different those odds could be, then consider the treatment selection that makes our finding least unusual under the sharp null.</p>
+<p>In both severity scenarios, one patient’s treatment odds are at most twice another’s. We describe this with a sensitivity bound, <span class="math inline">\(\Gamma=2.\)</span> Both scenarios satisfy the same bound, although they give different p-values. The bound allows either arrangement of severity, along with other treatment mechanisms whose odds differ by no more than a factor of two. We will look for the worst-case selection among the possibilities it allows. With no difference in treatment odds, <span class="math inline">\(\Gamma=1\)</span> suffices.</p>
+<p>To define the bound generally, allow measured characteristics <span class="math inline">\(X\)</span> as well. For example, claims may record prior hospitalization. Compare patients with the same recorded characteristics. Their treatment probability is</p>
+<p><span class="math display">\[
+e(X,U)=P(A=1\mid X,U),
+\]</span></p>
+<p>and their treatment odds are</p>
+<p><span class="math display">\[
+o(X,U)=\frac{e(X,U)}{1-e(X,U)}.
+\]</span></p>
+<p>For each <span class="math inline">\(X,\)</span> let <span class="math inline">\(o_{\min}(X)\)</span> be the smallest treatment odds as <span class="math inline">\(U\)</span> varies.</p>
+<div class="definition-box">
+<p>A <strong>sensitivity bound <span class="math inline">\(\Gamma\geq1\)</span></strong> means that anyone’s treatment odds are at most <span class="math inline">\(\Gamma\)</span> times those of any other person with the same measured confounders <span class="math inline">\(X:\)</span></p>
+<p><span class="math display">\[
+\frac{o(X,U)}{o_{\min}(X)}\leq\Gamma
+\qquad\text{for every }X,U.
+\]</span></p>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Optional technical note: why compare with the smallest odds?
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>For two people with the same <span class="math inline">\(X,\)</span> the second person’s treatment odds are at least <span class="math inline">\(o_{\min}(X).\)</span> Therefore,</p>
+<p><span class="math display">\[
+\frac{o(X,U)}{o(X,U')}
+\leq\frac{o(X,U)}{o_{\min}(X)}
+\leq\Gamma.
+\]</span></p>
+<p>Conversely, if the comparison holds for every pair, it holds when we compare anyone with a person having the smallest odds. Thus the definition bounds every pairwise treatment odds ratio within each value of <span class="math inline">\(X.\)</span></p>
+<p>If the smallest odds are not attained, use the infimum over the relevant values of <span class="math inline">\(U.\)</span> The same equivalence holds by taking values approaching that infimum. A finite bound assumes positive treatment odds with a positive infimum within each group.</p>
+</div>
+</div>
+</div>
+<p>Our four-patient example has no <span class="math inline">\(X,\)</span> so the comparison applies to all four patients. We write their odds as <span class="math inline">\(o(U).\)</span></p>
+<p>Both severity scenarios satisfy <span class="math inline">\(\Gamma=2.\)</span> At <span class="math inline">\(\Gamma=1,\)</span> patients with the same <span class="math inline">\(X\)</span> have equal treatment odds. In our example without <span class="math inline">\(X,\)</span> this gives the Fisher calculation. Larger values allow more selection into treatment due to unmeasured characteristics.</p>
+<div class="main-point">
+<p>We do not know each person’s treatment odds either. A sensitivity bound <span class="math inline">\(\Gamma\)</span> limits how much those odds could differ among people with the same <span class="math inline">\(X.\)</span></p>
+</div>
+<p>This describes the relationship in the direction of our causal story, <span class="math inline">\(U\rightarrow A:\)</span> how much can the unmeasured characteristic influence treatment? Our E-value calculation instead described how the distribution of <span class="math inline">\(U\)</span> differed between treated and untreated people.</p>
+</section>
+<section id="the-worst-case-scenario" class="level2">
+<h2 class="anchored" data-anchor-id="the-worst-case-scenario">The worst-case scenario</h2>
+<p>Choose a sensitivity bound <span class="math inline">\(\Gamma\)</span> and return to our four patients. Number the patients <span class="math inline">\(i=1,2,3,4\)</span> in the order Acorn, Birch, Chestnut, and Hazel. Let <span class="math inline">\(U_i\)</span> be patient <span class="math inline">\(i\)</span>’s unmeasured severity and <span class="math inline">\(o_i=o(U_i)\)</span> their treatment odds. The bound requires</p>
+<p><span class="math display">\[
+\frac{o_i}{\min(o_1,o_2,o_3,o_4)}\leq\Gamma
+\qquad\text{for each patient }i.
+\]</span></p>
+<p>Assume treatment assignments are independent given the patients’ unmeasured characteristics. As we showed earlier, an assignment probability is the product of the treated patients’ odds times a common constant. Here that constant is</p>
+<p><span class="math display">\[
+c=\prod_{i=1}^4[1-e(U_i)].
+\]</span></p>
+<p>The six possibilities are</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Treated patients</th>
+<th style="text-align: center;">Assignment probability</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Acorn and Birch</td>
+<td style="text-align: center;"><span class="math inline">\(o_1o_2c\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Acorn and Chestnut</td>
+<td style="text-align: center;"><span class="math inline">\(o_1o_3c\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Acorn and Hazel</td>
+<td style="text-align: center;"><span class="math inline">\(o_1o_4c\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Birch and Chestnut</td>
+<td style="text-align: center;"><span class="math inline">\(o_2o_3c\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Birch and Hazel</td>
+<td style="text-align: center;"><span class="math inline">\(o_2o_4c\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Chestnut and Hazel</td>
+<td style="text-align: center;"><span class="math inline">\(o_3o_4c\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Only the first gives two treated hospitalizations. Conditional on two patients receiving medication and the completed potential outcomes, the one-sided p-value is therefore</p>
+<p><span class="math display">\[
+\begin{aligned}
+p&amp;=\frac{o_1o_2c}
+{c(o_1o_2+o_1o_3+o_1o_4+o_2o_3+o_2o_4+o_3o_4)}\\[0.5em]
+&amp;=\frac{o_1o_2}
+{o_1o_2+o_1o_3+o_1o_4+o_2o_3+o_2o_4+o_3o_4}.
+\end{aligned}
+\]</span></p>
+<p>We still have many possible p-values because we do not know the four odds. To be conservative, take the largest p-value among odds satisfying our bound. This makes the observed finding as easy as possible to explain without a treatment effect.</p>
+<p>In this example, the largest p-value occurs when Acorn and Birch have the highest allowed odds and Chestnut and Hazel have the lowest. We can write such a choice as</p>
+<p><span class="math display">\[
+o_1=o_2=\Gamma t,\qquad o_3=o_4=t,
+\qquad t&gt;0.
+\]</span></p>
+<p>Substituting gives</p>
+<p><span class="math display">\[
+\begin{aligned}
+p_{\max}(\Gamma)
+&amp;=\frac{\Gamma^2t^2}{\Gamma^2t^2+4\Gamma t^2+t^2}\\[0.5em]
+&amp;=\frac{\Gamma^2}{\Gamma^2+4\Gamma+1}.
+\end{aligned}
+\]</span></p>
+<p>The common scale <span class="math inline">\(t\)</span> cancels, so we do not need to know the actual smallest treatment odds. Setting <span class="math inline">\(t=1\)</span> gives the convenient choice <span class="math inline">\(o_1=o_2=\Gamma\)</span> and <span class="math inline">\(o_3=o_4=1.\)</span> At <span class="math inline">\(\Gamma=2,\)</span></p>
+<p><span class="math display">\[
+p_{\max}(2)=\frac4{4+8+1}=\frac4{13}\approx0.31.
+\]</span></p>
+<p>This is our first severity scenario: Acorn and Birch have severe symptoms, which double their treatment odds. Among all treatment mechanisms allowed by <span class="math inline">\(\Gamma=2,\)</span> this scenario makes our observed pattern least unusual under the sharp null.</p>
+<div class="main-point">
+<p>Worst-case selection makes our finding as unsurprising as possible under the sharp null, while staying within the bound <span class="math inline">\(\Gamma.\)</span></p>
+</div>
+</section>
+<section id="the-general-procedure" class="level2">
+<h2 class="anchored" data-anchor-id="the-general-procedure">The general procedure</h2>
+<p>With measured characteristics <span class="math inline">\(X,\)</span> we do the same calculation while keeping the number treated fixed within every group sharing the same <span class="math inline">\(X.\)</span> Treatment odds may differ across these groups; the bound <span class="math inline">\(\Gamma\)</span> compares people within a group.</p>
+<p>Assume assignments are independent given measured and unmeasured characteristics. Conditional on the completed potential outcomes and the treatment counts within each group, an arrangement’s probability is proportional to the product of its treated patients’ odds. Let <span class="math inline">\(i\)</span> label patients, with <span class="math inline">\(X_i\)</span> and <span class="math inline">\(U_i\)</span> denoting patient <span class="math inline">\(i\)</span>’s measured and unmeasured characteristics and <span class="math inline">\(A_i\)</span> their treatment in the arrangement under consideration. The product is</p>
+<p><span class="math display">\[
+\prod_{i:A_i=1}o(X_i,U_i).
+\]</span></p>
+<p>Divide each product by the sum over all arrangements with the required counts to obtain its conditional probability. Multiplying everyone’s odds within a group by the same positive number does not change these probabilities: every arrangement treats the same number in that group, so the common scale cancels. For computation, we may set the smallest odds in each group to one without knowing their actual value.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Procedure: sensitivity analysis for an upper-tail test
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Fix outcomes under the sharp null.</li>
+<li>Consider treatment arrangements preserving the number treated within each <span class="math inline">\(X.\)</span></li>
+<li>Choose <span class="math inline">\(\Gamma.\)</span> For possible treatment odds satisfying <span class="math inline">\(\Gamma,\)</span> calculate how likely each arrangement is and how often it gives a result at least as large as ours.</li>
+<li>Take the largest p-value.</li>
+<li>Increase <span class="math inline">\(\Gamma\)</span> until it reaches <span class="math inline">\(0.05.\)</span></li>
+</ol>
+</div>
+</div>
+<p>Larger <span class="math inline">\(\Gamma\)</span> allows stronger treatment selection due to unmeasured confounding. The largest p-value cannot decrease as we enlarge that set of possibilities. We ask how much selection we must allow before the observed result is no longer unusual under the sharp null.</p>
+<p>Our four-patient example already has a p-value of about <span class="math inline">\(0.17\)</span> at <span class="math inline">\(\Gamma=1,\)</span> so it has no statistically significant finding to begin with. To see how we would interpret a sensitivity analysis when there is evidence to assess, consider the following hypothetical larger study.</p>
+<div class="example-box">
+<p>A larger claims study examines whether starting the same medication increases hospitalization within six months. Researchers account for prior hospitalization and other recorded characteristics. Their one-sided sensitivity analysis gives:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Sensitivity bound <span class="math inline">\(\Gamma\)</span></th>
+<th style="text-align: right;">Largest p-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;"><span class="math inline">\(0.006\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1.25</td>
+<td style="text-align: right;"><span class="math inline">\(0.021\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1.5</td>
+<td style="text-align: right;"><span class="math inline">\(0.051\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;"><span class="math inline">\(0.152\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>At <span class="math inline">\(\Gamma=1,\)</span> treatment odds are equal among patients with the same recorded characteristics, and the finding is statistically significant at the 5% level. At <span class="math inline">\(\Gamma=1.25,\)</span> even the largest allowed p-value remains below <span class="math inline">\(0.05.\)</span></p>
+<p>At <span class="math inline">\(\Gamma=1.5,\)</span> the largest p-value exceeds <span class="math inline">\(0.05.\)</span> Allowing unmeasured characteristics to make one patient’s treatment odds up to 1.5 times another’s, among people with the same recorded characteristics, permits a treatment mechanism under which the finding is no longer statistically significant. The threshold lies between <span class="math inline">\(1.25\)</span> and <span class="math inline">\(1.5;\)</span> a finer search would locate it more closely.</p>
+<p>We could report: “The finding remained statistically significant when unmeasured confounding allowed treatment odds to differ by up to 25% among patients with the same recorded characteristics. Allowing a 50% difference raised the largest one-sided p-value to 0.051.”</p>
+</div>
+<details class="lesson-question">
+<summary>
+A claims study examines whether knee replacement increases opioid use six months later. After accounting for age and recorded diagnoses, the largest one-sided p-values are 0.008 at <span class="math inline">\(\Gamma=1,\)</span> 0.032 at <span class="math inline">\(\Gamma=2,\)</span> and 0.074 at <span class="math inline">\(\Gamma=3.\)</span> Using a 5% significance level, what can you say about the finding’s sensitivity to unmeasured treatment selection?
+</summary>
+<p>The finding remains statistically significant for every treatment mechanism allowed by <span class="math inline">\(\Gamma=2.\)</span> Even if unmeasured characteristics make one patient’s odds of knee replacement up to twice another’s among people with the same age and recorded diagnoses, the largest p-value is <span class="math inline">\(0.032.\)</span></p>
+<p>Allowing a threefold difference permits a mechanism under which the finding is no longer statistically significant: the largest p-value is <span class="math inline">\(0.074.\)</span> The threshold lies between two and three. This does not show that such treatment selection occurred, or that knee replacement has no effect; it describes how much selection could remove the statistical evidence against the sharp null.</p>
+</details>
+<p>For exact grouping, <span class="math inline">\(X\)</span> must have repeated values, as with discrete characteristics. With continuous measurements, we often construct comparable groups by matching. Exact calculations assume people within a group have the same <span class="math inline">\(X;\)</span> approximate matches can leave measured differences.</p>
+<p>Enumerating arrangements and finding the worst-case odds can be computationally demanding. Much of the work on sensitivity analysis develops ways to make these calculations feasible or identifies settings with simple formulas. Matched pairs give one such setting: condition on one treated patient in each pair, and only two treatment arrangements remain per pair.</p>
+</section>
+<section id="draft-matched-patients" class="level2">
+<h2 class="anchored" data-anchor-id="draft-matched-patients">DRAFT: matched patients</h2>
+<p>This section still needs revision.</p>
+<section id="comparing-matched-patients" class="level3">
+<h3 class="anchored" data-anchor-id="comparing-matched-patients">Comparing matched patients</h3>
+<p>With measured characteristics <span class="math inline">\(X,\)</span> the bound compares patients with the same recorded values. For example, we can compare patients with the same prior hospitalization history.</p>
+<p>Form pairs with the same measured characteristics <span class="math inline">\(X,\)</span> one treated patient and one untreated patient in each pair. We condition on one patient receiving treatment in every pair. The following calculation assumes exact agreement on <span class="math inline">\(X.\)</span></p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/04f-treatment-assignments.svg" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Four pairs of acorn patients, each with one hospitalized and one nonhospitalized patient. Treatment labels move within pairs while outcomes and the treatment count in each pair stay fixed." width="850"></p>
+</figure>
+</div>
+<p>Within one pair, label the patients 1 and 2 and write their treatment odds as <span class="math inline">\(o_1\)</span> and <span class="math inline">\(o_2.\)</span> Conditional on one receiving treatment, the probability that it is the first patient is</p>
+<p><span class="math display">\[
+\frac{o_1}{o_1+o_2}.
+\]</span></p>
+<p>For example, odds of two and one give probability <span class="math inline">\(2/(2+1)=2/3.\)</span> Under the sensitivity bound, neither patient’s odds can exceed <span class="math inline">\(\Gamma\)</span> times the other’s. The largest conditional probability is therefore <span class="math inline">\(\Gamma/(\Gamma+1),\)</span> and the smallest is <span class="math inline">\(1/(1+\Gamma).\)</span> Writing that probability as <span class="math inline">\(p,\)</span></p>
+<p><span class="math display">\[
+\frac1{1+\Gamma}\leq p\leq\frac\Gamma{1+\Gamma}.
+\]</span></p>
+<p>At <span class="math inline">\(\Gamma=1,\)</span> either patient has a one-half chance. At <span class="math inline">\(\Gamma=2,\)</span> the chance can range from one third to two thirds.</p>
+<p>Now bring the outcome back into the story. Each patient either was or was not hospitalized within six months. Our pairs fall into four groups:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Treated patient’s outcome</th>
+<th style="text-align: left;">Untreated patient’s outcome</th>
 <th style="text-align: right;">Number of pairs</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>1</td>
-<td>0</td>
+<td style="text-align: left;">Hospitalized</td>
+<td style="text-align: left;">Hospitalized</td>
+<td style="text-align: right;"><span class="math inline">\(a\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Not hospitalized</td>
+<td style="text-align: left;">Hospitalized</td>
+<td style="text-align: right;"><span class="math inline">\(b\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Hospitalized</td>
+<td style="text-align: left;">Not hospitalized</td>
+<td style="text-align: right;"><span class="math inline">\(c\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Not hospitalized</td>
+<td style="text-align: left;">Not hospitalized</td>
+<td style="text-align: right;"><span class="math inline">\(d\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>A pair in which both patients were hospitalized contributes equally to the treated and untreated hospitalization counts. A pair in which neither was hospitalized contributes nothing to either count. Switching treatment labels within these pairs leaves the comparison unchanged.</p>
+<p>The pairs with different outcomes are the ones that matter. In <span class="math inline">\(c\)</span> pairs, the treated patient was hospitalized; in <span class="math inline">\(b\)</span> pairs, the untreated patient was hospitalized. The treated group therefore has <span class="math inline">\(c-b\)</span> more hospitalizations. Once the number of pairs with different outcomes is fixed, a larger <span class="math inline">\(c\)</span> means a larger treated–untreated difference.</p>
+<p>Under the sharp null, changing who received medication would not change who was hospitalized. We can therefore hold these outcomes fixed and ask: how often would alternative treatment assignments put the treatment label on the hospitalized patient in at least <span class="math inline">\(c\)</span> of these pairs?</p>
+<p>Call the count under an alternative assignment <span class="math inline">\(C.\)</span> At <span class="math inline">\(\Gamma=1,\)</span> either patient in each pair is equally likely to receive treatment. Assuming independent assignments across pairs, the count follows</p>
+<p><span class="math display">\[
+C\sim\operatorname{Binomial}(b+c,1/2).
+\]</span></p>
+<p>The probability <span class="math inline">\(P(C\geq c)\)</span> tells us how often we would see at least as many hospitalizations in treated patients as we actually observed. This is the one-sided p-value for the direction of increased hospitalization.</p>
+<p>What changes when we allow unmeasured differences to influence treatment? To make our observed excess of hospitalizations easier to explain without a medication effect, make the hospitalized patient more likely to receive treatment in every pair with different outcomes. Give that patient <span class="math inline">\(\Gamma\)</span> times the other patient’s treatment odds. The chance of assigning treatment to the hospitalized patient is then <span class="math inline">\(\Gamma/(1+\Gamma).\)</span></p>
+<p>This is the worst case for our evidence: it pushes the treatment label toward the patients who would be hospitalized anyway. Reversing the odds pushes the labels away from those patients and gives the smallest p-value. The resulting bounds are</p>
+<p><span class="math display">\[
+\begin{aligned}
+p_-(\Gamma)
+&amp;=P\!\left\{\operatorname{Binomial}\!\left(b+c,\frac1{1+\Gamma}\right)\geq c\right\},\\[0.5em]
+p_+(\Gamma)
+&amp;=P\!\left\{\operatorname{Binomial}\!\left(b+c,\frac\Gamma{1+\Gamma}\right)\geq c\right\}.
+\end{aligned}
+\]</span></p>
+<p>These binomial probabilities give the p-value bounds directly. They carry out the same calculation as the simulation procedure: condition on treatment counts, vary the allowed treatment odds, and find the extreme probabilities.</p>
+<p>For an application, consider the smoking and lung-cancer example from our earlier GitBook. Here <span class="math inline">\(A=1\)</span> denotes heavy smoking, <span class="math inline">\(Y=1\)</span> denotes death from lung cancer, and <span class="math inline">\(X\)</span> contains the characteristics used to form the pairs. Each pair contains one exposed and one unexposed person with the same <span class="math inline">\(X.\)</span> Among pairs with different outcomes, the counts are</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Exposed person’s outcome</th>
+<th style="text-align: left;">Unexposed person’s outcome</th>
+<th style="text-align: right;">Number of pairs</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Died of lung cancer</td>
+<td style="text-align: left;">Did not die of lung cancer</td>
 <td style="text-align: right;"><span class="math inline">\(c=110\)</span></td>
 </tr>
 <tr class="even">
-<td>0</td>
-<td>1</td>
+<td style="text-align: left;">Did not die of lung cancer</td>
+<td style="text-align: left;">Died of lung cancer</td>
 <td style="text-align: right;"><span class="math inline">\(b=12\)</span></td>
 </tr>
 </tbody>
 </table>
-<p>Pairs with equal outcomes contribute zero to the within-pair outcome difference. Among the discordant pairs, <span class="math inline">\(110\)</span> of <span class="math inline">\(122\)</span> have the death in the exposed member.</p>
-<p>For the randomization calculation, test the <strong>sharp null</strong></p>
-<p><span class="math display">\[
-H_0:Y_i(1)=Y_i(0)\quad\text{for every person }i.
-\]</span></p>
-<p>Under this null, each person’s outcome stays fixed when we change exposure assignments. This lets us calculate how often a different assignment would put the exposure label on the person who died. A zero average effect alone would not justify holding every outcome fixed.</p>
-<p>Let <span class="math inline">\(C\)</span> count discordant pairs in which the exposed member has <span class="math inline">\(Y=1\)</span>. At <span class="math inline">\(\Gamma=1\)</span>, with independent assignments across pairs conditional on one exposed member in each pair,</p>
-<p><span class="math display">\[
-C\sim\operatorname{Binomial}(122,1/2).
-\]</span></p>
-<p>For a prespecified one-sided test in the direction of increased risk, the p-value is <span class="math inline">\(P(C\geq110)\)</span>.</p>
-<p>Now allow hidden bias. Under the sharp null, the probability that the person with <span class="math inline">\(Y=1\)</span> receives exposure lies between <span class="math inline">\(1/(1+\Gamma)\)</span> and <span class="math inline">\(\Gamma/(1+\Gamma)\)</span>. The largest upper-tail probability occurs when every discordant pair takes the upper endpoint. The smallest occurs at the lower endpoint. Thus the one-sided p-value is bounded by</p>
-<p><span class="math display">\[
-\begin{aligned}
-p_-(\Gamma)&amp;=P\!\left\{\operatorname{Binomial}\!\left(122,\frac1{1+\Gamma}\right)\geq110\right\},\\[0.4em]
-p_+(\Gamma)&amp;=P\!\left\{\operatorname{Binomial}\!\left(122,\frac\Gamma{1+\Gamma}\right)\geq110\right\}.
-\end{aligned}
-\]</span></p>
-<p>The upper bound asks whether an allowed assignment mechanism could make a result at least this extreme reasonably common under the null. We do not need to identify the actual unmeasured confounder to calculate it.</p>
-</section>
-<section id="increasing-the-allowed-bias" class="level2">
-<h2 class="anchored" data-anchor-id="increasing-the-allowed-bias">Increasing the allowed bias</h2>
-<p>Here are the upper bounds for several values of <span class="math inline">\(\Gamma\)</span>:</p>
+<p>Thus <span class="math inline">\(b+c=122,\)</span> and the observed count is <span class="math inline">\(c=110.\)</span> Here the unmeasured characteristics influence who smokes. We ask whether that selection could explain the observed deaths even if smoking affected no one’s outcome. The calculation we just developed gives bounds on <span class="math inline">\(P(C\geq110),\)</span> the probability that alternative assignments put the smoking label on the person who died in at least 110 pairs.</p>
+<p>Here are the resulting upper bounds:</p>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -679,15 +1668,15 @@ p_+(\Gamma)&amp;=P\!\left\{\operatorname{Binomial}\!\left(122,\frac\Gamma{1+\Gam
 <tbody>
 <tr class="odd">
 <td style="text-align: right;">1</td>
-<td style="text-align: right;"><span class="math inline">\(2.73\times10^{-21}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(&lt; .001\)</span></td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">2</td>
-<td style="text-align: right;"><span class="math inline">\(1.32\times10^{-9}\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(&lt; .001\)</span></td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">3</td>
-<td style="text-align: right;"><span class="math inline">\(0.0000203\)</span></td>
+<td style="text-align: right;"><span class="math inline">\(&lt; .001\)</span></td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">4</td>
@@ -703,8 +1692,8 @@ p_+(\Gamma)&amp;=P\!\left\{\operatorname{Binomial}\!\left(122,\frac\Gamma{1+\Gam
 </tr>
 </tbody>
 </table>
-<p>At <span class="math inline">\(\Gamma=5\)</span>, even the largest p-value allowed by the model remains below <span class="math inline">\(0.05\)</span>. At <span class="math inline">\(\Gamma=6\)</span>, it does not. The upper bound reaches <span class="math inline">\(0.05\)</span> at approximately <span class="math inline">\(\Gamma=5.473\)</span> for this one-sided test.</p>
-<p>This does not estimate the actual amount of hidden bias. It says how much bias the specified inference can withstand under this model. Crossing the threshold means that rejection is no longer guaranteed across all allowed assignment mechanisms; it does not establish that the null is true.</p>
+<p>At <span class="math inline">\(\Gamma=5,\)</span> even the largest p-value allowed by the model remains below <span class="math inline">\(0.05.\)</span> At <span class="math inline">\(\Gamma=6,\)</span> it does not. The upper bound reaches <span class="math inline">\(0.05\)</span> at approximately <span class="math inline">\(\Gamma=5.473\)</span> for this one-sided test.</p>
+<p>Even if unmeasured characteristics multiply smoking odds by as much as five among people with the same <span class="math inline">\(X,\)</span> the test rejects the sharp null at the 5% level for every allowed assignment mechanism. A factor of six permits mechanisms under which it no longer rejects. The analysis identifies how much selection the inference can withstand; it does not estimate the selection actually present.</p>
 <p>The calculation in R is short:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="dv">12</span></span>
@@ -720,19 +1709,27 @@ p_+(\Gamma)&amp;=P\!\left\{\operatorname{Binomial}\!\left(122,\frac\Gamma{1+\Gam
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pbinom</span>(c <span class="sc">-</span> <span class="dv">1</span>, b <span class="sc">+</span> c, g <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">+</span> g), <span class="at">lower.tail =</span> <span class="cn">FALSE</span>) <span class="sc">-</span> <span class="fl">0.05</span></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>}, <span class="at">interval =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">10</span>))<span class="sc">$</span>root</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>We have specified a one-sided test throughout. A two-sided analysis needs an explicit two-sided testing rule; its sensitivity bounds should not be obtained by recentering a binomial distribution and reusing the earlier calculation.</p>
-</section>
-<section id="what-the-two-approaches-ask" class="level2">
-<h2 class="anchored" data-anchor-id="what-the-two-approaches-ask">What the two approaches ask</h2>
-<p>An E-value asks about the joint exposure-confounder and confounder-outcome strengths needed to move a risk ratio to the null. Our Rosenbaum calculation bounds treatment-assignment odds within matched pairs and allows the unmeasured characteristics to align with outcomes in the most unfavorable way. It asks when a particular test would cease to reject uniformly over the allowed assignments.</p>
-<p>The numerical values of <span class="math inline">\(E\)</span> and <span class="math inline">\(\Gamma\)</span> therefore answer different questions. Neither tells us whether the required confounding is plausible in the study. That is where the scientific context returns.</p>
+<details class="lesson-question">
+<summary>
+A claims study examines the effect of knee replacement on later opioid use. Researchers account for age and recorded diagnoses, but the claims do not capture how much knee pain limits daily activities. What does <span class="math inline">\(\Gamma=2\)</span> allow about treatment assignment? What would <span class="math inline">\(\Gamma=1\)</span> mean?
+</summary>
+<p>At <span class="math inline">\(\Gamma=2,\)</span> anyone’s odds of receiving knee replacement are at most twice those of any other person with the same age and recorded diagnoses, despite unmeasured differences in daily limitations.</p>
+<p>At <span class="math inline">\(\Gamma=1,\)</span> patients with the same measured characteristics have equal treatment odds. Their unrecorded limitations do not further influence treatment assignment.</p>
+</details>
 
 
 <div id="refs" class="references csl-bib-body hanging-indent" role="list" style="display: none">
+<div id="ref-branson2019randomization" class="csl-entry" role="listitem">
+Branson, Zach, and Marie-Abèle Bind. 2019. <span>“Randomization-Based Inference for <span>Bernoulli</span> Trial Experiments and Implications for Observational Studies.”</span> <em>Statistical Methods in Medical Research</em> 28 (5): 1378–98. <a href="https://doi.org/10.1177/0962280218756689">https://doi.org/10.1177/0962280218756689</a>.
+</div>
+<div id="ref-poole2020evalue" class="csl-entry" role="listitem">
+Poole, Charles. 2020. <span>“Commentary: Continuing the <span>E</span>-Value’s Post-Publication Peer Review.”</span> <em>International Journal of Epidemiology</em> 49 (5): 1497–500. <a href="https://doi.org/10.1093/ije/dyaa097">https://doi.org/10.1093/ije/dyaa097</a>.
+</div>
 <div id="ref-rosenbaum2002observational" class="csl-entry" role="listitem">
 Rosenbaum, Paul R. 2002. <em>Observational Studies</em>. 2nd ed. Springer. <a href="https://doi.org/10.1007/978-1-4757-3692-2">https://doi.org/10.1007/978-1-4757-3692-2</a>.
 </div>
 </div>
+</section>
 </section>
 
 </main> <!-- /main -->

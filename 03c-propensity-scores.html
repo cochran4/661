@@ -101,7 +101,7 @@ div.csl-indent {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-ba9040e57dc60d9cb57624e8e56c0bcb.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-a9c568a913165b8a8765685f58130fce.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -509,7 +509,7 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./04f-rosenbaum-sensitivity.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Rosenbaum sensitivity</span></a>
+  <a href="./04f-rosenbaum-sensitivity.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Rosenbaum’s sensitivity analysis</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -1301,8 +1301,8 @@ Y&amp;\leftarrow f_Y(A,X,\epsilon_Y),
 <p>where <span class="math inline">\(\epsilon_X,U_A,\epsilon_Y\)</span> are independent.</p>
 </div>
 <p>For example, <span class="math inline">\(b(X)=X\)</span> is a balancing score, as is <span class="math inline">\(b(X)=e(X)\)</span>.</p>
-<div class="proposition-box">
-<p>If <span class="math inline">\(b(X)\)</span> is a balancing score, then there is a function <span class="math inline">\(f\)</span> such that</p>
+<div id="balancing-score-characterization" class="proposition-box">
+<p>For a binary exposure, <span class="math inline">\(b(X)\)</span> is a balancing score <strong>if and only if</strong> there is a function <span class="math inline">\(f\)</span> such that</p>
 <p><span class="math display">\[
 e(X)=f(b(X))
 \]</span></p>
