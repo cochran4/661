@@ -296,6 +296,14 @@ window.Quarto = {
  <span class="dropdown-text">Other approaches</span></a>
   </li>  
         <li>
+    <a class="dropdown-item" href="./04e-e-values.html">
+ <span class="dropdown-text">E-values</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./04f-rosenbaum-sensitivity.html">
+ <span class="dropdown-text">Rosenbaum sensitivity</span></a>
+  </li>  
+        <li>
     <a class="dropdown-item" href="./04-exercises.html">
  <span class="dropdown-text">Exercises</span></a>
   </li>  
@@ -503,14 +511,20 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./04e-e-values.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">E-values</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04f-rosenbaum-sensitivity.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Rosenbaum’s sensitivity analysis</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./04-exercises.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Exercises</span></a>
   </div>
 </li>
       </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text">Sensitivity analysis</span></span>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <span class="sidebar-item-text sidebar-link text-start">
@@ -522,13 +536,13 @@ window.Quarto = {
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true">
  <span class="menu-text">Back matter</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-8" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-7" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-8" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-7" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./glossary.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Glossary</span></a>
@@ -1297,8 +1311,8 @@ Y&amp;\leftarrow f_Y(A,X,\epsilon_Y),
 <p>where <span class="math inline">\(\epsilon_X,U_A,\epsilon_Y\)</span> are independent.</p>
 </div>
 <p>For example, <span class="math inline">\(b(X)=X\)</span> is a balancing score, as is <span class="math inline">\(b(X)=e(X)\)</span>.</p>
-<div class="proposition-box">
-<p>If <span class="math inline">\(b(X)\)</span> is a balancing score, then there is a function <span class="math inline">\(f\)</span> such that</p>
+<div id="balancing-score-characterization" class="proposition-box">
+<p>For a binary exposure, <span class="math inline">\(b(X)\)</span> is a balancing score <strong>if and only if</strong> there is a function <span class="math inline">\(f\)</span> such that</p>
 <p><span class="math display">\[
 e(X)=f(b(X))
 \]</span></p>

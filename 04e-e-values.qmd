@@ -2,6 +2,9 @@
 title: "E-values"
 ---
 
+![](images/04e-squirrel-e-values.png){width=700 fig-align="center" fig-alt="A squirrel in a tweed waistcoat pulls two taut ropes attached to an acorn-filled cart at the crest of a wooden ramp. Vintage pen-and-ink illustration."}
+
+
 <!-- Working adaptation of the prior GitBook's sensitivity-analyses/vanderweele material and Cornfield recap. Originals are preserved in instructor-planning/archive/sensitivity-gitbook. -->
 
 ## Introduction
@@ -377,6 +380,16 @@ $$
 The genotype must be at least 21.5 times more prevalent among smokers or increase cancer risk by at least 21.5 times to explain the association entirely through confounding.
 :::
 
+Be careful with the word “both.” It is common to describe the E-value as the strength a confounder must have with both exposure and outcome. That can sound as though both relationships must reach the E-value, but that interpretation is wrong [@poole2020evalue]. One relationship can be weaker if the other is stronger.
+
+For a concrete example, an observed relative risk of 2 has an E-value of about 3.41. Strengths of $r=3$ and $s=4$ can still explain it, because
+
+$$
+\frac{rs}{r+s-1}=\frac{3\times4}{3+4-1}=2.
+$$
+
+One strength is below the E-value; the other is above it. This is the tradeoff we saw on the joint-bound curve. At least one relationship must reach the E-value, and the two strengths must still satisfy the joint bound. Merely finding one relationship stronger than the E-value is not enough to explain away the association.
+
 Our derivation used a binary genotype and a complete null explanation. Ding and VanderWeele's general bound allows multiple unmeasured confounders and quantifies partial attenuation as well [@ding2016sensitivity].
 
 ::: {.callout-note title="Technical note: the general bound" collapse="true"}
@@ -631,3 +644,7 @@ In a report, give the exposure comparison, outcome, adjusted estimate and interv
 An E-value does not quantify the confounding actually present. A large value does not establish causality, and a small value does not establish that an effect is absent. The calculation also leaves selection bias, measurement error, and other threats to be assessed separately.
 
 Extensions cover odds ratios, hazard ratios, and standardized mean differences for continuous outcomes. VanderWeele and Ding give conversions and worked examples in their supplementary material; Linden, Mathur, and VanderWeele describe the calculations for each effect measure in Sections 2.2–2.4 [@vanderweele2017evalue; @linden2020evalue]. These calculations require additional assumptions or approximations, including attention to whether a binary outcome is rare or common. We have worked on the risk-ratio scale; identify the reported effect measure before choosing the E-value calculation.
+
+## Critique of the E-value (planned)
+
+*To develop:* Discuss Poole's commentary on the interpretation and use of E-values [@poole2020evalue]. Return to the joint-bound curve to clarify why at least one of the two relationships must reach the E-value, rather than both. Then consider what the worst-case bound leaves out when we have information about a specific unmeasured confounder, and why an E-value alone cannot tell us whether the required confounding is plausible.

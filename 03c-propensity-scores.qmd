@@ -780,8 +780,8 @@ where $\epsilon_X,U_A,\epsilon_Y$ are independent.
 
 For example, $b(X)=X$ is a balancing score, as is $b(X)=e(X)$.
 
-::: {.proposition-box}
-If $b(X)$ is a balancing score, then there is a function $f$ such that
+::: {#balancing-score-characterization .proposition-box}
+For a binary exposure, $b(X)$ is a balancing score **if and only if** there is a function $f$ such that
 
 $$
 e(X)=f(b(X))
